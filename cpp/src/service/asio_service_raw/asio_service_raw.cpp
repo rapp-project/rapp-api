@@ -33,9 +33,6 @@ void asio_service_raw::Schedule (
     
     for ( const auto & byte : bytes_ )
         request_stream << byte;
-    
-    request_stream << "</EOF!>";
-    // Ending Delimiter is /EOF!
         
     //std::string raw ( ( std::istreambuf_iterator<char>( &request_ ) ), std::istreambuf_iterator<char>() );
     //std::cout << raw << std::endl;
@@ -131,7 +128,6 @@ void asio_service_raw::handle_write_request ( const boost::system::error_code & 
                                        boost::bind( &asio_service_raw::handle_read_response, 
                                                     this,
                                                     boost::asio::placeholders::error ) );
-       
     }
     else error_handler( err );
 }

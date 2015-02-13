@@ -12,8 +12,8 @@ faceDetector::faceDetector (
     if ( image )
     {
         // Add the TAG of the Data type NOW
-        std::string tag = "<IMG>";
-        std::vector<char> bytearray ( tag.begin(), tag.end() );
+        std::string open_tag = "<FCE>";
+        std::vector<char> bytearray ( open_tag.begin(), open_tag.end() );
         
         /* 
          * Copy the actual picture contents 
@@ -22,6 +22,9 @@ faceDetector::faceDetector (
          */
         auto imagebytes = image->bytearray();
         bytearray.insert( bytearray.end(), imagebytes.begin(), imagebytes.end() );
+        
+        std::string close_tag = "</EOF!>";
+        bytearray.insert( bytearray.end(), close_tag.begin(), close_tag.end() );
         
         // Send raw stream over the socket
         client__ = std::make_shared<rapp::services::asio_service_raw>( bytearray,
@@ -43,6 +46,8 @@ std::shared_ptr<rapp::services::asio_socket> faceDetector::Job ( ) const
 void faceDetector::handle ( boost::asio::streambuf & buffer )
 {   
     // Convert the buffer into a string
+    std::cout << "faceDetector::handle" << std::endl;
+    
     std::string reply ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
     std::cout << reply << std::endl;
 

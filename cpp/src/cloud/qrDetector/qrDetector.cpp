@@ -12,7 +12,7 @@ qrDetector::qrDetector (
     if ( image )
     {
         // Add the TAG of the Data type NOW!
-        std::string tag = "<IMG>";
+        std::string tag = "<QRC>";
         std::vector<char> bytearray ( tag.begin(), tag.end() );
         
         /* 
@@ -22,6 +22,9 @@ qrDetector::qrDetector (
          */
         auto imagebytes = image->bytearray();
         bytearray.insert( bytearray.end(), imagebytes.begin(), imagebytes.end() );
+        
+        std::string close_tag = "</EOF!>";
+        bytearray.insert( bytearray.end(), close_tag.begin(), close_tag.end() );
         
         // Send raw stream over the socket
         client__ = std::make_shared<rapp::services::asio_service_raw>( bytearray,
@@ -42,6 +45,8 @@ std::shared_ptr<rapp::services::asio_socket> qrDetector::Job ( ) const
 
 void qrDetector::handle ( boost::asio::streambuf & buffer )
 {   
+    std::cout << "qrDetector::handle" << std::endl;
+    
     // Convert the buffer into a string
     std::string reply ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
     std::cout << reply << std::endl;
