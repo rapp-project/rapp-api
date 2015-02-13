@@ -2,10 +2,8 @@
 #define RAPP_ASIO_SERVICE_HTTP
 #include "Includes.ihh"
 
-namespace rapp
-{
-namespace services
-{
+namespace rapp {
+namespace services {
 
 /**
  * @class asio_service_http
@@ -143,6 +141,8 @@ class asio_service_http : public asio_socket
     /// Operation complete?
     bool complete_ = false;
 };
+
+
 }
 }
 

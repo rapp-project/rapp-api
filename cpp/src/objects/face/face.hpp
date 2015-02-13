@@ -4,17 +4,10 @@
 
 /**
  * @class face
- * @brief class which should somehow encapsulate a face (as polygons or image or wtv)
- * @version 0
- * @date 3-January-2015
+ * @brief class which should somehow encapsulate a face
+ * @version 1
+ * @date 13-Feburary-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- * 
- * TODO: Examine how exactly the face will be represented.
- *       I can think of a few ways: using an OpenCV matrix
- *       Using some form of polygons
- *       Using some for of a unique identifier, based on murmur hash of the polygons
- *       Using some kind of string
- *       etc...
  */
 
 namespace rapp {
@@ -24,9 +17,33 @@ class face
 {
   public:
     
-    face ( ) = default;
+    // No empty consructor
+    face ( ) = delete;
+    
+    /**
+     * @brief Consruct using face coordinates (a rectangle)
+     */
+    face ( 
+            float top_left_x,
+            float top_left_y,
+            float bot_right_x,
+            float bot_right_y
+         );
+    
+    /**
+     * @brief Consruct using face coordinates (a rectangle) and an optional label
+     */
+    face ( 
+            float top_left_x,
+            float top_left_y,
+            float bot_right_x,
+            float bot_right_y,
+            std::string label
+         );
     
 };
+
+
 }
 }
 #endif

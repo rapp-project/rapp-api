@@ -3,7 +3,6 @@
 #include "Includes.ihh"
 
 namespace rapp {
-namespace services {
 namespace cloud {
 
 /**
@@ -51,7 +50,6 @@ class speechToText : public service
       std::shared_ptr<rapp::services::asio_service_raw> client__;
 };
 
-}
 }
 }
 #endif

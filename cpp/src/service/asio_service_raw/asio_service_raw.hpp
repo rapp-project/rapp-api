@@ -111,6 +111,7 @@ class asio_service_raw : public asio_socket
     /// Operation complete?
     bool complete_ = false;
 };
+
 }
 }
 

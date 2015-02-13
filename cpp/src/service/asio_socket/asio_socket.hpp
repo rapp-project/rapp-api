@@ -2,10 +2,8 @@
 #define RAPP_ASIO_SOCKET_
 #include "Includes.ihh"
 
-namespace rapp
-{
-namespace services
-{
+namespace rapp {
+namespace services {
 
 /**
  * @brief Abstract Base ASIO Socket class
@@ -37,6 +35,7 @@ class asio_socket
     void handle_reply ( );
     
 };
+
 }
 }
 

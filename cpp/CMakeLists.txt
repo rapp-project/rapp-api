@@ -1,7 +1,7 @@
-PROJECT(rapp)
+PROJECT(RAPP)
 
-set (rapp_VERSION_MAJOR 0)
-set (rapp_VERSION_MINOR 1)
+set (RAPP_VERSION_MAJOR 0)
+set (RAPP_VERSION_MINOR 1)
 
 cmake_minimum_required(VERSION 2.8)
 
@@ -19,37 +19,63 @@ include_directories(SYSTEM ${INCLUDE_HEADERS})
 
 add_subdirectory(src)
 
-# Tests used to evaluate the library
-add_executable ( async_client tests/async_client.cpp
-                              src/cloud/asio_service_http/asio_service_http.cpp
-                              src/cloud/service_controller/service_controller.cpp)
-                              
-add_executable ( face_detect  tests/face_detect.cpp
-                              src/cloud/asio_service_raw/asio_service_raw.cpp
-                              src/cloud/service_controller/service_controller.cpp
-                              src/cloud/faceDetector/faceDetector.cpp
-                              src/objects/picture/picture.cpp)
+# Async Client Test
+add_executable ( rapp_async_client tests/async_client.cpp
+                                   src/service/asio_service_http/asio_service_http.cpp
+                                   src/service/service_controller/service_controller.cpp)
+# Face Detect Test
+add_executable ( rapp_face_detect  tests/face_detect.cpp
+                                   src/service/asio_service_raw/asio_service_raw.cpp
+                                   src/service/service_controller/service_controller.cpp
+                                   src/cloud/faceDetector/faceDetector.cpp
+                                   src/objects/picture/picture.cpp)
+
+# Qr Code Detect Test
+add_executable ( rapp_qr_detect    tests/qr_detect.cpp
+                                   src/service/asio_service_raw/asio_service_raw.cpp
+                                   src/service/service_controller/service_controller.cpp
+                                   src/cloud/qrDetector/qrDetector.cpp
+                                   src/objects/picture/picture.cpp)
+
+
 
 # Find Libaries for which Cmake already has a meta-package
 find_package( Threads REQUIRED )
 find_package( Boost 1.49 COMPONENTS system thread REQUIRED )
 
-# Build Libraries (both static and shared) TODO Later
-#set (SOURCES ${SOURCES} src/asio_service_client/asio_service_client.cpp)
-#add_library (lrapp OBJECT ${SOURCES})
-#add_library (rapp.0.1 SHARED $<TARGET_OBJECTS:lrapp>)
-#target_link_libraries(rapp.0.1 ${Boost_SYSTEM_LIBRARY} )
-#add_library (rapp.0.1-static STATIC $<TARGET_OBJECTS:lrapp>)
-#target_link_libraries(rapp.0.1-static ${Boost_SYSTEM_LIBRARY} )
+# Build Libraries (both static and shared)
+set (SOURCES ${SOURCES} src/service/asio_service_http/asio_service_http.cpp
+                        src/service/asio_service_raw/asio_service_raw.cpp
+                        src/service/service_controller/service_controller.cpp
+                        src/cloud/faceDetector/faceDetector.cpp
+                        src/cloud/qrDetector/qrDetector.cpp
+                        src/objects/picture/picture.cpp)
 
-target_link_libraries( async_client ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY}  )
-target_link_libraries( face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ) # ${OpenCV_LIBS}
+# Set library sources
+add_library (lrapp OBJECT ${SOURCES})
+
+# Shared Library
+add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
+target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_SYSTEM_LIBRARY})
+
+# Static Library
+add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
+target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_SYSTEM_LIBRARY})
+
+# Link examples
+target_link_libraries( rapp_async_client ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY}  )
+target_link_libraries( rapp_face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+target_link_libraries( rapp_qr_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+# TODO: Add other Tests
+
 
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE on)
 
 #set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE Debug) #set only when coding/testing
+set(CMAKE_BUILD_TYPE Debug)
+
+
 
 # Linux should be the default OS/Platform for RAPP::API
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -88,8 +114,8 @@ endif()
 #set(MACOSX_RPATH ON)
 
 # Install stuff
-#install (TARGETS rapp.0.1-static  DESTINATION /usr/local/lib/)
-#install (TARGETS rapp.0.1 DESTINATION /usr/local/lib/)
-#install (DIRECTORY src/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION /usr/local/lib/)
+install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION /usr/local/lib/)
+install (DIRECTORY src/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
 
-#install (FILES includes/cgpp DESTINATION /usr/local/include/${PROJECT_NAME}) - NOTE: Use to install a global include header
+#install (FILES includes/cgpp DESTINATION /usr/local/include/${PROJECT_NAME}) - TODO: Use to install a global include header

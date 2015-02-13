@@ -3,9 +3,9 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "../asio_service_client/asio_service_client.hpp"
-#include "../service_controller/service_controller.hpp"
 #include "../service/service.hpp"
 
-#include "../globals/globals.hpp"
+#include "../../service/asio_service_client/asio_service_client.hpp"
+#include "../../serviceservice_controller/service_controller.hpp"
+#include "../../service/globals/globals.hpp"
 

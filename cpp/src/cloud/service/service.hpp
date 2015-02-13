@@ -3,14 +3,13 @@
 #include "Includes.ihh"
 
 namespace rapp {
-namespace services {
 namespace cloud {
 
 /**
  * @class service
  * @brief Abstract Base Class `service` is used internally for mechanism abstraction
- * @version 2
- * @date 18-January-2015
+ * @version 3
+ * @date 13-February-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
  */
@@ -31,7 +30,6 @@ class service
       // Other future service abstraction interfacing should be placed here
 };
 
-}
 }
 }
 #endif

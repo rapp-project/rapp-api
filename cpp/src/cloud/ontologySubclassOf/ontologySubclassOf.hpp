@@ -3,14 +3,13 @@
 #include "Includes.ihh"
 
 namespace rapp {
-namespace services {
 namespace cloud {
     
 /**
  * @class ontologySubclassOf
  * @brief Asynchronous Service which will request the Ontology Subclass of/for an Input
- * @version 0
- * @date 18-January-2015
+ * @version 1
+ * @date 113-February-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
  * TODO Finish, TEST and Cleanup?
@@ -60,7 +59,6 @@ class ontologySubclassOf : public service
 };
   
     
-}
 }
 }
 

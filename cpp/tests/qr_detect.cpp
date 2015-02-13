@@ -1,5 +1,5 @@
 #include "../src/service/service_controller/service_controller.hpp"
-#include "../src/cloud/faceDetector/faceDetector.hpp"
+#include "../src/cloud/qrDetector/qrDetector.hpp"
 #include "../src/objects/picture/picture.hpp"
 
 #include <iostream>
@@ -18,11 +18,11 @@ int main ( int argc, char* argv[] )
     
     std::cout << "Opening Picture" << std::endl;
     
-    if ( auto pic = std::make_shared<rapp::object::picture>( "picture.jpg" ) )
+    if ( auto pic = std::make_shared<rapp::object::picture>( "qrcode.png" ) )
     {
-        std::cout << "Requesting face detection..." << std::endl;
+        std::cout << "Requesting qr detection..." << std::endl;
         
-        if ( auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, 
+        if ( auto fdetect = std::make_shared<rapp::cloud::qrDetector>( pic, 
             [&]( std::vector<std::pair<float,float>> faces )
             {
                 std::cout << "found " << faces.size() << " faces!" << std::endl;
@@ -36,4 +36,4 @@ int main ( int argc, char* argv[] )
         std::cerr << "Error loading image" << std::endl;
 
     return 0;
-}
+} 

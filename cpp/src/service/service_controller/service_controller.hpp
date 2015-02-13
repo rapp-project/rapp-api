@@ -2,10 +2,8 @@
 #define RAPP_SERVICE_CONTROLLER
 #include "Includes.ihh"
 
-namespace rapp
-{
-namespace services
-{
+namespace rapp {
+namespace services {
 
 /**
  * @class service_controller
@@ -84,6 +82,8 @@ class service_controller
     /// Service Mutex
     static std::mutex service_mtx_;
 };
+
+
 }
 }
 #endif
