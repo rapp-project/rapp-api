@@ -23,9 +23,9 @@ int main ( int argc, char* argv[] )
         std::cout << "Requesting qr detection..." << std::endl;
         
         if ( auto fdetect = std::make_shared<rapp::cloud::qrDetector>( pic, 
-            [&]( std::vector<std::pair<float,float>> faces )
+            [&]( std::vector< rapp::object::qrCode > codes )
             {
-                std::cout << "found " << faces.size() << " faces!" << std::endl;
+                std::cout << "found " << codes.size() << " QR codes!" << std::endl;
             }) )
         {
             // Last, request from service controller to run this job

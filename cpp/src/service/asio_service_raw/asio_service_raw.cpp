@@ -28,9 +28,7 @@ void asio_service_raw::Schedule (
     socket_ = std::unique_ptr<boost::asio::ip::tcp::socket>( new boost::asio::ip::tcp::socket( io_service ) );
     std::ostream request_stream ( &request_ );
     
-    // Starting Delimiter is DAT
-    // request_stream << "<DAT>"; - DEPRECATED
-    
+    // Append into request stream all bytes (with XML tags)
     for ( const auto & byte : bytes_ )
         request_stream << byte;
         

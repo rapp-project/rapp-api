@@ -26,7 +26,7 @@ class qrDetector : public service
        */
       qrDetector (
                      std::shared_ptr<rapp::object::picture> image,
-                     std::function< void( std::vector<std::pair<float,float>> ) > callback
+                     std::function< void ( std::vector< rapp::object::qrCode> ) > callback
                  );
 
       /**
@@ -43,7 +43,7 @@ class qrDetector : public service
 
 
       /// The callback called upon completion of receiving the detected faces
-      std::function< void( std::vector<std::pair<float,float>> ) > callback__;
+      std::function< void ( std::vector< rapp::object::qrCode> ) > callback__;
       
       /// The ASIO Client Socket used internally
       std::shared_ptr<rapp::services::asio_service_raw> client__;

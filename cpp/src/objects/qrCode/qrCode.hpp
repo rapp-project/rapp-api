@@ -3,7 +3,7 @@
 #include "Includes.ihh"
 
 namespace rapp {
-namespace objects {
+namespace object {
 
 /**
  * @class qrCode
@@ -17,19 +17,48 @@ class qrCode
 {
   public:
     
-    qrCode ( ) = delete;
-    
     /**
      * @brief Consruct using code coordinates (a rectangle) and a label (URL, email, string, etc)
+     * @param centre_x is coordinate
+     * @param centre_y is coordinate
+     * @param label is message embedded in QR
      */
     qrCode ( 
-              float top_left_x,
-              float top_left_y,
-              float bot_right_x,
-              float bot_right_y,
+              float centre_x,
+              float centre_y,
               std::string label
-            );
+            )
+    : centre_x__ ( centre_x ),
+      centre_y__ ( centre_y )
+    { }
     
+    /// Allow Empty Consructor
+    qrCode ( ) = default;
+    
+    /// Copy Conatructor
+    qrCode ( const qrCode & ) = default;
+    
+    /// Assignment Constructor
+    //qrCode operator= ( const qrCode & ) = default;
+    
+    /** 
+     * @brief Equality operator
+     * @note only the message is compared (insensitive case), not the coordinates!
+     */
+    bool operator== ( const qrCode & rhs ) const
+    {
+        return boost::iequals ( this->message__, rhs.message__ );
+    }
+    
+    
+  private:
+      
+      float centre_x__ = -1;
+      
+      float centre_y__ = -1;
+      
+      std::string message__ ;
+      
 };
 }
 }

@@ -5,7 +5,7 @@ namespace cloud {
     
 faceDetector::faceDetector ( 
                               std::shared_ptr<rapp::object::picture> image,
-                              std::function< void( std::vector<std::pair<float,float>> ) > callback
+                              std::function< void (  std::vector< rapp::object::face > ) > callback
                            )
 :  callback__ ( callback )
 {
@@ -45,29 +45,57 @@ std::shared_ptr<rapp::services::asio_socket> faceDetector::Job ( ) const
 
 void faceDetector::handle ( boost::asio::streambuf & buffer )
 {   
-    // Convert the buffer into a string
-    std::cout << "faceDetector::handle" << std::endl;
-    
-    std::string reply ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
-    std::cout << reply << std::endl;
+    // Cast buffer to string, and strip the </EOF!> tag
+    std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
+    boost::replace_all( json, "</EOF!>", "" );
+    std::stringstream ss ( json );
 
     // Discovered & parsed
-    std::vector<std::pair<float,float>> faces;
+    std::vector< rapp::object::face > faces;
+    
+    // Populate boost tree , by reading in the json
+    boost::property_tree::ptree tree;
+    boost::property_tree::read_json( ss, tree );
     
     /* 
-        TODO: evaluate JSON response
+    { faces : [
+                {
+                    top_left_x : float,
+                    top_left_y : float,
+                    bottom_right_x : float,
+                    botom_right_y : float
+                },
+                ...
+                ]
+    } */
+    
+    // Iterate faces array
+    for ( auto child : tree.get_child( "faces" ) )
+    {
+        float top_left_x = -1.;
+        float top_left_y = -1.;
+        float bottom_right_x = -1.;
+        float bottom_right_y = -1.;
         
-        { faces : [
-                    {
-                        top_left_x : float,
-                        top_left_y : float,
-                        bottom_right_x : float,
-                        botom_right_y : float
-                    },
-                    ...
-                  ]
+        for ( auto iter = child.second.begin(); iter!= child.second.end(); ++iter )
+        {
+            std::string member( iter->first );
+            
+            if ( member == "top_left_x" )
+                top_left_x = iter->second.get_value<float>();
+                
+            else if ( member == "top_left_y" )
+                top_left_y = iter->second.get_value<float>();
+                
+            else if ( member == "bottom_right_x" )
+                bottom_right_x = iter->second.get_value<float>();
+                
+            else if ( member == "bottom_right_y" )
+                bottom_right_y = iter->second.get_value<float>();
         }
-     */
+        
+        faces.push_back( rapp::object::face( top_left_x, top_left_y, bottom_right_x, bottom_right_y ) );
+    }
     
     // call the user defined callback
     callback__( faces );

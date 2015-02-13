@@ -18,12 +18,12 @@ int main ( int argc, char* argv[] )
     
     std::cout << "Opening Picture" << std::endl;
     
-    if ( auto pic = std::make_shared<rapp::object::picture>( "picture.jpg" ) )
+    if ( auto pic = std::make_shared<rapp::object::picture>( "lenna.png" ) )
     {
         std::cout << "Requesting face detection..." << std::endl;
         
         if ( auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, 
-            [&]( std::vector<std::pair<float,float>> faces )
+            [&](  std::vector< rapp::object::face > faces )
             {
                 std::cout << "found " << faces.size() << " faces!" << std::endl;
             }) )
