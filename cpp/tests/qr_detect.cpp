@@ -1,6 +1,6 @@
-#include "../src/service/service_controller/service_controller.hpp"
-#include "../src/cloud/qrDetector/qrDetector.hpp"
-#include "../src/objects/picture/picture.hpp"
+#include "../includes/service/service_controller/service_controller.hpp"
+#include "../includes/cloud/qrDetector/qrDetector.hpp"
+#include "../includes/objects/picture/picture.hpp"
 
 #include <iostream>
 #include <fstream>
