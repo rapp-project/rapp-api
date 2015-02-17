@@ -29,7 +29,8 @@ class qrCode
               std::string label
             )
     : centre_x__ ( centre_x ),
-      centre_y__ ( centre_y )
+      centre_y__ ( centre_y ),
+      message__ ( label )
     { }
     
     /// Allow Empty Consructor
