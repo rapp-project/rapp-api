@@ -49,7 +49,14 @@ class qrCode
     {
         return boost::iequals ( this->message__, rhs.message__ );
     }
-    
+
+    /**
+     *@brief Get the qr Label
+     */
+    std::string label ( ) const
+    {
+	return message__;
+    }
     
   private:
       

@@ -97,10 +97,13 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # static libstdc++ linkage solves issues in Gentoo/OpenNao where packages of newer gcc don't exist.
   # Ideally you should setup using export LD_LIBRARY_PATH, but this is a quick and dirty way of packaging librapp
   # -static-libstdc++
+  # -stdlib=libc++ will link using an alternative to gcc std c++ library - WARNING not working on OpenNao
+  # -static-libgcc will link statically GLIBC
 
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC")
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++")
   message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+  #set(CMAKE_EXE_LINKER_FLAGS "-lc++ -lcxxrt") # Set linker flags - WARNING alternative c++ libraries not present on OpenNao
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native") # -s ?
   set(BUILD_SHARED_LIBS OFF)
   message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
