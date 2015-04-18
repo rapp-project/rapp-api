@@ -1,4 +1,4 @@
-PROJECT(RAPP)
+PROJECT(rapp)
 
 set (RAPP_VERSION_MAJOR 0)
 set (RAPP_VERSION_MINOR 1)
@@ -16,22 +16,29 @@ set(LIBRARY_PATH ${LIBRARY_PATH}
 set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 
 include_directories(SYSTEM ${INCLUDE_HEADERS})
+set (INCLUDES ${INCLUDES} includes)
+add_subdirectory(${INCLUDES})
 
-add_subdirectory(src)
-
+<<<<<<< HEAD
+=======
+# Async Client Test
+add_executable ( rapp_async_client tests/async_client.cpp
+                                   ${INCLUDES}/service/asio_service_http/asio_service_http.cpp
+                                   ${INCLUDES}/service/service_controller/service_controller.cpp)
+>>>>>>> fc4ede536751f29ab49baa76addaa9767c33fe03
 # Face Detect Test
 add_executable ( rapp_face_detect  tests/face_detect.cpp
-                                   src/service/asio_service_raw/asio_service_raw.cpp
-                                   src/service/service_controller/service_controller.cpp
-                                   src/cloud/faceDetector/faceDetector.cpp
-                                   src/objects/picture/picture.cpp)
+                                   ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
+                                   ${INCLUDES}/service/service_controller/service_controller.cpp
+                                   ${INCLUDES}/cloud/faceDetector/faceDetector.cpp
+                                   ${INCLUDES}/objects/picture/picture.cpp)
 
 # Qr Code Detect Test
 add_executable ( rapp_qr_detect    tests/qr_detect.cpp
-                                   src/service/asio_service_raw/asio_service_raw.cpp
-                                   src/service/service_controller/service_controller.cpp
-                                   src/cloud/qrDetector/qrDetector.cpp
-                                   src/objects/picture/picture.cpp)
+                                   ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
+                                   ${INCLUDES}/service/service_controller/service_controller.cpp
+                                   ${INCLUDES}/cloud/qrDetector/qrDetector.cpp
+                                   ${INCLUDES}/objects/picture/picture.cpp)
 
 # Fetch Data Test
 add_executable ( rapp_fetch_data   tests/fetch_data.cpp
@@ -47,12 +54,12 @@ find_package( Threads REQUIRED )
 find_package( Boost 1.49 COMPONENTS system thread REQUIRED )
 
 # Build Libraries (both static and shared)
-set (SOURCES ${SOURCES} src/service/asio_service_http/asio_service_http.cpp
-                        src/service/asio_service_raw/asio_service_raw.cpp
-                        src/service/service_controller/service_controller.cpp
-                        src/cloud/faceDetector/faceDetector.cpp
-                        src/cloud/qrDetector/qrDetector.cpp
-                        src/objects/picture/picture.cpp)
+set (SOURCES ${SOURCES} ${INCLUDES}/service/asio_service_http/asio_service_http.cpp
+                        ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
+                        ${INCLUDES}/service/service_controller/service_controller.cpp
+                        ${INCLUDES}/cloud/faceDetector/faceDetector.cpp
+                        ${INCLUDES}/cloud/qrDetector/qrDetector.cpp
+                        ${INCLUDES}/objects/picture/picture.cpp)
 
 # Set library sources
 add_library (lrapp OBJECT ${SOURCES})
@@ -91,8 +98,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
   
   if (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
-    message(STATUS "Info: g++ version >= 4.7 using C++11")
-  
+    message(STATUS "Info: g++ version >= 4.7 using C++11")  
   elseif ()
     message (FATAL_ERROR "g++ version >= 4.7 is required")
   endif()
@@ -101,9 +107,16 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   #add_definitions(-DBOOST_THREAD_USE_LIB)
   
   # NOTE: gnu++11 enables GNU's violating options, whereas c++11 is strictly only the new version
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC")
+  # static libstdc++ linkage solves issues in Gentoo/OpenNao where packages of newer gcc don't exist.
+  # Ideally you should setup using export LD_LIBRARY_PATH, but this is a quick and dirty way of packaging librapp
+  # -static-libstdc++
+  # -stdlib=libc++ will link using an alternative to gcc std c++ library - WARNING not working on OpenNao
+  # -static-libgcc will link statically GLIBC
+
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++")
   message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+  #set(CMAKE_EXE_LINKER_FLAGS "-lc++ -lcxxrt") # Set linker flags - WARNING alternative c++ libraries not present on OpenNao
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native") # -s ?
   set(BUILD_SHARED_LIBS OFF)
   message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
@@ -122,6 +135,6 @@ endif()
 # Install stuff
 install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION /usr/local/lib/)
 install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION /usr/local/lib/)
-install (DIRECTORY src/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+install (DIRECTORY ${INCLUDES}/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
 
-#install (FILES includes/cgpp DESTINATION /usr/local/include/${PROJECT_NAME}) - TODO: Use to install a global include header
+install (FILES ${PROJECT_NAME} DESTINATION /usr/local/include/${PROJECT_NAME}) #copy global include header

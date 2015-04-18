@@ -29,7 +29,8 @@ class qrCode
               std::string label
             )
     : centre_x__ ( centre_x ),
-      centre_y__ ( centre_y )
+      centre_y__ ( centre_y ),
+      message__ ( label )
     { }
     
     /// Allow Empty Consructor
@@ -49,7 +50,14 @@ class qrCode
     {
         return boost::iequals ( this->message__, rhs.message__ );
     }
-    
+
+    /**
+     *@brief Get the qr Label
+     */
+    std::string label ( ) const
+    {
+	return message__;
+    }
     
   private:
       

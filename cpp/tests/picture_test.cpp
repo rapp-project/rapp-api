@@ -1,4 +1,4 @@
-#include "../src/objects/picture/picture.hpp"
+#include "../includes/objects/picture/picture.hpp"
 #include <memory>
 
 int main ( int argc, char * argv[] )
