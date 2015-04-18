@@ -1,11 +1,12 @@
 #include <functional>
 #include <memory>
+#include <vector>
+#include <string>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
-#include "../service/service.hpp"
-
-#include "../../service/asio_service_client/asio_service_client.hpp"
-#include "../../serviceservice_controller/service_controller.hpp"
-#include "../../service/globals/globals.hpp"
+#include "../../service/asio_service_http/asio_service_http.hpp"
+#include "../../service/service_controller/service_controller.hpp"
 

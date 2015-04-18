@@ -12,8 +12,7 @@ namespace cloud {
  * @date 6-February-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
- * @see /cloud/globals/globals.hpp
- *      for parameters used, such as Server IP, Server Port, HOP URI
+ * TODO: Remove inheritance from `service` add inheritance from `asio_socket_http`
  */
 class faceDetector : public service
 {

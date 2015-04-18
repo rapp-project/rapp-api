@@ -5,26 +5,26 @@
 namespace rapp {
 namespace services {
 
+#define hostname "localhost"
+    
 /**
  * @class asio_service_http
  * @brief base class for asynchronous http websockets used for connecting to cloud services
- * @version 4
- * @date 5-January-2015
+ * @version 5
+ * @date 18-April-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
  * @see http://www.jmarshall.com/easy/http/#postmethod for HTTP Protocol details
  * @warning this class does not support SSL/TLS sockets
- * 
- * TODO: Enable Time-out timers for a client connection ???
- * NOTE: This is subjective, some processing may take quite some time! 
- *       It needs experimentation and a unique timeout per service
  */
 class asio_service_http : public asio_socket
 {
   public:
-
+  
     /**
-     * Construct the async client. 
+     * @brief Construct the async client. 
+     * @param header must be a form for HOP
+     * @param post must contain the names JSON data sent to HOP
      */
     asio_service_http (
                           const std::string & header,
@@ -55,6 +55,9 @@ class asio_service_http : public asio_socket
                   );
     
   protected:  
+
+    /// Hidden empty constructor is meant to be used only by inheriting classes
+    asio_service_http ( ) = default;
       
     /**
      * Handle the Reply
@@ -140,6 +143,7 @@ class asio_service_http : public asio_socket
     
     /// Operation complete?
     bool complete_ = false;
+    
 };
 
 

@@ -1,0 +1,7 @@
+(1) Replace the methods that send XML, with an HTTP POST, that sends data to HOP.
+
+(2) Make a TCP-based Streaming service, for speech to Text.
+    See if TCP can work OK, else experiment with UDP-based sockets.
+    Do NOT use HOP for any of this!
+    
+(3) Complete the remaining API/Service calls!

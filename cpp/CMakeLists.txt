@@ -19,10 +19,6 @@ include_directories(SYSTEM ${INCLUDE_HEADERS})
 
 add_subdirectory(src)
 
-# Async Client Test
-add_executable ( rapp_async_client tests/async_client.cpp
-                                   src/service/asio_service_http/asio_service_http.cpp
-                                   src/service/service_controller/service_controller.cpp)
 # Face Detect Test
 add_executable ( rapp_face_detect  tests/face_detect.cpp
                                    src/service/asio_service_raw/asio_service_raw.cpp
@@ -37,7 +33,14 @@ add_executable ( rapp_qr_detect    tests/qr_detect.cpp
                                    src/cloud/qrDetector/qrDetector.cpp
                                    src/objects/picture/picture.cpp)
 
-
+# Fetch Data Test
+add_executable ( rapp_fetch_data   tests/fetch_data.cpp
+                                   src/service/asio_service_http/asio_service_http.cpp
+                                   src/service/service_controller/service_controller.cpp)
+# Ontology Subclass Of Test
+add_executable ( rapp_ontology_test tests/ontology_test.cpp
+                                   src/service/asio_service_http/asio_service_http.cpp
+                                   src/service/service_controller/service_controller.cpp)
 
 # Find Libaries for which Cmake already has a meta-package
 find_package( Threads REQUIRED )
@@ -62,11 +65,14 @@ target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_S
 add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
 target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_SYSTEM_LIBRARY})
 
-# Link examples
-target_link_libraries( rapp_async_client ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY}  )
+
+
+# Link Tests/Examples
 target_link_libraries( rapp_face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
 target_link_libraries( rapp_qr_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-# TODO: Add other Tests
+target_link_libraries( rapp_fetch_data ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+target_link_libraries( rapp_ontology_test ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+
 
 
 set(CMAKE_COLOR_MAKEFILE on)

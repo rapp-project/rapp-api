@@ -3,20 +3,20 @@
 namespace rapp {
 namespace services {
 
-
+    
 asio_service_http::asio_service_http ( 
-                                            const std::string & header,
-                                            const std::string & post
-                                         )
+                                        const std::string & header,
+                                        const std::string & post
+                                     )
 : header_ ( header ), 
   post_ ( post )
 { }
     
 asio_service_http::asio_service_http (
-                                            const std::string & header,
-                                            const std::string & post,
-                                            std::function<void( boost::asio::streambuf & )> callback
-                                         )
+                                        const std::string & header,
+                                        const std::string & post,
+                                        std::function<void( boost::asio::streambuf & )> callback
+                                     )
 : header_ ( header ), 
   post_ ( post ), 
   callback_ ( callback )
