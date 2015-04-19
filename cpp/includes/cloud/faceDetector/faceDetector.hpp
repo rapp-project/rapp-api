@@ -51,7 +51,7 @@ class faceDetector : public rapp::services::asio_service_http
         post_ += "\r\n";
         
         // Close the boundary for the raw data
-        //post_ += boundary + "--\r\n";
+        post_ += boundary + "--\r\n";
         
         // Count Data size with the boundaries and endlines
         auto size = post_.size() * sizeof( std::string::value_type );
