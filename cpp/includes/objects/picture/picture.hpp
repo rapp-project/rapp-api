@@ -12,6 +12,7 @@ namespace object {
  * @date 6-February-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
+ * TODO: Make header only
  */
 
 class picture

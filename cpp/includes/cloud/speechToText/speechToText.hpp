@@ -14,6 +14,10 @@ namespace cloud {
  * 
  * @see /cloud/globals/globals.hpp
  *      for parameters used, such as Server IP, Server Port, HOP URI
+ * 
+ * This is a very special case: We need to different classes:
+ *      One that sends a FILE
+ *      One that sends a STREAM
  */
 
 class speechToText : public service

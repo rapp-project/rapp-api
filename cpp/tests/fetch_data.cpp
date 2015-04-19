@@ -1,5 +1,5 @@
-#include "../src/service/service_controller/service_controller.hpp"
-#include "../src/cloud/fetchPersonalData/fetchPersonalData.hpp"
+#include "../includes/service/service_controller/service_controller.hpp"
+#include "../includes/cloud/fetchPersonalData/fetchPersonalData.hpp"
 
 #include <iostream>
 #include <string>

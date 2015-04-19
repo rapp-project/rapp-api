@@ -5,3 +5,7 @@
     Do NOT use HOP for any of this!
     
 (3) Complete the remaining API/Service calls!
+
+    Picture.cpp remove make header only
+    
+    faceDetector (QrDetector) try with a single form, not multipart/form?

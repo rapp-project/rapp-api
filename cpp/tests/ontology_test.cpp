@@ -1,5 +1,5 @@
-#include "../src/service/service_controller/service_controller.hpp"
-#include "../src/cloud/ontologySubclassOf/ontologySubclassOf.hpp"
+#include "../includes/service/service_controller/service_controller.hpp"
+#include "../includes/cloud/ontologySubclassOf/ontologySubclassOf.hpp"
 
 #include <iostream>
 #include <string>

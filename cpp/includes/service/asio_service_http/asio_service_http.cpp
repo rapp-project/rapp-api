@@ -1,3 +1,4 @@
+/*
 #include "asio_service_http.hpp"
 
 namespace rapp {
@@ -31,7 +32,6 @@ void asio_service_http::Schedule (
     socket_ = std::unique_ptr<boost::asio::ip::tcp::socket>( new boost::asio::ip::tcp::socket( io_service ) );
     std::ostream request_stream ( &request_ );
     request_stream << header_ << post_ << "\r\n";
-    //std::string raw ( ( std::istreambuf_iterator<char>( &request_ ) ), std::istreambuf_iterator<char>() );
 
     resolver.async_resolve( query,
                             boost::bind( & asio_service_http::handle_resolve,
@@ -41,20 +41,9 @@ void asio_service_http::Schedule (
 }
 
 void asio_service_http::handle_reply ( )
-{
-    /*
-    std::istream is ( &response_ ); 
-    std::string line;
-    std::string reply;
-    
-    while ( std::getline( is, line ) )
-        reply.append( line );
-
-    std::cout << reply << std::endl;
-    */
-    
+{   
     std::string raw ( ( std::istreambuf_iterator<char>( &response_ ) ), std::istreambuf_iterator<char>() );
-    std::cout << raw << std::endl;
+    //std::cout << raw << std::endl;
 }
 
 void asio_service_http::error_handler ( const boost::system::error_code & error )
@@ -194,14 +183,8 @@ void asio_service_http::handle_read_headers ( const boost::system::error_code & 
                                                this,
                                                boost::asio::placeholders::error ) );
         
-        // Set the operation as complete
-        complete_ = true;
-        
-        // If a Callback is set - call it now
         if ( callback_ )
             callback_( response_ );
-        
-        // Else call this class's reply handler
         else
             handle_reply();
     }
@@ -215,7 +198,7 @@ void asio_service_http::handle_read_content ( const boost::system::error_code & 
     
     if ( !err )
     {
-        // Continue reading remaining data until EOF - It reccursively calls its self - My guess is it uses the default async_read buffer length
+        // Continue reading remaining data until EOF - It reccursively calls its self
         boost::asio::async_read ( *socket_.get(),
                                   response_,
                                   boost::asio::transfer_at_least( 1 ),
@@ -230,3 +213,4 @@ void asio_service_http::handle_read_content ( const boost::system::error_code & 
 
 }
 }
+*/

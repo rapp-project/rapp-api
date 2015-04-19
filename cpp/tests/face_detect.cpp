@@ -16,20 +16,16 @@ int main ( int argc, char* argv[] )
      */
     rapp::services::service_controller ctrl;
     
-    std::cout << "Opening Picture" << std::endl;
+    auto pic = std::make_shared<rapp::object::picture>( "lenna.png" );
     
-    if ( auto pic = std::make_shared<rapp::object::picture>( "lenna.png" ) )
+    if ( pic )
     {
-        std::cout << "Requesting face detection..." << std::endl;
+        auto callback = [&]( std::vector<rapp::object::face> faces ){ std::cout << "found " << faces.size() << " faces!" << std::endl;};
+        auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, "png", callback );
         
-        if ( auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, 
-            [&](  std::vector< rapp::object::face > faces )
-            {
-                std::cout << "found " << faces.size() << " faces!" << std::endl;
-            }) )
+        if ( fdetect )
         {
-            // Last, request from service controller to run this job
-            ctrl.runJob ( fdetect->Job() );
+            ctrl.runJob ( fdetect );
         }
     }
     else

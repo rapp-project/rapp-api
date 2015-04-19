@@ -19,21 +19,13 @@ include_directories(SYSTEM ${INCLUDE_HEADERS})
 set (INCLUDES ${INCLUDES} includes)
 add_subdirectory(${INCLUDES})
 
-<<<<<<< HEAD
-=======
-# Async Client Test
-add_executable ( rapp_async_client tests/async_client.cpp
-                                   ${INCLUDES}/service/asio_service_http/asio_service_http.cpp
-                                   ${INCLUDES}/service/service_controller/service_controller.cpp)
->>>>>>> fc4ede536751f29ab49baa76addaa9767c33fe03
 # Face Detect Test
 add_executable ( rapp_face_detect  tests/face_detect.cpp
                                    ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
                                    ${INCLUDES}/service/service_controller/service_controller.cpp
-                                   ${INCLUDES}/cloud/faceDetector/faceDetector.cpp
                                    ${INCLUDES}/objects/picture/picture.cpp)
 
-# Qr Code Detect Test
+# QrCode Detect Test
 add_executable ( rapp_qr_detect    tests/qr_detect.cpp
                                    ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
                                    ${INCLUDES}/service/service_controller/service_controller.cpp
@@ -42,19 +34,17 @@ add_executable ( rapp_qr_detect    tests/qr_detect.cpp
 
 # Fetch Data Test
 add_executable ( rapp_fetch_data   tests/fetch_data.cpp
-                                   src/service/asio_service_http/asio_service_http.cpp
-                                   src/service/service_controller/service_controller.cpp)
+                                   ${INCLUDES}/service/service_controller/service_controller.cpp)
 # Ontology Subclass Of Test
 add_executable ( rapp_ontology_test tests/ontology_test.cpp
-                                   src/service/asio_service_http/asio_service_http.cpp
-                                   src/service/service_controller/service_controller.cpp)
+                                   ${INCLUDES}/service/service_controller/service_controller.cpp)
 
 # Find Libaries for which Cmake already has a meta-package
 find_package( Threads REQUIRED )
-find_package( Boost 1.49 COMPONENTS system thread REQUIRED )
+find_package( Boost 1.49 COMPONENTS system thread random REQUIRED )
 
 # Build Libraries (both static and shared)
-set (SOURCES ${SOURCES} ${INCLUDES}/service/asio_service_http/asio_service_http.cpp
+set (SOURCES ${SOURCES} 
                         ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
                         ${INCLUDES}/service/service_controller/service_controller.cpp
                         ${INCLUDES}/cloud/faceDetector/faceDetector.cpp
@@ -66,16 +56,16 @@ add_library (lrapp OBJECT ${SOURCES})
 
 # Shared Library
 add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
-target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_SYSTEM_LIBRARY})
+target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 
 # Static Library
 add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
-target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_SYSTEM_LIBRARY})
+target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 
 
 
 # Link Tests/Examples
-target_link_libraries( rapp_face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+target_link_libraries( rapp_face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 target_link_libraries( rapp_qr_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
 target_link_libraries( rapp_fetch_data ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
 target_link_libraries( rapp_ontology_test ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )

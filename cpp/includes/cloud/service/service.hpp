@@ -11,7 +11,7 @@ namespace cloud {
  * @version 3
  * @date 13-February-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- * 
+ * DEPRECATED CLASS REMOVE
  */
 
 class service

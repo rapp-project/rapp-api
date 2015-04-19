@@ -27,8 +27,7 @@ class fetchPersonalData : public rapp::services::asio_service_http
                         const std::string user,
                         std::function < void( const std::string ) > callback
                       )
-    : rapp::services::asio_service_http (),
-      delegate__ ( callback )
+    : rapp::services::asio_service_http (), delegate__ ( callback )
     {
         // Form the POST string - simple argument
         post_ = "user="+user+"\r\n";
