@@ -7,7 +7,7 @@ namespace services
 
 std::mutex service_controller::service_mtx_;
 
-    
+/*  
 service_controller::service_controller ( )
 : server_ ( "localhost" ),      /// WARNING - This should be correctly pointing to http(s)://api.rapp.cloud
   io_service_ ( ),
@@ -48,7 +48,7 @@ void service_controller::runJobs ( std::vector<std::shared_ptr<asio_socket>> job
     std::lock_guard<std::mutex> lock ( service_mtx_ );
     io_service_.reset();
 }
-
+*/
 
 }
 }

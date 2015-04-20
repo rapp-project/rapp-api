@@ -8,8 +8,8 @@ namespace services {
 /**
  * @class service_controller
  * @brief Main class that controllers RAPP Services
- * @version 1
- * @date 21-December-2014
+ * @version 2
+ * @date 20-April-2014
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
  * This class controls services (be it on cloud or robot). A service is a callable function
@@ -28,28 +28,59 @@ class service_controller
   public:
 
     
-    service_controller ( );
+    service_controller ( )
+    : server_ ( "localhost" ),      /// WARNING - This should be correctly pointing to http(s)://api.rapp.cloud
+      io_service_ ( ),
+      query_ ( server_, "80" ),   /// WARNING - HOP port 8080, HTTP 80
+      resolver_ ( io_service_ )
+    { }
+    
     
     /// The Service Queue
-    boost::asio::io_service & queue ( );
+    boost::asio::io_service & queue ( )
+    {
+        return io_service_;
+    }
+    
     
     /**
-     * Run in single thread, one service job
-     * 
+     * @brief Run one service job
      * @param client is the actual object pointer that will be executed in a single operation
      * @note upon completion, the object's handler will be invoked
      * @note this method will block, until job is finished
      */
-    void runJob ( const std::shared_ptr<asio_socket> job );
+    void runJob ( const std::shared_ptr<asio_socket> job )
+    {
+        // WARNING : if synchronicity gives us problems here, then allocate a new io_service, and use it within scope
+        if ( !job )
+            throw std::runtime_error ( "service_controller::runJob => param job is null" );
+    
+        job->Schedule( query_, resolver_, io_service_ );
+        io_service_.run();
+        std::lock_guard<std::mutex> lock ( service_mtx_ );
+        io_service_.reset();
+    }
         
+
     /**
-     * Run asynchronously, a group of client jobs
-     * 
+     * @brief Run a group of jobs in a batch
      * @param jobs is vector of constant pointers to client services
      * @note upon completion, the each object's handler will be invoked
      * @warning upon completion, the queue schedule will be reset.
      */
-    void runJobs ( std::vector<std::shared_ptr<asio_socket>> jobs );
+    void runJobs ( std::vector<std::shared_ptr<asio_socket>> jobs )
+    {
+        // WARNING : if synchronicity gives us problems here, then allocate a new io_service, and use it within scope
+        for ( const auto & job : jobs )
+        {
+            if ( !job )
+                throw std::runtime_error ( "service_controller::runJobs => job in vector is null" );
+            job->Schedule( query_, resolver_, io_service_ );
+        }
+        io_service_.run();
+        std::lock_guard<std::mutex> lock ( service_mtx_ );
+        io_service_.reset();
+    }
         
 
   private:

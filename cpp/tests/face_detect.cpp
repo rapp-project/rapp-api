@@ -16,12 +16,12 @@ int main ( int argc, char* argv[] )
      */
     rapp::services::service_controller ctrl;
     
-    auto pic = std::make_shared<rapp::object::picture>( "lenna.png" );
+    auto pic = std::make_shared<rapp::object::picture>( "snoopy.gif" );
     
     if ( pic )
     {
         auto callback = [&]( std::vector<rapp::object::face> faces ){ std::cout << "found " << faces.size() << " faces!" << std::endl;};
-        auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, "png", callback );
+        auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, "gif", callback );
         
         if ( fdetect )
         {

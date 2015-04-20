@@ -38,32 +38,36 @@ class faceDetector : public rapp::services::asio_service_http
         // Create a new random boundary
         std::string boundary = randomBoundary();
         
-        // Create the Multi-form POST field
+        // Create the name for the image (just a textfield request)
         post_ = boundary + "\r\n";
-        post_ += "Content-Disposition: file-data; name=\"img\"; filename=\"face_image\"\r\n";
-        post_ += "Content-Type: image/" + image_format + "\r\n";
-        //post_ += "Content-Type: application/octet-stream\r\n";
-        //post_ += "Content-Transfer-Encoding: binary\r\n";
+        post_ += "Content-Disposition: form-data; name=\"face_detect\"\r\n\r\n";
+        post_ += "face_file\r\n";
+        
+        // Create the Multi-form POST field
+        post_ += boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"img\"; filename=\"image." + image_format + "\"\r\n";
+        post_ += "Content-Type: image/" + image_format + "\r\n\r\n";
+        //post_ += "Content-Type: application/octet-stream\r\n\r\n";
         
         // Append binary data
         auto imagebytes = image->bytearray();
         post_.insert( post_.end(), imagebytes.begin(), imagebytes.end() );
+        
         post_ += "\r\n";
-        
         // Close the boundary for the raw data
-        post_ += boundary + "--\r\n";
-        
-        // Count Data size with the boundaries and endlines
+        post_ += boundary + "--";
+        // Count Data size
         auto size = post_.size() * sizeof( std::string::value_type );
         
         // Form the Header
-        header_ =  "POST /hop/face_detector/ HTTP/1.1\r\n";
-        header_ += "Content-Type: multipart/form-data; ";
-        header_ += "boundary=" + boundary + "\r\n";
-        //header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
+        header_ =  "POST /index.php HTTP/1.1\r\n";
         header_ += "Host: " + std::string( hostname ) + "\r\n";
         header_ += "Connection: keep-alive\r\n";
-        header_ += "Transfer-Encoding: chunked\r\n\r\n";
+        header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
+        header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+        
+        std::cout << header_ << std::endl;
+        std::cout << post_ << std::endl;
     }
       
       
@@ -74,6 +78,9 @@ class faceDetector : public rapp::services::asio_service_http
     void handle ( boost::asio::streambuf & buffer )
     {   
         std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
+        
+        std::cout << json << std::endl;
+        
         std::stringstream ss ( json );
         std::vector< rapp::object::face > faces;
         

@@ -98,7 +98,7 @@ class asio_service_http : public asio_socket
      */
     virtual void error_handler ( const boost::system::error_code & error )
     {
-        std::cerr << error.message() << std::endl;
+        std::cerr << "http error: " << error.message() << std::endl;
     }
 
     
@@ -108,7 +108,7 @@ class asio_service_http : public asio_socket
      */
     virtual void invalid_request ( const std::string message )
     {
-        std::cerr << message << std::endl;
+        std::cerr << "http invalid request: " <<  message << std::endl;
     }
     
     
@@ -216,7 +216,7 @@ class asio_service_http : public asio_socket
             
             if ( !response_stream || http_version.substr(0, 5) != "HTTP/" )
             {
-                invalid_request( "Invalid response" );
+                invalid_request( "http Invalid response" );
                 return;
             }
             if ( status_code != 200 )
