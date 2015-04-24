@@ -39,30 +39,29 @@ class faceDetector : public rapp::services::asio_service_http
         std::string boundary = randomBoundary();
         
         // Create the name for the image (just a textfield request)
-        post_ = boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"face_detect\"\r\n\r\n";
-        post_ += "face_file\r\n";
+        post_ = "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"fileName\"\r\n\r\n";
+        post_ += "image." + image_format + "\r\n";
         
         // Create the Multi-form POST field
-        post_ += boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"img\"; filename=\"image." + image_format + "\"\r\n";
-        post_ += "Content-Type: image/" + image_format + "\r\n\r\n";
-        //post_ += "Content-Type: application/octet-stream\r\n\r\n";
+        post_ += "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"fileContents\"; filename=\"image." + image_format + "\"\r\n";
+        post_ += "Content-Type: image/" + image_format + "\r\n";
+        post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
         
         // Append binary data
         auto imagebytes = image->bytearray();
         post_.insert( post_.end(), imagebytes.begin(), imagebytes.end() );
-        
         post_ += "\r\n";
-        // Close the boundary for the raw data
-        post_ += boundary + "--";
+        post_ += "--" + boundary + "--";
+        
         // Count Data size
         auto size = post_.size() * sizeof( std::string::value_type );
         
-        // Form the Header
-        header_ =  "POST /index.php HTTP/1.1\r\n";
+        // Form the Header // WARNING DANGER Take care of the correct URI !!!
+        header_ =  "POST /hop/face_detect HTTP/1.1\r\n";
         header_ += "Host: " + std::string( hostname ) + "\r\n";
-        header_ += "Connection: keep-alive\r\n";
+        header_ += "Connection: close\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
         
@@ -140,7 +139,8 @@ class faceDetector : public rapp::services::asio_service_http
             uid.push_back( chars[index_dist(rng)] );
         
         // Multipart/form length = 16 hyphens + 16 random chars, RFC 2016 states max length is 70.
-        return std::string( 16, '-') + uid;
+        //return std::string( 16, '-') + uid; BUG: HOP does not like hyphens prior to the boundary
+        return uid;
     }
     
     

@@ -2,7 +2,7 @@
 
 // Import the RAPP JS API & Init the Object
 var rapp = require('./RAPP.js');
-var services = new rapp.RAPPServices( );
+var services = new rapp.RAPPCloud( );
 
 /** 
  * This is the method that will handle the reply by services.Service
