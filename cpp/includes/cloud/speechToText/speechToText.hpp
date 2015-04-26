@@ -1,10 +1,8 @@
 #ifndef RAPP_SERVICE_CLOUD_SPEECH_TO_TEXT
 #define RAPP_SERVICE_CLOUD_SPEECH_TO_TEXT
 #include "Includes.ihh"
-
 namespace rapp {
 namespace cloud {
-
 /**
  * @class speechToText
  * @brief Asynchronous Service which will request the cloud to process speech-to-text
@@ -18,6 +16,8 @@ namespace cloud {
  * This is a very special case: We need to different classes:
  *      One that sends a FILE
  *      One that sends a STREAM
+ * 
+ * Either create a base polymorphic class, or two seperate implementations ?
  */
 
 class speechToText : public service

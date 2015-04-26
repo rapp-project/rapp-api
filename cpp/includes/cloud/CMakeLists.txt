@@ -6,5 +6,3 @@ add_subdirectory(ontologySubclassOf)
 add_subdirectory(qrDetector)
 add_subdirectory(speechToText)
 
-add_subdirectory(service)
-

@@ -5,8 +5,8 @@
 #include <functional>
 #include <thread>
 
-
 #include <boost/asio.hpp>
-#include <boost/bind.hpp>
+#include <boost/random/random_device.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
 
 #include "../asio_socket/asio_socket.hpp"

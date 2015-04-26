@@ -2,11 +2,6 @@
 #include "../includes/cloud/faceDetector/faceDetector.hpp"
 #include "../includes/objects/picture/picture.hpp"
 
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-
-
 int main ( int argc, char* argv[] )
 {
     /**
@@ -16,17 +11,19 @@ int main ( int argc, char* argv[] )
      */
     rapp::services::service_controller ctrl;
     
-    auto pic = std::make_shared<rapp::object::picture>( "snoopy.gif" );
+    auto pic = std::make_shared<rapp::object::picture>( "aircraft.jpg" );
     
     if ( pic )
     {
-        auto callback = [&]( std::vector<rapp::object::face> faces ){ std::cout << "found " << faces.size() << " faces!" << std::endl;};
-        auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, "gif", callback );
+        auto callback = [&]( std::vector<rapp::object::face> faces )
+                        { 
+                            std::cout << "found " << faces.size() << " faces!" << std::endl;}
+                        ;
+                        
+        auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, "jpg", callback );
         
         if ( fdetect )
-        {
             ctrl.runJob ( fdetect );
-        }
     }
     else
         std::cerr << "Error loading image" << std::endl;

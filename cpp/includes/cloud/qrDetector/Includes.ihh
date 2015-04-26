@@ -9,11 +9,7 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
-#include "../../service/asio_service_raw/asio_service_raw.hpp"
-#include "../../service/service_controller/service_controller.hpp"
+#include "../../service/asio_service_http/asio_service_http.hpp"
 
 #include "../../objects/qrCode/qrCode.hpp"
 #include "../../objects/picture/picture.hpp"
-
-#include "../service/service.hpp"
-

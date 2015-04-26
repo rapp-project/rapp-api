@@ -10,46 +10,17 @@ namespace services {
 /**
  * @class asio_service_http
  * @brief base class for asynchronous http websockets used for connecting to cloud services
- * @version 5
- * @date 18-April-2015
+ * @version 6
+ * @date 26-April-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
  * @see http://www.jmarshall.com/easy/http/#postmethod for HTTP Protocol details
  * @warning this class does not support SSL/TLS sockets
- * 
- * TODO: TEST This class has NOT been TESTED with LARGE Replies!!!
- *       TEST handle_read_content and handle_read_headers THERE MIGHT BE A BUG!
  */
 class asio_service_http : public asio_socket
 {
   public:
-  
       
-    /**
-     * @brief Construct the async client. 
-     * @param header must be a form for HOP
-     * @param post must contain the names JSON data sent to HOP
-     */
-    asio_service_http (
-                        const std::string & header,
-                        const std::string & post
-                      )
-    : header_ ( header ), post_ ( post ) {}
-    
-    
-    /**
-     * @param header is the actual HTTP Header crafted accordingly
-     * @param post is the actual $_POST field following the HTTP Header
-     * @param callback is a lamda or function pointer with the specific signature, that is invoked upon reply acquisition
-     */
-    asio_service_http (
-                        const std::string & header,
-                        const std::string & post,
-                        std::function<void( boost::asio::streambuf & )> callback
-                      )
-    : header_ ( header ), post_ ( post ), callback_ ( callback ) {}
-
-    
     /** 
      * Schedule this client as a job for execution using
      * @param query defines the actual URL/URI
@@ -77,40 +48,20 @@ class asio_service_http : public asio_socket
     
   protected:  
 
-      
     /// Hidden empty constructor is meant to be used only by inheriting classes
-    asio_service_http ( ) = default;
-      
+    asio_service_http ( ) = default;      
     
-    /**
-     * @brief Handle the Reply Buffer
-     * @note you have to override this method if inheriting from this class
-     */
-    virtual void handle_reply ( )
-    {   
-        std::string raw ( ( std::istreambuf_iterator<char>( &response_ ) ), std::istreambuf_iterator<char>() );
-    }
-    
-    
-    /**
-     * @brief Handle an Error
-     * @param error is the raised error from the client
-     */
-    virtual void error_handler ( const boost::system::error_code & error )
+    /// Handle an Error @param error is the raised error from the client
+    void error_handler ( const boost::system::error_code & error )
     {
-        std::cerr << "http error: " << error.message() << std::endl;
+        std::cerr << "asio_service_http error: " << error.message() << std::endl;
     }
 
-    
-    /**
-     * @brief Hndle Invalid Query - e.g.: response which states our query was invalid
-     * @param message is the message received from the service
-     */
-    virtual void invalid_request ( const std::string message )
+    /// Handle Invalid Query - e.g.: response which states our query was invalid @param message is the message received from the service
+    void invalid_request ( const std::string message )
     {
-        std::cerr << "http invalid request: " <<  message << std::endl;
+        std::cerr << "asio_service_http invalid request: " <<  message << std::endl;
     }
-    
     
     /** 
      * @brief Callback for Handling Address Resolution
@@ -137,9 +88,8 @@ class asio_service_http : public asio_socket
             error_handler( err );
     }
 
-    
     /**
-     * @brief Callback for Handling Connection Events
+     * Callback for Handling Connection Events
      * @param err is a possible error
      * @param endpoint_iterator is boosts' hostname address handler
      */
@@ -171,11 +121,7 @@ class asio_service_http : public asio_socket
         else error_handler( err );
     }
 
-    
-    /**
-     * @brief Callback for handling request and waiting for response
-     * @param err is a possible error
-     */
+    /// Callback for handling request and waiting for response @param err is a possible error
     void handle_write_request ( const boost::system::error_code & err )
     {
         if ( !socket_ )
@@ -194,11 +140,7 @@ class asio_service_http : public asio_socket
             error_handler( err );
     }
     
-    
-    /**
-     * @brief Callback for handling HTTP Header Response Data
-     * @param err is a possible error message
-     */
+    /// Callback for handling HTTP Header Response Data @param err is a possible error message
     void handle_read_status_line ( const boost::system::error_code & err )
     {
         if ( !socket_ )
@@ -236,16 +178,11 @@ class asio_service_http : public asio_socket
             error_handler( err );
     }
 
-    
-    /**
-     * @brief Callback for Handling Headers
-     * @param err is a possible error message
-     */
+    /// Callback for Handling Headers @param err is a possible error message
     void handle_read_headers ( const boost::system::error_code & err )
     {
         if ( !socket_ )
             throw std::runtime_error ( "asio_service_http::handle_read_headers socket ptr null" );
-        
         if ( !err )
         {
             // Start reading Content data until EOF (see handle_read_content)
@@ -258,19 +195,13 @@ class asio_service_http : public asio_socket
             // Now call the callback
             if ( callback_ )
                 callback_( response_ );
-            
-            // Or we handle it oursleves
             else
-                handle_reply();
+                throw std::runtime_error ( "asio_service_http there is no callback handler for this object" );
         }
         else error_handler( err );
     }
     
-    
-    /**
-     * @brief Callback for Handling Actual Data Contents
-     * @param err is a possible error message
-     */
+    /// Callback for Handling Actual Data Contents @param err is a possible error message
     void handle_read_content ( const boost::system::error_code & err )
     {
         if ( !socket_ )
@@ -289,6 +220,24 @@ class asio_service_http : public asio_socket
             error_handler( err );
     }
     
+    /// Create a random boundary for the multipart/form in HTTP
+    std::string randomBoundary ( ) const
+    {
+        std::string chars( "abcdefghijklmnopqrstuvwxyz"
+                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                           "1234567890" );
+        
+        boost::random::random_device rng;
+        std::string uid;
+        
+        // Randomly chose 16 characters
+        boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
+        for ( int i = 0; i < 16; ++i )
+            uid.push_back( chars[index_dist(rng)] );
+        
+        return uid;
+    }
+
 
     
     /// Header that will be used
@@ -308,11 +257,8 @@ class asio_service_http : public asio_socket
     
     /// Response Container
     boost::asio::streambuf response_;
-    
 };
 
-
 }
 }
-
 #endif

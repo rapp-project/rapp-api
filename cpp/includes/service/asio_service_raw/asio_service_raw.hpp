@@ -1,18 +1,20 @@
 #ifndef RAPP_ASIO_SERVICE_RAW
 #define RAPP_ASIO_SERVICE_RAW
 #include "Includes.ihh"
-
 namespace rapp {
 namespace services {
-
 /**
  * @class asio_service_raw
  * @brief base class for asynchronous sockets used for connecting to cloud services
  * @version 2
  * @date 6-February-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- * 
  * @warning this class does not support SSL/TLS sockets
+ * 
+ * WARNING RESTRUCTURE AS HEADER ONLY !!!! FACILIATE THE USAGE OF STREAMING BUFFERS FROM CLIENT TO SERVER
+ *         AS THIS IS THE ONLY THING WE WILL USE THIS CLASS FOR !!!
+ * 
+ * WARNING THE virtual methods below are of no use - see how asio_service_http has been reworked and do the same here
  */
 class asio_service_raw : public asio_socket
 {

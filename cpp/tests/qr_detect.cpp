@@ -2,11 +2,6 @@
 #include "../includes/cloud/qrDetector/qrDetector.hpp"
 #include "../includes/objects/picture/picture.hpp"
 
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-
-
 int main ( int argc, char* argv[] )
 {
     /**
@@ -16,24 +11,17 @@ int main ( int argc, char* argv[] )
      */
     rapp::services::service_controller ctrl;
     
-    std::cout << "Opening Picture" << std::endl;
+    auto pic = std::make_shared<rapp::object::picture>( "qrcode.png" );
     
-    if ( auto pic = std::make_shared<rapp::object::picture>( "qrcode.png" ) )
-    {
-        std::cout << "Requesting qr detection..." << std::endl;
-        
-        if ( auto fdetect = std::make_shared<rapp::cloud::qrDetector>( pic, 
-            [&]( std::vector< rapp::object::qrCode > codes )
-            {
-                std::cout << "found " << codes.size() << " QR codes: " << codes.at(0).label()  << std::endl;
-            }) )
-        {
-            // Last, request from service controller to run this job
-            ctrl.runJob ( fdetect->Job() );
-        }
-    }
-    else
-        std::cerr << "Error loading image" << std::endl;
-
+    auto callback = [&]( std::vector< rapp::object::qrCode > codes )
+                    {
+                        std::cout << "found " << codes.size() << " QR codes: " 
+                                << codes.at(0).label()  << std::endl;
+                    };
+    
+    auto fdetect = std::make_shared<rapp::cloud::qrDetector>( pic, "png", callback );
+    
+    ctrl.runJob ( fdetect );
+    
     return 0;
 } 

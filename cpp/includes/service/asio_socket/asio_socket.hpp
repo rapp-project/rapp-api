@@ -7,12 +7,18 @@ namespace services {
 
 /**
  * @brief Abstract Base ASIO Socket class
- * @note Use for passing around the service controller, various types of sockets
+ * 
+ * Use for passing around the service controller, various types of sockets
+ * This Interface is needed, so that different services, can be passed to the scheduler transparently
+ * 
+ * @class asio_socket
+ * @version 2
+ * @date 26-April-2015
+ * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class asio_socket
 {
   public:
-
 
     /** 
      * Schedule this client as a job for execution using
@@ -25,14 +31,6 @@ class asio_socket
                              boost::asio::ip::tcp::resolver & ,
                              boost::asio::io_service &
                           ) = 0;
-    
-  protected:  
-      
-    /**
-     * Handle the Reply
-     * @note you have to override this method if inheriting
-     */
-    void handle_reply ( );
     
 };
 

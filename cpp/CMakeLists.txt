@@ -29,7 +29,6 @@ add_executable ( rapp_face_detect  tests/face_detect.cpp
 add_executable ( rapp_qr_detect    tests/qr_detect.cpp
                                    ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
                                    ${INCLUDES}/service/service_controller/service_controller.cpp
-                                   ${INCLUDES}/cloud/qrDetector/qrDetector.cpp
                                    ${INCLUDES}/objects/picture/picture.cpp)
 
 # Fetch Data Test
@@ -47,8 +46,6 @@ find_package( Boost 1.49 COMPONENTS system thread random REQUIRED )
 set (SOURCES ${SOURCES} 
                         ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
                         ${INCLUDES}/service/service_controller/service_controller.cpp
-                        ${INCLUDES}/cloud/faceDetector/faceDetector.cpp
-                        ${INCLUDES}/cloud/qrDetector/qrDetector.cpp
                         ${INCLUDES}/objects/picture/picture.cpp)
 
 # Set library sources
@@ -66,7 +63,7 @@ target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${
 
 # Link Tests/Examples
 target_link_libraries( rapp_face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
-target_link_libraries( rapp_qr_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+target_link_libraries( rapp_qr_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 target_link_libraries( rapp_fetch_data ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
 target_link_libraries( rapp_ontology_test ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
 

@@ -41,22 +41,24 @@ class fetchPersonalData : public rapp::services::asio_service_http
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
+        
+        // bind the base class callback, to our handle_reply
+        callback_ = std::bind ( &fetchPersonalData::handle_reply, this, std::placeholders::_1 );
     }
     
   private:
       
     /// Parse @param buffer received from the socket, into a vector of faces
-    void handle ( boost::asio::streambuf & buffer )
+    /// @note we do not do any parsing at all here - we assume the JSON will be handled by the caller
+    void handle_reply ( boost::asio::streambuf & buffer )
     {
         std::string reply ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
         delegate__ ( reply );
     }
     
     /// The callback called upon completion of receiving the detected faces
-    /// NOTE: This is NOT the same as asio_service_http::callback__ which is used for the raw buffer handling
     std::function < void( const std::string ) > delegate__;
 };
-
 }
 }
 #endif
