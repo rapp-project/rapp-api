@@ -39,9 +39,17 @@ class objectDetector : public rapp::services::asio_service_http
         // Create a new random boundary
         std::string boundary = randomBoundary();
         
+        
+        // Create the Multi-form POST field
+        post_ += "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"limit\"; \r\n";
+        post_ += "Content-Type: text/utf8\r\n\r\n";
+        post_ += boost::lexical_cast<std::string>(limit) + "\r\n";
+        
+        
         // Create the name for the image (just a textfield request)
         post_ = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"fileName\"\r\n\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"\r\n\r\n";
         post_ += "image." + image_format + "\r\n";
         
         // Create the Multi-form POST field
@@ -55,13 +63,6 @@ class objectDetector : public rapp::services::asio_service_http
         post_.insert( post_.end(), imagebytes.begin(), imagebytes.end() );
         post_ += "\r\n";
         
-        // Add limit value
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"limit\"\r\n";
-        post_ += "Content-Type: text\r\n";
-        post_ += "Content-Transfer-Encoding: utf8\r\n\r\n";
-        post_ += boost::lexical_cast<std::string>(limit);
-        post_ += "\r\n";
         post_ += "--" + boundary + "--";
         
         // Count Data size
