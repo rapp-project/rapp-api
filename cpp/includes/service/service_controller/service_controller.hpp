@@ -25,13 +25,11 @@ namespace services {
 
 class service_controller
 {
-  public:
+public:
 
-    
     service_controller ( )
-    : server_ ( "localhost" ),      // WARNING - This should be correctly pointing to http(s)://api.rapp.cloud
-      io_service_ ( ),
-      query_ ( server_, "8080" ),   // WARNING - HOP port 8080, HTTP 80, ITI: 9001
+    : io_service_ ( ),
+      query_ ( rapp::cloud::address, rapp::cloud::port ),   // WARNING - HOP port 8080, HTTP 80, ITI: 9001
       resolver_ ( io_service_ )
     { }
     

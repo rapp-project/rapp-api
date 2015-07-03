@@ -4,8 +4,6 @@
 
 namespace rapp {
 namespace services {
-
-#define hostname "localhost"
     
 /**
  * @class asio_service_http

@@ -55,7 +55,7 @@ class qrDetector : public rapp::services::asio_service_http
 
         // Form the Header
         header_ =  "POST /hop/qr_detect HTTP/1.1\r\n";
-        header_ += "Host: " + std::string( hostname ) + "\r\n";
+        header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Connection: close\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";

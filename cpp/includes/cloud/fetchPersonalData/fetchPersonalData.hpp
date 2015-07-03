@@ -37,7 +37,7 @@ class fetchPersonalData : public rapp::services::asio_service_http
         
         // Form the Header
         header_ = "POST " + uri + " HTTP/1.1\r\n";
-        header_ += "Host: " + std::string( hostname ) + "\r\n";
+        header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
