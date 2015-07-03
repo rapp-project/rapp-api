@@ -81,49 +81,47 @@ class objectDetector : public rapp::services::asio_service_http
     }
       
   private:
-    
+    template <typename T>
+      std::vector<T> as_vector(boost::property_tree::ptree const& pt, 
+        boost::property_tree::ptree::key_type const& key)
+      {
+        std::vector<T> r;
+        for (auto& item : pt.get_child(key))
+          r.push_back(item.second.get_value<T>());
+        return r;
+      } 
     /// Parse @param buffer received from the socket, into a vector of faces
     void handle_reply ( boost::asio::streambuf & buffer )
     {   
         std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), 
           std::istreambuf_iterator<char>() );
+        std::cout << "\033[1;31mBegining: \033[0m\n" << json << "\n";
+        json = json.substr(json.find("Hop")+7, std::string::npos);
         std::stringstream ss ( json );
         std::vector< rapp::object::object > objects;
+        std::cout << "\033[1;32mSubstring: \033[0m\n"; 
         std::cout << ss.str() << "\n"; 
         try
         {
           boost::property_tree::ptree tree;
           boost::property_tree::read_json( ss, tree );
 
-          // Find the actual json objects
-          for ( auto child : tree.get_child( "objects" ) )
-          {
-            std::string name = "Unknown";
-            float score = -1;
+          std::vector<std::string> names = as_vector<std::string>(tree, 
+            "objects.found_names");
+          std::vector<float> scores = as_vector<float>(tree, 
+            "objects.found_scores");
 
-            for ( auto iter = child.second.begin();
-              iter!= child.second.end(); ++iter )
-            {
-
-              std::string member( iter->first );
-
-              if ( member == "found_names" )
-                name = iter->second.get_value<std::string>();
-
-              else if ( member == "found_scores" )
-                score = iter->second.get_value<float>();
-            }
-
-            objects.push_back( rapp::object::object( name, score ) );
+          for (int i = 0 ; i < names.size(); ++i) {
+            objects.push_back( rapp::object::object( names[i], scores[i] ) );
           }
         }
         catch( boost::property_tree::json_parser::json_parser_error & je )
         {
-          std::cerr << "objectDetector::handle_reply Error parsing: " << je.filename() 
+          std::cerr << "objectDetector::handle_reply Error parsing: " << 
+            je.filename() 
             << " on line: " << je.line() << std::endl;
           std::cerr << je.message() << std::endl;
-        }
-
+        } 
         delegate_( objects );
     }    
     

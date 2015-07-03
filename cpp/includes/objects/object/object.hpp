@@ -20,12 +20,10 @@ class object
     /**
      * @brief Consruct using object name and recognition score
      */
-    object ( 
-            std::string name,
-            float score
-          )
-    : name__( name ),
-      score__( score )
+    object ( std::string name, float score )
+    : 
+    name__( name ),
+    score__( score )
     { }
     
     
