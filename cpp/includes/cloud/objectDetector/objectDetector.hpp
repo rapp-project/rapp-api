@@ -49,7 +49,8 @@ class objectDetector : public rapp::services::asio_service_http
         
         // Create the Multi-form POST field
         post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"image." + image_format + "\"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; "
+          "filename=\"image." + image_format + "\"\r\n";
         post_ += "Content-Type: image/" + image_format + "\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
         
@@ -77,7 +78,7 @@ class objectDetector : public rapp::services::asio_service_http
         // bind the base class callback, to our handle_reply
         callback_ = std::bind ( &objectDetector::handle_reply, this, 
           std::placeholders::_1 );
-        std::cout << header_ << std::endl;
+        //std::cout << header_ << std::endl;
     }
       
   private:
@@ -99,8 +100,8 @@ class objectDetector : public rapp::services::asio_service_http
         json = json.substr(json.find("\r\n\r\n")+4, std::string::npos);
         std::stringstream ss ( json );
         std::vector< rapp::object::object > objects;
-        //std::cout << "\033[1;32mSubstring: \033[0m\n"; 
-        //std::cout << ss.str() << "\n"; 
+        std::cout << "\033[1;32mCloud-Response: \033[0m\n"; 
+        std::cout << ss.str() << "\n"; 
         try
         {
           boost::property_tree::ptree tree;
