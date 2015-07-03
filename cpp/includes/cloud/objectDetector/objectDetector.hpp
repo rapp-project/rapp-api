@@ -108,9 +108,9 @@ class objectDetector : public rapp::services::asio_service_http
           boost::property_tree::read_json( ss, tree );
 
           std::vector<std::string> names = as_vector<std::string>(tree, 
-            "objects.found_names");
+            "found_names");
           std::vector<float> scores = as_vector<float>(tree, 
-            "objects.found_scores");
+            "found_scores");
 
           for (int i = 0 ; i < names.size(); ++i) {
             objects.push_back( rapp::object::object( names[i], scores[i] ) );
