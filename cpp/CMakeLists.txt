@@ -77,10 +77,10 @@ target_link_libraries( rapp_ontology_test ${CMAKE_THREAD_LIBS_INIT} ${Boost_THRE
 
 
 set(CMAKE_COLOR_MAKEFILE on)
-set(CMAKE_VERBOSE_MAKEFILE on)
+set(CMAKE_VERBOSE_MAKEFILE off)
 
 #set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Debug)
 
 
 
@@ -115,6 +115,21 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set(BUILD_SHARED_LIBS OFF)
   message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
 
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # using Clang
+    message (STATUS "Clang/OSX" )
+    execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+    if (CLANG_VERSION_MAJOR VERSION_GREATER 3 OR CLANG_VERSION_MAJOR VERSION_EQUAL 3)
+        message(STATUS "Info: Clang >= 3.0 using C++11")
+    elseif ()
+        message(FATAL_ERROR "Clang version >= 3.0 is required")
+    endif()
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall")
+        message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
+        set(BUILD_SHARED_LIBS OFF)
+        message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
 # Intel Compiler May run on Linux - Maybe we should support it
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     message (FATAL_ERROR "unsupported compiler")
