@@ -92,6 +92,8 @@ public:
     
     /// Username token
     const std::string username_;
+
+    const std::string auth_base64_ = "cmFwcGRldjpyYXBwZGV2";
     
     /// Authentication token
     const std::string password_;
