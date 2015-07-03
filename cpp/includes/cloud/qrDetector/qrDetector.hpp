@@ -33,14 +33,10 @@ class qrDetector : public rapp::services::asio_service_http
         // Create a new random boundary
         std::string boundary = randomBoundary();
 
-        // Create the name for the image (just a textfield request)
-        post_ = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"fileName\"\r\n\r\n";
-        post_ += "image." + image_format + "\r\n";
-
         // Create the Multi-form POST field
         post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"fileContents\"; filename=\"image." + image_format + "\"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; "
+          "filename=\"image." + image_format + "\"\r\n";
         post_ += "Content-Type: image/" + image_format + "\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
 
@@ -53,15 +49,24 @@ class qrDetector : public rapp::services::asio_service_http
         // Count Data size
         auto size = post_.size() * sizeof( std::string::value_type );
 
+        // TODO: Implement Header-Crafter into service_controller
+
         // Form the Header
-        header_ =  "POST /hop/qr_detect HTTP/1.1\r\n";
+        header_ =  "POST /hop/qr_detection HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
+        //header_ += "Authorization: Basic cmFwcGRldjpyYXBwZGV2\r\n"; 
+        header_ += "Authorization: Basic " + 
+          std::string(rapp::cloud::auth_token) + "\r\n"; 
         header_ += "Connection: close\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
-        header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+        header_ += "Content-Length: " + 
+          boost::lexical_cast<std::string>( size ) + "\r\n";
+        header_ += "Content-Type: multipart/form-data; boundary=" + 
+          boundary + "\r\n\r\n";
 
         // bind the asio_service_http::callback, to our handle_reply
-        callback_ = std::bind ( &qrDetector::handle_reply, this, std::placeholders::_1 );   
+        callback_ = std::bind ( &qrDetector::handle_reply, this, 
+          std::placeholders::_1 );   
+        std::cout << header_ << "\n";
     }
 
   private:
@@ -69,43 +74,46 @@ class qrDetector : public rapp::services::asio_service_http
     /// Parse @param buffer received from the socket, into a vector of faces
     void handle_reply ( boost::asio::streambuf & buffer )
     {
-        std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
+        std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), 
+          std::istreambuf_iterator<char>() );
         std::stringstream ss ( json );
         std::vector< rapp::object::qrCode > qrCodes;
 
         try
         {
-            boost::property_tree::ptree tree;
-            boost::property_tree::read_json( ss, tree );
-            
-            for ( auto child : tree.get_child( "qrs" ) )
+          boost::property_tree::ptree tree;
+          boost::property_tree::read_json( ss, tree );
+
+          for ( auto child : tree.get_child( "qrs" ) )
+          {
+            float qr_center_x = -1.;
+            float qr_center_y = -1.;
+            std::string qr_message;
+
+            for ( auto iter = child.second.begin();
+              iter != child.second.end(); ++iter )
             {
-                float qr_center_x = -1.;
-                float qr_center_y = -1.;
-                std::string qr_message;
-        
-                for ( auto iter = child.second.begin(); iter!= child.second.end(); ++iter )
-                {
-                    std::string member( iter->first );
-                    
-                    if ( member == "qr_center_x" )
-                        qr_center_x = iter->second.get_value<float>();
-                        
-                    else if ( member == "qr_center_y" )
-                        qr_center_y = iter->second.get_value<float>();
-                        
-                    else if ( member == "qr_message" )
-                        qr_message = iter->second.get_value<std::string>();
-                }
-                
-                qrCodes.push_back( rapp::object::qrCode ( qr_center_x, qr_center_y, qr_message ) );
+              std::string member( iter->first );
+
+              if ( member == "qr_center_x" )
+                qr_center_x = iter->second.get_value<float>();
+
+              else if ( member == "qr_center_y" )
+                qr_center_y = iter->second.get_value<float>();
+
+              else if ( member == "qr_message" )
+                qr_message = iter->second.get_value<std::string>();
             }
+
+            qrCodes.push_back( rapp::object::qrCode ( 
+                qr_center_x, qr_center_y, qr_message ) );
+          }
         }
         catch( boost::property_tree::json_parser::json_parser_error & je )
         {
-            std::cerr << "qrDetector::handle_reply Error parsing: " << je.filename() 
-                      << " on line: " << je.line() << std::endl;
-            std::cerr << je.message() << std::endl;
+          std::cerr << "qrDetector::handle_reply Error parsing: " << 
+            je.filename()  << " on line: " << je.line() << std::endl;
+          std::cerr << je.message() << std::endl;
         }
         
         delegate__( qrCodes );
