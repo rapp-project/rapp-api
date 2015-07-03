@@ -11,7 +11,7 @@ int main ( int argc, char* argv[] )
      */
     rapp::services::service_controller ctrl;
     
-    auto pic = std::make_shared<rapp::object::picture>( argc > 1 ? argv[1] : "aircraft.jpg" );
+    auto pic = std::make_shared<rapp::object::picture>( argc > 1 ? argv[1] : "cat.jpg" );
     
     if ( pic )
     {
