@@ -13,10 +13,12 @@ namespace cloud {
     */
 
     /// api.rapp.cloud
-    constexpr char address[] = "127.0.0.1";
+    constexpr char address[] = "155.207.19.229";
 
     /// 
     constexpr char port[] = "9001";    
+
+    constexpr char auth_token[] = "cmFwcGRldjpyYXBwZGV2";
 
 }
 
