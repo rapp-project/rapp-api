@@ -95,12 +95,12 @@ class objectDetector : public rapp::services::asio_service_http
     {   
         std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), 
           std::istreambuf_iterator<char>() );
-        std::cout << "\033[1;31mBegining: \033[0m\n" << json << "\n";
-        json = json.substr(json.find("Hop")+7, std::string::npos);
+        //std::cout << "\033[1;31mBegining: \033[0m\n" << json << "\n";
+        json = json.substr(json.find("\r\n\r\n")+4, std::string::npos);
         std::stringstream ss ( json );
         std::vector< rapp::object::object > objects;
-        std::cout << "\033[1;32mSubstring: \033[0m\n"; 
-        std::cout << ss.str() << "\n"; 
+        //std::cout << "\033[1;32mSubstring: \033[0m\n"; 
+        //std::cout << ss.str() << "\n"; 
         try
         {
           boost::property_tree::ptree tree;
