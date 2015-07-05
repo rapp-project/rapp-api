@@ -40,6 +40,8 @@ class object
                  this->score__ == rhs.score__ );
     }
     
+    const std::string & name() const {return name__;}
+    
   private:
     
     std::string name__ = "Unknown";
