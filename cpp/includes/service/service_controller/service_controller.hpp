@@ -110,7 +110,7 @@ public:
     /// Work queue
     std::shared_ptr<boost::asio::io_service::work> work_;
     
-    /// Service Mutex
+    /// Service Mutex - NOTE: why static? 
     static std::mutex service_mtx_;
 };
 

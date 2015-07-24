@@ -14,7 +14,7 @@ namespace cloud {
  */
 class ontologySubclassOf : public rapp::services::asio_service_http
 {
-  public:
+public:
 
     
     /**
@@ -43,7 +43,7 @@ class ontologySubclassOf : public rapp::services::asio_service_http
         callback_ = std::bind ( &ontologySubclassOf::handle_reply, this, std::placeholders::_1 );
      }
       
-  private:
+private:
       
     /// Parse @param buffer received from the socket, into a vector of faces
     void handle_reply ( boost::asio::streambuf & buffer )

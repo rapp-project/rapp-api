@@ -1,11 +1,23 @@
-(1) Replace the methods that send XML, with an HTTP POST, that sends data to HOP.
+1.	includes/cloud/ontologySubclassOf >> void handle_reply (need the JSON from Kostantinos so that parsing will be implemented)
 
-(2) Make a TCP-based Streaming service, for speech to Text.
-    See if TCP can work OK, else experiment with UDP-based sockets.
-    Do NOT use HOP for any of this!
-    
-(3) Complete the remaining API/Service calls!
+2. 	includes/cloud/ontologyIsSubSuperClassOf >> Description, POST request specs, JSON Reply (Kostantinos)
 
-    Picture.cpp remove make header only
-    
-    faceDetector (QrDetector) try with a single form, not multipart/form?
+3.	includes/cloud/ontologySuperclassesOf >> Description, POST request specs, JSON Reply (Kostantinos)
+
+4.	includes/cloud/setDenoiseProfile >> Description, POST request specs, JSON Reply (Manos, Kostantinos)
+
+5.	includes/cloud/upServices >> Description, POST request specs, JSON Reply (Manos, Kostantinos)
+
+6. 	includes/cloud/speechToText >> Will we use a TCP socket and send a file (which is what ITI/CERTH has done so far?)
+				       I need the description, specs (POST/Multiform/Raw/Stream?) and JSON reply format.
+
+
+NOTE: The library **might be** implementable as a header-only library. In which case I need to know if we want this.
+      Currently, the library statically links with gcc-4.8.2 so that we can use C++11 on NAO.
+      If I turn it into a header only, it will become considerably smaller, but we will need gcc 4.8.2 on nao VM to build the API.
+
+
+NOTE: klpanagi: Authentication is hardcoded into qr_detection ONLY!
+      		if we need token-based authentication, we need to implemented it across the API.
+
+

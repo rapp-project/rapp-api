@@ -1,7 +1,5 @@
 #include <includes/cloud/faceDetector/faceDetector.hpp>
 #include <includes/cloud/qrDetector/qrDetector.hpp>
-
 #include <includes/objects/face/face.hpp>
 #include <includes/objects/picture/picture.hpp>
 #include <includes/objects/qrCode/qrCode.hpp>
-

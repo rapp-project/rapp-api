@@ -17,26 +17,27 @@ set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 
 include_directories(SYSTEM ${INCLUDE_HEADERS})
 set (INCLUDES ${INCLUDES} includes)
+set (EXAMPLES ${EXAMPLES} examples)
 add_subdirectory(${INCLUDES})
 
 # Face Detect Test
-add_executable ( rapp_face_detect  tests/face_detect.cpp
+add_executable ( rapp_face_detect  ${EXAMPLES}/face_detect.cpp
                                    ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
                                    ${INCLUDES}/service/service_controller/service_controller.cpp
                                    ${INCLUDES}/objects/picture/picture.cpp)
 
 # QrCode Detect Test
-add_executable ( rapp_qr_detect    tests/qr_detect.cpp
+add_executable ( rapp_qr_detect    ${EXAMPLES}/qr_detect.cpp
                                    ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
                                    ${INCLUDES}/service/service_controller/service_controller.cpp
                                    ${INCLUDES}/objects/picture/picture.cpp)
 
 # Fetch Data Test
-add_executable ( rapp_fetch_data   tests/fetch_data.cpp
+add_executable ( rapp_fetch_data   ${EXAMPLES}/fetch_data.cpp
                                    ${INCLUDES}/service/service_controller/service_controller.cpp)
 # Ontology Subclass Of Test
-add_executable ( rapp_ontology_test tests/ontology_test.cpp
-                                   ${INCLUDES}/service/service_controller/service_controller.cpp)
+add_executable ( rapp_ontology_test ${EXAMPLES}/ontology_test.cpp
+                                    ${INCLUDES}/service/service_controller/service_controller.cpp)
 
 # Find Libaries for which Cmake already has a meta-package
 find_package( Threads REQUIRED )
@@ -59,23 +60,17 @@ target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_S
 add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
 target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 
-
-
 # Link Tests/Examples
 target_link_libraries( rapp_face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 target_link_libraries( rapp_qr_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 target_link_libraries( rapp_fetch_data ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
 target_link_libraries( rapp_ontology_test ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
 
-
-
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE off)
 
 #set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_BUILD_TYPE Debug)
-
-
+set(CMAKE_BUILD_TYPE Debug)
 
 # Linux should be the default OS/Platform for RAPP::API
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
@@ -123,6 +118,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
         set(BUILD_SHARED_LIBS OFF)
         message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
+
 # Intel Compiler May run on Linux - Maybe we should support it
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     message (FATAL_ERROR "unsupported compiler")
