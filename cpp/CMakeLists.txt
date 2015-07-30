@@ -25,6 +25,12 @@ add_executable ( rapp_face_detect  tests/face_detect.cpp
                                    ${INCLUDES}/service/service_controller/service_controller.cpp
                                    ${INCLUDES}/objects/picture/picture.cpp)
 
+# Object Detect Test
+add_executable ( rapp_object_detect  tests/object_detect.cpp
+                                   ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
+                                   ${INCLUDES}/service/service_controller/service_controller.cpp
+                                   ${INCLUDES}/objects/picture/picture.cpp)
+
 # QrCode Detect Test
 add_executable ( rapp_qr_detect    tests/qr_detect.cpp
                                    ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
@@ -63,6 +69,7 @@ target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${
 
 # Link Tests/Examples
 target_link_libraries( rapp_face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
+target_link_libraries( rapp_object_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 target_link_libraries( rapp_qr_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
 target_link_libraries( rapp_fetch_data ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
 target_link_libraries( rapp_ontology_test ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
@@ -135,8 +142,8 @@ endif()
 #set(MACOSX_RPATH ON)
 
 # Install stuff
-install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION /usr/local/lib/)
-install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION /usr/local/lib/)
-install (DIRECTORY ${INCLUDES}/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/)
+install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/)
+install (DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
 
-install (FILES ${PROJECT_NAME} DESTINATION /usr/local/include/${PROJECT_NAME}) #copy global include header
+install (FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}) #copy global include header
