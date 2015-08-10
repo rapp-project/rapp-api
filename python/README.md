@@ -8,10 +8,10 @@ Containes RappCloud API module used for interfering wth RAPP Platform.
 Add the following into your ~/.bashrc in order to add RappCloud module into python module scope:
 
 ```
-  export PYTHONPATH=$PYTHONPATH:<*rapp_api_repo_path*>/python
+  export PYTHONPATH=$PYTHONPATH:{rapp_api_repo_path}/python
 ```
 
-where <rapp_api_repo_path> is the path to the rapp-api repository locally.
+where {rapp_api_repo_path} is the path to the rapp-api repository locally.
 
 >  e.g. "~/rapp_ws/src/rapp-api"
 
@@ -24,6 +24,12 @@ from RappCloud import RappCloud
 rappCloud = RappCloud()
 ```
 
+Multible tests showing the usage of the RappCloud API can be found under the rapp-platform repository
+( {rapp_platform_path}/hop_services/utilities/testing_tools/python_tests ) locally or at the following link:
+
+ [testing_tools](https://github.com/rapp-project/rapp-platform/tree/master/hop_services/utilities/testing_tools/python_tests)
+
+
 ## Directories
 
 - **RappCloud**: The RappCloud python module directory.
@@ -32,7 +38,8 @@ rappCloud = RappCloud()
 ## Tests
 
 Testing tools tha are also testing the usage of the RappCloud API python module can be found
-into the rapp-platform repository under <rapp_platform_path>/hop_services/utilities/testing_tools
+under the rapp-platform repository ( {rapp_platform_path}/hop_services/utilities/testing_tools ) locally
+or at the following link:
 
  [testing_tools](https://github.com/rapp-project/rapp-platform/tree/master/hop_services/utilities/testing_tools)
 
