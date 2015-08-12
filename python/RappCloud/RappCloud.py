@@ -185,7 +185,7 @@ class RappCloud:
             'query': query,
         }
         files = {}
-        url = self.serviceUrl_['ontology_superclasses_of']
+        url = self.serviceUrl_['ontology_subclasses_of']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData

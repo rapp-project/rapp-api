@@ -1,6 +1,6 @@
 {
   "platform": {
-    "host_ip": "localhost",
+    "host_ip": "155.207.19.13",
     "auth": {
       "username": "rappdev",
       "password": "rappdev"
