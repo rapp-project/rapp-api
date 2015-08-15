@@ -28,18 +28,14 @@ class service_controller
 public:
 
     service_controller ( )
-    : io_service_ ( ),
-      query_ ( rapp::cloud::address, rapp::cloud::port ),   // WARNING - HOP port 8080, HTTP 80, ITI: 9001
-      resolver_ ( io_service_ )
+    : io_service_ ( ), query_ ( rapp::cloud::address, rapp::cloud::port ), resolver_ ( io_service_ )
     { }
-    
     
     /// The Service Queue
     boost::asio::io_service & queue ( )
     {
         return io_service_;
     }
-    
     
     /**
      * @brief Run one service job
@@ -49,17 +45,13 @@ public:
      */
     void runJob ( const std::shared_ptr<asio_socket> job )
     {
-        // WARNING : if synchronicity gives us problems here, then allocate a new io_service, and use it within scope
-        if ( !job )
-            throw std::runtime_error ( "service_controller::runJob => param job is null" );
-    
+        assert( job );
         job->Schedule( query_, resolver_, io_service_ );
         io_service_.run();
-        std::lock_guard<std::mutex> lock ( service_mtx_ );
+        std::lock_guard<std::mutex> lock ( mutex_ );
         io_service_.reset();
     }
         
-
     /**
      * @brief Run a group of jobs in a batch
      * @param jobs is vector of constant pointers to client services
@@ -71,20 +63,18 @@ public:
         // WARNING : if synchronicity gives us problems here, then allocate a new io_service, and use it within scope
         for ( const auto & job : jobs )
         {
-            if ( !job )
-                throw std::runtime_error ( "service_controller::runJobs => job in vector is null" );
+            assert( job );
             job->Schedule( query_, resolver_, io_service_ );
         }
         io_service_.run();
-        std::lock_guard<std::mutex> lock ( service_mtx_ );
+        std::lock_guard<std::mutex> lock ( mutex_ );
         io_service_.reset();
     }
         
 
-  private:
+private:
       
     //service_controller ( const service_controller & ) = delete;
-    
     //service_controller& operator=( const service_controller & ) = delete;
     
     /// Cloud Server Address
@@ -93,6 +83,7 @@ public:
     /// Username token
     const std::string username_;
 
+    // NOTE: isnt this a duplicate from globals::auth_token ?
     const std::string auth_base64_ = "cmFwcGRldjpyYXBwZGV2";
     
     /// Authentication token
@@ -110,10 +101,9 @@ public:
     /// Work queue
     std::shared_ptr<boost::asio::io_service::work> work_;
     
-    /// Service Mutex - NOTE: why static? 
-    static std::mutex service_mtx_;
+    /// Service Mutex
+    std::mutex mutex_;
 };
-
 
 }
 }

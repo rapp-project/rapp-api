@@ -12,7 +12,7 @@ namespace cloud {
  */
 class qrDetector : public rapp::services::asio_service_http
 {
-  public:
+public:
       
     /**
     * @brief Constructor
@@ -27,8 +27,7 @@ class qrDetector : public rapp::services::asio_service_http
                )
     : rapp::services::asio_service_http (), delegate__ ( callback )
     {
-        if ( !image )
-            throw std::runtime_error ( "qrDetector::qrDetector param image null ptr" );
+        assert( image );
 
         // Create a new random boundary
         std::string boundary = randomBoundary();
@@ -49,8 +48,6 @@ class qrDetector : public rapp::services::asio_service_http
         // Count Data size
         auto size = post_.size() * sizeof( std::string::value_type );
 
-        // TODO: Implement Header-Crafter into service_controller
-
         // Form the Header
         header_ =  "POST /hop/qr_detection HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
@@ -69,50 +66,52 @@ class qrDetector : public rapp::services::asio_service_http
         std::cout << header_ << "\n";
     }
 
-  private:
+private:
 
     /// Parse @param buffer received from the socket, into a vector of faces
     void handle_reply ( boost::asio::streambuf & buffer )
     {
         std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), 
-          std::istreambuf_iterator<char>() );
+                             std::istreambuf_iterator<char>() );
+
         std::stringstream ss ( json );
         std::vector< rapp::object::qrCode > qrCodes;
-
+        
         try
         {
-          boost::property_tree::ptree tree;
-          boost::property_tree::read_json( ss, tree );
+            boost::property_tree::ptree tree;
+            boost::property_tree::read_json( ss, tree );
 
-          for ( auto child : tree.get_child( "qrs" ) )
-          {
-            float qr_center_x = -1.;
-            float qr_center_y = -1.;
-            std::string qr_message;
+            // NOTE: JSON has changed, see wiki
+            // https://github.com/rapp-project/rapp-platform/blob/hop_services/hop_services/services/README.md
 
-            for ( auto iter = child.second.begin();
-              iter != child.second.end(); ++iter )
+            for ( auto child : tree.get_child( "qrs" ) )
             {
-              std::string member( iter->first );
+                float qr_center_x = -1.;
+                float qr_center_y = -1.;
+                std::string qr_message;
 
-              if ( member == "qr_center_x" )
-                qr_center_x = iter->second.get_value<float>();
+                for ( auto iter = child.second.begin(); iter != child.second.end(); ++iter )
+                {
+                    std::string member( iter->first );
 
-              else if ( member == "qr_center_y" )
-                qr_center_y = iter->second.get_value<float>();
+                    if ( member == "qr_center_x" )
+                        qr_center_x = iter->second.get_value<float>();
 
-              else if ( member == "qr_message" )
-                qr_message = iter->second.get_value<std::string>();
+                    else if ( member == "qr_center_y" )
+                        qr_center_y = iter->second.get_value<float>();
+
+                    else if ( member == "qr_message" )
+                        qr_message = iter->second.get_value<std::string>();
+                }
+
+                qrCodes.push_back( rapp::object::qrCode ( qr_center_x, qr_center_y, qr_message ) );
             }
-
-            qrCodes.push_back( rapp::object::qrCode ( 
-                qr_center_x, qr_center_y, qr_message ) );
-          }
         }
         catch( boost::property_tree::json_parser::json_parser_error & je )
         {
           std::cerr << "qrDetector::handle_reply Error parsing: " << 
-            je.filename()  << " on line: " << je.line() << std::endl;
+                        je.filename()  << " on line: " << je.line() << std::endl;
           std::cerr << je.message() << std::endl;
         }
         

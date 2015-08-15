@@ -12,14 +12,10 @@ namespace object {
  * @date 6-February-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
- * TODO: Make header only
  */
-
 class picture
 {
-  public:
-    
-    picture ( ) = delete;
+public:
 
     /// Construct from a file-path
     picture ( const std::string filepath );
@@ -32,9 +28,6 @@ class picture
 
     /// Copy constructor
     picture ( const picture & ) = default;
-
-    /// Destructor
-    ~picture ( );
 
     /// Get picture as array of bytes
     std::vector<rapp::types::byte> bytearray ( ) const;
@@ -51,13 +44,14 @@ class picture
     /// Print buffer on std::out
     void echo ( ) const;
 
-  private:
+private:
+
+    // Hide empty constructor    
+    picture ( ) = delete;
 
     // Parse the bytestream into the bytearray
-    void openCopy_ ( );
-    
+    void openCopy_ ( std::ifstream & bytestream );
 
-    std::ifstream bytestream_;
     
     std::vector<rapp::types::byte> bytearray_;
 };

@@ -12,20 +12,19 @@ namespace cloud {
     * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
     */
 
-    /// api.rapp.cloud
+    /// api.rapp.cloud - use deployment IP@ITI
     constexpr char address[] = "155.207.19.229";
 
-    /// 
+    /// api.rapp.cloud - HOP server port
     constexpr char port[] = "9001";    
 
+    /// base64 encoded authentication token
     constexpr char auth_token[] = "cmFwcGRldjpyYXBwZGV2";
-
 }
 
 namespace types
 {    
     typedef char byte;
-
 }
 
 }

@@ -5,31 +5,21 @@ namespace object {
 
 picture::picture ( const std::string filepath )
 {
-    bytestream_.open ( filepath, std::ios::in | std::ios::binary | std::ios::ate );
-    if ( !bytestream_.is_open() )
+    std::ifstream bytestream( filepath, std::ios::in | std::ios::binary | std::ios::ate );
+    if ( !bytestream.is_open() )
         throw std::runtime_error ( "picture: could not open bytestream for " + filepath );
     
-    picture::openCopy_ ( );
+    picture::openCopy_ ( bytestream );
 }
 
 picture::picture ( std::ifstream & bytestream )
 {
-    bytestream_.copyfmt( bytestream );                                          // copy stream members
-    bytestream_.clear( bytestream.rdstate() );                                  // copy state of stream
-    bytestream_.basic_ios<rapp::types::byte>::rdbuf( bytestream.rdbuf() );      // copy contents
-
-    picture::openCopy_ ( );
+    picture::openCopy_ ( bytestream );
 }
 
 picture::picture ( std::vector<rapp::types::byte> bytearray )
 {
     bytearray_ = bytearray;
-}
-
-picture::~picture ( )
-{
-    if ( bytestream_.is_open() )
-        bytestream_.close();
 }
 
 std::vector<rapp::types::byte> picture::bytearray ( ) const
@@ -61,13 +51,13 @@ void picture::echo ( ) const
     std::cout << std::endl;
 }
 
-void picture::openCopy_ ( )
+void picture::openCopy_ ( std::ifstream & bytestream )
 {
-    bytestream_.seekg( 0, std::ios_base::end);
-    std::streampos fileSize = bytestream_.tellg();
+    bytestream.seekg( 0, std::ios_base::end);
+    std::streampos fileSize = bytestream.tellg();
     bytearray_.resize( fileSize );
-    bytestream_.seekg( 0, std::ios_base::beg );
-    bytestream_.read( &bytearray_[0], fileSize );
+    bytestream.seekg( 0, std::ios_base::beg );
+    bytestream.read( &bytearray_[0], fileSize );
 }
 
 

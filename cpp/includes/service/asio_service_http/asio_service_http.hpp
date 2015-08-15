@@ -17,7 +17,7 @@ namespace services {
  */
 class asio_service_http : public asio_socket
 {
-  public:
+public:
       
     /** 
      * Schedule this client as a job for execution using
@@ -44,7 +44,7 @@ class asio_service_http : public asio_socket
                                              boost::asio::placeholders::iterator ) );
     }
     
-  protected:  
+protected:  
 
     /// Hidden empty constructor is meant to be used only by inheriting classes
     asio_service_http ( ) = default;      
@@ -235,7 +235,6 @@ class asio_service_http : public asio_socket
         
         return uid;
     }
-
 
     
     /// Header that will be used

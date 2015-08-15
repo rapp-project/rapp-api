@@ -1,0 +1,11 @@
+#include <functional>
+#include <memory>
+#include <vector>
+#include <string>
+
+#include <boost/lexical_cast.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+
+#include "../../service/asio_service_http/asio_service_http.hpp"
+

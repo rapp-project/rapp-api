@@ -17,7 +17,7 @@ namespace cloud {
  */
 class faceDetector : public rapp::services::asio_service_http
 {
-  public:
+public:
       
     /**
      * @brief Constructor
@@ -32,8 +32,7 @@ class faceDetector : public rapp::services::asio_service_http
                  )
     : rapp::services::asio_service_http (), delegate_ ( callback )
     {
-        if ( !image )
-            throw std::runtime_error ( "faceDetector::faceDetector param image null ptr" );
+        assert( image );
         
         // Create a new random boundary
         std::string boundary = randomBoundary();
@@ -69,7 +68,7 @@ class faceDetector : public rapp::services::asio_service_http
         callback_ = std::bind ( &faceDetector::handle_reply, this, std::placeholders::_1 );
     }
       
-  private:
+private:
     
     /// Parse @param buffer received from the socket, into a vector of faces
     void handle_reply ( boost::asio::streambuf & buffer )
@@ -83,7 +82,8 @@ class faceDetector : public rapp::services::asio_service_http
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
         
-            // Find the actual json objects
+            // TODO: JSON has changed, see wiki
+            // https://github.com/rapp-project/rapp-platform/blob/hop_services/hop_services/services/README.md
             for ( auto child : tree.get_child( "faces" ) )
             {
                 float top_left_x = -1.;

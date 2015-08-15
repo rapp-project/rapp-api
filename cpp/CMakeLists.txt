@@ -18,53 +18,89 @@ set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 include_directories(SYSTEM ${INCLUDE_HEADERS})
 set (INCLUDES ${INCLUDES} includes)
 set (EXAMPLES ${EXAMPLES} examples)
+set (TESTS ${TESTS} tests)
 add_subdirectory(${INCLUDES})
 
-# Face Detect Test
-add_executable ( rapp_face_detect  ${EXAMPLES}/face_detect.cpp
-                                   ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
-                                   ${INCLUDES}/service/service_controller/service_controller.cpp
-                                   ${INCLUDES}/objects/picture/picture.cpp)
+# Sources are Library-only Executables - Not examples or tests
+set (SOURCES ${SOURCES}     ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
+                            ${INCLUDES}/service/service_controller/service_controller.cpp
+                            ${INCLUDES}/objects/picture/picture.cpp)
 
-# QrCode Detect Test
-add_executable ( rapp_qr_detect    ${EXAMPLES}/qr_detect.cpp
-                                   ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
-                                   ${INCLUDES}/service/service_controller/service_controller.cpp
-                                   ${INCLUDES}/objects/picture/picture.cpp)
+add_executable ( rapp_face_detect_example  ${EXAMPLES}/face_detect.cpp)
+add_executable ( rapp_qr_detect_example    ${EXAMPLES}/qr_detect.cpp)
+add_executable ( rapp_fetch_data_example   ${EXAMPLES}/fetch_data.cpp)
+add_executable ( rapp_ontology_example     ${EXAMPLES}/ontology_test.cpp)
 
-# Fetch Data Test
-add_executable ( rapp_fetch_data   ${EXAMPLES}/fetch_data.cpp
-                                   ${INCLUDES}/service/service_controller/service_controller.cpp)
-# Ontology Subclass Of Test
-add_executable ( rapp_ontology_test ${EXAMPLES}/ontology_test.cpp
-                                    ${INCLUDES}/service/service_controller/service_controller.cpp)
+# Enable Unit Testing
+enable_testing ()
+add_executable ( rapp_object_test          ${TESTS}/object_test.cpp)
+add_executable ( rapp_cloud_test           ${TESTS}/cloud_test.cpp)
+add_executable ( rapp_service_test         ${TESTS}/service_test.cpp)
+add_test (unit_object_test                 rapp_object_test) 
+add_test (unit_cloud_test                  rapp_cloud_test) 
+add_test (unit_service_test                rapp_service_test)
+
+set (EXECUTABLES ${EXECUTABLES}  ${EXAMPLES}/face_detect.cpp
+                                 ${EXAMPLES}/qr_detect.cpp
+                                 ${EXAMPLES}/fetch_data.cpp
+                                 ${EXAMPLES}/ontology_test.cpp
+                                 ${TESTS}/object_test.cpp
+                                 ${TESTS}/cloud_test.cpp
+                                 ${TESTS}/service_test.cpp)
 
 # Find Libaries for which Cmake already has a meta-package
 find_package( Threads REQUIRED )
-find_package( Boost 1.49 COMPONENTS system thread random REQUIRED )
-
-# Build Libraries (both static and shared)
-set (SOURCES ${SOURCES} 
-                        ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
-                        ${INCLUDES}/service/service_controller/service_controller.cpp
-                        ${INCLUDES}/objects/picture/picture.cpp)
+find_package( Boost 1.49 COMPONENTS system thread random unit_test_framework REQUIRED )
 
 # Set library sources
 add_library (lrapp OBJECT ${SOURCES})
 
 # Shared Library
 add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
-target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
-
+target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_SYSTEM_LIBRARY} 
+                                                                       ${Boost_RANDOM_LIBRARY})
 # Static Library
 add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
-target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
+target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_SYSTEM_LIBRARY}
+                                                                              ${Boost_RANDOM_LIBRARY})
 
 # Link Tests/Examples
-target_link_libraries( rapp_face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
-target_link_libraries( rapp_qr_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${Boost_RANDOM_LIBRARY})
-target_link_libraries( rapp_fetch_data ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
-target_link_libraries( rapp_ontology_test ${CMAKE_THREAD_LIBS_INIT} ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} )
+target_link_libraries( rapp_face_detect_example ${CMAKE_THREAD_LIBS_INIT} 
+                                                ${Boost_THREAD_LIBRARY} 
+                                                ${Boost_SYSTEM_LIBRARY} 
+                                                ${Boost_RANDOM_LIBRARY}
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+target_link_libraries( rapp_qr_detect_example   ${CMAKE_THREAD_LIBS_INIT} 
+                                                ${Boost_THREAD_LIBRARY} 
+                                                ${Boost_SYSTEM_LIBRARY} 
+                                                ${Boost_RANDOM_LIBRARY}
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+target_link_libraries( rapp_fetch_data_example  ${CMAKE_THREAD_LIBS_INIT} 
+                                                ${Boost_THREAD_LIBRARY} 
+                                                ${Boost_SYSTEM_LIBRARY}
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+target_link_libraries( rapp_ontology_example    ${CMAKE_THREAD_LIBS_INIT} 
+                                                ${Boost_THREAD_LIBRARY} 
+                                                ${Boost_SYSTEM_LIBRARY}
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+target_link_libraries( rapp_object_test         ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+target_link_libraries( rapp_service_test        ${CMAKE_THREAD_LIBS_INIT} 
+                                                ${Boost_SYSTEM_LIBRARY}
+                                                ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+target_link_libraries( rapp_cloud_test          ${CMAKE_THREAD_LIBS_INIT} 
+                                                ${Boost_SYSTEM_LIBRARY}
+                                                ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK) 
 
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE off)

@@ -56,7 +56,7 @@ class qrCode
      */
     std::string label ( ) const
     {
-	return message__;
+	    return message__;
     }
     
   private:

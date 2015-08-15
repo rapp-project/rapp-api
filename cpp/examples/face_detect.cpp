@@ -11,14 +11,10 @@ int main ( int argc, char* argv[] )
      */
     rapp::services::service_controller ctrl;
     
-    auto pic = std::make_shared<rapp::object::picture>( "aircraft.jpg" );
-    
-    if ( pic )
+    if ( auto pic = std::make_shared<rapp::object::picture>( "lena.jpg" ) )
     {
         auto callback = [&]( std::vector<rapp::object::face> faces )
-                        { 
-                            std::cout << "found " << faces.size() << " faces!" << std::endl;}
-                        ;
+                            { std::cout << "found " << faces.size() << " faces!" << std::endl; };
                         
         auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, "jpg", callback );
         

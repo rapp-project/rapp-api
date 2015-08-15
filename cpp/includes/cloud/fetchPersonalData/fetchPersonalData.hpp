@@ -4,7 +4,6 @@
 
 namespace rapp {
 namespace cloud {
-
 /**
  * @class fetchPersonalData
  * @brief Get all personal data for a specific user
@@ -12,10 +11,9 @@ namespace cloud {
  * @date 18-April-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-
 class fetchPersonalData : public rapp::services::asio_service_http
 {
-  public:
+public:
     
     /**
      * @brief Constructor for obtained personal (JSON) data for a specific user
@@ -33,7 +31,7 @@ class fetchPersonalData : public rapp::services::asio_service_http
         post_ = "user="+user+"\r\n";
         
         // Craft the full URI
-        std::string uri = "/hop/fetch_personal_data/";
+        const std::string uri = "/hop/fetch_personal_data/";
         
         // Form the Header
         header_ = "POST " + uri + " HTTP/1.1\r\n";
@@ -46,10 +44,10 @@ class fetchPersonalData : public rapp::services::asio_service_http
         callback_ = std::bind ( &fetchPersonalData::handle_reply, this, std::placeholders::_1 );
     }
     
-  private:
+private:
       
-    /// Parse @param buffer received from the socket, into a vector of faces
-    /// @note we do not do any parsing at all here - we assume the JSON will be handled by the caller
+    /// Get reply and send it directly to delegate
+    /// @note we do not do any parsing at all here 
     void handle_reply ( boost::asio::streambuf & buffer )
     {
         std::string reply ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
