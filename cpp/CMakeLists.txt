@@ -22,10 +22,9 @@ set (TESTS ${TESTS} tests)
 add_subdirectory(${INCLUDES})
 
 # Sources are Library-only Executables - Not examples or tests
-set (SOURCES ${SOURCES}     ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp
-                            ${INCLUDES}/service/service_controller/service_controller.cpp
-                            ${INCLUDES}/objects/picture/picture.cpp)
+set (SOURCES ${SOURCES}     ${INCLUDES}/service/asio_service_raw/asio_service_raw.cpp)
 
+# Examples
 add_executable ( rapp_face_detect_example  ${EXAMPLES}/face_detect.cpp)
 add_executable ( rapp_qr_detect_example    ${EXAMPLES}/qr_detect.cpp)
 add_executable ( rapp_fetch_data_example   ${EXAMPLES}/fetch_data.cpp)
@@ -33,20 +32,14 @@ add_executable ( rapp_ontology_example     ${EXAMPLES}/ontology_test.cpp)
 
 # Enable Unit Testing
 enable_testing ()
+
+# Unit Tests
 add_executable ( rapp_object_test          ${TESTS}/object_test.cpp)
 add_executable ( rapp_cloud_test           ${TESTS}/cloud_test.cpp)
 add_executable ( rapp_service_test         ${TESTS}/service_test.cpp)
 add_test (unit_object_test                 rapp_object_test) 
 add_test (unit_cloud_test                  rapp_cloud_test) 
 add_test (unit_service_test                rapp_service_test)
-
-set (EXECUTABLES ${EXECUTABLES}  ${EXAMPLES}/face_detect.cpp
-                                 ${EXAMPLES}/qr_detect.cpp
-                                 ${EXAMPLES}/fetch_data.cpp
-                                 ${EXAMPLES}/ontology_test.cpp
-                                 ${TESTS}/object_test.cpp
-                                 ${TESTS}/cloud_test.cpp
-                                 ${TESTS}/service_test.cpp)
 
 # Find Libaries for which Cmake already has a meta-package
 find_package( Threads REQUIRED )
@@ -105,6 +98,8 @@ ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK)
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE off)
 
+
+# TODO: Parse argument Release/Debug from Command line
 #set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -131,6 +126,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # -stdlib=libc++ will link using an alternative to gcc std c++ library - WARNING not working on OpenNao
   # -static-libgcc will link statically GLIBC
 
+  # TODO: Parse static-libstdc++ argument from Command line
   set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++")
   message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")

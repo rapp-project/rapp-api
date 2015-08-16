@@ -47,10 +47,6 @@ BOOST_AUTO_TEST_CASE( constructors_test )
     // Construct from a file-path
     rapp::object::picture lena ( "lena.jpg" );
 
-    // Construct using raw byte array
-    rapp::object::picture l_copy( lena.bytearray() );
-    BOOST_CHECK( lena == l_copy );
-
     // Open a byte steam from file, and construct the picture
     std::ifstream bytestream( "lena.jpg", std::ios::in | std::ios::binary | std::ios::ate );
     rapp::object::picture b_copy( bytestream );
@@ -63,6 +59,8 @@ BOOST_AUTO_TEST_CASE( constructors_test )
     // Assignment
     rapp::object::picture asmt = lena;
     BOOST_CHECK( lena == asmt );
+
+    // TODO: audio tests
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

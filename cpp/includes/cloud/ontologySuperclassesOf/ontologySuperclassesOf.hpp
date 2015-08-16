@@ -13,7 +13,6 @@ namespace cloud {
 class ontologySuperclassesOf : public rapp::services::asio_service_http
 {
 public:
-
     
     /**
      * @brief Constructor for this handler
@@ -27,13 +26,12 @@ public:
     : rapp::services::asio_service_http(), delegate__ ( callback )
     {
         post_ = "query="+query+"\r\n\r\n";
-        header_ = "POST /hop/ontology_subclass_of/ HTTP/1.1\r\n";
+        header_ = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
-        
-        callback_ = std::bind ( &ontologySubclassOf::handle_reply, this, std::placeholders::_1 );
+        callback_ = std::bind ( &ontologySuperclassesOf::handle_reply, this, std::placeholders::_1 );
      }
       
 private:
@@ -43,17 +41,14 @@ private:
         std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
         std::vector<std::string> classes;
         std::stringstream ss ( json );
-        
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
-            
             // JSON reply is: { results: [], trace: [], error: '' }
             for ( auto child : tree.get_child( "results" ) )
                 for ( auto iter = child.second.begin(); iter!= child.second.end(); ++iter )
                     classes.push_back ( iter->second.get_value<std::string>() );
-
             // Check for Errors returned by the api.rapp.cloud
             for ( auto child : tree.get_child( "error" ) )
             {
@@ -68,7 +63,6 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        
         delegate__( classes );
     }
       

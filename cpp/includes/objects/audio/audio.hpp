@@ -1,55 +1,56 @@
-#ifndef RAPP_OBJECT_PICTURE
-#define RAPP_OBJECT_PICTURE
+#ifndef RAPP_OBJECT_AUDIO
+#define RAPP_OBJECT_AUDIO
 #include "Includes.ihh"
 namespace rapp {
 namespace object {
 /**
- * @class picture
- * @brief class which wraps around raw bytes of a picture
- * @version 2
- * @date 6-February-2015
+ * @class audio
+ * @brief class which wraps around raw bytes of an audiofile
+ * @version 1
+ * @date 16-August-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class picture
+class audio
 {
 public:
 
     /// Construct from a file-path
-    picture ( const std::string filepath )
+    audio ( const std::string filepath )
     {
         std::ifstream bytestream( filepath, 
                                   std::ios::in | std::ios::binary | std::ios::ate );
+
         if ( !bytestream.is_open() )
-            throw std::runtime_error ( "picture: could not open bytestream for " + filepath );
-        else 
+            throw std::runtime_error ( "audio: could not open bytestream for " + filepath );
+        else
             openCopy_ ( bytestream );
     }
 
     /// Construct using an open file stream
-    picture ( std::ifstream & bytestream )
+    audio ( std::ifstream & bytestream )
     {
         openCopy_( bytestream );
     }
 
     /// Copy constructor
-    picture ( const picture & ) = default;
+    audio ( const audio & ) = default;
 
-    /// Get picture as array of bytes
+    /// Get audio as array of bytes
     std::vector<rapp::types::byte> bytearray ( ) const
     {
         return bytearray_;
     }
 
-    /// Are pictures same ?
-    bool operator== ( const picture & rhs ) const
+    /// Are audios same ?
+    bool operator== ( const audio & rhs ) const
     {
         return ( this->bytearray_ == rhs.bytearray_ );
     }
 
     /// Assignment operator
-    picture & operator= ( const picture & ) = default;
+    audio & operator= ( const audio & ) = default;
 
-    /// Save picture to filepath
+    /// Save audio to filepath
     bool save ( const std::string filepath )
     {
         std::ofstream os ( filepath, std::ios::out | std::ofstream::binary );
@@ -67,19 +68,19 @@ public:
 private:
 
     // Delete empty constructor    
-    picture ( ) = delete;
+    audio ( ) = delete;
 
-    // Parse the bytestream into the bytearray
-    void openCopy_ ( std::ifstream & bytestream )
+    // Copy the bytestream into the bytearray
+    void openCopy_ ( std::ifstream & bytestream );
     {
-        bytestream.seekg( 0, std::ios_base::end);
+        bytestream.seekg( 0, std::ios_base::end );
         std::streampos fileSize = bytestream.tellg();
         bytearray_.resize( fileSize );
         bytestream.seekg( 0, std::ios_base::beg );
         bytestream.read( &bytearray_[0], fileSize );
     }
 
-    
+    // Actual bytes of audio file
     std::vector<rapp::types::byte> bytearray_;
 };
 }
