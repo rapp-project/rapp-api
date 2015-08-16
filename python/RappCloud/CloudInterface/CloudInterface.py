@@ -46,8 +46,9 @@ class CloudInterface:
     ##
     @staticmethod
     def callService(url, payload, files, basicAuth):
+        # headers = {u'content-type': u'application/x-www-form-urlencoded'}
         try:
-            response = requests.post(url, data=payload, files=files, \
+            response = requests.post(url, data=payload, files=files,  \
                     auth=HTTPBasicAuth(basicAuth['username'], \
                                        basicAuth['password']))
         except ConnectionError as e:
@@ -61,13 +62,15 @@ class CloudInterface:
             returnData = {
                 'error': str(e.mesasge)
             }
-        except: # Catch all exceptions
+        except Exception as e: # Catch all exceptions
             returnData = {
-                'error': str(e.mesasge)
+                'error': str(e)
             }
         else:
             returnData = response.json()  # JSON decoder
             #print response.json()  # JSON decoder
+
+        # print response.text
 
         return returnData
     #============================================================================

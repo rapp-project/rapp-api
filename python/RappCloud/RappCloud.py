@@ -42,14 +42,28 @@ class RappCloud:
     ##
     def __init__(self):
         # --- Load Rapp Platform parameters --- #
-        params = self.__load_platform_parameters()
-        self.platform_params_ = params['platform']
-        # ------------------------------------- #
-
-        self.platformIP_ = self.platform_params_['host_ip']
+        self.platform_params_ = None
+        self.platformIp_ = ''
+        self.servicePort_ = ''
         self.services_ = []
         self.serviceUrl_ = {}
         self.auth_ = {}
+        self.__load_platform_params()
+        # ------------------------------------- #
+    #============================================================================
+
+
+    ##
+    #   @brief load server parameters from parameters.json file
+    ##
+    def __load_platform_params(self):
+        parameters_file_path = __path__ + '/config/platform_parameters.json'
+        #print parameters_file_path
+        with open(parameters_file_path) as json_file:
+            params = json.load(json_file)
+
+        self.platform_params_ = params['platform']
+        self.platformIP_ = self.platform_params_['host_ip']
         self.servicePort_ = self.platform_params_['services']['port']
         self.auth_['username'] = self.platform_params_['auth']['username']
         self.auth_['password'] = self.platform_params_['auth']['password']
@@ -58,18 +72,6 @@ class RappCloud:
             self.services_.append(service)
             self.serviceUrl_[service] = 'http://' + self.platformIP_ + ':' + str(self.servicePort_) + '/hop/' + \
                 service
-    #===========================================================================================
-
-
-    ##
-    #   @brief load server parameters from parameters.json file
-    ##
-    def __load_platform_parameters(self):
-        parameters_file_path = __path__ + '/parameters.json'
-        #print parameters_file_path
-        with open(parameters_file_path) as json_file:
-            data = json.load(json_file)
-        return data
 
 
     ##
@@ -85,7 +87,7 @@ class RappCloud:
             # --- Throw an excetion --- #
             print "Service [%s] does not exist" % service_name
 
-    #===========================================================================
+    #============================================================================
 
 
     ##
@@ -172,7 +174,7 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #===========================================================================================
+    #============================================================================
 
 
     ##
@@ -189,7 +191,7 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #===========================================================================================
+    #============================================================================
 
 
     ##
@@ -249,7 +251,7 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #===========================================================================================
+    #============================================================================
 
 
     ##
