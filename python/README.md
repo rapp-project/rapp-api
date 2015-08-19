@@ -16,6 +16,19 @@ where {rapp_api_repo_path} is the path to the rapp-api repository locally.
 >  e.g. "~/rapp_ws/src/rapp-api"
 
 
+#####  Configurations
+Current implementation uses predefined user account credentials in order get access to
+the RAPP Platform Web Services.
+You can define your own account information into the **config/auth.cfg** configuration file.
+
+On default the RAPP API connects to the RAPP Platform Deployment Server. You can change that into the config/platform.cfg
+configuration file. This file already includes configuration parameters used to connect to:
+
+- The RAPP Platform Deployment Server.
+- The RAPP Platform Development Server.
+- The RAPP Platform install **LOCALLY**.
+
+
 ##### How to use the RappCloud module
 
 ```python

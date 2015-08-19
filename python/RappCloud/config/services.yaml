@@ -1,0 +1,11 @@
+services:
+  list:
+    - available_services
+    - speech_detection_sphinx4
+    - qr_detection
+    - face_detection
+    - set_denoise_profile
+    - ontology_subclasses_of
+    - ontology_superclasses_of
+    - ontology_is_subsuperclass_of
+    - detect_objects

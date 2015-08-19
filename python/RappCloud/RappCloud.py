@@ -29,7 +29,10 @@
 
 import json
 import os
+import sys
 from CloudInterface import CloudInterface
+from ConfigParser import SafeConfigParser
+import yaml
 
 #  Set and hold RappCloud directory path
 __path__ = os.path.dirname(__file__)
@@ -42,36 +45,108 @@ class RappCloud:
     ##
     def __init__(self):
         # --- Load Rapp Platform parameters --- #
+        self.cfgFileDir_ = __path__ + '/config/'
+        self.parameters_file_path_ = __path__ + '/config/platform_parameters.json'
+        self.cfgParser_ = SafeConfigParser()
         self.platform_params_ = None
-        self.platformIp_ = ''
+        self.platformIP_ = ''
         self.servicePort_ = ''
         self.services_ = []
         self.serviceUrl_ = {}
         self.auth_ = {}
-        self.__load_platform_params()
+        self.__parse_platform_cfg()
+        self.__parse_services_cfg()
+        self.__parse_auth_cfg()
+        # self.__load_platform_params()
         # ------------------------------------- #
     #============================================================================
 
 
-    ##
-    #   @brief load server parameters from parameters.json file
-    ##
-    def __load_platform_params(self):
-        parameters_file_path = __path__ + '/config/platform_parameters.json'
-        #print parameters_file_path
-        with open(parameters_file_path) as json_file:
-            params = json.load(json_file)
+    def __parse_auth_cfg(self):
+        cfgFilePath = self.cfgFileDir_ + 'auth.cfg'
+        section = 'Auth'
+        try:
+            self.cfgParser_.read(cfgFilePath)
+        except Exception as e:
+            print "Could not load user authentication parameters from file [%s]" \
+                % cfgFilePath
+            print e
+            sys.exit(1)
+        if not self.cfgParser_.has_section(section):
+            print "\033[0mCfg file {%s} is missing section [%s]\033[0m" \
+                % (cfgFilePath, section)
+            sys.exit(1)
 
-        self.platform_params_ = params['platform']
-        self.platformIP_ = self.platform_params_['host_ip']
-        self.servicePort_ = self.platform_params_['services']['port']
-        self.auth_['username'] = self.platform_params_['auth']['username']
-        self.auth_['password'] = self.platform_params_['auth']['password']
+        if self.cfgParser_.has_option(section, 'username'):
+            self.auth_['username'] = self.cfgParser_.get(section, 'username')
+        else:
+            print "Cfg file [%s] is missing option <username>"
+            sys.exit(1)
 
-        for service in self.platform_params_['services']['name']:
+        if self.cfgParser_.has_option(section, 'password'):
+            self.auth_['password'] = self.cfgParser_.get(section, 'password')
+        else:
+            print "Cfg file [%s] is missing option <password>"
+            sys.exit(1)
+    #============================================================================
+
+
+
+    def __parse_services_cfg(self):
+        cfgFilePath = self.cfgFileDir_ + 'services.yaml'
+        srvList = []
+        with open(cfgFilePath, 'r') as ymlfile:
+            cfg = yaml.safe_load(ymlfile)
+
+        if 'services' in cfg:
+            services = cfg['services']
+            if 'list' in services:
+                srvList = services['list']
+
+        for service in srvList:
             self.services_.append(service)
-            self.serviceUrl_[service] = 'http://' + self.platformIP_ + ':' + str(self.servicePort_) + '/hop/' + \
-                service
+            self.serviceUrl_[service] = 'http://' + self.platformIP_ + \
+                ':' + str(self.servicePort_) + '/hop/' + service
+    #============================================================================
+
+
+    def __parse_platform_cfg(self):
+        cfgFilePath = self.cfgFileDir_ + 'platform.cfg'
+        section = 'RAPP Platform'
+        ## Catch exceptions on loading configuration file ##
+        ## TODO Enhance Exception handling
+        try:
+            self.cfgParser_.read(cfgFilePath)
+        except Exception as e:
+            print "Could not load RAPP Platform parameters from .cfg file."
+            print e
+            sys.exit(1)
+        if not self.cfgParser_.has_section(section):
+            print "\033[0mCfg file {%s} is missing section [%s]\033[0m" \
+                % (cfgFilePath, section)
+            sys.exit(1)
+
+        if self.cfgParser_.has_option(section, 'use'):
+            useSection = self.cfgParser_.get(section, 'use')
+        else:
+            print "Missing option under [RAPP Platform] section" + \
+                " in cfg file {%s}" % cfgFilePath
+            sys.exit(1)
+
+        if not self.cfgParser_.has_section(useSection):
+            print "Given value for option <use> in [RAPP Platform] Section" + \
+                " does not correspond to a defined Section in cfg file"
+            sys.exit(1)
+
+        if self.cfgParser_.has_option(useSection, 'ipv4_addr') and \
+                self.cfgParser_.has_option(useSection, 'port'):
+            self.platformIP_ = self.cfgParser_.get(useSection, 'ipv4_addr')
+            self.servicePort_ = self.cfgParser_.get(useSection, 'port')
+        else:
+            print "Missing options {ipv4_addr} and {port} in cfg file [%s]" \
+                % cfgFilePath
+            sys.exit(1)
+    #============================================================================
 
 
     ##
