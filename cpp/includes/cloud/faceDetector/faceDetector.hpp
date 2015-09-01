@@ -30,10 +30,6 @@ public:
         assert( image );
         // Create a new random boundary
         std::string boundary = randomBoundary();
-        // Create the name for the image (just a textfield request)
-        post_ = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"filename\"\r\n\r\n";
-        post_ += "image." + image_format + "\r\n";
         // Create the Multi-form POST field
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"image." + image_format + "\"\r\n";
@@ -47,7 +43,7 @@ public:
         // Count Data size
         auto size = post_.size() * sizeof( std::string::value_type );
         // Form the Header
-        header_ =  "POST /hop/face_detect HTTP/1.1\r\n";
+        header_ =  "POST /hop/face_detection HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Connection: close\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
@@ -62,6 +58,8 @@ private:
     {   
         std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), 
                              std::istreambuf_iterator<char>() );
+        std::cout << "faceDetector reply: " << json << std::endl;
+
         std::stringstream ss ( json );
         std::vector< rapp::object::face > faces;
         try

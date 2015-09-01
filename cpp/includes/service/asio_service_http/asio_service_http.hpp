@@ -71,8 +71,7 @@ protected:
                             boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                         )
     {
-        if ( !socket_ )
-            throw std::runtime_error ( "asio_service_http::handle_resolve socket ptr null" );
+        assert( socket );
         if (!err)
         {
             auto endpoint = * endpoint_iterator;
@@ -96,8 +95,7 @@ protected:
                             boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                         )
     {
-        if ( !socket_ )
-            throw std::runtime_error ( "asio_service_http::handle_connect socket ptr null" );
+        assert ( socket_ );
         if ( !err )
         {
             boost::asio::async_write( *socket_.get(),
@@ -122,8 +120,7 @@ protected:
     /// Callback for handling request and waiting for response @param err is a possible error
     void handle_write_request ( const boost::system::error_code & err )
     {
-        if ( !socket_ )
-            throw std::runtime_error ( "asio_service_http::handle_write_request socket ptr null" );
+        assert( socket_ );
         if ( !err )
         {
             // Read the response status line - Callback handler is ::handle_read_status_line
@@ -141,8 +138,7 @@ protected:
     /// Callback for handling HTTP Header Response Data @param err is a possible error message
     void handle_read_status_line ( const boost::system::error_code & err )
     {
-        if ( !socket_ )
-            throw std::runtime_error ( "asio_service_http::handle_read_status_line socket ptr null" );    
+        assert ( socket_ );
         if (!err)
         {
             // Check that HTTP Header Response is OK.
@@ -153,7 +149,7 @@ protected:
             response_stream >> status_code;
             std::string status_message;
             std::getline( response_stream, status_message );
-            
+
             if ( !response_stream || http_version.substr(0, 5) != "HTTP/" )
             {
                 invalid_request( "http Invalid response" );
@@ -179,8 +175,7 @@ protected:
     /// Callback for Handling Headers @param err is a possible error message
     void handle_read_headers ( const boost::system::error_code & err )
     {
-        if ( !socket_ )
-            throw std::runtime_error ( "asio_service_http::handle_read_headers socket ptr null" );
+        assert ( socket_ );
         if ( !err )
         {
             // Start reading Content data until EOF (see handle_read_content)
@@ -202,15 +197,14 @@ protected:
     /// Callback for Handling Actual Data Contents @param err is a possible error message
     void handle_read_content ( const boost::system::error_code & err )
     {
-        if ( !socket_ )
-            throw std::runtime_error ( "asio_service_http::handle_read_content socket ptr null" );
+        assert ( socket_ );
         if ( !err )
         {
             // Continue reading remaining data until EOF - It reccursively calls its self
             boost::asio::async_read ( *socket_.get(),
                                        response_,
                                        boost::asio::transfer_at_least( 1 ),
-                                        boost::bind( &asio_service_http::handle_read_content, 
+                                       boost::bind( &asio_service_http::handle_read_content, 
                                                      this,
                                                      boost::asio::placeholders::error ) );
         }

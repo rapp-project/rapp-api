@@ -30,10 +30,6 @@ public:
         assert( image );
         // Create a new random boundary
         std::string boundary = randomBoundary();
-        // Create the name for the image (just a textfield request)
-        post_ = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"filename\"\r\n\r\n";
-        post_ += "image." + image_format + "\r\n";
         // Create the Multi-form POST field
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; ""filename=\"image." + image_format + "\"\r\n";
@@ -63,13 +59,13 @@ private:
     {
         std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), 
                              std::istreambuf_iterator<char>() );
+        //std::cout << "qrDetector::handle_reply: " << json << std::endl;
         std::stringstream ss ( json );
         std::vector< rapp::object::qrCode > qrCodes;
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
-            // NOTE: JSON has changed, see wiki
             // https://github.com/rapp-project/rapp-platform/blob/hop_services/hop_services/services/README.md
             for ( auto child : tree.get_child( "qrs" ) )
             {
