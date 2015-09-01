@@ -160,6 +160,9 @@ protected:
                 invalid_request( std::to_string( status_code ) );
                 return;
             }
+
+            std::cout << "read status line" << std::endl;
+
             // Read the response headers, which are terminated by a blank line. This is HTTP Protocol 1.0 & 1.1
             boost::asio::async_read_until( *socket_.get(),
                                             response_, 
@@ -178,6 +181,8 @@ protected:
         assert ( socket_ );
         if ( !err )
         {
+            std::cout << "read headers" << std::endl;
+
             // Start reading Content data until EOF (see handle_read_content)
             boost::asio::async_read ( *socket_.get(),
                                        response_,
@@ -185,11 +190,6 @@ protected:
                                        boost::bind( &asio_service_http::handle_read_content, 
                                                      this,
                                                      boost::asio::placeholders::error ) );
-            // Now call the callback
-            if ( callback_ )
-                callback_( response_ );
-            else
-                throw std::runtime_error ( "asio_service_http there is no callback handler for this object" );
         }
         else error_handler( err );
     }
@@ -200,6 +200,8 @@ protected:
         assert ( socket_ );
         if ( !err )
         {
+            std::cout << "read contents" << std::endl;
+
             // Continue reading remaining data until EOF - It reccursively calls its self
             boost::asio::async_read ( *socket_.get(),
                                        response_,
@@ -207,6 +209,9 @@ protected:
                                        boost::bind( &asio_service_http::handle_read_content, 
                                                      this,
                                                      boost::asio::placeholders::error ) );
+            // Now call the callback
+            assert( callback_ );
+            callback_( response_ );
         }
         else if ( err != boost::asio::error::eof )
             error_handler( err );
