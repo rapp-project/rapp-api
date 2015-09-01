@@ -160,9 +160,6 @@ protected:
                 invalid_request( std::to_string( status_code ) );
                 return;
             }
-
-            std::cout << "read status line" << std::endl;
-
             // Read the response headers, which are terminated by a blank line. This is HTTP Protocol 1.0 & 1.1
             boost::asio::async_read_until( *socket_.get(),
                                             response_, 
@@ -181,15 +178,13 @@ protected:
         assert ( socket_ );
         if ( !err )
         {
-            std::cout << "read headers" << std::endl;
-
             // Start reading Content data until EOF (see handle_read_content)
-            boost::asio::async_read ( *socket_.get(),
-                                       response_,
-                                       boost::asio::transfer_at_least( 1 ),
-                                       boost::bind( &asio_service_http::handle_read_content, 
-                                                     this,
-                                                     boost::asio::placeholders::error ) );
+            boost::asio::async_read_until ( *socket_.get(),
+                                             response_,
+                                             "\r\n\r\n",
+                                             boost::bind( &asio_service_http::handle_read_content, 
+                                                          this,
+                                                          boost::asio::placeholders::error ) );
         }
         else error_handler( err );
     }
@@ -200,8 +195,6 @@ protected:
         assert ( socket_ );
         if ( !err )
         {
-            std::cout << "read contents" << std::endl;
-
             // Continue reading remaining data until EOF - It reccursively calls its self
             boost::asio::async_read ( *socket_.get(),
                                        response_,
@@ -209,9 +202,21 @@ protected:
                                        boost::bind( &asio_service_http::handle_read_content, 
                                                      this,
                                                      boost::asio::placeholders::error ) );
+
+            // Parse HTTP Content.
+            std::string json ( ( std::istreambuf_iterator<char>( &response_ ) ), 
+                                 std::istreambuf_iterator<char>() );
+
+            // find the "\r\n\r\b"
+            std::size_t i = json.find("\r\n\r\n");
+            if ( i != std::string::npos )
+                json = json.substr( i + 4, std::string::npos );
+            else
+                throw std::runtime_error( "can't find double return carriage after header" );
+
             // Now call the callback
             assert( callback_ );
-            callback_( response_ );
+            callback_( json );
         }
         else if ( err != boost::asio::error::eof )
             error_handler( err );
@@ -243,7 +248,7 @@ protected:
     std::string post_;
     
     /// Optional Callback Handler
-    std::function<void( boost::asio::streambuf & )> callback_;
+    std::function<void( std::string )> callback_;
     
     /// Actual Socket
     std::unique_ptr<boost::asio::ip::tcp::socket> socket_;

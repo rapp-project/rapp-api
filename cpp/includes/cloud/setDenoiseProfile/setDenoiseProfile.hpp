@@ -70,9 +70,8 @@ public:
 
 private:
 
-    void handle_reply ( boost::asio::streambuf & buffer )
+    void handle_reply ( std::string json )
     {
-        std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
         std::stringstream ss ( json );
         try
         {
@@ -94,7 +93,6 @@ private:
             std::cerr << je.message() << std::endl;
         }
     }
-
     
 };
 }

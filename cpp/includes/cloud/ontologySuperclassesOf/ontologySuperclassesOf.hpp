@@ -36,9 +36,8 @@ public:
       
 private:
       
-    void handle_reply ( boost::asio::streambuf & buffer )
+    void handle_reply ( std::string json )
     {
-        std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
         std::vector<std::string> classes;
         std::stringstream ss ( json );
         try

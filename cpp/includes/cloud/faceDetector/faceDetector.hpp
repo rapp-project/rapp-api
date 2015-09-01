@@ -54,12 +54,9 @@ public:
       
 private:
     
-    void handle_reply ( boost::asio::streambuf & buffer )
+    void handle_reply ( std::string json )
     {   
-        std::string json ( ( std::istreambuf_iterator<char>( &buffer ) ), 
-                             std::istreambuf_iterator<char>() );
-        //std::cout << "faceDetector reply: " << json << std::endl;
-
+        std::cout << "faceDetector reply: " << json << std::endl;
         std::stringstream ss ( json );
         std::vector< rapp::object::face > faces;
         try

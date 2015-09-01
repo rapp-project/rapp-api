@@ -48,10 +48,9 @@ private:
       
     /// Get reply and send it directly to delegate
     /// @note we do not do any parsing at all here 
-    void handle_reply ( boost::asio::streambuf & buffer )
+    void handle_reply ( std::string json )
     {
-        std::string reply ( ( std::istreambuf_iterator<char>( &buffer ) ), std::istreambuf_iterator<char>() );
-        delegate__ ( reply );
+        delegate__ ( json );
     }
     
     /// The callback called upon completion of receiving the detected faces
