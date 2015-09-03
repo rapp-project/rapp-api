@@ -31,6 +31,7 @@ import json
 import os
 import sys
 from CloudInterface import CloudInterface
+from RandStrGen import RandStrGen
 from ConfigParser import SafeConfigParser
 import yaml
 
@@ -57,7 +58,7 @@ class RappCloud:
         self.__parse_platform_cfg()
         self.__parse_services_cfg()
         self.__parse_auth_cfg()
-        # self.__load_platform_params()
+        self.__randStrSize = 5
         # ------------------------------------- #
     #============================================================================
 
@@ -148,6 +149,14 @@ class RappCloud:
             sys.exit(1)
     #============================================================================
 
+    def __appendRandStr(self, filePath):
+        randStr = RandStrGen.create(self.__randStrSize)
+        splStr = filePath.split('/')
+        splStr = splStr[len(splStr) - 1].split('.')
+        newName = splStr[0] + '-' + randStr + '.' + splStr[1]
+        return newName
+
+
 
     ##
     #   @brief Call different services throught a single method
@@ -190,8 +199,11 @@ class RappCloud:
             'user': user
         }
 
+        fileName = self.__appendRandStr(fileUri)
         # -- Files to be added into to poset request
-        files = {'file_uri': open(fileUri, 'rb')}
+        files = {
+            'file_uri': (fileName, open(fileUri, 'rb'))
+        }
         url = self.serviceUrl_['speech_detection_sphinx4']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
@@ -203,7 +215,8 @@ class RappCloud:
     #   @brief Calls set_denoise_profile() RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
     ##
-    def set_denoise_profile(self, noise_audio_fileUri, audio_file_type, user):
+    def set_denoise_profile(self, fileUri, audio_file_type, user):
+        fileName = self.__appendRandStr(fileUri)
         # -- Craft the data payload for the post request
         payload = {
             'user': user,
@@ -211,7 +224,7 @@ class RappCloud:
         }
         # -- Files to be added into to poset request
         files = {
-            'file_uri': open(noise_audio_fileUri, 'rb')
+            'file_uri': (fileName, open(fileUri, 'rb'))
         }
         url = self.serviceUrl_['set_denoise_profile']
 
@@ -225,9 +238,11 @@ class RappCloud:
     #   @return Return answer from RAPP Platform.
     ##
     def qr_detection(self, fileUri):
+        fileName = self.__appendRandStr(fileUri)
         files = {
-            'file_uri': open(fileUri, 'rb'),
+            'file_uri': (fileName, open(fileUri, 'rb'))
         }
+
         payload = {}
         url = self.serviceUrl_['qr_detection']
 
@@ -241,8 +256,9 @@ class RappCloud:
     #   @return Return answer from RAPP Platform.
     ##
     def face_detection(self, fileUri):
+        fileName = self.__appendRandStr(fileUri)
         files = {
-            'file_uri': open(fileUri, 'rb')
+            'file_uri': (fileName, open(fileUri, 'rb'))
         }
         payload = {}
         url = self.serviceUrl_['face_detection']
@@ -315,9 +331,10 @@ class RappCloud:
     #   @return Return answer from RAPP Platform.
     ##
     def detect_objects(self, fileUri, limit):
+        fileName = self.__appendRandStr(fileUri)
         # -- Files to be added into to poset request
         files = {
-            'file_uri': open(fileUri, 'rb')
+            'file_uri': (fileName, open(fileUri, 'rb'))
         }
         payload = {
             'limit': int(limit)
