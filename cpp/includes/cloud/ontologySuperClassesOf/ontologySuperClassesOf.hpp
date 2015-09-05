@@ -10,7 +10,7 @@ namespace cloud {
  * @date 
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontologySuperclassesOf : public rapp::services::asio_service_http
+class ontologySuperClassesOf : public rapp::services::asio_service_http
 {
 public:
     
@@ -19,19 +19,20 @@ public:
      * @param query is the entity for which we will try to acquire its Super-Ordinates
      * @param callback is the functor that will receive the classes discovered
      */
-    ontologySuperclassesOf (
+    ontologySuperClassesOf (
                               const std::string query,
                               std::function< void( std::vector<std::string> ) > callback
                            )
     : rapp::services::asio_service_http(), delegate__ ( callback )
     {
         post_ = "query="+query+"\r\n\r\n";
+
         header_ = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
-        callback_ = std::bind ( &ontologySuperclassesOf::handle_reply, this, std::placeholders::_1 );
+        callback_ = std::bind ( &ontologySuperClassesOf::handle_reply, this, std::placeholders::_1 );
      }
       
 private:
@@ -40,6 +41,8 @@ private:
     {
         std::vector<std::string> classes;
         std::stringstream ss ( json );
+        std::cout << "[ontologySuperClassesOf] REPLY: " << json << std::endl;
+        /*
         try
         {
             boost::property_tree::ptree tree;
@@ -62,6 +65,7 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
+        */
         delegate__( classes );
     }
       

@@ -18,39 +18,38 @@ public:
      * This class does not return something, it only captures an error
      */
     setDenoiseProfile (
-                         const std::shared_ptr<audio> file,
+                         const std::shared_ptr<rapp::object::audio> file,
                          const std::string user
                       )
     : rapp::services::asio_service_http ()
     {
-                assert( file );
+        assert( file );
 
         // Create a new random boundary
         std::string boundary = randomBoundary();
-        
-        // --boundary
-        // Content-Disposition: form-data; name="user"
-        //
-        // alex
-        // --boundary
 
-        // Create the name for the audio file - TODORandomize file name instead of 'audio.wav'
-        post_ = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"filename\"\r\n\r\n";
-        post_ += "audio.wav\r\n";
-        
-        // Create the Multi-form POST field
-        //      (wav) audio/x-wav; audio/wav
-        //      (wav) audio/vnd.wave; codec=123 - when we know the codec
-        
+        // Random audio file name (NOTE: Assume WAV File)
+        std::string fname = randomBoundary()+".wav";
+
+        // User parameter        
+        post_  = "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"user\"\r\n\r\n";
+        post_ += user +"\r\n";
+
+        // Create the name for the audio file
         post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"audio.wav\"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
+        post_ += fname + "\r\n";
+        
+        // Create the Multi-form POST field for the actualAUDIO/WAV data
+        post_ += "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n";
         post_ += "Content-Type: audio/wav\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
-        
+       
         // Append binary data
-        auto imagebytes = audio->bytearray();
-        post_.insert( post_.end(), imagebytes.begin(), imagebytes.end() );
+        auto bytes = file->bytearray();
+        post_.insert( post_.end(), bytes.begin(), bytes.end() );
         post_ += "\r\n";
         post_ += "--" + boundary + "--";
         
@@ -58,7 +57,7 @@ public:
         auto size = post_.size() * sizeof( std::string::value_type );
         
         // Form the Header
-        header_ =  "POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n";
+        header_ =  "POST /hop/set_denoise_profile HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Connection: close\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
@@ -73,6 +72,8 @@ private:
     void handle_reply ( std::string json )
     {
         std::stringstream ss ( json );
+        std::cout << "[setDenoiseProfile] REPLY: " << json << std::endl;
+        /*
         try
         {
             boost::property_tree::ptree tree;
@@ -92,8 +93,10 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
+        */
     }
     
 };
 }
 }
+#endif

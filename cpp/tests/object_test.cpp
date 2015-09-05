@@ -3,6 +3,7 @@
 #include "../includes/objects/face/face.hpp"
 #include "../includes/objects/qrCode/qrCode.hpp"
 #include "../includes/objects/picture/picture.hpp"
+#include "../includes/objects/audio/audio.hpp"
 
 BOOST_AUTO_TEST_SUITE ( object_test )
 
@@ -60,7 +61,18 @@ BOOST_AUTO_TEST_CASE( constructors_test )
     rapp::object::picture asmt = lena;
     BOOST_CHECK( lena == asmt );
 
-    // TODO: audio tests
+    // audio tests
+    rapp::object::audio t1 ( "terminator1.wav" );
+    std::ifstream bytes( "terminator1.wav", std::ios::in | std::ios::binary | std::ios::ate );
+    rapp::object::audio t1_ifstrm ( bytes );
+
+    BOOST_CHECK( t1 == t1_ifstrm );
+
+    rapp::object::audio t2 ( "terminator2.wav" );
+    rapp::object::audio t2_cpy = t2;
+
+    //BOOST_CHECK_PREDICATE( std::not_equal_to<rapp::object::audio>(), (t1)(t2) );
+    BOOST_CHECK( t2 == t2_cpy );
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

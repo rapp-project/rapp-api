@@ -1,5 +1,5 @@
-#ifndef RAPP_CLOUD_ONTOLOGY_SUBCLASS_OF
-#define RAPP_CLOUD_ONTOLOGY_SUBCLASS_OF
+#ifndef RAPP_CLOUD_ONTOLOGY_SUBCLASSES_OF
+#define RAPP_CLOUD_ONTOLOGY_SUBCLASSES_OF
 #include "Includes.ihh"
 namespace rapp {
 namespace cloud {
@@ -9,10 +9,8 @@ namespace cloud {
  * @version 2
  * @date 18-April-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- *
- * TODO: is this callsed `ontology subclass of`, or `ontology subclasses of` ?
  */
-class ontologySubclassOf : public rapp::services::asio_service_http
+class ontologySubClassesOf : public rapp::services::asio_service_http
 {
 public:
 
@@ -22,10 +20,10 @@ public:
      * @param query is the entity for which we will try to acquire its Super-Ordinates
      * @param callback is the functor that will receive the classes discovered
      */
-    ontologySubclassOf (
-                          const std::string query,
-                          std::function< void( std::vector<std::string> ) > callback
-                       )
+    ontologySubClassesOf (
+                           std::string query,
+                           std::function< void( std::vector<std::string> ) > callback
+                         )
     : rapp::services::asio_service_http(), delegate__ ( callback )
     {
         post_ = "query="+query+"\r\n\r\n";
@@ -35,7 +33,7 @@ public:
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
         
-        callback_ = std::bind ( &ontologySubclassOf::handle_reply, this, std::placeholders::_1 );
+        callback_ = std::bind ( &ontologySubClassesOf::handle_reply, this, std::placeholders::_1 );
      }
       
 private:
@@ -44,6 +42,8 @@ private:
     {
         std::vector<std::string> classes;
         std::stringstream ss ( json );
+        std::cout << "[ontologySubClassesOf] REPLY: " << json << std::endl;
+        /*
         try
         {
             boost::property_tree::ptree tree;
@@ -66,6 +66,7 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
+        */
         delegate__( classes );
     }
       

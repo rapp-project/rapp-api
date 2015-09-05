@@ -71,7 +71,7 @@ private:
     audio ( ) = delete;
 
     // Copy the bytestream into the bytearray
-    void openCopy_ ( std::ifstream & bytestream );
+    void openCopy_ ( std::ifstream & bytestream )
     {
         bytestream.seekg( 0, std::ios_base::end );
         std::streampos fileSize = bytestream.tellg();

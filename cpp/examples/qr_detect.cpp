@@ -15,8 +15,10 @@ int main ( int argc, char* argv[] )
     
     auto callback = [&]( std::vector< rapp::object::qrCode > codes )
                     {
-                        std::cout << "found " << codes.size() << " QR codes: " 
-                                << codes.at(0).label()  << std::endl;
+                        std::cout << "found " << codes.size() << " QR codes" << std::endl;
+                        for ( const auto code : codes )
+                            std::cout << code.label() << std::endl;
+                        
                     };
     
     auto fdetect = std::make_shared<rapp::cloud::qrDetector>( pic, "png", callback );

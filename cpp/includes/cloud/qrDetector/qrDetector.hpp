@@ -28,20 +28,28 @@ public:
     : rapp::services::asio_service_http (), delegate__ ( callback )
     {
         assert( image );
+       
         // Create a new random boundary
         std::string boundary = randomBoundary();
+
+        // Create a random image name
+        std::string fname = randomBoundary() + "." + image_format;
+
         // Create the Multi-form POST field
         post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; ""filename=\"image." + image_format + "\"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; ""filename=\"" + fname + "\"\r\n";
         post_ += "Content-Type: image/" + image_format + "\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
+        
         // Append binary data
         auto imagebytes = image->bytearray();
         post_.insert( post_.end(), imagebytes.begin(), imagebytes.end() );
         post_ += "\r\n";
         post_ += "--" + boundary + "--";
+        
         // Count Data size
         auto size = post_.size() * sizeof( std::string::value_type );
+        
         // Form the Header
         header_ =  "POST /hop/qr_detection HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
@@ -59,11 +67,12 @@ private:
     {
         std::stringstream ss ( json );
         std::vector< rapp::object::qrCode > qrCodes;
+        std::cout << "qrDetector REPLY: " << json << std::endl;
+        /*
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
-            // https://github.com/rapp-project/rapp-platform/blob/hop_services/hop_services/services/README.md
             for ( auto child : tree.get_child( "qrs" ) )
             {
                 float qr_center_x = -1.;
@@ -91,6 +100,7 @@ private:
                         je.filename()  << " on line: " << je.line() << std::endl;
           std::cerr << je.message() << std::endl;
         }
+        */
         delegate__( qrCodes );
     }
     

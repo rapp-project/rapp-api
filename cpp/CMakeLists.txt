@@ -28,7 +28,8 @@ set (SOURCES ${SOURCES}     ${INCLUDES}/service/asio_service_raw/asio_service_ra
 add_executable ( rapp_face_detect_example  ${EXAMPLES}/face_detect.cpp)
 add_executable ( rapp_qr_detect_example    ${EXAMPLES}/qr_detect.cpp)
 add_executable ( rapp_fetch_data_example   ${EXAMPLES}/fetch_data.cpp)
-add_executable ( rapp_ontology_example     ${EXAMPLES}/ontology_test.cpp)
+add_executable ( rapp_ontology_example     ${EXAMPLES}/ontology_example.cpp)
+add_executable ( rapp_set_denoise_example  ${EXAMPLES}/set_denoise_example.cpp)
 
 # Enable Unit Testing
 enable_testing ()
@@ -79,6 +80,12 @@ target_link_libraries( rapp_ontology_example    ${CMAKE_THREAD_LIBS_INIT}
                                                 ${Boost_THREAD_LIBRARY} 
                                                 ${Boost_SYSTEM_LIBRARY}
                                                 rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+target_link_libraries( rapp_set_denoise_example ${CMAKE_THREAD_LIBS_INIT} 
+                                                ${Boost_THREAD_LIBRARY} 
+                                                ${Boost_SYSTEM_LIBRARY}
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
 
 target_link_libraries( rapp_object_test         ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
                                                 rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
