@@ -5,7 +5,7 @@
  */
 function RAPPCloud ( )
 {
-    this.cloud_url = "http://localhost:8080";
+    this.cloud_url = "http://155.207.19.26:9001";
 }
 
 /**
@@ -98,6 +98,5 @@ SendImageFile: function ( filename, callback )
 }
 
 
-
 /// Export
-module.exports.RAPPCloud = RAPPCloud;
+module.exports = RAPPCloud;
