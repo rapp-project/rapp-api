@@ -5,7 +5,7 @@
  */
 function RAPPCloud ( )
 {
-    this.cloud_url = "http://155.207.19.26:9001";
+    this.cloud_url = "http://155.207.19.13:9001";
 }
 
 /**
