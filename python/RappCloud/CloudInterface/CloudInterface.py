@@ -68,10 +68,15 @@ class CloudInterface:
                 'error': str(e)
             }
         else:
-            # print response.text  # JSON decoder
-            returnData = response.json()  # JSON decoder
+            print response.headers
+            # print response.encoding
+            print response.content
+            # fix = response.content.replace("\"", "").replace("\'", "\"")
+            # print fix
+            data = json.loads(response.content)
+            print data
+            returnData = data  # JSON decoder
 
-        # print response.text
         return returnData
     #============================================================================
 

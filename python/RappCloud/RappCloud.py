@@ -211,6 +211,24 @@ class RappCloud:
         return returnData
     #============================================================================
 
+    def speech_detection_google(self, fileUri):
+
+        # -- Craft the data payload for the post request
+        payload = {
+        }
+
+        fileName = self.__appendRandStr(fileUri)
+        # -- Files to be added into to post request
+        files = {
+            'file_uri': (fileName, open(fileUri, 'rb'))
+        }
+        url = self.serviceUrl_['speech_detection_google']
+
+        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        return returnData
+    #============================================================================
+
+
 
     ##
     #   @brief Calls set_denoise_profile() RAPP Platform front-end service.

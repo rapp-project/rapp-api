@@ -2,6 +2,7 @@ services:
   list:
     - available_services
     - speech_detection_sphinx4
+    - speech_detection_google
     - qr_detection
     - face_detection
     - set_denoise_profile
