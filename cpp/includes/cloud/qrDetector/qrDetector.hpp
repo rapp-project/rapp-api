@@ -67,31 +67,33 @@ private:
     {
         std::stringstream ss ( json );
         std::vector< rapp::object::qrCode > qrCodes;
-        std::cout << "qrDetector REPLY: " << json << std::endl;
-        /*
+        
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
-            for ( auto child : tree.get_child( "qrs" ) )
+            for ( auto child : tree.get_child( "qr_centers" ) )
             {
-                float qr_center_x = -1.;
-                float qr_center_y = -1.;
-                std::string qr_message;
+                std::tuple<float,float,float, std::string> qrcode;
+
                 for ( auto iter = child.second.begin(); iter != child.second.end(); ++iter )
                 {
-                    std::string member( iter->first );
+                    if ( iter->first == "x" )
+                        std::get<0>( qrcode ) = iter->second.get_value<float>();
 
-                    if ( member == "qr_center_x" )
-                        qr_center_x = iter->second.get_value<float>();
+                    else if ( iter->first == "y" )
+                        std::get<1>( qrcode ) = iter->second.get_value<float>();
 
-                    else if ( member == "qr_center_y" )
-                        qr_center_y = iter->second.get_value<float>();
+                    else if ( iter->first == "z" )
+                        std::get<2>( qrcode ) = iter->second.get_value<float>();
 
-                    else if ( member == "qr_message" )
-                        qr_message = iter->second.get_value<std::string>();
+                    else if ( iter->first == "message" )
+                        std::get<3>( qrcode ) = iter->second.get_value<std::string>();
                 }
-                qrCodes.push_back( rapp::object::qrCode ( qr_center_x, qr_center_y, qr_message ) );
+                qrCodes.push_back( rapp::object::qrCode ( std::get<0>( qrcode ),
+                                                          std::get<1>( qrcode ),
+                                                          // std::get<2>( qrcode ), // TODO: qrCode class doesn't use Z coord.
+                                                          std::get<3>( qrcode ) ) );
             }
         }
         catch( boost::property_tree::json_parser::json_parser_error & je )
@@ -100,7 +102,6 @@ private:
                         je.filename()  << " on line: " << je.line() << std::endl;
           std::cerr << je.message() << std::endl;
         }
-        */
         delegate__( qrCodes );
     }
     

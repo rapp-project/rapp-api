@@ -16,7 +16,7 @@ int main ( int argc, char* argv[] )
                         std::cout << str << std::endl;
                };
                     
-    auto subclassHandle = std::make_shared<rapp::cloud::ontologySubClassesOf>( "table", cb1 );
+    auto subclassHandle = std::make_shared<rapp::cloud::ontologySubClassesOf>( "Oven", cb1 );
    
     // Superclass Ontologies
     auto cb2 = []( std::vector<std::string> classes )
@@ -25,7 +25,7 @@ int main ( int argc, char* argv[] )
                         std::cout << str << std::endl;
                  };
     
-    auto superclassHandle = std::make_shared<rapp::cloud::ontologySuperClassesOf>( "chair", cb2 );
+    auto superclassHandle = std::make_shared<rapp::cloud::ontologySuperClassesOf>( "Oven", cb2 );
 
     // SubSuperClass Of
     auto cb3 = []( std::vector<std::string> classes )
@@ -34,7 +34,7 @@ int main ( int argc, char* argv[] )
                         std::cout << str << std::endl;
                  };
 
-    auto subsuperclassHandle = std::make_shared<rapp::cloud::ontologyIsSubSuperClassOf>( "water", "sea", false, cb3 );
+    auto subsuperclassHandle = std::make_shared<rapp::cloud::ontologyIsSubSuperClassOf>( "Oven", "SpatialThing", false, cb3 );
 
     // Request from service controller to run this job
     ctrl.runJob ( subclassHandle );

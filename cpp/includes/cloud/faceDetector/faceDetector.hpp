@@ -65,45 +65,63 @@ private:
     
     void handle_reply ( std::string json )
     {   
-        std::cout << "faceDetector reply: " << json << std::endl;
         std::stringstream ss ( json );
         std::vector< rapp::object::face > faces;
 
-        /*
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
-            // TODO: JSON has changed, see wiki
-            // https://github.com/rapp-project/rapp-platform/blob/hop_services/hop_services/services/README.md
             for ( auto child : tree.get_child( "faces" ) )
             {
-                float top_left_x = -1.;
-                float top_left_y = -1.;
-                float bottom_right_x = -1.;
-                float bottom_right_y = -1.;
+		        std::tuple<float,float,float> up_left;
+		        std::tuple<float,float,float> down_right;
+
                 for ( auto iter = child.second.begin(); iter!= child.second.end(); ++iter )
                 {
-                    std::string member( iter->first );
-                    if ( member == "top_left_x" )
-                        top_left_x = iter->second.get_value<float>();
-                    else if ( member == "top_left_y" )
-                        top_left_y = iter->second.get_value<float>();
-                    else if ( member == "bottom_right_x" )
-                        bottom_right_x = iter->second.get_value<float>();
-                    else if ( member == "bottom_right_y" )
-                        bottom_right_y = iter->second.get_value<float>();
+                    if ( iter->first == "up_left_point" )
+		            {
+			            for ( auto it : iter->second )
+			            {
+		                   if ( it.first == "x" )
+                               std::get<0>( up_left ) = it.second.get_value<float>();
+
+                           else if ( it.first == "y" )
+                               std::get<1>( up_left ) = it.second.get_value<float>();
+
+                           else if ( it.first == "z" )
+                               std::get<2>( up_left ) = it.second.get_value<float>();
+			            }
+		            }
+                    else if ( iter->first == "down_right_point" )
+		            {
+                        for ( auto it : iter->second )
+                        {
+                            if ( it.first == "x" )
+                                std::get<0>( down_right) = it.second.get_value<float>();
+
+                            else if ( it.first == "y" )
+                                std::get<1>( down_right ) = it.second.get_value<float>();
+
+                            else if ( it.first == "z" )
+                                std::get<2>( down_right ) = it.second.get_value<float>();
+                        }
+                    }
+
                 }
-                faces.push_back( rapp::object::face( top_left_x, top_left_y, bottom_right_x, bottom_right_y ) );
+                // TODO - NOTE: rapp::object::face does not use Z coordinates, this must be updated in the class
+                faces.push_back( rapp::object::face( std::get<0>( up_left ),
+                                                     std::get<1>( up_left ),
+                                                     std::get<0>( down_right ),
+                                                     std::get<1>( down_right ) ) );
             }
         }
-        catch( boost::property_tree::json_parser::json_parser_error & je )
+        catch ( boost::property_tree::json_parser::json_parser_error & je )
         {
             std::cerr << "faceDetector::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        */
         delegate_( faces );
     }    
      

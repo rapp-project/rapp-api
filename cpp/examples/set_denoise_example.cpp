@@ -6,7 +6,7 @@ int main ( )
 {
     rapp::services::service_controller ctrl;
     
-    if ( auto wav = std::make_shared<rapp::object::audio>( "terminator1.wav" ) )
+    if ( auto wav = std::make_shared<rapp::object::audio>( "terminator_1.wav" ) )
     {
         auto set_denoise = std::make_shared<rapp::cloud::setDenoiseProfile>( wav, "alex" );
       

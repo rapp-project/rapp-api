@@ -11,7 +11,7 @@ int main ( int argc, char* argv[] )
      */
     rapp::services::service_controller ctrl;
     
-    if ( auto pic = std::make_shared<rapp::object::picture>( "lena.jpg" ) )
+    if ( auto pic = std::make_shared<rapp::object::picture>( "Lenna.png" ) )
     {
         auto callback = [&]( std::vector<rapp::object::face> faces )
                             { std::cout << "found " << faces.size() << " faces!" << std::endl; };
