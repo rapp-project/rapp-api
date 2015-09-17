@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var RAPPCloud = require('./../../RAPP.js');
+var RAPPCloud = require('./../../../RAPPCloud.js');
 
 /**
  * Prototype the RAPPCloud Service Method.
@@ -12,19 +12,24 @@ var RAPPCloud = require('./../../RAPP.js');
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  */ 
 
+/**
+ * @brief Constructor for this handler
+ * @param query is the entity for which we will try to acquire its Super-Ordinates
+ * @param callback is the function that will receive the classes discovered
+ */
 RAPPCloud.prototype.ontologySubclassOf = function ( query, callback )
-
 {
-    var rapp = this;
+    var cloud = this;
     var body_string = 'query=' + query ;
     var request = require('request');
     request.post({
         headers: {
-			'Content-Type' : 'application/x-www-form-urlencoded',
-			'Content-Length' : body_string.length.toString(),
-			'Connection' : 'close'
+//			'Authorization' : 'Basic cmFwcGRldjpyYXBwZGV2',
+			'Content-Type' : 'application/x-www-form-urlencoded'
+//			'Content-Length' : body_string.length.toString(),
+//			'Connection' : 'close'
 			},
-        url: rapp.cloud_url + '/hop/ontology_subclasses_of/ ',
+        url: cloud.cloud_url + '/hop/ontology_subclasses_of/ ',
         body: body_string
     },
     function ( error, response, body ) 
@@ -37,8 +42,6 @@ RAPPCloud.prototype.ontologySubclassOf = function ( query, callback )
             console.log ( "Error: " + response.statusCode );
     })
 }
-
-
 
 /// Export
 module.exports = RAPPCloud;

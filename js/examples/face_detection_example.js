@@ -2,7 +2,7 @@
 
 
 // Import the ontologySubclassOf JS API & Init the RAPPCloud Object
-var RAPPCloud = require('./../includes/cloud/ontologySubclassOf/ontologySubclassOf.js');
+var RAPPCloud = require('./../includes/cloud/faceDetector/faceDetector.js');
 var services = new RAPPCloud( );
 
 /** 
@@ -14,4 +14,4 @@ function handler ( data )
     console.log ( "Reply: " + data );
 }
 
-services.ontologySubclassOf("Oven", handler );
+services.faceDetector('./Lenna.png', handler );
