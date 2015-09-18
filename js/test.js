@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Import the RAPP JS API & Init the Object
-var RAPPCloud = require('./RAPP.js');
+var RAPPCloud = require('./RAPPCloud.js');
 var services = new RAPPCloud( );
 
 /** 
