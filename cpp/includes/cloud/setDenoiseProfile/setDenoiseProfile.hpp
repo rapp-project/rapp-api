@@ -34,7 +34,7 @@ public:
         // User parameter        
         post_  = "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"user\"\r\n\r\n";
-        post_ += user +"\r\n";
+        post_ += user + "\r\n";
 
         // Create the name for the audio file
         post_ += "--" + boundary + "\r\n";
@@ -62,7 +62,9 @@ public:
         header_ += "Connection: close\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
-        
+       
+        std::cout << header_ << post_;
+         
         // bind the base class callback, to our handle_reply
         callback_ = std::bind ( &setDenoiseProfile::handle_reply, this, std::placeholders::_1 );
     }

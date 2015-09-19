@@ -89,8 +89,8 @@ private:
                            else if ( it.first == "y" )
                                std::get<1>( up_left ) = it.second.get_value<float>();
 
-                           else if ( it.first == "z" )
-                               std::get<2>( up_left ) = it.second.get_value<float>();
+//                         else if ( it.first == "z" )
+//                             std::get<2>( up_left ) = it.second.get_value<float>();
 			            }
 		            }
                     else if ( iter->first == "down_right_point" )
@@ -103,17 +103,19 @@ private:
                             else if ( it.first == "y" )
                                 std::get<1>( down_right ) = it.second.get_value<float>();
 
-                            else if ( it.first == "z" )
-                                std::get<2>( down_right ) = it.second.get_value<float>();
+                            //else if ( it.first == "z" )
+                            //    std::get<2>( down_right ) = it.second.get_value<float>();
                         }
                     }
 
                 }
-                // TODO - NOTE: rapp::object::face does not use Z coordinates, this must be updated in the class
+
                 faces.push_back( rapp::object::face( std::get<0>( up_left ),
                                                      std::get<1>( up_left ),
+                                                     std::get<2>( up_left ),
                                                      std::get<0>( down_right ),
-                                                     std::get<1>( down_right ) ) );
+                                                     std::get<1>( down_right ),
+                                                     std::get<2>( down_right ) ) );
             }
         }
         catch ( boost::property_tree::json_parser::json_parser_error & je )

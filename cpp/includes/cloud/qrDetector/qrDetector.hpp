@@ -74,7 +74,7 @@ private:
             boost::property_tree::read_json( ss, tree );
             for ( auto child : tree.get_child( "qr_centers" ) )
             {
-                std::tuple<float,float,float, std::string> qrcode;
+                std::tuple<float,float,std::string> qrcode;
 
                 for ( auto iter = child.second.begin(); iter != child.second.end(); ++iter )
                 {
@@ -84,16 +84,12 @@ private:
                     else if ( iter->first == "y" )
                         std::get<1>( qrcode ) = iter->second.get_value<float>();
 
-                    else if ( iter->first == "z" )
-                        std::get<2>( qrcode ) = iter->second.get_value<float>();
-
                     else if ( iter->first == "message" )
-                        std::get<3>( qrcode ) = iter->second.get_value<std::string>();
+                        std::get<2>( qrcode ) = iter->second.get_value<std::string>();
                 }
                 qrCodes.push_back( rapp::object::qrCode ( std::get<0>( qrcode ),
                                                           std::get<1>( qrcode ),
-                                                          // std::get<2>( qrcode ), // TODO: qrCode class doesn't use Z coord.
-                                                          std::get<3>( qrcode ) ) );
+                                                          std::get<2>( qrcode ) ) );
             }
         }
         catch( boost::property_tree::json_parser::json_parser_error & je )

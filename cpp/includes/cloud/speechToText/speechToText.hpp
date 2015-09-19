@@ -6,8 +6,8 @@ namespace cloud {
 /**
  * @class speechToText
  * @brief Asynchronous Service which will request the cloud to process speech-to-text
- * @version 0
- * @date 1-February-2015
+ * @version 1
+ * @date 19-September-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class speechToText : public rapp::services::asio_service_http
@@ -27,8 +27,8 @@ public:
     speechToText (
                     const std::shared_ptr<audio> file,
                     const std::string language,
-                    const std::string grammar,
                     const std::string user,
+                    const std::vector<std::string> grammar,
                     const std::vector<std::string> words,
                     const std::vector<std::string> sentences,
                     std::function< void( std::vector<std::string> words ) > callback
@@ -40,59 +40,54 @@ public:
         // Create a new random boundary
         std::string boundary = randomBoundary();
         
-        // --boundary
-        // Content-Disposition: form-data; name="language"
-        //
-        // EN
-        // --boundary
-        // Content-Disposition: form-data; name="grammar"
-        //
-        // Blah
-        // --boundary
-        // Content-Disposition: form-data; name="user"
-        //
-        // alex
-        // --boundary
-        // Content-Disposition: form-data; name="words"
-        // Content-Type: text/plain
-        //
-        // blah; blah; blah; blah;
-        // --boundary
-        // Content-Disposition: form-data; name="sentences"
-        // Content-Type: text/plain
-        //
-        // one sentence;
-        // second sentence;
-        // third sentence;
-        // --boundary
+        // Random audio file name (NOTE: Assume WAV File)
+        std::string fname = randomBoundary();
+            
+        // Boundary start and 1st POST
+        post_  = "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"language\"\r\n\r\n";
+        post_ += language + "\r\n";
 
-        // Create the name for the audio file - TODORandomize file name instead of 'audio.wav'
-        post_ = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"filename\"\r\n\r\n";
-        post_ += "audio.wav\r\n";
-        
-        // Create the Multi-form POST field
-        //
-        // NOTE - Normally, Content-Type is 
-        //      (mp3) audio/mpeg; audio/x-mpeg; audio/x-mpeg-3; audio/mpeg3
-        //      (wav) audio/x-wav; audio/wav
-        //      (wav) audio/vnd.wave; codec=123 - when we know the codec
-        //
-        // However, due to streaming tendencies, we can also try
-        //      Content-Disposition: attachment;
-        //      Content-Type "application/force-download
-        
+        // User
         post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"audio.wav\"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"user\"\r\n\r\n";
+        post_ += user + "\r\n";
+
+        // Grammar[]
+        post_ += "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"grammar\"\r\n\r\n";
+        for ( const auto gram : grammar )
+            post_ += gram + ";\r\n";        
+
+        // Words[]
+        post_ += "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"words\"\r\n\r\n";
+        for ( const auto word : words )
+            post_ += word + ";\r\n";
+
+        // Sentences[]
+        post_ += "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"sentences\"\r\n\r\n";
+        for ( const auto sent : sentences )
+            post_ += sent + ";\r\n";
+
+        // audio_source (the filename of the audio file)
+        post_ = "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
+        post_ += fname + "\r\n";
+
+        // file_uri - NOTE Assume WAV extension
+        post_ += "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + ".wav\"\r\n";
         post_ += "Content-Type: audio/wav\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
-        
+       
         // Append binary data
-        auto imagebytes = audio->bytearray();
-        post_.insert( post_.end(), imagebytes.begin(), imagebytes.end() );
+        auto bytes = file->bytearray();
+        post_.insert( post_.end(), bytes.begin(), bytes.end() );
         post_ += "\r\n";
         post_ += "--" + boundary + "--";
-        
+       
         // Count Data size
         auto size = post_.size() * sizeof( std::string::value_type );
         

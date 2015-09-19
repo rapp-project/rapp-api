@@ -28,10 +28,9 @@ int main ( int argc, char* argv[] )
     auto superclassHandle = std::make_shared<rapp::cloud::ontologySuperClassesOf>( "Oven", cb2 );
 
     // SubSuperClass Of
-    auto cb3 = []( std::vector<std::string> classes )
+    auto cb3 = []( bool result )
                  {
-                    for ( const auto & str : classes )
-                        std::cout << str << std::endl;
+                    std::cout << "is Subclass Superclass of " << result << std::endl;
                  };
 
     auto subsuperclassHandle = std::make_shared<rapp::cloud::ontologyIsSubSuperClassOf>( "Oven", "SpatialThing", false, cb3 );

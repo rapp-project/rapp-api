@@ -23,27 +23,19 @@ class face
     face ( 
             float top_left_x,
             float top_left_y,
+            float top_left_z,
             float bottom_right_x,
-            float bottom_right_y
+            float bottom_right_y,
+            float bottom_right_z
           )
     : top_left_x__( top_left_x ),
       top_left_y__( top_left_y ),
+      top_left_z__( top_left_z ),
       bottom_right_x__( bottom_right_x ),
-      bottom_right_y__( bottom_right_y )
+      bottom_right_y__( bottom_right_y ),
+      bottom_right_z__( bottom_right_z )
     { }
-    
-    /**
-     * @brief Consruct using face coordinates (a rectangle) and an optional label
-     * @note label could be anything
-    face ( 
-            float top_left_x,
-            float top_left_y,
-            float bot_right_x,
-            float bot_right_y,
-            std::string label
-         );
-    */
-    
+   
     // Allow empty consructor
     face ( ) = default;
     
@@ -58,19 +50,21 @@ class face
     {
         return ( this->top_left_x__ == rhs.top_left_x__ &&
                  this->top_left_y__ == rhs.top_left_y__ &&
+                 this->top_left_z__ == rhs.top_left_z__ &&
                  this->bottom_right_x__ == rhs.bottom_right_x__ &&
-                 this->bottom_right_y__ == rhs.bottom_right_y__ );
+                 this->bottom_right_y__ == rhs.bottom_right_y__ &&
+                 this->bottom_right_z__ == rhs.bottom_right_z__  );
     }
     
   private:
       
     float top_left_x__ = -1.;
     float top_left_y__ = -1.;
+    float top_left_z__ = -1.;
     float bottom_right_x__ = -1.;
     float bottom_right_y__ = -1.;
+    float bottom_right_z__ = -1.;
 };
-
-
 }
 }
 #endif

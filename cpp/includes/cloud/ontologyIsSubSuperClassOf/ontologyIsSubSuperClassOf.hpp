@@ -23,12 +23,12 @@ public:
                                 const std::string parent,
                                 const std::string child,
                                 bool recursive,
-                                std::function< void( std::vector<std::string> ) > callback
+                                std::function< void( bool result ) > callback
                                )
     : rapp::services::asio_service_http(), delegate__ ( callback )
     {
         post_ = "parent_class=" + parent + "&child_class=" + child + "&recursive="
-                + ( recursive == true ? "true" : "false" ) +"\r\n\r\n";
+                + ( recursive == true ? "true" : "false" );
 
         header_ = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
@@ -44,36 +44,37 @@ private:
     {
         std::vector<std::string> classes;
         std::stringstream ss ( json );
-        std::cout << "[ontologySubSuperclassOf] REPLY: " << json << std::endl;
-        /*
+        bool result;
+
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
+            
             // JSON reply is: { results: [], trace: [], error: '' }
-            for ( auto child : tree.get_child( "results" ) )
-                for ( auto iter = child.second.begin(); iter!= child.second.end(); ++iter )
-                    classes.push_back ( iter->second.get_value<std::string>() );
+            for ( auto child : tree.get_child( "result" ) )
+                result = child.second.get_value<bool>();
+        
             // Check for Errors returned by the api.rapp.cloud
             for ( auto child : tree.get_child( "error" ) )
             {
                 const std::string value = child.second.get_value<std::string>();
                 if ( !value.empty() )
-                    std::cerr << "ontologySuperclassesOf JSON error: " << value << std::endl;
+                    std::cerr << "ontologyIsSubSuperClassOf JSON error: " << value << std::endl;
             }
         }
         catch( boost::property_tree::json_parser::json_parser_error & je )
         {
-            std::cerr << "ontologySuperclassesOf::handle_reply Error parsing: " << je.filename() 
+            std::cerr << "ontologyIsSubSuperClassOf::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        */
-        delegate__( classes );
+        
+        delegate__( result );
     }
       
     /// The callback called upon completion of receiving the detected faces
-    std::function< void( std::vector<std::string> classes ) > delegate__;
+    std::function< void( bool result ) > delegate__;
 };
   
 }

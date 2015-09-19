@@ -25,7 +25,7 @@ public:
                            )
     : rapp::services::asio_service_http(), delegate__ ( callback )
     {
-        post_ = "query="+query+"\r\n\r\n";
+        post_ = "query="+query;
 
         header_ = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
@@ -41,16 +41,16 @@ private:
     {
         std::vector<std::string> classes;
         std::stringstream ss ( json );
-        std::cout << "[ontologySuperClassesOf] REPLY: " << json << std::endl;
-        /*
+        
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
+
             // JSON reply is: { results: [], trace: [], error: '' }
             for ( auto child : tree.get_child( "results" ) )
-                for ( auto iter = child.second.begin(); iter!= child.second.end(); ++iter )
-                    classes.push_back ( iter->second.get_value<std::string>() );
+                classes.push_back ( child.second.get_value<std::string>() );
+
             // Check for Errors returned by the api.rapp.cloud
             for ( auto child : tree.get_child( "error" ) )
             {
@@ -65,7 +65,7 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        */
+        
         delegate__( classes );
     }
       
