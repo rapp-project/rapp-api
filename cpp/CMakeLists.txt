@@ -27,7 +27,7 @@ set (SOURCES ${SOURCES}     ${INCLUDES}/service/asio_service_raw/asio_service_ra
 # Examples
 add_executable ( ex_face_detect  ${EXAMPLES}/face_detect.cpp)
 add_executable ( ex_qr_detect    ${EXAMPLES}/qr_detect.cpp)
-#add_executable ( ex_fetch_data   ${EXAMPLES}/fetch_data.cpp)
+add_executable ( ex_speech_recog ${EXAMPLES}/speech_to_text.cpp)
 add_executable ( ex_ontology     ${EXAMPLES}/ontology_example.cpp)
 add_executable ( ex_set_denoise  ${EXAMPLES}/set_denoise_example.cpp)
 
@@ -71,10 +71,12 @@ target_link_libraries( ex_qr_detect   ${CMAKE_THREAD_LIBS_INIT}
                                       ${Boost_RANDOM_LIBRARY}
                                       rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
-                                            #target_link_libraries( ex_fetch_data  ${CMAKE_THREAD_LIBS_INIT} 
-                                            #    ${Boost_THREAD_LIBRARY} 
-                                            #    ${Boost_SYSTEM_LIBRARY}
-                                            #    rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+target_link_libraries( ex_speech_recog 
+                                      ${CMAKE_THREAD_LIBS_INIT} 
+                                      ${Boost_THREAD_LIBRARY} 
+                                      ${Boost_SYSTEM_LIBRARY}
+                                      ${Boost_RANDOM_LIBRARY}
+                                      rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
 target_link_libraries( ex_ontology    ${CMAKE_THREAD_LIBS_INIT} 
                                       ${Boost_THREAD_LIBRARY} 

@@ -25,9 +25,10 @@ public:
      * @param callback will be executed once the rapp cloud has responded
      */
     speechToText (
-                    const std::shared_ptr<audio> file,
+                    const std::shared_ptr<rapp::object::audio> file,
                     const std::string language,
                     const std::string user,
+                    const std::string audio_source,
                     const std::vector<std::string> grammar,
                     const std::vector<std::string> words,
                     const std::vector<std::string> sentences,
@@ -53,33 +54,47 @@ public:
         post_ += "Content-Disposition: form-data; name=\"user\"\r\n\r\n";
         post_ += user + "\r\n";
 
+        // Audio Source (Audio Type)
+        post_ += "--" + boundary + "\r\n";
+        post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
+        post_ += audio_source + "\r\n";
+
         // Grammar[]
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"grammar\"\r\n\r\n";
-        for ( const auto gram : grammar )
-            post_ += gram + ";\r\n";        
+        post_ += "[ ";
+        for ( const auto gram : grammar ) post_ += "\"" + gram + "\",";
+        post_.pop_back();
+        post_ += "]\r\n";
 
         // Words[]
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"words\"\r\n\r\n";
-        for ( const auto word : words )
-            post_ += word + ";\r\n";
+        post_ += "[ ";
+        // WARNING - escape double quotes!!!
+        for ( const auto word : words ) post_ += "\"" + word + "\",";
+        post_.pop_back();
+        post_ += "]\r\n";
 
         // Sentences[]
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"sentences\"\r\n\r\n";
-        for ( const auto sent : sentences )
-            post_ += sent + ";\r\n";
+        post_ += "[ ";
+        // WARNING - escape double quotes!!!
+        for ( const auto sent : sentences ) post_ += "\"" + sent + "\",";
+        post_.pop_back();
+        post_ += "]\r\n";
+
+        std::cout << post_;
 
         // audio_source (the filename of the audio file)
         post_ = "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
-        post_ += fname + "\r\n";
+        post_ += audio_source + "\r\n";
 
         // file_uri - NOTE Assume WAV extension
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + ".wav\"\r\n";
-        post_ += "Content-Type: audio/wav\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
        
         // Append binary data
@@ -107,7 +122,8 @@ private:
     void handle_reply ( std::string json )
     {
         std::stringstream ss ( json );
-        std::vector< std::string > words;        
+        std::vector<std::string> words;        
+        
         try
         {
             boost::property_tree::ptree tree;
@@ -115,8 +131,7 @@ private:
        
             // JSON response is: { words: [], error: '' } 
             for ( auto child : tree.get_child( "words" ) )
-                for ( auto iter = child.second.begin(); iter!= child.second.end(); ++iter )
-                    words.push_back ( iter->second.get_value<std::string>() );
+                words.push_back ( child.second.get_value<std::string>() );
 
             // Check for error response from api.rapp.cloud
             for ( auto child : tree.get_child( "error" ) )
@@ -137,7 +152,8 @@ private:
     }
 
     /// The callback called upon completion of receiving the detected words
-    std::function< void( std::vector<std::string> words ) > callback__;
+    std::function< void( std::vector<std::string> words ) > delegate_;
+
 };
 }
 }

@@ -5,9 +5,9 @@ namespace rapp {
 namespace cloud {
 /**
  * @class setDenoiseProfile
- * @brief 
- * @version 1
- * @date 15-August-2015
+ * @brief setting the denoising audio profile for speech recognition 
+ * @version 2
+ * @date 20-September-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class setDenoiseProfile : public rapp::services::asio_service_http
@@ -19,7 +19,8 @@ public:
      */
     setDenoiseProfile (
                          const std::shared_ptr<rapp::object::audio> file,
-                         const std::string user
+                         const std::string user,
+                         const std::string audio_source
                       )
     : rapp::services::asio_service_http ()
     {
@@ -39,12 +40,11 @@ public:
         // Create the name for the audio file
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
-        post_ += fname + "\r\n";
+        post_ += audio_source + "\r\n";
         
         // Create the Multi-form POST field for the actualAUDIO/WAV data
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n";
-        post_ += "Content-Type: audio/wav\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
        
         // Append binary data
@@ -62,8 +62,6 @@ public:
         header_ += "Connection: close\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
-       
-        std::cout << header_ << post_;
          
         // bind the base class callback, to our handle_reply
         callback_ = std::bind ( &setDenoiseProfile::handle_reply, this, std::placeholders::_1 );
@@ -74,8 +72,7 @@ private:
     void handle_reply ( std::string json )
     {
         std::stringstream ss ( json );
-        std::cout << "[setDenoiseProfile] REPLY: " << json << std::endl;
-        /*
+        
         try
         {
             boost::property_tree::ptree tree;
@@ -95,7 +92,6 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        */
     }
     
 };

@@ -247,7 +247,7 @@ protected:
     /// Actual post Data
     std::string post_;
     
-    /// Optional Callback Handler
+    /// Callback Handler - use with std::bind or boost variant
     std::function<void( std::string )> callback_;
     
     /// Actual Socket
