@@ -42,9 +42,14 @@ add_test (unit_object_test            object_test)
 add_test (unit_cloud_test             cloud_test) 
 add_test (unit_service_test           service_test)
 
-# Find Libaries for which Cmake already has a meta-package
+# Find PThreads (needed by Boost)
 find_package( Threads REQUIRED )
+
+# Find Boost
 find_package( Boost 1.49 COMPONENTS system thread random unit_test_framework REQUIRED )
+
+# Find OpenCV 2.0
+find_package( OpenCV REQUIRED )
 
 # Set library sources
 add_library (lrapp OBJECT ${SOURCES})
@@ -52,11 +57,13 @@ add_library (lrapp OBJECT ${SOURCES})
 # Shared Library
 add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
 target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_SYSTEM_LIBRARY} 
-                                                                       ${Boost_RANDOM_LIBRARY})
+                                                                       ${Boost_RANDOM_LIBRARY}
+                                                                       ${OpenCV_LIBS})
 # Static Library
 add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
 target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_SYSTEM_LIBRARY}
-                                                                              ${Boost_RANDOM_LIBRARY})
+                                                                              ${Boost_RANDOM_LIBRARY}
+                                                                              ${OpenCV_LIBS})
 
 # Link Tests/Examples
 target_link_libraries( ex_face_detect ${CMAKE_THREAD_LIBS_INIT} 
