@@ -40,8 +40,6 @@ public:
 
         // Create a new random boundary
         std::string boundary = randomBoundary();
-        
-        // Random audio file name (NOTE: Assume WAV File)
         std::string fname = randomBoundary();
             
         // Boundary start and 1st POST
@@ -85,18 +83,11 @@ public:
         post_.pop_back();
         post_ += "]\r\n";
 
-        std::cout << post_;
-
-        // audio_source (the filename of the audio file)
-        post_ = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
-        post_ += audio_source + "\r\n";
-
         // file_uri - NOTE Assume WAV extension
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + ".wav\"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
-       
+
         // Append binary data
         auto bytes = file->bytearray();
         post_.insert( post_.end(), bytes.begin(), bytes.end() );
@@ -123,7 +114,9 @@ private:
     {
         std::stringstream ss ( json );
         std::vector<std::string> words;        
-        
+
+        std::cout << "rapp::cloud::speechToText JSON:" << json << std::endl;
+
         try
         {
             boost::property_tree::ptree tree;
