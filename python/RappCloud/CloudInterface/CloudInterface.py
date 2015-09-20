@@ -32,7 +32,7 @@ import requests  # Import global module scope
 
 from requests.auth import HTTPBasicAuth  # Http basic authentication
 from requests.exceptions import *  # Requests Exceptions
-
+import magic
 import json
 
 class CloudInterface:
@@ -47,7 +47,6 @@ class CloudInterface:
     ##
     @staticmethod
     def callService(url, payload, files, basicAuth):
-        # headers = {u'content-type': u'application/x-www-form-urlencoded'}
         try:
             response = requests.post(url, data=payload, files=files,  \
                     auth=HTTPBasicAuth(basicAuth['username'], \
@@ -68,17 +67,36 @@ class CloudInterface:
                 'error': str(e)
             }
         else:
-            # print response.headers
-            # print response.encoding
-            # print response.content
-            # fix = response.content.replace("\"", "").replace("\'", "\"")
-            # print fix
-            data = json.loads(response.content)
-            # print data
-            returnData = data  # JSON decoder
-
+            if CloudInterface.isJson(response.content):
+                returnData = json.loads(response.content)
+            else:  # Check if binary data (responseFile)
+                # Return file type too
+                returnData = {
+                    'data': response.content,
+                    'type': CloudInterface.dataType(response.content)
+                }
         return returnData
     #============================================================================
 
+    ##
+    #   @brief Check if data are in json format.
+    #   @return True if data are in json format. False otherwise.
+    ##
+    @staticmethod
+    def isJson(data):
+        try:
+            json.loads(data)
+        except ValueError:
+            return False
+        return True
+    #============================================================================
+
+    ##
+    #   @brief Return type of binary data (image/png, image/jpg, etc)
+    #   @return Data type
+    ##
+    @staticmethod
+    def dataType(data):
+        return magic.from_buffer(data, mime=True)
 
 
