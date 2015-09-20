@@ -5,6 +5,7 @@ Containes RappCloud API module used for interfering wth RAPP Platform.
 ## Usage
 
 #### Add the module to python path
+
 Add the following into your ~/.bashrc in order to add RappCloud module into python module scope:
 
 ```
@@ -15,6 +16,14 @@ where {rapp_api_repo_path} is the path to the rapp-api repository locally.
 
 >  e.g. "~/rapp_ws/src/rapp-api"
 
+#### Dependencies
+
+Dependencies are defined into dependencies.txt file.
+To install all dependencies (global-scope) execute under this directory:
+
+```bash
+sudo pip install -r dependencies.txt
+```
 
 ####  Configurations
 Current implementation uses predefined user account credentials in order get access to
