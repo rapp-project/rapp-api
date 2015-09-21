@@ -9,7 +9,7 @@ var RAPPObject = require('./../../objects/face/face.js')
  * @method faceDetector
  * @brief Asynchronous Service which will request the cloud to detect faces
  * @version 1
- * @date 14-September-2015
+ * @date 20-September-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  */ 
 
@@ -22,53 +22,56 @@ var RAPPObject = require('./../../objects/face/face.js')
 RAPPCloud.prototype.faceDetector = function ( image, callback )
 {
     var cloud = this;
+    var objects = new RAPPObject( );
+    var _delegate=callback;
     var FormData = require('form-data');
 	var fs = require('fs');
-	var http = require('http');
-	
 	var form = new FormData();
-	var img_stream = fs.createReadStream(image);
+	var request = require('request');
 	
-	form.append('file_uri', img_stream);
+	form.append('file_uri', fs.createReadStream(image));
 	
-	var form_headers = form.getHeaders();
-	
-	//Object.size = function(obj) {
-	    //var size = 0, key;
-	    //for (key in obj) {
-	        //if (obj.hasOwnProperty(key)) size++;
-	    //}
-	    //return size;
-	//};
-	// Get the size of an object
-	//var size = Object.size(form);
-	
-	var request = http.request({
-		method: 'post',
-		host: 'localhost',
-		port: '9001',
-		path: '/hop/face_detection/ ',
-		headers: form_headers
-		//knownLength: size
+	var r = request.post(cloud.cloud_url + '/hop/face_detection/ ', function(error, res, json){ 
+		if (res.statusCode==200 && !error){
+			handle_reply(json);
+			}
+		else if (error) {
+			error_handler(error);
+		}
+		else if ( response.statusCode != 200 ) {
+			console.log(res.statusCode);
+		}
 	});
+	r._form = form;
+	r.setHeader('Connection', 'close');
 
-	form.pipe(request);
+	function handle_reply( json )
+    {
+		var json_obj, face_temp;
+		var faces = [];
+		try {
+			json_obj = JSON.parse(json);
+			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+				console.log('faceDetection JSON error: ' + json_obj.error);
+			}
+			// JSON reply is eg.: { "faces":[{"up_left_point":{"x":212.0,"y":200.0},"down_right_point":{"x":391.0,"y":379.0}}],"error":""}
+			if (json_obj.faces.length){
+				for (i=0; i<json_obj.faces.length; i++){
+					var up_left = json_obj.faces[i].up_left_point;
+					var down_right = json_obj.faces[i].down_right_point;
+					faces.push(new objects.Face( up_left.x, up_left.y, down_right.x, down_right.y ));
+				}
+				_delegate(faces);
+			}
+		} catch (e) {
+			console.log("faceDetector::handle_reply Error parsing: ");
+			return console.error(e);
+		}
+	}
 	
-	request.on('response', function(response) {
-		if ( response.statusCode == 200) {
-		    response.setEncoding('utf8');
-		    response.on('data', function (body) {
-		    console.log('body: ' + body);
-			});
-		}
-		else {
-			console.log(response.statusCode);
-		}
-	});
-		
-	request.on('error', function(error) {
-		console.log('problem with request: ' + error.message);
-	});
+	function error_handler( error ) {
+		return console.error(error);
+	}
 }
 
 

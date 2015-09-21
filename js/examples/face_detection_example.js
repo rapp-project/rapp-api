@@ -9,9 +9,9 @@ var services = new RAPPCloud( );
  * This is the method that will handle the reply by the service.ontologySubclassOf
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
-function handler ( data )
+function handler ( faces )
 {
-    console.log ( "Reply: " + data );
+    console.log ( 'Found ' + faces.length + ' faces!');
 }
 
 services.faceDetector('./Lenna.png', handler );

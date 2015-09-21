@@ -4,14 +4,18 @@
 // Import the ontologySubclassOf JS API & Init the RAPPCloud Object
 var RAPPCloud = require('./../includes/cloud/ontologySubclassOf/ontologySubclassOf.js');
 var services = new RAPPCloud( );
+var query='Oven';
 
 /** 
  * This is the method that will handle the reply by the service.ontologySubclassOf
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
-function handler ( data )
+function cb1 ( classes )
 {
-    console.log ( "Reply: " + data );
+    console.log ( 'Subclasses of ' + query + ':');
+    for (i = 0; i < classes.length; i++) {
+		console.log ( classes[i] );
+	}
 }
 
-services.ontologySubclassOf("Oven", handler );
+services.ontologySubclassOf(query, cb1 );

@@ -20,27 +20,50 @@ var RAPPCloud = require('./../../../RAPPCloud.js');
 RAPPCloud.prototype.ontologySubclassOf = function ( query, callback )
 {
     var cloud = this;
-    var body_string = 'query=' + query ;
+    var body_string = 'query=' + query;
     var request = require('request');
+    var _delegate = callback;
+    
     request.post({
         headers: {
 //			'Authorization' : 'Basic cmFwcGRldjpyYXBwZGV2',
-			'Content-Type' : 'application/x-www-form-urlencoded'
-//			'Content-Length' : body_string.length.toString(),
-//			'Connection' : 'close'
+			'Content-Type' : 'application/x-www-form-urlencoded',
+			'Connection' : 'close'
 			},
         url: cloud.cloud_url + '/hop/ontology_subclasses_of/ ',
         body: body_string
     },
-    function ( error, response, body ) 
+    function ( error, response, json ) 
     {
         if ( !error && response.statusCode == 200)
-            callback( body );
+            handle_reply( json );
         else if ( error )
-            console.log ( error );
+            error_handler ( error );
         else if ( response.statusCode != 200 )
             console.log ( "Error: " + response.statusCode );
     })
+    
+    function handle_reply( json )
+    {
+		var json_obj;
+		try {
+			json_obj = JSON.parse(json);
+			// JSON reply is: { results: [], trace: [], error: '' }
+		
+			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+				console.log('ontologySubClassesOf JSON error: ' + json_obj.error);
+			}
+			if (json_obj.results.length){
+				_delegate(json_obj.results);
+			}
+		} catch (e) {
+			return console.error(e);
+		}
+	}
+	
+	function error_handler( error ) {
+		return console.error(error);
+	}   
 }
 
 /// Export
