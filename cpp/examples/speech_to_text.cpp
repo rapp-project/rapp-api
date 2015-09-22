@@ -6,11 +6,15 @@ int main ( )
 {
     rapp::services::service_controller ctrl;
 
-    if ( auto audio = std::make_shared<rapp::object::audio>( "terminator_1.wav" ) )
+    if ( auto audio = std::make_shared<rapp::object::audio>( 
+                                                             "yes-no.wav"
+                                                             //"nao_wav_d05_a1.wav" 
+                                                             //"nao_ogg_d05_a1.ogg" 
+                                                           ) )
     {
         std::vector<std::string> grammar;
-        std::vector<std::string> words;      //{"yes"};
-        std::vector<std::string> sentences; //{"yes","no"};
+        std::vector<std::string> words     {"yes","no"};
+        std::vector<std::string> sentences {"yes","no"};
 
         auto callback = [&]( std::vector<std::string> words  )
                            {
@@ -21,8 +25,11 @@ int main ( )
 
         auto sphinx_handle = std::make_shared<rapp::cloud::speechToText>( audio,           // audio file
                                                                           "en",            // Language
-                                                                          "testuser",      // user
-                                                                          "headset",  // Audio Source Type
+                                                                          "rapp",          // user
+                                                                          //"headset",
+                                                                          "nao_wav_1_ch",
+                                                                          //"nao_wav_4_ch",
+                                                                          //"nao_ogg",       // Audio Source Type
                                                                           grammar,         // grammar ? (empty)
                                                                           words,           // words to be considered
                                                                           sentences,       // sentences to be considered

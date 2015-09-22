@@ -40,7 +40,7 @@ public:
 
         // Create a new random boundary
         std::string boundary = randomBoundary();
-        std::string fname = randomBoundary();
+        std::string fname =  randomBoundary(); // || "audio.ogg" || "audio.wav"
             
         // Boundary start and 1st POST
         post_  = "--" + boundary + "\r\n";
@@ -85,7 +85,7 @@ public:
 
         // file_uri - NOTE Assume WAV extension
         post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + ".audio\"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + "\"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
 
         //std::cout << post_;
