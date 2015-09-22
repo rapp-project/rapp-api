@@ -77,4 +77,4 @@ RAPPCloud.prototype.faceDetector = function ( image, callback )
 
 
 /// Export
-module.exports = RAPPCloud;
+module.exports = RAPPCloud.faceDetector;
