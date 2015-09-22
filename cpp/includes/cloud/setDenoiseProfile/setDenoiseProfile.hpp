@@ -30,7 +30,7 @@ public:
         std::string boundary = randomBoundary();
 
         // Random audio file name (NOTE: Assume WAV File)
-        std::string fname = randomBoundary()+".wav";
+        std::string fname = randomBoundary();
 
         // User parameter        
         post_  = "--" + boundary + "\r\n";
@@ -44,7 +44,7 @@ public:
         
         // Create the Multi-form POST field for the actualAUDIO/WAV data
         post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+".audio\"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
        
         // Append binary data

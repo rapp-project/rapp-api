@@ -85,8 +85,10 @@ public:
 
         // file_uri - NOTE Assume WAV extension
         post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + ".wav\"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + ".audio\"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
+
+        //std::cout << post_;
 
         // Append binary data
         auto bytes = file->bytearray();
@@ -104,6 +106,8 @@ public:
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
         
+        //std::cout << header_;
+
         // bind the base class callback, to our handle_reply
         callback_ = std::bind ( &speechToText::handle_reply, this, std::placeholders::_1 );
     }
@@ -114,7 +118,6 @@ private:
     {
         std::stringstream ss ( json );
         std::vector<std::string> words;        
-
         std::cout << "rapp::cloud::speechToText JSON:" << json << std::endl;
 
         try

@@ -5,12 +5,12 @@
 int main ( )
 {
     rapp::services::service_controller ctrl;
-    
-    if ( auto wav = std::make_shared<rapp::object::audio>( "yes_no.wav" ) )
+
+    if ( auto audio = std::make_shared<rapp::object::audio>( "terminator_1.wav" ) )
     {
         std::vector<std::string> grammar;
-        std::vector<std::string> words {"yes","no"};            //  {"desire","is","irrelevant", "I", "am", "a", "machine"};
-        std::vector<std::string> sentences {"yes","no"};        //  {"desire is irrelevant, I am a machine"};
+        std::vector<std::string> words;      //{"yes"};
+        std::vector<std::string> sentences; //{"yes","no"};
 
         auto callback = [&]( std::vector<std::string> words  )
                            {
@@ -19,10 +19,10 @@ int main ( )
                                std::cout << std::endl;
                            };
 
-        auto sphinx_handle = std::make_shared<rapp::cloud::speechToText>( wav,             // audio file
+        auto sphinx_handle = std::make_shared<rapp::cloud::speechToText>( audio,           // audio file
                                                                           "en",            // Language
                                                                           "testuser",      // user
-                                                                          "nao_wav_1_ch",  // Audio Source Type
+                                                                          "headset",  // Audio Source Type
                                                                           grammar,         // grammar ? (empty)
                                                                           words,           // words to be considered
                                                                           sentences,       // sentences to be considered
@@ -31,6 +31,8 @@ int main ( )
     }
     else
         std::cerr << "Error loading audio" << std::endl;
+
+
 
     return 0;
 }
