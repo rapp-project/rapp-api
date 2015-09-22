@@ -211,10 +211,13 @@ class RappCloud:
         return returnData
     #============================================================================
 
-    def speech_detection_google(self, fileUri):
+    def speech_detection_google(self, fileUri, audio_source, user, language):
 
         # -- Craft the data payload for the post request
         payload = {
+            'audio_source': audio_source,
+            'user': user,
+            'language': language
         }
 
         fileName = self.__appendRandStr(fileUri)
