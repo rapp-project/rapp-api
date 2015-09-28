@@ -51,6 +51,7 @@ class CloudInterface:
             response = requests.post(url, data=payload, files=files,  \
                     auth=HTTPBasicAuth(basicAuth['username'], \
                                        basicAuth['password']))
+            print response.headers
         except ConnectionError as e:
             print "Cannot resolve domain name [%s]" % url
             print e
@@ -73,7 +74,8 @@ class CloudInterface:
                 # Return file type too
                 returnData = {
                     'data': response.content,
-                    'type': CloudInterface.dataType(response.content)
+                    'format': CloudInterface.dataType(response.content),
+                    'error': ''
                 }
         return returnData
     #============================================================================

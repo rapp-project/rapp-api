@@ -389,3 +389,41 @@ class RappCloud:
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
 
+    ##
+    #   @brief Text To speech Service request
+    #   @return Audio data file.
+    ##
+    def text_to_speech(self, text, language):
+        files = {}
+        payload = {
+            'text': text,
+            'language': language
+        }
+        url = self.serviceUrl_['text_to_speech']
+
+        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        return returnData
+
+
+
+
+    ## ======================= Cognitive Exercises ========================== ##
+
+    ##
+    #   @brief Calls the detect_objects() RAPP Platform front-end service.
+    #   @return Return answer from RAPP Platform.
+    ##
+    def cognitive_test_selector(self, user, testType):
+        # -- Files to be added into to poset request
+        files = {}
+        payload = {
+            'username': user,
+            'testType': testType
+        }
+        url = self.serviceUrl_['cognitive_test_selector']
+
+        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        return returnData
+    #============================================================================
+
+

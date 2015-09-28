@@ -10,3 +10,6 @@ services:
     - ontology_superclasses_of
     - ontology_is_subsuperclass_of
     - detect_objects
+    - cognitive_test_selector
+    - record_cognitive_test_performance
+    - text_to_speech
