@@ -28,12 +28,13 @@
 # contact: klpanagi@gmail.com, etsardou@iti.gr
 ##
 
-import requests  # Import global module scope
 
+import requests  # Import global module scope
 from requests.auth import HTTPBasicAuth  # Http basic authentication
 from requests.exceptions import *  # Requests Exceptions
-import magic
 import json
+
+
 
 class CloudInterface:
 
@@ -51,7 +52,7 @@ class CloudInterface:
             response = requests.post(url, data=payload, files=files,  \
                     auth=HTTPBasicAuth(basicAuth['username'], \
                                        basicAuth['password']))
-            print response.headers
+            # print response.headers
         except ConnectionError as e:
             print "Cannot resolve domain name [%s]" % url
             print e
@@ -73,12 +74,12 @@ class CloudInterface:
             else:  # Check if binary data (responseFile)
                 # Return file type too
                 returnData = {
-                    'data': response.content,
-                    'format': CloudInterface.dataType(response.content),
-                    'error': ''
+                    'payload': response.content,
+                    'error': 'Non JSON Response!!!!'
                 }
         return returnData
     #============================================================================
+
 
     ##
     #   @brief Check if data are in json format.
@@ -92,13 +93,4 @@ class CloudInterface:
             return False
         return True
     #============================================================================
-
-    ##
-    #   @brief Return type of binary data (image/png, image/jpg, etc)
-    #   @return Data type
-    ##
-    @staticmethod
-    def dataType(data):
-        return magic.from_buffer(data, mime=True)
-
 

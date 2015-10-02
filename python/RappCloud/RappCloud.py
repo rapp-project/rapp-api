@@ -35,6 +35,8 @@ from CloudInterface import CloudInterface
 from RandStrGen import RandStrGen
 from ConfigParser import SafeConfigParser
 import yaml
+import base64
+import magic
 
 #  Set and hold RappCloud directory path
 __path__ = os.path.dirname(__file__)
@@ -347,7 +349,6 @@ class RappCloud:
     #============================================================================
 
 
-
     ##
     #   @brief Calls the detect_objects() RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
@@ -388,12 +389,16 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
+    #============================================================================
+
 
     ##
     #   @brief Text To speech Service request
-    #   @return Audio data file.
+    #   @param dest If provided the returned audio data will be stored in this
+    #       destination file. Otherwise the audio data are returned from this
+    #       method.
     ##
-    def text_to_speech(self, text, language):
+    def text_to_speech(self, text, language, dest):
         files = {}
         payload = {
             'text': text,
@@ -401,8 +406,41 @@ class RappCloud:
         }
         url = self.serviceUrl_['text_to_speech']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        response = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = {}
+        ## Parse response error field.
+        if response['error']:
+            returnData['error'] = response['error']
+            return returnData
+        else:
+            try:
+                ## Decode base64 encoded payload
+                audioRawData = base64.b64decode(response['payload'])
+            except Exception as e:
+                returnData['error'] = 'Failed to base64.decode payload data'
+                print e
+                return returnData
+            finally:
+                pass
+        returnData['error'] = ''
+        ## Parse dest parameter.
+        if not dest:
+            returnData['audioData'] = audioRawData
+            returnData['basename'] = response['basename']
+            returnData['mime'] = magic.from_buffer(returnData['audioData'],
+                                                   mime=True)
+        else:
+            try:
+                ## Write audio data to given destination file path.
+                with open(dest, 'wb') as f1:
+                    f1.write(audioRawData)
+            except Exception as e:
+                returnData['error'] = \
+                    'Failed to write data at destination file [%s]' % dest
+            finally:
+                pass
         return returnData
+    #============================================================================
 
 
 
@@ -413,14 +451,14 @@ class RappCloud:
     #   @brief Calls the detect_objects() RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
     ##
-    def cognitive_test_selector(self, user, testType):
+    def cognitive_test_chooser(self, user, testType):
         # -- Files to be added into to poset request
         files = {}
         payload = {
             'username': user,
             'testType': testType
         }
-        url = self.serviceUrl_['cognitive_test_selector']
+        url = self.serviceUrl_['cognitive_test_chooser']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
