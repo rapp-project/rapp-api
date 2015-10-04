@@ -393,10 +393,14 @@ class RappCloud:
 
 
     ##
-    #   @brief Text To speech Service request
+    #   @brief Text-To-Speech (TTS) Service.
+    #   @param text String to perform TTS on.
+    #   @param language Supported translation language. 'el' -> Greek,
+    #       'en' -> English.
     #   @param dest If provided the returned audio data will be stored in this
     #       destination file. Otherwise the audio data are returned from this
     #       method.
+    #   @return
     ##
     def text_to_speech(self, text, language, dest):
         files = {}
@@ -446,16 +450,19 @@ class RappCloud:
 
 
     ## ======================= Cognitive Exercises ========================== ##
+    #==========================================================================#
 
     ##
-    #   @brief Calls the detect_objects() RAPP Platform front-end service.
-    #   @return Return answer from RAPP Platform.
+    #   @brief Call to <cognitive_test_chooser> RAPP Platform front-end service.
+    #   @param user User id to connect on with the RAPP PLatfrom.
+    #   @param testType Cognitive Test Type. ArithmeticCts, AwarenessCts,
+    #       ReasoningCts.
+    #   @return
     ##
     def cognitive_test_chooser(self, user, testType):
-        # -- Files to be added into to poset request
         files = {}
         payload = {
-            'username': user,
+            'user': user,
             'testType': testType
         }
         url = self.serviceUrl_['cognitive_test_chooser']
@@ -463,5 +470,30 @@ class RappCloud:
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
     #============================================================================
+
+
+    ##
+    #   @brief  Record a cognitive test performance for to the RAPP Platform db.
+    #   @param user User id to connect on with the RAPP PLatfrom.
+    #   @param testType Cognitive Test Type. ArithmeticCts, AwarenessCts,
+    #   @param test Test full name as obtained from a call to
+    #       <cognitive_test_chooser> Platform service.
+    #   @score User's score for given test in range [0-100].
+    #   @return
+    ##
+    def record_cognitive_test_performance(self, user, test, testType, score):
+        files = {}
+        payload = {
+            'user': user,
+            'test': test,
+            'testType': testType,
+            'score': score
+        }
+        url = self.serviceUrl_['record_cognitive_test_performance']
+
+        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        return returnData
+    #============================================================================
+
 
 
