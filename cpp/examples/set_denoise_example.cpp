@@ -4,7 +4,14 @@
 
 int main ( int argc, char ** argv )
 {
-    if ( argc == 2 )
+    rapp::services::service_controller ctrl;
+
+    if ( auto audio = std::make_shared<rapp::object::audio>(
+						 	     "denoise_source.wav"
+                                                            //"silence_sample.wav"
+                                                            // "silence_wav_d05_a1.wav"
+                                                            //"silence_ogg_d05_a1.ogg" 
+                                                           ) )
     {
         std::cout << "set denoise using: " << argv[1] << std::endl;
         std::string file = argv[1];
