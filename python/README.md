@@ -12,9 +12,10 @@ Add the following into your ~/.bashrc in order to add RappCloud module into pyth
   export PYTHONPATH=$PYTHONPATH:{rapp_api_repo_path}/python
 ```
 
-where {rapp_api_repo_path} is the path to the rapp-api repository locally.
+where {rapp_api_repo_path} is the path to locally installed rapp-api repository.
 
 >  e.g. "~/rapp_ws/src/rapp-api"
+
 
 #### Dependencies
 
@@ -46,10 +47,14 @@ from RappCloud import RappCloud
 rappCloud = RappCloud()
 ```
 
-Multible tests showing the usage of the RappCloud API can be found under the rapp-platform repository
-( {rapp_platform_path}/hop_services/utilities/testing_tools/python_tests ) locally or at the following link:
+Multible tests showing the usage of the RappCloud API can be found under the rapp-platform repository:
 
- [testing_tools](https://github.com/rapp-project/rapp-platform/tree/master/hop_services/utilities/testing_tools/python_tests)
+ [rapp_testing_tools](https://github.com/rapp-project/rapp-platform/tree/master/rapp_testing_tools)
+
+
+## Install
+
+--TODO--
 
 
 ## Directories
@@ -59,11 +64,9 @@ Multible tests showing the usage of the RappCloud API can be found under the rap
 
 ## Tests
 
-Testing tools tha are also testing the usage of the RappCloud API python module can be found
-under the rapp-platform repository ( {rapp_platform_path}/hop_services/utilities/testing_tools ) locally
-or at the following link:
+The Test-Engine and individual written tests, using this engine, are located under the rapp-platform repository:
 
- [testing_tools](https://github.com/rapp-project/rapp-platform/tree/master/hop_services/utilities/testing_tools)
+ [rapp_testing_tools](https://github.com/rapp-project/rapp-platform/tree/master/rapp_testing_tools)
 
 
 ## Contributors
