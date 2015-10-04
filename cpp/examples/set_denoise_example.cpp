@@ -7,7 +7,8 @@ int main ( )
     rapp::services::service_controller ctrl;
 
     if ( auto audio = std::make_shared<rapp::object::audio>(
-                                                            "silence_sample.wav"
+						 	     "denoise_source.wav"
+                                                            //"silence_sample.wav"
                                                             // "silence_wav_d05_a1.wav"
                                                             //"silence_ogg_d05_a1.ogg" 
                                                            ) )
