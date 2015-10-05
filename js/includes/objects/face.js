@@ -15,14 +15,11 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  */ 
 
-/*** 
-* Define Face "class" inside an immediate function.
-* A bit unconventional way but it's the only way I have found to have the same information flow with C++
-* in the way that instances of this Face and only those can have access to private variables of 
-* other instances of the same "class" so that member functions like isEqual can work.
-*/
-
-RAPPObject.prototype.Face = (function( ){   // immediate function
+//Define Face "class" inside an immediate function.
+//A bit unconventional way but it's the only way I have found to have the same information flow with C++
+//in the way that instances of this Face and only those can have access to private variables of 
+//other instances of the same "class" so that member functions like isEqual can work.
+RAPPObject.prototype.Face = (function( top_left_x, top_left_y, bottom_right_x, bottom_right_y ){   // immediate function
 	
 	var _top_left_x = -1;
 	var _top_left_y = -1;
