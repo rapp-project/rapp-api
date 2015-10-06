@@ -40,6 +40,7 @@ public:
         // Create a new random boundary
         std::string boundary = randomBoundary();
         std::string fname =  randomBoundary() + file->extension(); 
+            
         // Boundary start and 1st POST
         post_  = "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"language\"\r\n\r\n";
@@ -52,6 +53,7 @@ public:
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
         post_ += file->audio_source() + "\r\n";
+
         // Grammar[]
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"grammar\"\r\n\r\n";
@@ -79,6 +81,9 @@ public:
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + "\"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
+
+        std::cout << post_;
+
         // Append binary data
         auto bytes = file->bytearray();
         post_.insert( post_.end(), bytes.begin(), bytes.end() );
