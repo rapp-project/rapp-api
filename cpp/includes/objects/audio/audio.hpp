@@ -44,7 +44,8 @@ public:
     /// Are audios same ?
     bool operator== ( const audio & rhs ) const
     {
-        return ( this->bytearray_ == rhs.bytearray_ );
+        return typeid( *this ) == typeid( rhs ) &&
+               ( this->bytearray_ == rhs.bytearray_ );
     }
 
     /// Assignment operator
@@ -65,6 +66,12 @@ public:
             return false;
     }
 
+    virtual std::string audio_source ( ) const
+    { return ""; }
+
+    virtual std::string extension ( ) const
+    { return ""; }
+
 private:
 
     // Delete empty constructor    
@@ -83,6 +90,62 @@ private:
     // Actual bytes of audio file
     std::vector<rapp::types::byte> bytearray_;
 };
+
+/// OGG Class specialisation
+class OGGfile : public audio
+{
+public:
+
+    OGGfile (  const std::string filepath ) : audio ( filepath )
+    {}
+
+    OGGfile ( std::ifstream & bytestream ) : audio ( bytestream )
+    {}
+
+    std::string audio_source ( ) const
+    { return "nao_ogg"; }
+
+    std::string extension ( ) const
+    { return ".ogg";   }
+};
+
+/// WAV Class specialisation for a single channel
+class WAVfileSingleChannel : public audio
+{
+public:
+
+    WAVfileSingleChannel ( const std::string filepath ) : audio ( filepath )
+    {}
+
+    WAVfileSingleChannel ( std::ifstream & bytestream ) : audio ( bytestream )
+    {}
+
+    std::string audio_source ( ) const
+    { return "nao_wav_1_ch"; }
+
+    std::string extension ( ) const
+    { return ".wav"; }
+};
+
+/// WAV Class specialisation for quad channel
+class WAVfileQuadChannel : public audio
+{
+public:
+
+    WAVfileQuadChannel ( const std::string filepath ) : audio ( filepath )
+    {}
+
+    WAVfileQuadChannel ( std::ifstream & bytestream ) : audio ( bytestream )
+    {}
+
+    std::string audio_source ( ) const
+    { return "nao_wav_4_ch"; }
+
+    std::string extension ( ) const
+    { return ".wav"; }
+};
+
+// TODO: Do we need a Headset specialisation class?
 }
 }
 #endif

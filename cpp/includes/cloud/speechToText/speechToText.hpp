@@ -28,7 +28,6 @@ public:
                     const std::shared_ptr<rapp::object::audio> file,
                     const std::string language,
                     const std::string user,
-                    const std::string audio_source,
                     const std::vector<std::string> grammar,
                     const std::vector<std::string> words,
                     const std::vector<std::string> sentences,
@@ -40,7 +39,7 @@ public:
 
         // Create a new random boundary
         std::string boundary = randomBoundary();
-        std::string fname =  randomBoundary(); // || "audio.ogg" || "audio.wav"
+        std::string fname =  randomBoundary() + file->extension(); 
             
         // Boundary start and 1st POST
         post_  = "--" + boundary + "\r\n";
@@ -55,7 +54,7 @@ public:
         // Audio Source (Audio Type)
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
-        post_ += audio_source + "\r\n";
+        post_ += file->audio_source() + "\r\n";
 
         // Grammar[]
         post_ += "--" + boundary + "\r\n";
@@ -88,7 +87,7 @@ public:
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + "\"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
 
-        //std::cout << post_;
+        std::cout << post_;
 
         // Append binary data
         auto bytes = file->bytearray();
