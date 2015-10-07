@@ -1,17 +1,11 @@
 #!/usr/bin/env node
 
+var RAPPCloud = require('./../../../RAPPCloud.js');
+var RAPPObject = require('./../../../RAPPObject.js');
+RAPPObject.face = require('./../../objects/face/face.js');
+var FormData = require('form-data');
 var fs = require('fs');
 var request = require('request');
-var path = require('path');
-var formData = require('form-data');
-var randomstring = require('randomstring');
-
-var __cloudDir = path.join(__dirname);
-var __objectsDir = path.join(__dirname, '..', 'objects');
-
-var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
-var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
-RAPPObject.qrCode = require(path.join(__objectsDir, 'face.js'));
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
@@ -32,8 +26,9 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback, fas
     var cloud = this;
     var object = new RAPPObject( );
     var _delegate=callback;
-	var form = new formData();
-	var filename = randomstring.generate() + '.' + image_format;
+	var form = new FormData();
+	
+	form.append('file_uri', fs.createReadStream(image));
 	
 	form.append('file_uri', fs.createReadStream(image), { 
 		filename: filename,
