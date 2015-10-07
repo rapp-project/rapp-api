@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var RAPPCloud = require('./../../../RAPPCloud.js');
+var request = require('request');
 
 /**
  * Prototype the RAPPCloud Service Method.
@@ -23,7 +24,6 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
 {
     var cloud = this;
     var body_string = 'parent_class=' + parent + '&child_class=' + child + '&recursive=' + recursive.toString();
-    var request = require('request');
     var _delegate = callback;
     
     request.post({

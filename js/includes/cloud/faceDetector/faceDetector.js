@@ -3,6 +3,9 @@
 var RAPPCloud = require('./../../../RAPPCloud.js');
 var RAPPObject = require('./../../../RAPPObject.js');
 RAPPObject.face = require('./../../objects/face/face.js');
+var FormData = require('form-data');
+var fs = require('fs');
+var request = require('request');
 
 /**
  * Prototype the RAPPCloud Service Method.
@@ -24,10 +27,7 @@ RAPPCloud.prototype.faceDetector = function ( image, callback )
     var cloud = this;
     var object = new RAPPObject( );
     var _delegate=callback;
-    var FormData = require('form-data');
-	var fs = require('fs');
 	var form = new FormData();
-	var request = require('request');
 	
 	form.append('file_uri', fs.createReadStream(image));
 	

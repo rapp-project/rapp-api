@@ -6,7 +6,7 @@ RAPPCloud.qrDetector = require('./../includes/cloud/qrDetector/qrDetector.js');
 var services = new RAPPCloud( );
 
 /** 
- * This is the method that will handle the reply by the service.faceDetector
+ * This is the method that will handle the reply by the services.qrDetector
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
 function handler ( codes )
