@@ -6,6 +6,7 @@ RAPPObject.face = require('./../../objects/face/face.js');
 var FormData = require('form-data');
 var fs = require('fs');
 var request = require('request');
+var randomstring = require('randomstring');
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
@@ -20,21 +21,19 @@ var request = require('request');
  * @param callback is the function that will receive a vector of the detected face(s) coordinates
  * @param fast is a string. Only valid values 'true' and 'false'. When 'true' the fast face detection service is called, which should be used for tracking applications
  */
-RAPPCloud.prototype.faceDetector = function ( image, image_format, callback, fast )
+RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 {
     fast = typeof fast !== 'undefined' ? fast : 'false';
     var cloud = this;
     var object = new RAPPObject( );
     var _delegate=callback;
 	var form = new FormData();
-	
-	form.append('file_uri', fs.createReadStream(image));
+	var filename = randomstring.generate() + '.' + image_format;
 	
 	form.append('file_uri', fs.createReadStream(image), { 
 		filename: filename,
-		contentType: 'image/' + image_format
+		contentType: 'image/' + image_format 
 	});
-	form.append('fast', fast);
 
 	var r = request.post(cloud.cloud_url + '/hop/face_detection/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
