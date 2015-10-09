@@ -6,6 +6,7 @@ RAPPObject.qrCode = require('./../../objects/qrCode/qrCode.js');
 var FormData = require('form-data');
 var fs = require('fs');
 var request = require('request');
+var randomstring = require('randomstring');
 
 /**
  * Prototype the RAPPCloud Service Method.
@@ -19,17 +20,23 @@ var request = require('request');
 
 /**
  * @brief Constructor
- * @param image is the input image @see rapp::object::picture
+ * @param image is the input image
+ * @param image_format is the image format
  * @param callback is the function that will receive a vector of detected qr(s)
  */
-RAPPCloud.prototype.qrDetector = function ( image, callback )
+RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
 {
     var cloud = this;
     var object = new RAPPObject( );
     var _delegate=callback;
 	var form = new FormData();
-	
-	form.append('file_uri', fs.createReadStream(image));
+
+	var filename = randomstring.generate() + '.' + image_format;
+
+	form.append('file_uri', fs.createReadStream(image), { 
+		filename: filename,
+		contentType: 'image/' + image_format
+	});
 	
 	var r = request.post(cloud.cloud_url + '/hop/qr_detection/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){

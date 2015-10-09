@@ -4,6 +4,7 @@ var RAPPCloud = require('./../../../RAPPCloud.js');
 var FormData = require('form-data');
 var fs = require('fs');
 var request = require('request');
+var randomstring = require('randomstring');
 
 /**
  * Prototype the RAPPCloud Service Method.
@@ -26,10 +27,12 @@ RAPPCloud.prototype.setDenoiseProfile = function ( file, user, audio_source )
 {
     var cloud = this;    
 	var form = new FormData();
+	var ext = file.substr(file.lastIndexOf('.') + 1);
+	var filename = randomstring.generate() + '.' + ext;
 	
 	form.append('user', user);
 	form.append('audio_source', audio_source);
-	form.append('file_uri', fs.createReadStream(file));
+	form.append('file_uri', fs.createReadStream(file), { filename: filename });
 	
 	var r = request.post(cloud.cloud_url + '/hop/set_denoise_profile/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){

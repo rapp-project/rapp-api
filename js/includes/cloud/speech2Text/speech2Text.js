@@ -4,6 +4,7 @@ var RAPPCloud = require('./../../../RAPPCloud.js');
 var FormData = require('form-data');
 var fs = require('fs');
 var request = require('request');
+var randomstring = require('randomstring');
 
 /**
  * Prototype the RAPPCloud Service Method.
@@ -32,6 +33,8 @@ RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source
     var cloud = this;
     var _delegate=callback;
 	var form = new FormData();
+	var ext = audio.substr(audio.lastIndexOf('.') + 1);
+	var filename = randomstring.generate() + '.' + ext;
 	
 	var grammar_str = '[';
 	for (i=0; i<grammar.length; i++) {
@@ -54,7 +57,7 @@ RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source
 	}
 	words_str += ']';
 	
-	form.append('file_uri', fs.createReadStream(audio));
+	form.append('file_uri', fs.createReadStream(audio), { filename: filename });
 	form.append('language', language);
 	form.append('user', user);
 	form.append('audio_source', audio_source);
