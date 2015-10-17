@@ -481,12 +481,11 @@ class RappCloud:
     #   @score User's score for given test in range [0-100].
     #   @return
     ##
-    def record_cognitive_test_performance(self, user, test, testType, score):
+    def record_cognitive_test_performance(self, user, test, score):
         files = {}
         payload = {
             'user': user,
             'test': test,
-            'testType': testType,
             'score': score
         }
         url = self.serviceUrl_['record_cognitive_test_performance']
