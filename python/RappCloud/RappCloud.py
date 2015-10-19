@@ -36,7 +36,7 @@ from RandStrGen import RandStrGen
 from ConfigParser import SafeConfigParser
 import yaml
 import base64
-import magic
+#import magic
 
 #  Set and hold RappCloud directory path
 __path__ = os.path.dirname(__file__)
@@ -431,8 +431,8 @@ class RappCloud:
         if not dest:
             returnData['audioData'] = audioRawData
             returnData['basename'] = response['basename']
-            returnData['mime'] = magic.from_buffer(returnData['audioData'],
-                                                   mime=True)
+            #returnData['mime'] = magic.from_buffer(returnData['audioData'],
+            #                                       mime=True)
         else:
             try:
                 ## Write audio data to given destination file path.
