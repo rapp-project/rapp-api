@@ -48,6 +48,22 @@ class CloudInterface:
     ##
     @staticmethod
     def callService(url, payload, files, basicAuth):
+        ##
+        #  Python-Requests module does not support empty parameter fields.
+        #  Passing empty parameter ('param1': '') will result in a corrupted
+        #  payload definition.
+        #  Referenced issue on github:
+        #      https://github.com/kennethreitz/requests/issues/2651
+        #  Below we provide a temporary fix to this issue.
+        #      Deleting values from payload literal does the job!
+        ##
+        toRemove = []
+        for param in payload:
+            if not payload[param]:
+                toRemove.append(param)
+        for i in toRemove:
+            del payload[i]
+        #####################################################################
         try:
             response = requests.post(url, data=payload, files=files,  \
                     auth=HTTPBasicAuth(basicAuth['username'], \
