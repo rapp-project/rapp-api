@@ -12,20 +12,21 @@ The below table presents the up-to-date available RAPP Platform Service calls, t
 
 
 
-| Platform Services                 | Python   | JavaScript   | C++   |
-| :-------------------------------: | :------: | :----------: | :---: |
-| face_detection                    | ✓✓✓      |              |       |
-| qr_detection                      | ✓✓✓      |              |       |
-| text_to_speech                    | ✓✓✓      |              |       |
-| denoise_profile                   | ✓✓✓      |              |       |
-| speech_detection_sphix4           | ✓✓✓      |              |       |
-| speech_detection_google           | ✓✓✓      |              |       |
-| available_services                | ✓✓✓      |              |       |
-| ontology_subclasses_of            | ✓✓✓      |              |       |
-| ontology_superclasses_of          | ✓✓✓      |              |       |
-| ontology_is_supsuperclass_of      | ✓✓✓      |              |       |
-| cognitive_test_chooser            | ✓✓✓      |              |       |
-| record_cognitive_test_performance | ✓✓✓      |              |       |
+| Platform Services                 | C++      | JavaScript   | Python   |
+| :-------------------------------: | :---:    | :----------: | :---:    |
+| face_detection                    |          |              | ✓✓✓      |
+| qr_detection                      |          |              | ✓✓✓      |
+| text_to_speech                    |          |              | ✓✓✓      |
+| denoise_profile                   |          |              | ✓✓✓      |
+| speech_detection_sphix4           |          |              | ✓✓✓      |
+| speech_detection_google           |          |              | ✓✓✓      |
+| available_services                |          |              | ✓✓✓      |
+| ontology_subclasses_of            |          |              | ✓✓✓      |
+| ontology_superclasses_of          |          |              | ✓✓✓      |
+| ontology_is_supsuperclass_of      |          |              | ✓✓✓      |
+| cognitive_test_chooser            |          |              | ✓✓✓      |
+| record_cognitive_test_performance |          |              | ✓✓✓      |
+
 
 
 Information on RAPP Platform front-end Web Services can he found [here](https://github.com/rapp-project/rapp-platform/tree/master/hop_services/services).
@@ -44,6 +45,5 @@ Information on RAPP Platform front-end Web Services can he found [here](https://
 ## Contributors
 
 - Konstaninos Panayiotou, **[klpanagi@gmail.com]**
-- Manos Tsardoulias, **[etsardou@gmail.com]**
 - Alexander Gkiokas, **[a.gkiokas@ortelio.co.uk]**
-- Stratos Arampatzis, **[sa@ortelio.co.uk]**
+- Lazaros Penteridis, **[lp@ortelio.co.uk]**
