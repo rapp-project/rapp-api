@@ -186,7 +186,7 @@ class RappCloud:
 
 
     ##
-    #   @brief Calls set_denoise_profile() RAPP Platform front-end service.
+    #   @brief Calls Speech-Detection-Sphinx4 RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
     ##
     def speech_detection_sphinx4(self, language, audio_source, words, \
@@ -236,10 +236,10 @@ class RappCloud:
 
 
     ##
-    #   @brief Calls set_denoise_profile() RAPP Platform front-end service.
+    #   @brief Calls Set-Noise-Profile RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
     ##
-    def set_denoise_profile(self, fileUri, audio_file_type, user):
+    def set_noise_profile(self, fileUri, audio_file_type, user):
         fileName = self.__appendRandStr(fileUri)
         # -- Craft the data payload for the post request
         payload = {
@@ -250,7 +250,7 @@ class RappCloud:
         files = {
             'file_uri': (fileName, open(fileUri, 'rb'))
         }
-        url = self.serviceUrl_['set_denoise_profile']
+        url = self.serviceUrl_['set_noise_profile']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
