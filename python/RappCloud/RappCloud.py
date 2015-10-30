@@ -463,7 +463,7 @@ class RappCloud:
         files = {}
         payload = {
             'user': user,
-            'testType': testType
+            'test_type': testType
         }
         url = self.serviceUrl_['cognitive_test_chooser']
 
@@ -485,7 +485,7 @@ class RappCloud:
         files = {}
         payload = {
             'user': user,
-            'test': test,
+            'test_instance': test,
             'score': score
         }
         url = self.serviceUrl_['record_cognitive_test_performance']
