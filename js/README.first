@@ -7,3 +7,5 @@ inside the root folder of the project (rapp-api/js). You can find more details: 
 https://www.npmjs.com/package/randomstring
 
 test.js and the examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
+
+In the test directory unit tests for all the services and objects can be found. In order to run them you will need to install unitjs and mocha globally.

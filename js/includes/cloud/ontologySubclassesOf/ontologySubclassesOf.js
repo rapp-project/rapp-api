@@ -55,7 +55,7 @@ RAPPCloud.prototype.ontologySubclassesOf = function ( query, callback )
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
 				console.log('ontologySubClassesOf JSON error: ' + json_obj.error);
 			}
-			if (json_obj.results.length){
+			if (json_obj.results){
 				_delegate(json_obj.results);
 			}
 		} catch (e) {

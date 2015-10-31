@@ -2,7 +2,7 @@
 
 // Import the faceDetector JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('./../RAPPCloud.js')
-RAPPCloud.qrDetector = require('./../includes/cloud/speech2Text/speech2Text.js');
+RAPPCloud.speech2Text = require('./../includes/cloud/speech2Text/speech2Text.js');
 var services = new RAPPCloud( );
 
 /** 
@@ -24,24 +24,24 @@ var services = new RAPPCloud( );
 var grammar = [];
 var words = //["tuesday", "monday"];
 					   //["yes", "no"];
-					   //["I", "want", "to", "go", "out"];
+					   //["i", "want", "to", "go", "out"];
 					   //["email", "robot"];
 					   ["check", "my", "emails", "robot"];
 					   //["Τρίτη", "Δευτέρα"];
 					   
 var sentences = //["tuesday", "monday"];
 					   //["yes", "no"];
-					   //["I", "want", "to", "go", "out"];
+					   //["i", "want", "to", "go", "out"];
 					   //["email", "robot"];
 					   ["check", "my", "emails", "robot"];
 					   //["Τρίτη", "Δευτέρα"];					   
  
-function handler ( words )
+function handler ( words_detected )
 {
-    if ( words.length ) {
-		console.log ( 'Found ' + words.length + ' words:\n');
-		for (i=0; i<words.length; i++) {
-			console.log(words[i] + '\n');
+    if ( words_detected.length ) {
+		console.log ( 'Found ' + words_detected.length + ' words:\n');
+		for (i=0; i < words_detected.length; i++) {
+			console.log(words_detected[i] + '\n');
 		}
 	}
 	else
