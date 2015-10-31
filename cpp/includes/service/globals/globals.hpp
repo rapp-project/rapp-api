@@ -13,7 +13,7 @@ namespace cloud {
     */
 
     /// api.rapp.cloud - use deployment IP@ITI Deployment: 155.207.19.13, Development: 155.207.19.229
-    constexpr char address[] = "155.207.19.13"; //"localhost";
+    constexpr char address[] = "localhost";
 
     /// api.rapp.cloud - HOP server port
     constexpr char port[] = "9001";    

@@ -4,52 +4,69 @@
 
 int main ( int argc, char** argv )
 {
-    rapp::services::service_controller ctrl;
+    if ( argc == 2)
+    {
+        std::cout << "speech2text using: " << argv[1] << std::endl;
+        std::string file = argv[1];
+        rapp::services::service_controller ctrl;
 
-    // Maybe we can move the LANG parameter in the Audio Class ?
-    auto audio = std::make_shared<rapp::object::OGGfile>( "recording_sentence2.ogg" );
-                                                             //"nao_wav_d05_a1.wav_mono16k.wav"
-                                                             //"yes-no.wav"
-                                                             //"nao_wav_d05_a1.wav" 
-                                                             //"nao_ogg_d05_a1.ogg" 
-                                                             //"email-robot.wav"
-                                                             //"recording_yes.ogg"
-                                                             //"recording_no.ogg"
-                                                             //"recording_tuesday.ogg"
+        // Load file
+        auto audio = std::make_shared<rapp::object::MicrophoneWAV>( file );
+        //auto audio = std::make_shared<rapp::object::NAOSingleChannelWAV>( file );
+        assert ( audio );
 
-    assert ( audio );
-    
-    std::vector<std::string> grammar;
-    std::vector<std::string> words     //{"tuesday","monday"};
-                                       //{"yes","no"};
-                                       //{"I", "want", "to", "go", "out"};
-                                       //{"email","robot"};
-                                       {"check","my","email","robot"};
+        std::cout << "audio source: " << audio->audio_source() << std::endl;
 
+        // Keywords to search for
+        std::vector<std::string> words { };
 
-    std::vector<std::string> sentences //{"tuesday","monday"};
-                                       //{"yes","no"};
-                                       //{"I", "want", " to",  "go", "out"};
-                                       //{"email", "robot"};
-                                       {"check","my","email","robot"};
+        // JSGF Grammar
+        std::vector<std::string> grammar = 
+{
+"#JSGF V1.0\
+public <basicCmd> = <query> <verb> <object>;\
+<query> = (where | what | which | who | when);\
+<verb> = (is | are);\
+<object> = [the | a | my ] (keys | lunch | time | this | that | it | name | shoes | nurse | pills | lunch | remote | son | daugther );"
+};
 
-    auto callback = [&]( std::vector<std::string> words  )
-                       {
-                           for ( const auto & str : words )
-                               std::cout << str << " ";
-                           std::cout << std::endl;
-                       };
+        // Complete setences
+        std::vector<std::string> sentences {  };
 
-    // Maybe we should move the parameter "user" to a Global Var, or to the Job Scheduler?
-    //
-    auto sphinx_handle = std::make_shared<rapp::cloud::speechToText>( audio,           // audio file
-                                                                      "en",            // Language
-                                                                      "rapp",          // user
-                                                                      grammar,         // grammar ? (empty)
-                                                                      words,           // words to be considered
-                                                                      sentences,       // sentences to be considered
-                                                                      callback );
-    ctrl.runJob ( sphinx_handle );
+        /*
+        std::cout << "keywords: " << std::endl;
+        for ( auto k : words )
+           std::cout << "\t" << k << std::endl;
+
+        std::cout << "sentences: " << std::endl;
+        for ( auto s : sentences )
+           std::cout << "\t" << s << std::endl;
+        */
+
+        std::cout << "grammar: " << std::endl;
+        for ( auto g : grammar )
+          std::cout << g << std::endl;
+
+        // ...
+        auto callback = [&]( std::vector<std::string> words  )
+                           {
+                               for ( const auto & str : words )
+                                   std::cout << str << " ";
+                               std::cout << std::endl;
+                           };
+
+        // Maybe we should move the parameter "user" to a Global Var, or to the Job Scheduler
+        auto sphinx_handle = std::make_shared<rapp::cloud::speechToText>( audio,           // audio file
+                                                                          "en",            // Language
+                                                                          "rapp",          // user
+                                                                          grammar,         // grammar ? (empty)
+                                                                          words,           // words to be considered
+                                                                          sentences,       // sentences to be considered
+                                                                          callback );
+        ctrl.runJob ( sphinx_handle );
+    }
+    else
+       std::cerr << "no audio file argument" << std::endl;
 
     return 0;
 }

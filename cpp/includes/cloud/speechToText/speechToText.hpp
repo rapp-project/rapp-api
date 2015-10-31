@@ -82,8 +82,6 @@ public:
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + "\"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
 
-        std::cout << post_;
-
         // Append binary data
         auto bytes = file->bytearray();
         post_.insert( post_.end(), bytes.begin(), bytes.end() );
@@ -97,6 +95,7 @@ public:
         header_ += "Connection: close\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+        
         // bind the base class callback, to our handle_reply
         callback_ = std::bind(&speechToText::handle_reply, this, std::placeholders::_1);
     }
