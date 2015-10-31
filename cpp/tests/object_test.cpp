@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE( constructors_test )
 
     rapp::object::OGGfile og1 ("recording_sentence1.ogg");
     rapp::object::OGGfile og2 ( og1 );
-    rapp::object::WAVfileSingleChannel wv1 ("yes-no.wav");
+    //rapp::object::WAVfileSingleChannel wv1 ("yes-no.wav");
 
     BOOST_CHECK( og1 == og2 );
     //BOOST_CHECK( og1 != wv1 );

@@ -110,14 +110,14 @@ public:
 };
 
 /// WAV Class specialisation for a single channel
-class WAVfileSingleChannel : public audio
+class NAOSingleChannelWAV : public audio
 {
 public:
 
-    WAVfileSingleChannel ( const std::string filepath ) : audio ( filepath )
+    NAOSingleChannelWAV ( const std::string filepath ) : audio ( filepath )
     {}
 
-    WAVfileSingleChannel ( std::ifstream & bytestream ) : audio ( bytestream )
+    NAOSingleChannelWAV ( std::ifstream & bytestream ) : audio ( bytestream )
     {}
 
     std::string audio_source ( ) const
@@ -128,14 +128,14 @@ public:
 };
 
 /// WAV Class specialisation for quad channel
-class WAVfileQuadChannel : public audio
+class NAOQuadChannelWAV : public audio
 {
 public:
 
-    WAVfileQuadChannel ( const std::string filepath ) : audio ( filepath )
+    NAOQuadChannelWAV ( const std::string filepath ) : audio ( filepath )
     {}
 
-    WAVfileQuadChannel ( std::ifstream & bytestream ) : audio ( bytestream )
+    NAOQuadChannelWAV ( std::ifstream & bytestream ) : audio ( bytestream )
     {}
 
     std::string audio_source ( ) const
@@ -143,6 +143,25 @@ public:
 
     std::string extension ( ) const
     { return ".wav"; }
+};
+
+/// WAV Single channel 16Khz > Headset audio source
+class MicrophoneWAV : public audio
+{
+public:
+
+    MicrophoneWAV( const std::string filepath ) : audio ( filepath )
+    {}
+
+    MicrophoneWAV( std::ifstream & bytestream ) : audio ( bytestream )
+    {}
+
+    std::string audio_source ( ) const
+    { return "headset"; }
+
+    std::string extension ( ) const
+    { return ".wav"; }
+
 };
 
 // TODO: Do we need a Headset specialisation class?
