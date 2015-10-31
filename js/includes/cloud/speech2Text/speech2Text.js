@@ -90,12 +90,10 @@ RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source
 				console.log('speech2Text JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"words":["check","my","emails"],"error":""}
-			if (json_obj.words.length){
-				for (i=0; i<json_obj.words.length; i++){
-					words_vector.push(json_obj.words[i]);
-				}
-				_delegate(words_vector);
+			for (i=0; i<json_obj.words.length; i++){
+				words_vector.push(json_obj.words[i]);
 			}
+			_delegate(words_vector);
 		} catch (e) {
 			console.log("speech2Text::handle_reply Error parsing: ");
 			return console.error(e);
