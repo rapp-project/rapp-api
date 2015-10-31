@@ -2,7 +2,7 @@
 
 // Import the faceDetector JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('./../RAPPCloud.js')
-RAPPCloud.qrDetector = require('./../includes/cloud/setDenoiseProfile/setDenoiseProfile.js');
+RAPPCloud.setDenoiseProfile = require('./../includes/cloud/setDenoiseProfile/setDenoiseProfile.js');
 var services = new RAPPCloud( );
 
 services.setDenoiseProfile ("denoise_source.wav",

@@ -62,15 +62,13 @@ RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
 				console.log('qrDetection JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"qr_centers":[{"x":86.0,"y":86.0}],"qr_messages":["http://www.qrstuff.com"],"error":""}
-			if (json_obj.qr_centers.length){
-				for (i=0; i<json_obj.qr_centers.length; i++){
-					var x = json_obj.qr_centers[i].x;
-					var y = json_obj.qr_centers[i].y;
-					var label = json_obj.qr_messages[i];
-					codes.push(new object.QrCode( x, y, label ));
-				}
-				_delegate(codes);
+			for (i=0; i<json_obj.qr_centers.length; i++){
+				var x = json_obj.qr_centers[i].x;
+				var y = json_obj.qr_centers[i].y;
+				var label = json_obj.qr_messages[i];
+				codes.push(new object.QrCode( x, y, label ));
 			}
+			_delegate(codes);
 		} catch (e) {
 			console.log("qrDetector::handle_reply Error parsing: ");
 			return console.error(e);
