@@ -32,9 +32,9 @@ Information on RAPP Platform front-end Web Services can he found [here](https://
 
 ## Directories
 
-- cpp/    : C++ RAPP-API Sources
-- js/     : JavaScript RAPP-API Sources
-- python/ : Python RAPP-API Sources
+- `cpp/`    : C++ RAPP-API Sources
+- `js/`     : JavaScript RAPP-API Sources
+- `python/` : Python RAPP-API Sources
 
 
 ## Tests
