@@ -12,18 +12,19 @@ The below table presents the up-to-date available RAPP Platform Service calls, t
 
 | Platform Services                 | C++      | JavaScript   | Python   |
 | :-------------------------------: | :---:    | :----------: | :---:    |
-| face_detection                    |          |              | ✓        |
-| qr_detection                      |          |              | ✓        |
-| text_to_speech                    |          |              | ✓        |
-| denoise_profile                   |          |              | ✓        |
-| speech_detection_sphix4           |          |              | ✓        |
-| speech_detection_google           |          |              | ✓        |
-| available_services                |          |              | ✓        |
-| ontology_subclasses_of            |          |              | ✓        |
-| ontology_superclasses_of          |          |              | ✓        |
-| ontology_is_supsuperclass_of      |          |              | ✓        |
-| cognitive_test_chooser            |          |              | ✓        |
-| record_cognitive_test_performance |          |              | ✓        |
+| face_detection                    | ✓        |              | ✓        |
+| qr_detection                      | ✓        |              | ✓        |
+| text_to_speech                    | ✓        |              | ✓        |
+| denoise_profile                   | ✓        |              | ✓        |
+| speech_detection_sphix4           | ✓        |              | ✓        |
+| speech_detection_google           | ✗        |              | ✓        |
+| object_recognition                | ✓        |              |          |
+| available_services                | ✓        |              | ✓        |
+| ontology_subclasses_of            | ✓        |              | ✓        |
+| ontology_superclasses_of          | ✓        |              | ✓        |
+| ontology_is_supsuperclass_of      | ✓        |              | ✓        |
+| cognitive_test_chooser            | ✗        |  ✗           | ✓        |
+| record_cognitive_test_performance | ✗        |  ✗           | ✓        |
 
 
 
