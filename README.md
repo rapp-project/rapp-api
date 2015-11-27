@@ -27,7 +27,7 @@ The below table presents the up-to-date available RAPP Platform Service calls, t
 
 
 
-Information on RAPP Platform front-end Web Services can he found [here](https://github.com/rapp-project/rapp-platform/tree/master/hop_services/services).
+Information on RAPP Platform front-end Web Services can he found [here](https://github.com/rapp-project/rapp-platform/tree/master/rapp_web_services/services).
 
 ## Directories
 
