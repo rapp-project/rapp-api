@@ -43,20 +43,20 @@ Information on RAPP Platform Services can he found [here](https://github.com/rap
 
 For the C++ RAPP API, please note you need to satisfy certain dependencies:
 
-> A modern C++11 enabled compiler (g++,clang) 
-> BOOST library higher than 1.49
-> OpenCV higher than 2.0
-> CMake higher than 2.8
+* A modern C++11 enabled compiler (g++,clang) 
+* BOOST library higher than 1.49
+* OpenCV higher than 2.0
+* CMake higher than 2.8
 
 First create a build directory:
-` $mkdir build`
-` cd build`
+*` $mkdir build`
+*` cd build`
 
 Then run cmake
-`$ cmake ..`
+*`$ cmake ..`
 
 Finally build
-`$ make -j8`
+*`$ make -j8`
 
 ## Contributors
 
