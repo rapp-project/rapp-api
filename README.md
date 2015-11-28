@@ -49,14 +49,17 @@ For the C++ RAPP API, please note you need to satisfy certain dependencies:
 * CMake higher than 2.8
 
 First create a build directory:
-*` $mkdir build`
-*` cd build`
+` $mkdir build`
 
-Then run cmake
-*`$ cmake ..`
+` cd build`
 
-Finally build
-*`$ make -j8`
+Then run cmake:
+
+`$ cmake ..`
+
+Finally build:
+
+`$ make -j8`
 
 ## Contributors
 
