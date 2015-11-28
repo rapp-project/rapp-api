@@ -67,7 +67,6 @@ RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source
 	
 	var r = request.post(cloud.cloud_url + '/hop/speech_detection_sphinx4/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
-			console.log(json);
 			handle_reply(json);
 			}
 		else if (error) {
