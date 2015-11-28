@@ -48,18 +48,22 @@ For the C++ RAPP API, please note you need to satisfy certain dependencies:
 * OpenCV higher than 2.0
 * CMake higher than 2.8
 
-First create a build directory:
-` $mkdir build`
+To build:
+```
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make -j8
+```
 
-` cd build`
+You may install if you wish to:
+```
+sudo make install
+```
+The static and shared library will be installed in `/usr/local/lib/`
+whereas the headers are installed in `/usr/local/include/`.
+If you wish to change the location, simply edit the appropriate lines in the `CMakeLists.txt`.
 
-Then run cmake:
-
-`$ cmake ..`
-
-Finally build:
-
-`$ make -j8`
 
 ## Contributors
 
