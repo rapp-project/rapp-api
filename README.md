@@ -5,28 +5,26 @@
 
 The below table presents the up-to-date available RAPP Platform Service calls, throught the relevant RAPP-API (Python, JavaScript, C++)
 
-
 - ✓   : Implemented and tested as a part of the relevant RAPP-API.
 - ✗   : Not yet implemented
 
-
 | Platform Services                 | C++      | JavaScript   | Python   |
 | :-------------------------------: | :---:    | :----------: | :---:    |
-| face_detection                    | ✓        |  ✓           | ✓        |
-| qr_detection                      | ✓        |  ✓           | ✓        |
-| text_to_speech                    | ✗        |  ✗           | ✓        |
-| denoise_profile                   | ✓        |  ✓           | ✓        |
-| speech_detection_sphix4           | ✓        |  ✓           | ✓        |
-| speech_detection_google           | ✗        |  ✗           | ✓        |
-| object_recognition                | ✓        |  ✗           |          |
-| available_services                | ✓        |  ✗           | ✓        |
-| ontology_subclasses_of            | ✓        |  ✓           | ✓        |
-| ontology_superclasses_of          | ✓        |  ✓           | ✓        |
-| ontology_is_supsuperclass_of      | ✓        |  ✓           | ✓        |
-| cognitive_test_chooser            | ✗        |  ✗           | ✓        |
-| record_cognitive_test_performance | ✗        |  ✗           | ✓        |
+| face detection                    | ✓        |  ✓           | ✓        |
+| qr detection                      | ✓        |  ✓           | ✓        |
+| text to speech                    | ✗        |  ✗           | ✓        |
+| de-noise profile                  | ✓        |  ✓           | ✓        |
+| speech to text (sphinx4)          | ✓        |  ✓           | ✓        |
+| speech to text (google)           | ✗        |  ✗           | ✓        |
+| object recognition                | ✓        |  ✗           | ✓        |
+| available services                | ✓        |  ✗           | ✓        |
+| ontology subclasses of            | ✓        |  ✓           | ✓        |
+| ontology superclasses of          | ✓        |  ✓           | ✓        |
+| ontology is subsuperclass of      | ✓        |  ✓           | ✓        |
+| cognitive test chooser            | ✗        |  ✗           | ✓        |
+| record cognitive test performance | ✗        |  ✗           | ✓        |
 
-
+// TODO: RAPP Robot API
 
 Information on RAPP Platform Services can he found [here](https://github.com/rapp-project/rapp-platform/tree/master/rapp_web_services/services).
 
@@ -36,13 +34,13 @@ Information on RAPP Platform Services can he found [here](https://github.com/rap
 - `js/`     : JavaScript RAPP-API Sources
 - `python/` : Python RAPP-API Sources
 
-
 ## Tests
 
-## Building C++
+* C++ Unit testing (TODO Wiki)
+* JavaScript Unit testing (TODO Wiki)
 
+## Building the C++ API
 For the C++ RAPP API, please note you need to satisfy certain dependencies:
-
 * A modern C++11 enabled compiler (g++,clang) 
 * BOOST library higher than 1.49
 * OpenCV higher than 2.0
@@ -64,6 +62,9 @@ The static and shared library will be installed in `/usr/local/lib/`
 whereas the headers are installed in `/usr/local/include/`.
 If you wish to change the location, simply edit the appropriate lines in the `CMakeLists.txt`.
 
+## JavaScript API Installation
+
+// TODO
 
 ## Contributors
 
