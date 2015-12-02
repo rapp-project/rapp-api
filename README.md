@@ -66,6 +66,8 @@ If you wish to change the location, simply edit the appropriate lines in the `CM
 
 // TODO
 
+[![Join the chat at https://gitter.im/trogdoro/xiki](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/trogdoro/xiki?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Contributors
 
 - Alexander Gkiokas, **[a.gkiokas@ortelio.co.uk]**
