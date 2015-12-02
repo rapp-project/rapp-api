@@ -1,8 +1,6 @@
 # RAPP-API
 --------------------
 
-[![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 ## Synopsis
 
 The below table presents the up-to-date available RAPP Platform Service calls, throught the relevant RAPP-API (Python, JavaScript, C++)
@@ -68,7 +66,7 @@ If you wish to change the location, simply edit the appropriate lines in the `CM
 
 // TODO
 
-[![Join the chat at https://gitter.im/trogdoro/xiki](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/trogdoro/xiki?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Contributors
 
