@@ -41,6 +41,7 @@ The examples located in the examples directory showcase how you may use the RAPP
 - **includes**: The RappCloud services directory.
 - **examples**: Examples that showcase how you may use the RAPPCloud services for your convenience.
 - **test**: Unit tests for all the services and objects.
+- **node_modules**: Randomstring and Form-Data nodejs modules, which are dependancies.
 
 
 ## Tests
