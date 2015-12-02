@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the faceDetector JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('./../RAPPCloud.js');
-RAPPCloud.faceDetector = require('./../includes/cloud/faceDetector/faceDetector.js');
+var RAPPCloud = require('../RAPPCloud.js');
+RAPPCloud.faceDetector = require('../includes/cloud/faceDetector/faceDetector.js');
 var services = new RAPPCloud( );
 
 
@@ -18,4 +18,4 @@ function handler ( faces )
 		console.log ( 'No faces detected');
 }
 
-services.faceDetector('./two_faces.jpg', 'jpg', handler );
+services.faceDetector('two_faces.jpg', 'jpg', handler );

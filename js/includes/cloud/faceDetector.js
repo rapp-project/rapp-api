@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-var RAPPCloud = require('./../../../RAPPCloud.js');
-var RAPPObject = require('./../../../RAPPObject.js');
-RAPPObject.face = require('./../../objects/face/face.js');
+var RAPPCloud = require('../../../RAPPCloud.js');
+var RAPPObject = require('../../../RAPPObject.js');
+RAPPObject.face = require('../../objects/face/face.js');
 var FormData = require('form-data');
 var fs = require('fs');
 var request = require('request');

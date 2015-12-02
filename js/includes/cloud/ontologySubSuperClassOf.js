@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var RAPPCloud = require('./../../../RAPPCloud.js');
+var RAPPCloud = require('../../../RAPPCloud.js');
 var request = require('request');
 
 /**

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 // Import the ontologySubclassOf JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.qrDetector = require('ontologySubclassesOf');
-RAPPCloud.qrDetector = require('ontologySuperclassesOf');
-RAPPCloud.qrDetector = require('ontologySubSuperClassOf');
+var RAPPCloud = require('../RAPPCloud.js');
+RAPPCloud.ontologySubclassesOf = require('../includes/cloud/ontologySubclassesOf/ontologySubclassesOf.js');
+RAPPCloud.ontologySuperclassesOf = require('../includes/cloud/ontologySuperclassesOf/ontologySuperclassesOf.js');
+RAPPCloud.ontologySubSuperClassOf = require('../includes/cloud/ontologySubSuperClassOf/ontologySubSuperClassOf.js');
 
 var services = new RAPPCloud( );
 var query='Oven';

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the faceDetector JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('./../RAPPCloud.js')
-RAPPCloud.speech2Text = require('./../includes/cloud/speech2Text/speech2Text.js');
+var RAPPCloud = require('../RAPPCloud.js')
+RAPPCloud.speech2Text = require('../includes/cloud/speech2Text/speech2Text.js');
 var services = new RAPPCloud( );
 
 /** 
@@ -14,7 +14,7 @@ var services = new RAPPCloud( );
 										 //"yes-no.wav";
 										 //"nao_wav_d05_a1.wav";
 										 //"nao_ogg_d05_a1.ogg"; 
-		     './recording_sentence2.ogg';
+		     "recording_sentence2.ogg";
 		     //"email-robot.wav";
 		     //"recording_yes.ogg";
 		     //"recording_no.ogg";
@@ -50,7 +50,7 @@ function handler ( words_detected )
 
 services.speech2Text( audio,           // audio file
 					  "en",            // Language
-					  "rapp",          // user
+					  "admin",          // user
 					  //"headset",
 					  //"nao_wav_1_ch",
 					  //"nao_wav_4_ch",
