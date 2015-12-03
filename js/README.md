@@ -5,11 +5,7 @@ Containes RappCloud API module used for interfering wth RAPP Platform.
 
 #### Dependencies
 
-You need nodejs and npm:
-	
-sudo apt-get install nodejs
-sudo apt-get install npm
-sudo ln -s /usr/bin/nodejs /usr/bin/node
+NodeJS and npm, along with the node modules randomstring and form-data are the dependencies on which the JS API relies on. In order to install them run: bash ./dependencies_install.sh
 
 ## Usage
 
@@ -31,17 +27,11 @@ TODO: Provide the configuration parameters to connect the API to:
 The examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
 
 
-## Install
-
---TODO--
-
-
 ## Directories
 
 - **includes**: The RappCloud services directory.
 - **examples**: Examples that showcase how you may use the RAPPCloud services for your convenience.
 - **test**: Unit tests for all the services and objects.
-- **node_modules**: Randomstring and Form-Data nodejs modules, which are dependancies.
 
 
 ## Tests
