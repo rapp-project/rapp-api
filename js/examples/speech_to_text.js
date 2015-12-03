@@ -50,7 +50,7 @@ function handler ( words_detected )
 
 services.speech2Text( audio,           // audio file
 					  "en",            // Language
-					  "admin",          // user
+					  "rapp",          // user
 					  //"headset",
 					  //"nao_wav_1_ch",
 					  //"nao_wav_4_ch",
