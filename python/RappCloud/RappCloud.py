@@ -49,8 +49,6 @@ class RappCloud:
     def __init__(self):
         # --- Load Rapp Platform parameters --- #
         self.cfgFileDir_ = os.path.join(__path__, 'config')
-        self.parameters_file_path_ = os.path.join(__path__, \
-            'config', 'platform_parameters.json')
         self.cfgParser_ = SafeConfigParser()
         self.platform_params_ = None
         self.platformIP_ = ''
@@ -122,7 +120,7 @@ class RappCloud:
     #  @param self The object pointer.
     #
     def __parse_platform_cfg(self):
-        cfgFilePath = self.cfgFileDir_ + 'platform.cfg'
+        cfgFilePath = os.path.join(self.cfgFileDir_, 'platform.cfg')
         section = 'RAPP Platform'
         ## Catch exceptions on loading configuration file ##
         ## TODO Enhance Exception handling
