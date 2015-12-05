@@ -4,12 +4,14 @@ Containes RappCloud API module used for interfering wth RAPP Platform.
 
 ## Usage
 
-#### Add the module to python path
+#### Link the RappCloud python module to the system's PYTHONPATH
 
 Add the following into your ~/.bashrc in order to add RappCloud module into python module scope:
 
 ```
-  export PYTHONPATH=$PYTHONPATH:{rapp_api_repo_path}/python
+
+export PYTHONPATH=$PYTHONPATH:{rapp_api_repo_path}/python
+
 ```
 
 where {rapp_api_repo_path} is the path to locally installed rapp-api repository.
@@ -23,7 +25,9 @@ Dependencies are defined into dependencies.txt file.
 To install all dependencies (global-scope) execute under this directory:
 
 ```bash
-sudo pip install -r dependencies.txt
+
+$ sudo pip install -r dependencies.txt
+
 ```
 
 ####  Configurations
@@ -42,9 +46,13 @@ configuration file. This file already includes configuration parameters used to 
 #### How to use the RappCloud module
 
 ```python
+
 from RappCloud import RappCloud
+
 ...
+
 rappCloud = RappCloud()
+
 ```
 
 Multible tests showing the usage of the RappCloud API can be found under the rapp-platform repository:

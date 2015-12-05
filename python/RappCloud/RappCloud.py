@@ -1,32 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-##
-# MIT License (MIT)
 
-# Copyright (c) <2014> <Rapp Project EU>
+# Copyright 2015 RAPP
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
+    #http://www.apache.org/licenses/LICENSE-2.0
 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # Authors: Konstantinos Panayiotou, Manos Tsardoulias
 # contact: klpanagi@gmail.com, etsardou@iti.gr
-##
+
+
+## @file RappCloud/RappCloud.py
+#
+#  @copyright Rapp Projecty EU 2015
+#  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
+#
 
 import json
 import os
@@ -38,19 +36,21 @@ import yaml
 import base64
 #import magic
 
-#  Set and hold RappCloud directory path
 __path__ = os.path.dirname(__file__)
 
 
+## @class RappCloud
+#
+#  Rapp Platform API class. API calls for Platform HOP Web Services.
+#
 class RappCloud:
 
-    ##
-    #   @brief default constructor
-    ##
+    ##  Default constructor.
     def __init__(self):
         # --- Load Rapp Platform parameters --- #
-        self.cfgFileDir_ = __path__ + '/config/'
-        self.parameters_file_path_ = __path__ + '/config/platform_parameters.json'
+        self.cfgFileDir_ = os.path.join(__path__, 'config')
+        self.parameters_file_path_ = os.path.join(__path__, \
+            'config', 'platform_parameters.json')
         self.cfgParser_ = SafeConfigParser()
         self.platform_params_ = None
         self.platformIP_ = ''
@@ -62,12 +62,14 @@ class RappCloud:
         self.__parse_services_cfg()
         self.__parse_auth_cfg()
         self.__randStrSize = 5
-        # ------------------------------------- #
-    #============================================================================
 
 
+    ## Parse and load Rapp Platform authentication parameters.
+    #
+    #  @param self The object pointer.
+    #
     def __parse_auth_cfg(self):
-        cfgFilePath = self.cfgFileDir_ + 'auth.cfg'
+        cfgFilePath = os.path.join(self.cfgFileDir_, 'auth.cfg')
         section = 'Auth'
         try:
             self.cfgParser_.read(cfgFilePath)
@@ -92,12 +94,14 @@ class RappCloud:
         else:
             print "Cfg file [%s] is missing option <password>"
             sys.exit(1)
-    #============================================================================
 
 
-
+    ## Parse and load Rapp Platform Web Services info.
+    #
+    #  @param self The object pointer.
+    #
     def __parse_services_cfg(self):
-        cfgFilePath = self.cfgFileDir_ + 'services.yaml'
+        cfgFilePath = os.path.join(self.cfgFileDir_, 'services.yaml')
         srvList = []
         with open(cfgFilePath, 'r') as ymlfile:
             cfg = yaml.safe_load(ymlfile)
@@ -111,9 +115,12 @@ class RappCloud:
             self.services_.append(service)
             self.serviceUrl_[service] = 'http://' + self.platformIP_ + \
                 ':' + str(self.servicePort_) + '/hop/' + service
-    #============================================================================
 
 
+    ## Parse and load Rapp Platform parameters.
+    #
+    #  @param self The object pointer.
+    #
     def __parse_platform_cfg(self):
         cfgFilePath = self.cfgFileDir_ + 'platform.cfg'
         section = 'RAPP Platform'
@@ -150,8 +157,15 @@ class RappCloud:
             print "Missing options {ipv4_addr} and {port} in cfg file [%s]" \
                 % cfgFilePath
             sys.exit(1)
-    #============================================================================
 
+
+    ## Append a random string as a postFix to the input filePath.
+    #
+    #  @param self The object pointer.
+    #  @param filePath File's system path to append the random postfix string.
+    #
+    #  @return The new file name.
+    #
     def __appendRandStr(self, filePath):
         randStr = RandStrGen.create(self.__randStrSize)
         splStr = filePath.split('/')
@@ -160,11 +174,13 @@ class RappCloud:
         return newName
 
 
-
-    ##
-    #   @brief Call different services throught a single method
-    #   @TODO Implement!!!
-    ##
+    ## Call different services throught a single method. Not implemented yet!
+    #    This method will be fully implemented on v0.6.0
+    #
+    #  @param self The object pointer.
+    #  @param service_name The Rapp Platform Service to call.
+    #  @param args
+    #
     def call_service(self, service_name, args):
         print '[%s] service request' % service_name
         # --- Validate existence for the requested service. --- #
@@ -174,24 +190,36 @@ class RappCloud:
             # --- Throw an excetion --- #
             print "Service [%s] does not exist" % service_name
 
-    #============================================================================
 
-
-    ##
-    #   @brief Returns a list with the available RAPP Platform services
-    ##
+    ## Returns a list with the available RAPP Platform services
+    #
+    #  @param self The object pointer
+    #
+    #  @return The Platform Services supported by the Rapp-API
+    #
     def get_platform_services(self):
         return self.services_
 
 
-
-    ##
-    #   @brief Calls Speech-Detection-Sphinx4 RAPP Platform front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
+    ## API call for Speech-Detection-Sphinx4 RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param language Language to be used by the speech_detection_sphinx4
+    #    module. Currently valid language values are ‘gr’ for Greek and
+    #    ‘en’ for English.
+    #  @param audio_source A value that presents the information for the
+    #    audio source data. e.g "nao_wav_1_ch".
+    #  @param words A vector that carries the "under-detection" words.
+    #  @param sentences The under consideration sentences.
+    #  @param grammar Grammar to be used.
+    #  @param file_uri Path to the audio/speech file to be given as input
+    #    to the speech_detection_sphinx4 Platform Service.
+    #  @param user User's name, a.k.a username.
+    #
+    #  @return Rapp Platform Service response object.
+    #
     def speech_detection_sphinx4(self, language, audio_source, words, \
-                                 sentences, grammar, fileUri, user):
-
+                                 sentences, grammar, file_uri, user):
         # -- Craft the data payload for the post request
         payload = {
             'language':language,
@@ -202,19 +230,32 @@ class RappCloud:
             'user': user
         }
 
-        fileName = self.__appendRandStr(fileUri)
+        fileName = self.__appendRandStr(file_uri)
         # -- Files to be added into to post request
         files = {
-            'file_uri': (fileName, open(fileUri, 'rb'))
+            'file_uri': (fileName, open(file_uri, 'rb'))
         }
         url = self.serviceUrl_['speech_detection_sphinx4']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
-    def speech_detection_google(self, fileUri, audio_source, user, language):
 
+    ## API call for Speech-Detection-Google RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param language Language to be used by the speech_detection_sphinx4
+    #    module. Currently valid language values are ‘gr’ for Greek and
+    #    ‘en’ for English.
+    #  @param audio_source A value that presents the information for the
+    #    audio source data. e.g "nao_wav_1_ch".
+    #  @param file_uri Path to the audio/speech file to be given as input
+    #    to the speech_detection_google Platform Service.
+    #  @param user User's name, a.k.a username.
+    #
+    #  @return Rapp Platform Service response object.
+    #
+    def speech_detection_google(self, file_uri, audio_source, user, language):
         # -- Craft the data payload for the post request
         payload = {
             'audio_source': audio_source,
@@ -222,49 +263,57 @@ class RappCloud:
             'language': language
         }
 
-        fileName = self.__appendRandStr(fileUri)
+        fileName = self.__appendRandStr(file_uri)
         # -- Files to be added into to post request
         files = {
-            'file_uri': (fileName, open(fileUri, 'rb'))
+            'file_uri': (fileName, open(file_uri, 'rb'))
         }
         url = self.serviceUrl_['speech_detection_google']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-
-    ##
-    #   @brief Calls Set-Noise-Profile RAPP Platform front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
-    def set_noise_profile(self, fileUri, audio_file_type, user):
-        fileName = self.__appendRandStr(fileUri)
+    ## API call for Set-Noise-Profile RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param audio_source A value that presents the information for the
+    #    audio source data. e.g "nao_wav_1_ch".
+    #  @param file_uri Path to the audio/speech file to be given as input
+    #    to the speech_detection_google Platform Service.
+    #  @param user User's name, a.k.a username.
+    #
+    #  @return Rapp Platform Service response object.
+    #
+    def set_noise_profile(self, file_uri, audio_source, user):
+        fileName = self.__appendRandStr(file_uri)
         # -- Craft the data payload for the post request
         payload = {
             'user': user,
-            'audio_source': audio_file_type
+            'audio_source': audio_source
         }
         # -- Files to be added into to poset request
         files = {
-            'file_uri': (fileName, open(fileUri, 'rb'))
+            'file_uri': (fileName, open(file_uri, 'rb'))
         }
         url = self.serviceUrl_['set_noise_profile']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Calls qr_detection() RAPP Platform front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
-    def qr_detection(self, fileUri):
-        fileName = self.__appendRandStr(fileUri)
+    ## API call for Qr-Detection RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param file_uri Path to the image file to be given as input
+    #    to the qr_detection Platform Service.
+    #
+    #  @return Rapp Platform Service response object.
+    #
+    def qr_detection(self, file_uri):
+        fileName = self.__appendRandStr(file_uri)
         files = {
-            'file_uri': (fileName, open(fileUri, 'rb'))
+            'file_uri': (fileName, open(file_uri, 'rb'))
         }
 
         payload = {}
@@ -272,31 +321,36 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Calls face_detection() RAPP Platform front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
-    def face_detection(self, fileUri):
-        fileName = self.__appendRandStr(fileUri)
+    ## API call for Face-Detection RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param file_uri Path to the image file to be given as input
+    #    to the face_detection Platform Service.
+    #
+    #  @return Rapp Platform Service response object.
+    #
+    def face_detection(self, file_uri):
+        fileName = self.__appendRandStr(file_uri)
         files = {
-            'file_uri': (fileName, open(fileUri, 'rb'))
+            'file_uri': (fileName, open(file_uri, 'rb'))
         }
         payload = {}
         url = self.serviceUrl_['face_detection']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Calls the ontology_subclasses_of() RAPP Platform
-    #       front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
+
+    ## API call for Ontology-Subclasses-Of RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param query Ontology query string.
+    #
+    #  @return Rapp Platform Service response object.
+    #
     def ontology_subclasses_of(self, query):
         payload = {
             'query': query,
@@ -306,14 +360,15 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Calls the ontology_superclasses_of() RAPP Platform
-    #       front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
+    ## API call for Ontology-Superclasses-Of RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param query Ontology query string.
+    #
+    #  @return Rapp Platform Service response object.
+    #
     def ontology_superclasses_of(self, query):
         payload = {
             'query': query,
@@ -323,14 +378,17 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Calls the ontology_is_subsuperclass_of() RAPP Platform
-    #       front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
+    ## API call for Ontology-Subsuperclass-Of RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param parent_class Ontology parent class name.
+    #  @param child_class Ontology child calss name.
+    #  @param recursive Defines if a recursive procedure will be used (bool).
+    #
+    #  @return Rapp Platform Service response object.
+    #
     def ontology_is_subsuperclass_of(self, parent_class, child_class, recursive):
         rec = False
         if recursive != None:
@@ -346,13 +404,9 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Calls the detect_objects() RAPP Platform front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
+    ## NOT SUPPORTED. DEPRECATED!!!
     def detect_objects(self, fileUri, limit):
         fileName = self.__appendRandStr(fileUri)
         # -- Files to be added into to poset request
@@ -366,21 +420,20 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Calls the available_services() RAPP Platform front-end service.
-    #   @return Return answer from RAPP Platform.
-    ##
+    ## API call for Ontology-Subsuperclass-Of RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #
+    #  @return Rapp Platform Service response object.
+    #
     def available_services(self):
+        #  There seems to be an error with Hop-server on empty payload post
+        #  requests. The use of the dummyVar into the payload field resolves
+        #  the bug.
+        #  TODO Report this bug to HOP developers/maintainers
 
-        ##
-        #   There seems to be an error with Hop-server on empty payload post
-        #   requests. The use of the dummyVar into the payload field resolves
-        #   the bug.
-        #   TODO Report this bug to HOP developers/maintainers
-        ##
         payload = {
             'dummyVar': ''
         }
@@ -389,19 +442,20 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Text-To-Speech (TTS) Service.
-    #   @param text String to perform TTS on.
-    #   @param language Supported translation language. 'el' -> Greek,
-    #       'en' -> English.
-    #   @param dest If provided the returned audio data will be stored in this
-    #       destination file. Otherwise the audio data are returned from this
-    #       method.
-    #   @return
-    ##
+    ## API call for Text-To-Speech RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param text String to perform TTS on.
+    #  @param language Supported translation language. 'el' -> Greek,
+    #   'en' -> English.
+    #  @param dest If provided the returned audio data will be stored in this
+    #   destination file. Otherwise the audio data are returned as part of
+    #   return object.
+    #
+    #  @return Rapp Platform Service API call response object.
+    #
     def text_to_speech(self, text, language, dest):
         files = {}
         payload = {
@@ -412,13 +466,13 @@ class RappCloud:
 
         response = CloudInterface.callService(url, payload, files, self.auth_)
         returnData = {}
-        ## Parse response error field.
+        # Parse response error field.
         if response['error']:
             returnData['error'] = response['error']
             return returnData
         else:
             try:
-                ## Decode base64 encoded payload
+                # Decode base64 encoded payload
                 audioRawData = base64.b64decode(response['payload'])
             except Exception as e:
                 returnData['error'] = 'Failed to base64.decode payload data'
@@ -427,7 +481,7 @@ class RappCloud:
             finally:
                 pass
         returnData['error'] = ''
-        ## Parse dest parameter.
+        # Parse dest parameter.
         if not dest:
             returnData['audioData'] = audioRawData
             returnData['basename'] = response['basename']
@@ -435,7 +489,7 @@ class RappCloud:
             #                                       mime=True)
         else:
             try:
-                ## Write audio data to given destination file path.
+                # Write audio data to given destination file path.
                 with open(dest, 'wb') as f1:
                     f1.write(audioRawData)
             except Exception as e:
@@ -444,21 +498,21 @@ class RappCloud:
             finally:
                 pass
         return returnData
-    #============================================================================
 
 
 
+    # ======================= Cognitive Exercises ========================= #
+    #=======================================================================#
 
-    ## ======================= Cognitive Exercises ========================== ##
-    #==========================================================================#
-
-    ##
-    #   @brief Call to <cognitive_test_chooser> RAPP Platform front-end service.
-    #   @param user User id to connect on with the RAPP PLatfrom.
-    #   @param testType Cognitive Test Type. ArithmeticCts, AwarenessCts,
-    #       ReasoningCts.
-    #   @return
-    ##
+    ## API call for Cognitive-Test-Chooser RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param testType Cognitive Test Type. ArithmeticCts, AwarenessCts,
+    #    ReasoningCts.
+    #  @param user User's name, a.k.a username.
+    #
+    #  @return Rapp Platform Service API call response object.
+    #
     def cognitive_test_chooser(self, user, testType):
         files = {}
         payload = {
@@ -469,18 +523,19 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief  Record a cognitive test performance for to the RAPP Platform db.
-    #   @param user User id to connect on with the RAPP PLatfrom.
-    #   @param testType Cognitive Test Type. ArithmeticCts, AwarenessCts,
-    #   @param test Test full name as obtained from a call to
-    #       <cognitive_test_chooser> Platform service.
-    #   @score User's score for given test in range [0-100].
-    #   @return
-    ##
+    ## API call for Record-Cognitive-Test-Performance RAPP Platform
+    #    front-end service
+    #
+    #  @param self The object pointer.
+    #  @param user User's name, a.k.a username.
+    #  @param test Test full name as obtained from a call to
+    #    cognitive_test_chooser Platform service.
+    #  @param score User's score for given test in range [0-100].
+    #
+    #  @return Rapp Platform Service API call response object.
+    #
     def record_cognitive_test_performance(self, user, test, score):
         files = {}
         payload = {
@@ -492,7 +547,6 @@ class RappCloud:
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
-    #============================================================================
 
 
 

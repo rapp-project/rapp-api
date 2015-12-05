@@ -1,54 +1,57 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-##
-# MIT License (MIT)
 
-# Copyright (c) <2014> <Rapp Project EU>
+# Copyright 2015 RAPP
 
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
+    #http://www.apache.org/licenses/LICENSE-2.0
 
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 # Authors: Konstantinos Panayiotou, Manos Tsardoulias
 # contact: klpanagi@gmail.com, etsardou@iti.gr
-##
 
 
-import requests  # Import global module scope
+## @file CloudInterface/CloudInterface.py
+#
+#  @copyright Rapp Projecty EU 2015
+#  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
+#
+
+
+import requests
 from requests.auth import HTTPBasicAuth  # Http basic authentication
 from requests.exceptions import *  # Requests Exceptions
 import json
 
 
-
+## @class CloudInterface
+#
+#  Cloud Interface class. Service controller for HOP Web Services requests
+#  Static class.
+#
 class CloudInterface:
 
-    ##
-    #   @brief TODO
+    ## Performs Platform's HOP Web Service request.
+    #
     #   @param basicAuth Basic http authentication credentials
     #       {'username': '', 'password': ''}
     #   @param url Post request destination Url.
     #   @param payload data payload of the post request.
     #   @param files multipart post file field.
-    ##
+    #
+    #   @return Rapp Platform Service response object.
+    #
     @staticmethod
     def callService(url, payload, files, basicAuth):
-        ##
         #  Python-Requests module does not support empty parameter fields.
         #  Passing empty parameter ('param1': '') will result in a corrupted
         #  payload definition.
@@ -56,19 +59,16 @@ class CloudInterface:
         #      https://github.com/kennethreitz/requests/issues/2651
         #  Below we provide a temporary fix to this issue.
         #      Deleting values from payload literal does the job!
-        ##
         toRemove = []
         for param in payload:
             if not payload[param]:
                 toRemove.append(param)
         for i in toRemove:
             del payload[i]
-        #####################################################################
         try:
             response = requests.post(url, data=payload, files=files,  \
                     auth=HTTPBasicAuth(basicAuth['username'], \
                                        basicAuth['password']))
-            # print response.headers
         except ConnectionError as e:
             print "Cannot resolve domain name [%s]" % url
             print e
@@ -94,19 +94,17 @@ class CloudInterface:
                     'error': 'Non JSON Response!!!!'
                 }
         return returnData
-    #============================================================================
 
 
-    ##
-    #   @brief Check if data are in json format.
-    #   @return True if data are in json format. False otherwise.
-    ##
+    ##  Check if an object (literal) is in json representation format.
+    #   @param obj Object (literal).
+    #
+    #   @return True if object is a json object. False otherwise.
+    #
     @staticmethod
-    def isJson(data):
+    def isJson(obj):
         try:
-            json.loads(data)
+            json.loads(obj)
         except ValueError:
             return False
         return True
-    #============================================================================
-
