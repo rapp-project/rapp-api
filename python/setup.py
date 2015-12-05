@@ -1,9 +1,36 @@
-##
-#   @TODO!!!
-##
+#!/usr/bin/env python
 
-from setuptools import setup
+import RappCloud
+import os
+try:
+    from setuptools import setup, find_packages
+except ImportError:
+    from distutils.core import setup, find_packages
+
+
+# Utility function to read the README file.
+# Used for the long_description.  It's nice, because now
+#   1) we have a top level README file
+#   2) it's easier to type in the README file than to put a raw string in below
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 
 setup(
-    install_requires = ['python-magic']
+    install_requires = [],
+    name='RappCloud',
+    version='0.1.0',
+    description='Rapp Platform Python API',
+    url='https://github.com/rapp-project/rapp-api/tree/master/python',
+    author='Konstantinos Panayiotou',
+    author_email='klpanagi@gmail.com',
+    maintainer='Konstantinos Panayiotou',
+    maintainer_email='klpanagi@gmail.com',
+    license='Apache 2',
+    include_package_data=True,
+    packages=find_packages(),
+    package_data={
+        'RappCloud': ['config/*']
+    },
+    long_description=read('README.md') if os.path.exists('README.md') else ""
 )
