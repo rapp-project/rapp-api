@@ -3,7 +3,7 @@
 CURRENT_DIR=$(dirname ${BASH_SOURCE[0]})
 
 doxy_conf_file="${CURRENT_DIR}/../doxy_conf/doxy_python_api.conf"
-out_dir_default="${HOME}/rapp_platform_files/documentation/rapp_api/python"
+out_dir_default="${HOME}/rapp_platform_files/documentation/api/"
 
 if [ -z "$1" ]; then
   out_dir=${out_dir_default}
@@ -24,4 +24,9 @@ grep -q "${match_str}" "${doxy_conf_file}" || \
   echo -e "${append_str}" >> ${doxy_conf_file}
 
 # Redirect stdout.
-doxygen ${doxy_conf_file} 1> /dev/null
+doxygen ${doxy_conf_file} &> /dev/null
+
+cd ${out_dir_default}
+cd latex
+make &> /dev/null
+cp refman.pdf ../api_rapp.pdf
