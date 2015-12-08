@@ -7,7 +7,6 @@ var request = require('request');
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
  * @class ontologySubSuperClassOf
- * @memberof RAPPCloud
  * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>

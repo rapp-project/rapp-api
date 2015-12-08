@@ -7,17 +7,12 @@ var request = require('request');
 var randomstring = require('randomstring');
 
 /**
- * Prototype the RAPPCloud Service Method.
+ * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @method setDenoiseProfile
- * @brief Setting the denoising audio profile for speech recognition
+ * @class setDenoiseProfile
+ * @description Setting the denoising audio profile for speech recognition
  * @version 1
- * @date 29-September-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- */ 
-
-/**
- * @brief Constructor
  * @param file is the input audio file
  * @param user is a string with the username
  * @param audio_source is a string with the audio source type
@@ -66,7 +61,7 @@ RAPPCloud.prototype.setDenoiseProfile = function ( file, user, audio_source )
 	function error_handler( error ) {
 		return console.error(error);
 	}
-}
+};
 
 
 

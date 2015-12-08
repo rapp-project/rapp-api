@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     // Task configuration.
     jsdoc: {
       cloud: {
-        src: ['includes/cloud/*.js'],
+        src: ['includes/cloud/*/*.js'],
         options: {
           destination: 'doc/cloud',
           template: "node_modules/ink-docstrap/template",
@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         }
       },
       objects: {
-        src: ['includes/objects/*.js'],
+        src: ['includes/objects/*/*.js'],
         options: {
           destination: 'doc/objects',
           template: "node_modules/ink-docstrap/template",

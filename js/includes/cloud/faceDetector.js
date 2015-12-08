@@ -12,7 +12,6 @@ var randomstring = require('randomstring');
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
  * @class faceDetector
- * @memberof RAPPCloud
  * @description Asynchronous Service which will request the cloud to detect faces
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>

@@ -1,32 +1,15 @@
-INSTALL_PATH?=/usr/local
+all:  doc deps
 
-all:  deps doc
-
-install:
-	mkdir -p $(INSTALL_PATH)/share/rapp-api-js/
-	cp -rf includes/ $(INSTALL_PATH)/share/rapp-api-js/includes/
-	cp -rf node_modules/ $(INSTALL_PATH)/share/rapp-api-js/node_modules/
-	echo 'export NODE_PATH="'$(INSTALL_PATH)/share/rapp-api-js/includes/cloud:$(INSTALL_PATH)/share/rapp-api-js/includes/object'"' >> ~/.bashrc
-	. ~/.bashrc
-		
-uninstall:
-	rm -rf $(INSTALL_PATH)/share/rapp-api-js/
-	awk '!/export NODE_PATH/' ~/.bashrc > ~/.temp1 && mv ~/.temp1 ~/.bashrc
-	. ~/.bashrc
-	
 jshint:
 	jshint includes
-	
-test:	   	deps
-	@NODE_ENV=test ./node_modules/mocha/bin/mocha test/cloud_test.js test/object_test.js
 
 doc: doc-cloud doc-objects
 
-doc-cloud:	deps
+doc-cloud:  deps
 	rm -rf doc/cloud
 	grunt doc-gen-cloud
 
-doc-objects:	deps
+doc-objects: deps
 	rm -rf doc/objects
 	grunt doc-gen-objects
 
@@ -41,5 +24,5 @@ clean-deps:
 
 clean:  clean-doc clean-deps
 
+
 .PHONY: jshint
-.PHONY: test

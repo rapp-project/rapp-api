@@ -7,17 +7,12 @@ var request = require('request');
 var randomstring = require('randomstring');
 
 /**
- * Prototype the RAPPCloud Service Method.
+ * @fileOverview Prototype the RAPPCloud Service Method.
  *
- * @method speech2Text
- * @brief Asynchronous Service which will request the cloud to process speech-to-text
+ * @class speech2Text
+ * @description Asynchronous Service which will request the cloud to process speech-to-text
  * @version 1
- * @date 06-October-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- */ 
-
-/**
- * @brief Contrusct a speechToText handler
  * @param audio is the actual binary sound file
  * @param language is the language used for speech to text
  * @param user is the user token
@@ -102,7 +97,7 @@ RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source
 	function error_handler( error ) {
 		return console.error(error);
 	}
-}
+};
 
 
 

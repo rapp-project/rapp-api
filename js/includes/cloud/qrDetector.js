@@ -22,7 +22,6 @@ RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
  * @class qrDetector
- * @memberof RAPPCloud
  * @description Asynchronous Service which will request the cloud to detect QR Codes
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
