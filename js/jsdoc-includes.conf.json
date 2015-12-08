@@ -1,0 +1,28 @@
+{
+  "tags": {
+    "allowUnknownTags": false
+  },
+  "plugins": ["plugins/markdown", "plugins/commentsOnly"],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false,
+    "dateFormat": "ddd MMM Do YYYY",
+    "outputSourceFiles": true,
+    "outputSourcePath": false,
+    "systemName": "RAPP JS API",
+    "footer": "",
+    "copyright" : "Rapp Project EU 2015",
+    "logoFile": "",
+    "navType": "vertical",
+    "theme": "cosmo",
+    "linenums": true,
+    "collapseSymbols": false,
+    "inverseNav": true,
+    "highlightTutorialCode": true,
+    "protocol": "html://"
+  },
+  "markdown": {
+    "parser": "gfm",
+    "hardwrap": true
+  }
+}

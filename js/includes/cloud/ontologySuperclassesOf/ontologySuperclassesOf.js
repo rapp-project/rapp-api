@@ -4,17 +4,12 @@ var RAPPCloud = require('../../../RAPPCloud.js');
 var request = require('request');
 
 /**
- * Prototype the RAPPCloud Service Method.
+ * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @method ontologySuperClassesOf
- * @brief Asynchronous Service which will request the Ontology Superclasses of/for an Input
+ * @class ontologySuperClassesOf
+ * @description Asynchronous Service which will request the Ontology Superclasses of/for an Input - Constructor for this handler
  * @version 1
- * @date 28-August-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- */ 
-
-/**
- * @brief Constructor for this handler
  * @param query is the entity for which we will try to acquire its Super-Ordinates
  * @param callback is the function that will receive the classes discovered
  */
@@ -41,7 +36,7 @@ RAPPCloud.prototype.ontologySuperclassesOf = function ( query, callback )
             error_handler ( error );
         else if ( response.statusCode != 200 )
             console.log ( "Error: " + response.statusCode );
-    })
+    });
     
     function handle_reply( json )
     {
@@ -64,7 +59,7 @@ RAPPCloud.prototype.ontologySuperclassesOf = function ( query, callback )
 	function error_handler( error ) {
 		return console.error(error);
 	}   
-}
+};
 
 /// Export
 module.exports = RAPPCloud.ontologySuperclassesOf;

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Import the faceDetector JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../RAPPCloud.js')
+var RAPPCloud = require('../RAPPCloud.js');
 RAPPCloud.speech2Text = require('../includes/cloud/speech2Text/speech2Text.js');
 var services = new RAPPCloud( );
 

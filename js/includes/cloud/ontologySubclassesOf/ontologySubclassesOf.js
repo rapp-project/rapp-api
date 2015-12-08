@@ -4,19 +4,14 @@ var RAPPCloud = require('../../../RAPPCloud.js');
 var request = require('request');
 
 /**
- * Prototype the RAPPCloud Service Method.
+ * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @method ontologySubClassesOf
- * @brief Asynchronous Service which will request the Ontology Subclasses of/for an Input
+ * @class ontologySubClassesOf
+ * @description Asynchronous Service which will request the Ontology Subclasses of/for an Input - Constructor for this handler
  * @version 1
- * @date 28-August-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
- * HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
- */ 
-
-/**
- * @brief Constructor for this handler
+ * @see HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+ * @see HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
  * @param query is the entity for which we will try to acquire its Sub-Ordinates
  * @param callback is the function that will receive the classes discovered
  */
@@ -43,7 +38,7 @@ RAPPCloud.prototype.ontologySubclassesOf = function ( query, callback )
             error_handler ( error );
         else if ( response.statusCode != 200 )
             console.log ( "Error: " + response.statusCode );
-    })
+    });
     
     function handle_reply( json )
     {
@@ -66,7 +61,7 @@ RAPPCloud.prototype.ontologySubclassesOf = function ( query, callback )
 	function error_handler( error ) {
 		return console.error(error);
 	}   
-}
+};
 
 /// Export
 module.exports = RAPPCloud.ontologySubclassesOf;

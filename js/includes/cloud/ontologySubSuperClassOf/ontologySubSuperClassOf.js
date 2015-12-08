@@ -4,17 +4,12 @@ var RAPPCloud = require('../../../RAPPCloud.js');
 var request = require('request');
 
 /**
- * Prototype the RAPPCloud Service Method.
+ * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @method ontologySubSuperClassOf
- * @brief Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
+ * @class ontologySubSuperClassOf
+ * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
  * @version 1
- * @date 28-August-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- */ 
-
-/**
- * @brief Constructor for this handler
  * @param parent is the parent class in question
  * @param child is the child of the parent class in question
  * @param recursive is a boolean argument, when true the function checks for indirect parent-child relationship as well
@@ -43,7 +38,7 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
             error_handler ( error );
         else if ( response.statusCode != 200 )
             console.log ( "Error: " + response.statusCode );
-    })
+    });
     
     function handle_reply( json )
     {
@@ -64,7 +59,7 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
 	function error_handler( error ) {
 		return console.error(error);
 	}   
-}
+};
 
 /// Export
 module.exports = RAPPCloud.ontologySubSuperClassOf;

@@ -9,17 +9,12 @@ var request = require('request');
 var randomstring = require('randomstring');
 
 /**
- * Prototype the RAPPCloud Service Method.
+ * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @method faceDetector
- * @brief Asynchronous Service which will request the cloud to detect faces
+ * @class faceDetector
+ * @description Asynchronous Service which will request the cloud to detect faces
  * @version 1
- * @date 20-September-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- */ 
-
-/**
- * @brief Constructor
  * @param image is the input image 
  * @param image_format is the image format
  * @param callback is the function that will receive a vector of the detected face(s) coordinates
@@ -76,7 +71,7 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 	function error_handler( error ) {
 		return console.error(error);
 	}
-}
+};
 
 
 

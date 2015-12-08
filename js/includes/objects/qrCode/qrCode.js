@@ -4,16 +4,17 @@ var RAPPObject = require('./../../../RAPPObject.js');
 
 /**
  * @class QrCode
- * @brief class which should encapsulate a QR code
+ * @description class which should encapsulate a QR code
  * @version 1
- * @date 28-September-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  */
 
-//Define QrCode "class" inside an immediate function.
-//A bit unconventional way but it's the only way I have found to have the same information flow with C++
-//in the way that instances of this QrCode and only those can have access to private variables of 
-//other instances of the same "class" so that member functions like isEqual can work.
+/***
+* Define QrCode "class" inside an immediate function.
+* A bit unconventional way but it's the only way I have found to have the same information flow with C++
+* in the way that instances of this QrCode and only those can have access to private variables of 
+* other instances of the same "class" so that member functions like isEqual can work.
+*/
 
 RAPPObject.prototype.QrCode = (function( centre_x, centre_y, label ){   // immediate function
 	
@@ -25,7 +26,7 @@ RAPPObject.prototype.QrCode = (function( centre_x, centre_y, label ){   // immed
 	var qrCodes = []; // an array of private objects
 	
 	/**
-     * @brief Consruct using code coordinates (a rectangle) and a label (URL, email, string, etc)
+     * @description Consruct using code coordinates (a rectangle) and a label (URL, email, string, etc)
      * @param centre_x is coordinate
      * @param centre_y is coordinate
      * @param label is message embedded in QR
@@ -47,19 +48,27 @@ RAPPObject.prototype.QrCode = (function( centre_x, centre_y, label ){   // immed
 	//TODO: A function that can be used as a Copy Constructor
 	
     /** 
-     * @brief Equality operator
-     * @note only the message is compared (insensitive case), not the coordinates!
+     * @function isEqual
+     * @description Equality operator
+     * @param rhs is the QrCode object to which this object is compared for equality
+     * only the message is compared (insensitive case), not the coordinates!
      */
 	QrCode.prototype.isEqual = function (rhs) 
 	{
 		// It has access to the private space and it's children!
 		return ( qrCodes[this.i]._message === qrCodes[rhs.i]._message );
-	}
+	};
+	
+	/**
+	 * @function label
+     * @description Return the qr message
+     * @return qr_label
+	 */
 	
 	QrCode.prototype.label = function () 
 	{
 		return qrCodes[this.i]._message;
-	}
+	};
 	
 	return QrCode;	
 })();

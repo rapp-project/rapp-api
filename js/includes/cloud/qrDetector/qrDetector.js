@@ -9,17 +9,12 @@ var request = require('request');
 var randomstring = require('randomstring');
 
 /**
- * Prototype the RAPPCloud Service Method.
+ * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @method qrDetector
- * @brief Asynchronous Service which will request the cloud to detect QR Codes
+ * @class qrDetector
+ * @description Asynchronous Service which will request the cloud to detect QR Codes
  * @version 1
- * @date 25-September-2015
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- */ 
-
-/**
- * @brief Constructor
  * @param image is the input image
  * @param image_format is the image format
  * @param callback is the function that will receive a vector of detected qr(s)
@@ -78,7 +73,7 @@ RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
 	function error_handler( error ) {
 		return console.error(error);
 	}
-}
+};
 
 
 
