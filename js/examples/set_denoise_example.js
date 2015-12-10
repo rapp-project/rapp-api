@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
+var path = require('path');
+
 // Import the faceDetector JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../RAPPCloud.js');
-RAPPCloud.setDenoiseProfile = require('../includes/cloud/setDenoiseProfile/setDenoiseProfile.js');
+var __cloudDir = path.join(__dirname, '..', 'includes', 'cloud');
+var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
+RAPPCloud.setDenoiseProfile = require(path.join(__cloudDir, 'setDenoiseProfile.js'));
+
 var services = new RAPPCloud( );
 
 services.setDenoiseProfile ("denoise_source.wav",

@@ -6,9 +6,10 @@ var __objectsDir = path.join(__dirname);
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
 
 /**
- * @fileOverview Prototype the RAPP Object Class.
+ * @fileOverview Prototype this RAPP Object Class.
  * 
  * @class Face
+ * @memberof RAPPObject
  * @description class which should somehow encapsulate a face
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>

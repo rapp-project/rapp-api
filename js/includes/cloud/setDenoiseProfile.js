@@ -1,15 +1,20 @@
 #!/usr/bin/env node
 
-var RAPPCloud = require('../../../RAPPCloud.js');
-var FormData = require('form-data');
 var fs = require('fs');
 var request = require('request');
+var path = require('path');
+var FormData = require('form-data');
 var randomstring = require('randomstring');
+
+var __cloudDir = path.join(__dirname);
+
+var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
  * @class setDenoiseProfile
+ * @memberof RAPPCloud
  * @description Setting the denoising audio profile for speech recognition
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>

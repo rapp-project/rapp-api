@@ -1,12 +1,17 @@
 #!/usr/bin/env node
 
-var RAPPCloud = require('../../../RAPPCloud.js');
 var request = require('request');
+var path = require('path');
+
+var __cloudDir = path.join(__dirname);
+
+var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
  * @class ontologySubSuperClassOf
+ * @memberof RAPPCloud
  * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
