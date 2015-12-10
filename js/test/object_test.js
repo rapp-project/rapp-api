@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
 var test = require('unit.js');
+var path = require('path');
 
-// Import the JS API Services & Init the RAPPCloud Object
-var RAPPObject = require('./../RAPPObject.js');
-RAPPObject.face = require('./../includes/objects/face/face.js');
-RAPPObject.qrCode = require('./../includes/objects/qrCode/qrCode.js');
+// Import the faceDetector JS API Service & Init the RAPPCloud Object
+var __objectsDir = path.join(__dirname, '..', 'includes', 'objects');
+var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
+RAPPObject.face = require(path.join(__objectsDir, 'face.js'));
+RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
 
 var objects = new RAPPObject( );
 

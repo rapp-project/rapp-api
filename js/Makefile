@@ -2,6 +2,9 @@ all:  doc deps
 
 jshint:
 	jshint includes
+	
+test:      deps
+	@NODE_ENV=test ./node_modules/mocha/bin/mocha test/cloud_test.js test/object_test.js
 
 doc: doc-cloud doc-objects
 
@@ -26,3 +29,4 @@ clean:  clean-doc clean-deps
 
 
 .PHONY: jshint
+.PHONY: test

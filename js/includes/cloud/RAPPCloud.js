@@ -2,6 +2,7 @@
 
 /**
  * Define the RAPP Cloud Services object, which needs a username and password
+ * @namespace RAPPCloud
  */
 function RAPPCloud ( )
 {

@@ -25,7 +25,7 @@ The examples located in the examples directory showcase how you may use the RAPP
 After you have all the dependancies installed you can run all the examples as executables, eg. ./face_detect.js
 
 
-####  Configurations
+###  Configurations
 
 On default the RAPP API connects on the RAPP Platform installed **LOCALLY**.
 TODO: Provide the configuration parameters to connect the API to:
@@ -39,11 +39,6 @@ TODO: Provide the configuration parameters to connect the API to:
 The examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
 
 
-## Install
-
---TODO--
-
-
 ## Directories
 
 - **includes/cloud**: The RappCloud services directory.
@@ -54,8 +49,11 @@ The examples located in the examples directory showcase how you may use the RAPP
 
 ## Tests
 
-In the test directory unit tests for all the services and objects can be found. In order to run them you will need to install unitjs and mocha globally.
+In the test directory unit tests for all the services and objects can be found. In order to run them:
 
+```shell
+$ make test
+```
 
 ## Documentation
 

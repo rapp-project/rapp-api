@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 
-var RAPPObject = require('./../../../RAPPObject.js');
+var path = require('path');
+var __objectsDir = path.join(__dirname);
 
+var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
 /**
+ * @fileOverview Prototype this RAPP Object Class.
+ * 
  * @class QrCode
+ * @memberof RAPPObject
  * @description class which should encapsulate a QR code
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
