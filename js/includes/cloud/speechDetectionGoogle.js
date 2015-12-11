@@ -3,7 +3,7 @@
 var fs = require('fs');
 var request = require('request');
 var path = require('path');
-var formData = require('form-data');
+var FormData = require('form-data');
 var randomstring = require('randomstring');
 
 var __cloudDir = path.join(__dirname);
@@ -28,7 +28,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 {
     var cloud = this;
     var _delegate=callback;
-	var form = new formData();
+	var form = new FormData();
 	var ext = audio.substr(audio.lastIndexOf('.') + 1);
 	var filename = randomstring.generate() + '.' + ext;
 	
@@ -44,7 +44,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 		else if (error) {
 			error_handler(error);
 		}
-		else if ( res.statusCode != 200 ) {
+		else if ( response.statusCode != 200 ) {
 			console.log(res.statusCode);
 		}
 	});
@@ -55,7 +55,6 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
     {
 		var json_obj;
 		try {
-			var i;
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
 				console.log('speechDetectionGoogle JSON error: ' + json_obj.error);
@@ -64,7 +63,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 			var possible_vectors = new Array(json_obj.alternatives.length + 1);
 			
 			possible_vectors[0] = new Array(json_obj.words.length);
-			for (i = 0; i < json_obj.alternatives.length; i++) {
+			for (var i = 0; i < json_obj.alternatives.length; i++) {
 				possible_vectors[i+1] = new Array(json_obj.alternatives[i].length);
 			}
 			
@@ -72,7 +71,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 				possible_vectors[0][i] = json_obj.words[i]; //add the primary detected word vector
 			}
 			for (i=0; i<json_obj.alternatives.length; i++){
-				for (var j=0; j<json_obj.alternatives[i].length; j++) {
+				for (j=0; j<json_obj.alternatives[i].length; j++) {
 					possible_vectors[i+1][j] = json_obj.alternatives[i][j];
 				}
 			}

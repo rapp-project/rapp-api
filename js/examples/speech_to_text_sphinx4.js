@@ -1,12 +1,20 @@
 #!/usr/bin/env node
 
-// Import the speechDetectionSphinx4 JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.speechDetectionSphinx4 = require('speechDetectionSphinx4');
+var path = require('path');
+
+// Import the faceDetector JS API Service & Init the RAPPCloud Object
+var __cloudDir = path.join(__dirname, '..', 'includes', 'cloud');
+var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
+RAPPCloud.speechDetectionSphinx4 = require(path.join(__cloudDir, 'speechDetectionSphinx4.js'));
 
 var services = new RAPPCloud( );
 
-var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
+/** 
+ * This is the method that will handle the reply by the services.speech2Text
+ * Do what you want with it - REMEMBER: The service is Asynchronous!!!
+ */
+ 
+ var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
 										 //"yes-no.wav";
 										 //"nao_wav_d05_a1.wav";
 										 //"nao_ogg_d05_a1.ogg"; 
@@ -15,7 +23,8 @@ var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
 		     //"recording_yes.ogg";
 		     //"recording_no.ogg";
 		     //"recording_tuesday.ogg";
-		     //"recording_triti.ogg";    
+		     //"recording_triti.ogg";
+		    
 var grammar = [];
 var words = //["tuesday", "monday"];
 					   //["yes", "no"];
@@ -30,17 +39,12 @@ var sentences = //["tuesday", "monday"];
 					   //["email", "robot"];
 					   ["check", "my", "emails", "robot"];
 					   //["Τρίτη", "Δευτέρα"];					   
-
-/** 
- * This is the method that will handle the reply by the services.speechDetectionSphinx4
- * Do what you want with it - REMEMBER: The service is Asynchronous!!!
- */
  
 function handler ( words_detected )
 {
     if ( words_detected.length ) {
 		console.log ( 'Found ' + words_detected.length + ' words:');
-		for (var i=0; i < words_detected.length; i++) {
+		for (i=0; i < words_detected.length; i++) {
 			console.log( words_detected[i] );
 		}
 	}
@@ -59,3 +63,4 @@ services.speechDetectionSphinx4( audio,           // audio file
 								words,           // words to be considered
 								sentences,       // sentences to be considered
 								handler );
+	

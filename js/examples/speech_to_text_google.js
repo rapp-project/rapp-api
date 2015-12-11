@@ -1,12 +1,20 @@
 #!/usr/bin/env node
 
-// Import the speechDetectionGoogle JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.speechDetectionGoogle = require('speechDetectionGoogle');
+var path = require('path');
+
+// Import the faceDetector JS API Service & Init the RAPPCloud Object
+var __cloudDir = path.join(__dirname, '..', 'includes', 'cloud');
+var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
+RAPPCloud.speechDetectionGoogle = require(path.join(__cloudDir, 'speechDetectionGoogle.js'));
 
 var services = new RAPPCloud( );
 
-var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
+/** 
+ * This is the method that will handle the reply by the services.speech2Text
+ * Do what you want with it - REMEMBER: The service is Asynchronous!!!
+ */
+ 
+ var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
 										 //"yes-no.wav";
 										 //"nao_wav_d05_a1.wav";
 										 //"nao_ogg_d05_a1.ogg"; 
@@ -17,18 +25,14 @@ var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
 		     //"recording_tuesday.ogg";
 		     //"recording_triti.ogg";
 		    				   
-/** 
- * This is the method that will handle the reply by the services.speechDetectionGoogle
- * Do what you want with it - REMEMBER: The service is Asynchronous!!!
- */
  
 function handler ( possible_vectors )
 {
     if ( possible_vectors.length ) {
 		console.log ( 'Found ' + possible_vectors.length + ' possible vectors of detected words:\n');
-		for (var i=0; i < possible_vectors.length; i++) {
+		for (i=0; i < possible_vectors.length; i++) {
 			console.log( 'Possible sentence ' + i + ': ');
-			for (var j=0; j < possible_vectors[i].length; j++) {
+			for (j=0; j < possible_vectors[i].length; j++) {
 				  console.log( possible_vectors[i][j] + ' ' );
 			  }
 		}
