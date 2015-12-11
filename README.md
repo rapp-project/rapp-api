@@ -15,7 +15,7 @@ The below table presents the up-to-date available RAPP Platform Service calls, t
 | text to speech                    | ✗        |  ✗           | ✓        |
 | de-noise profile                  | ✓        |  ✓           | ✓        |
 | speech to text (sphinx4)          | ✓        |  ✓           | ✓        |
-| speech to text (google)           | ✗        |  ✗           | ✓        |
+| speech to text (google)           | ✗        |  ✓           | ✓        |
 | object recognition                | ✓        |  ✗           | ✓        |
 | available services                | ✓        |  ✗           | ✓        |
 | ontology subclasses of            | ✓        |  ✓           | ✓        |
