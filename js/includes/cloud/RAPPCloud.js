@@ -10,14 +10,6 @@ function RAPPCloud ( )
     this.cloud_url = "http://localhost:9001"; 
 }
 
-/**
- * Prototype the Functions of RAPPServices.
- */
-RAPPCloud.prototype = 
-{
-
-}
-
 
 /// Export
 module.exports = RAPPCloud;

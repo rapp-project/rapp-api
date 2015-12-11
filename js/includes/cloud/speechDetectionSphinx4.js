@@ -13,7 +13,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  *
- * @class speech2Text
+ * @class speechDetectionSphinx4
  * @description Asynchronous Service which will request the cloud to process speech-to-text
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
@@ -27,7 +27,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source, grammar, words, sentences, callback )
+RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, audio_source, grammar, words, sentences, callback )
 {
     var cloud = this;
     var _delegate=callback;
@@ -85,7 +85,7 @@ RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source
 		try {
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('speech2Text JSON error: ' + json_obj.error);
+				console.log('speechDetectionSphinx4 JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"words":["check","my","emails"],"error":""}
 			for (i=0; i<json_obj.words.length; i++){
@@ -93,7 +93,7 @@ RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source
 			}
 			_delegate(words_vector);
 		} catch (e) {
-			console.log("speech2Text::handle_reply Error parsing: ");
+			console.log("speechDetectionSphinx4::handle_reply Error parsing: ");
 			return console.error(e);
 		}
 	}
@@ -106,4 +106,4 @@ RAPPCloud.prototype.speech2Text = function ( audio, language, user, audio_source
 
 
 /// Export
-module.exports = RAPPCloud.speech2Text;
+module.exports = RAPPCloud.speechDetectionSphinx4;

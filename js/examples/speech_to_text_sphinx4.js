@@ -5,7 +5,7 @@ var path = require('path');
 // Import the faceDetector JS API Service & Init the RAPPCloud Object
 var __cloudDir = path.join(__dirname, '..', 'includes', 'cloud');
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
-RAPPCloud.speech2Text = require(path.join(__cloudDir, 'speech2Text.js'));
+RAPPCloud.speechDetectionSphinx4 = require(path.join(__cloudDir, 'speechDetectionSphinx4.js'));
 
 var services = new RAPPCloud( );
 
@@ -43,24 +43,24 @@ var sentences = //["tuesday", "monday"];
 function handler ( words_detected )
 {
     if ( words_detected.length ) {
-		console.log ( 'Found ' + words_detected.length + ' words:\n');
+		console.log ( 'Found ' + words_detected.length + ' words:');
 		for (i=0; i < words_detected.length; i++) {
-			console.log(words_detected[i] + '\n');
+			console.log( words_detected[i] );
 		}
 	}
 	else
 		console.log ( 'No words found');
 }
 
-services.speech2Text( audio,           // audio file
-					  "en",            // Language
-					  "rapp",          // user
-					  //"headset",
-					  //"nao_wav_1_ch",
-					  //"nao_wav_4_ch",
-					  "nao_ogg",       // Audio Source Type
-					  grammar,         // grammar ? (empty)
-					  words,           // words to be considered
-					  sentences,       // sentences to be considered
-					  handler );
+services.speechDetectionSphinx4( audio,           // audio file
+								"en",            // Language
+								"rapp",          // user
+								//"headset",
+								//"nao_wav_1_ch",
+								//"nao_wav_4_ch",
+								"nao_ogg",       // Audio Source Type
+								grammar,         // grammar ? (empty)
+								words,           // words to be considered
+								sentences,       // sentences to be considered
+								handler );
 	

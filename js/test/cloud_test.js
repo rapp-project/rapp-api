@@ -12,7 +12,8 @@ RAPPCloud.ontologySubSuperClassOf = require(path.join(__cloudDir, 'ontologySubSu
 RAPPCloud.qrDetector = require(path.join(__cloudDir, 'qrDetector.js'));
 RAPPCloud.faceDetector = require(path.join(__cloudDir, 'faceDetector.js'));
 RAPPCloud.qrDetector = require(path.join(__cloudDir, 'setDenoiseProfile.js'));
-RAPPCloud.speech2Text = require(path.join(__cloudDir, 'speech2Text.js'));
+RAPPCloud.speechDetectionSphinx4 = require(path.join(__cloudDir, 'speechDetectionSphinx4.js'));
+RAPPCloud.speechDetectionGoogle = require(path.join(__cloudDir, 'speechDetectionGoogle.js'));
 
 var services = new RAPPCloud( );
 
@@ -69,10 +70,20 @@ describe('#setDenoiseProfile()', function(){
   });  
 });
 
-describe('#speech2Text()', function(){
+describe('#speechDetectionSphinx4()', function(){
   it('should detect the words given an audio file, the language, a user token, the audio source type, a grammar, a pool of words and a pool of sentences', function(done){
-    services.speech2Text( path.join(__dirname, 'recording_sentence2.ogg'), "en", "rapp", "nao_ogg", [], ["check", "my", "emails", "robot"], ["check", "my", "emails", "robot"], function(words) {
+    services.speechDetectionSphinx4( path.join(__dirname, 'recording_sentence2.ogg'), "en", "rapp", "nao_ogg", [], ["check", "my", "emails", "robot"], ["check", "my", "emails", "robot"], function(words) {
 		console.log ( 'Found ' + words.length + ' words');
+        done();
+		});
+  });  
+});
+
+describe('#speechDetectionGoogle()', function(){
+  it('should detect the words given an audio file, the audio source type, a user token and the language', function(done){
+    this.timeout(3000);
+    services.speechDetectionGoogle( path.join(__dirname, 'recording_sentence2.ogg'), "nao_ogg", "rapp", "en", function(possible_vectors) {
+		console.log ( 'Found ' + possible_vectors.length + ' possible sentences');
         done();
 		});
   });  
