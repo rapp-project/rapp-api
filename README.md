@@ -40,28 +40,7 @@ Information on RAPP Platform front-end Web Services can he found [here](https://
 * C++ Unit testing (TODO Wiki)
 * JavaScript Unit testing (TODO Wiki)
 
-## Building the C++ API
-For the C++ RAPP API, please note you need to satisfy certain dependencies:
-* A modern C++11 enabled compiler (g++,clang) 
-* BOOST library higher than 1.49
-* OpenCV higher than 2.0
-* CMake higher than 2.8
 
-To build:
-```
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make -j8
-```
-
-You may install if you wish to:
-```
-sudo make install
-```
-The static and shared library will be installed in `/usr/local/lib/`
-whereas the headers are installed in `/usr/local/include/`.
-If you wish to change the location, simply edit the appropriate lines in the `CMakeLists.txt`.
 
 ## JavaScript API Installation
 
