@@ -329,12 +329,14 @@ class RappCloud:
     #
     #  @return Rapp Platform Service response object.
     #
-    def face_detection(self, file_uri):
+    def face_detection(self, file_uri, fast = False):
         fileName = self.__appendRandStr(file_uri)
         files = {
             'file_uri': (fileName, open(file_uri, 'rb'))
         }
-        payload = {}
+        payload = {
+            'fast': bool(fast)
+        }
         url = self.serviceUrl_['face_detection']
 
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
