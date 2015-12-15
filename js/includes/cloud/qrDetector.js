@@ -3,7 +3,7 @@
 var fs = require('fs');
 var request = require('request');
 var path = require('path');
-var FormData = require('form-data');
+var formData = require('form-data');
 var randomstring = require('randomstring');
 
 var __cloudDir = path.join(__dirname);
@@ -31,7 +31,7 @@ RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
     var cloud = this;
     var object = new RAPPObject( );
     var _delegate=callback;
-	var form = new FormData();
+	var form = new formData();
 
 	var filename = randomstring.generate() + '.' + image_format;
 
@@ -47,7 +47,7 @@ RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
 		else if (error) {
 			error_handler(error);
 		}
-		else if ( response.statusCode != 200 ) {
+		else if ( res.statusCode != 200 ) {
 			console.log(res.statusCode);
 		}
 	});
@@ -59,6 +59,7 @@ RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
 		var json_obj;
 		var codes = [];
 		try {
+			var i;
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
 				console.log('qrDetection JSON error: ' + json_obj.error);

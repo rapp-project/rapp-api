@@ -3,7 +3,7 @@
 var fs = require('fs');
 var request = require('request');
 var path = require('path');
-var FormData = require('form-data');
+var formData = require('form-data');
 var randomstring = require('randomstring');
 
 var __cloudDir = path.join(__dirname);
@@ -31,10 +31,11 @@ RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, a
 {
     var cloud = this;
     var _delegate=callback;
-	var form = new FormData();
+	var form = new formData();
 	var ext = audio.substr(audio.lastIndexOf('.') + 1);
 	var filename = randomstring.generate() + '.' + ext;
 	
+	var i;
 	var grammar_str = '[';
 	for (i=0; i<grammar.length; i++) {
 		grammar_str += '"' + grammar[i] + '"';
@@ -71,7 +72,7 @@ RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, a
 		else if (error) {
 			error_handler(error);
 		}
-		else if ( response.statusCode != 200 ) {
+		else if ( res.statusCode != 200 ) {
 			console.log(res.statusCode);
 		}
 	});

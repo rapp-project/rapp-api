@@ -22,7 +22,7 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
 * other instances of the same "class" so that member functions like isEqual can work.
 */
 
-RAPPObject.prototype.Face = (function( top_left_x, top_left_y, bottom_right_x, bottom_right_y ){   // immediate function
+RAPPObject.prototype.Face = (function( ){   // immediate function
 	
 	var _top_left_x = -1;
 	var _top_left_y = -1;

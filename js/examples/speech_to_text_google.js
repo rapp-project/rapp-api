@@ -30,9 +30,9 @@ function handler ( possible_vectors )
 {
     if ( possible_vectors.length ) {
 		console.log ( 'Found ' + possible_vectors.length + ' possible vectors of detected words:\n');
-		for (i=0; i < possible_vectors.length; i++) {
+		for (var i=0; i < possible_vectors.length; i++) {
 			console.log( 'Possible sentence ' + i + ': ');
-			for (j=0; j < possible_vectors[i].length; j++) {
+			for (var j=0; j < possible_vectors[i].length; j++) {
 				  console.log( possible_vectors[i][j] + ' ' );
 			  }
 		}

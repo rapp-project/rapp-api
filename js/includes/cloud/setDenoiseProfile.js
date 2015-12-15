@@ -3,7 +3,7 @@
 var fs = require('fs');
 var request = require('request');
 var path = require('path');
-var FormData = require('form-data');
+var formData = require('form-data');
 var randomstring = require('randomstring');
 
 var __cloudDir = path.join(__dirname);
@@ -26,7 +26,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 RAPPCloud.prototype.setDenoiseProfile = function ( file, user, audio_source )
 {
     var cloud = this;    
-	var form = new FormData();
+	var form = new formData();
 	var ext = file.substr(file.lastIndexOf('.') + 1);
 	var filename = randomstring.generate() + '.' + ext;
 	
@@ -41,7 +41,7 @@ RAPPCloud.prototype.setDenoiseProfile = function ( file, user, audio_source )
 		else if (error) {
 			error_handler(error);
 		}
-		else if ( response.statusCode != 200 ) {
+		else if ( res.statusCode != 200 ) {
 			console.log(res.statusCode);
 		}
 	});

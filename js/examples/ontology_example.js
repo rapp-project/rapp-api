@@ -19,7 +19,7 @@ var query='Oven';
 function cb1 ( classes )
 {
     console.log ( 'Subclasses of ' + query + ':');
-    for (i = 0; i < classes.length; i++) {
+    for (var i = 0; i < classes.length; i++) {
 		console.log ( classes[i] );
 	}
 }
@@ -31,7 +31,7 @@ function cb1 ( classes )
 function cb2 ( classes )
 {
     console.log ( 'Superclasses of ' + query + ':');
-    for (i = 0; i < classes.length; i++) {
+    for (var i = 0; i < classes.length; i++) {
 		console.log ( classes[i] );
 	}
 }
