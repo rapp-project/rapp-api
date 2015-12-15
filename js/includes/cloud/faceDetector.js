@@ -3,7 +3,7 @@
 var fs = require('fs');
 var request = require('request');
 var path = require('path');
-var FormData = require('form-data');
+var formData = require('form-data');
 var randomstring = require('randomstring');
 
 var __cloudDir = path.join(__dirname);
@@ -32,7 +32,7 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
     var cloud = this;
     var object = new RAPPObject( );
     var _delegate=callback;
-	var form = new FormData();
+	var form = new formData();
 	var filename = randomstring.generate() + '.' + image_format;
 	
 	form.append('file_uri', fs.createReadStream(image), { 
@@ -43,9 +43,11 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 	var r = request.post(cloud.cloud_url + '/hop/face_detection/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
 			handle_reply( json );
+			//console.log(shit);
 		}
 		else if (error) {
-			error_handler(error);	
+			error_handler(error);
+			
 		}
 		else if ( res.statusCode != 200 ) {
 			console.log(res.statusCode);

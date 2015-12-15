@@ -3,7 +3,7 @@
 var fs = require('fs');
 var request = require('request');
 var path = require('path');
-var FormData = require('form-data');
+var formData = require('form-data');
 var randomstring = require('randomstring');
 
 var __cloudDir = path.join(__dirname);

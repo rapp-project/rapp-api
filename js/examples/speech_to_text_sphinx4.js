@@ -44,7 +44,7 @@ function handler ( words_detected )
 {
     if ( words_detected.length ) {
 		console.log ( 'Found ' + words_detected.length + ' words:');
-		for (i=0; i < words_detected.length; i++) {
+		for (var i=0; i < words_detected.length; i++) {
 			console.log( words_detected[i] );
 		}
 	}

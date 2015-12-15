@@ -15,6 +15,8 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @description Asynchronous Service which will request the Ontology Superclasses of/for an Input - Constructor for this handler
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
+ * @see HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+ * @see HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
  * @param query is the entity for which we will try to acquire its Super-Ordinates
  * @param callback is the function that will receive the classes discovered
  */

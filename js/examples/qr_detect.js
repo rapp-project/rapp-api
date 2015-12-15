@@ -16,7 +16,7 @@ function handler ( codes )
 {
     if ( codes.length ) {
 		console.log ( 'Found ' + codes.length + ' codes!');
-		for (i=0; i<codes.length; i++) {
+		for (var i=0; i<codes.length; i++) {
 			console.log(codes[i].label() + ' ');
 		}
 	}

@@ -4,6 +4,7 @@ var path = require('path');
 var __objectsDir = path.join(__dirname);
 
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
+
 /**
  * @fileOverview Prototype this RAPP Object Class.
  * 
@@ -21,11 +22,11 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
 * other instances of the same "class" so that member functions like isEqual can work.
 */
 
-RAPPObject.prototype.QrCode = (function( centre_x, centre_y, label ){   // immediate function
+RAPPObject.prototype.QrCode = (function( ){   // immediate function
 	
 	var _centre_x = -1; 
-    var _centre_y = -1;
-    var _message ;
+	var _centre_y = -1;
+	var _message ;
 	
 	var instance = 0; // counts the number of instances
 	var qrCodes = []; // an array of private objects
