@@ -43,11 +43,9 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 	var r = request.post(cloud.cloud_url + '/hop/face_detection/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
 			handle_reply( json );
-			//console.log(shit);
 		}
 		else if (error) {
-			error_handler(error);
-			
+			error_handler(error);	
 		}
 		else if ( res.statusCode != 200 ) {
 			console.log(res.statusCode);
