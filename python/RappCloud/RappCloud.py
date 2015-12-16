@@ -548,5 +548,13 @@ class RappCloud:
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
 
+    def cognitive_get_scores(self, username, upToTime):
+        files = {}
+        payload = {
+            'user': username,
+            'up_to_time': upToTime
+        }
+        url = self.serviceUrl_['cognitive_get_scores']
 
-
+        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        return returnData
