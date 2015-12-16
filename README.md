@@ -50,6 +50,6 @@ Information on RAPP Platform front-end Web Services can he found [here](https://
 
 ## Contributors
 
-- Alexander Gkiokas, **[a.gkiokas@ortelio.co.uk]**
+- Alexander Giokas, **[a.gkiokas@ortelio.co.uk]**
 - Konstaninos Panayiotou, **[klpanagi@gmail.com]**
 - Lazaros Penteridis, **[lp@ortelio.co.uk]**
