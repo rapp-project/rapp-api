@@ -548,6 +548,15 @@ class RappCloud:
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
 
+    ## API call for cognitive-get-user-cores RAPP Platform
+    #    front-end service
+    #
+    #  @param self The object pointer.
+    #  @param username User's name, a.k.a username.
+    #  @param upToTime the timestamp up to which scores will be calculated
+    #
+    #  @return Rapp Platform Service API call response object.
+    #
     def cognitive_get_scores(self, username, upToTime):
         files = {}
         payload = {
