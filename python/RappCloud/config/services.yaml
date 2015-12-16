@@ -14,3 +14,4 @@ services:
     - record_cognitive_test_performance
     - text_to_speech
     - cognitive_get_scores
+    - cognitive_get_history
