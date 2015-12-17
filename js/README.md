@@ -1,12 +1,12 @@
 ## Synopsis
 
-Containes RappCloud API modules used for interfering wth RAPP Platform.
+Containes RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.
 
 
 ### Dependencies
 
-You need nodejs and npm.
-To install them run the node_npm_install_script.sh
+To use this JS API you need nodejs and npm.
+You can run the global_deps_install_script.sh located in the root folder to install them along with grunt-cli and mocha which are the global dependencies the API needs for task management and testing.
 
 After that you can install all the required npm modules (development and production) with:
 
@@ -19,10 +19,31 @@ or
 $ make deps
 ```
 
+### Installation
+
+To install the API globally, given that you have installed all the dependencies as explained in the previous step, you must type:
+
+```shell
+$ sudo make install
+```
+
+If at some point you no longer wish to have this API on your system you can remove it by typing:
+
+```shell
+$ sudo make uninstall
+```
+
 ## Usage
 
 The examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
-After you have all the dependancies installed you can run all the examples as executables, eg. ./face_detect.js
+Provided you have succesfully installed the API globally in your system (sudo make install), you can require the service(s) that you want to use in your application, after requiring the RAPPCloud module as shown in the examples:
+
+```shell
+var RAPPCloud = require('RAPPCloud');
+RAPPCloud.qrDetector = require('qrDetector');
+```
+
+You can run all the examples as executables, eg. ./face_detect.js
 
 
 ###  Configurations
