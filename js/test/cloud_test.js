@@ -11,7 +11,7 @@ RAPPCloud.ontologySuperclassesOf = require(path.join(__cloudDir, 'ontologySuperc
 RAPPCloud.ontologySubSuperClassOf = require(path.join(__cloudDir, 'ontologySubSuperClassOf.js'));
 RAPPCloud.qrDetector = require(path.join(__cloudDir, 'qrDetector.js'));
 RAPPCloud.faceDetector = require(path.join(__cloudDir, 'faceDetector.js'));
-RAPPCloud.setDenoiseProfile = require(path.join(__cloudDir, 'setDenoiseProfile.js'));
+RAPPCloud.setNoiseProfile = require(path.join(__cloudDir, 'setNoiseProfile.js'));
 RAPPCloud.speechDetectionSphinx4 = require(path.join(__cloudDir, 'speechDetectionSphinx4.js'));
 RAPPCloud.speechDetectionGoogle = require(path.join(__cloudDir, 'speechDetectionGoogle.js'));
 
@@ -48,9 +48,9 @@ describe('#ontologySubSuperclassOf()', function(){
   });  
 });
 
-describe('#setDenoiseProfile()', function(){
-  it("should in all cases create a setDenoiseProfile object given an audio file, username and audio type as arguments", function(){
-	services.setDenoiseProfile ( path.join(__dirname, 'denoise_source.wav'), "rapp", "nao_wav_1_ch" );
+describe('#setNoiseProfile()', function(){
+  it("should in all cases create a setNoiseProfile object given an audio file, username and audio type as arguments", function(){
+	services.setNoiseProfile ( path.join(__dirname, 'denoise_source.wav'), "rapp", "nao_wav_1_ch" );
   });
 });
 
