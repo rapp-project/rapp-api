@@ -2,11 +2,11 @@
 
 // Import the faceDetector JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('RAPPCloud');
-RAPPCloud.setDenoiseProfile = require('setDenoiseProfile');
+RAPPCloud.setNoiseProfile = require('setNoiseProfile');
 
 var services = new RAPPCloud( );
 
-services.setDenoiseProfile ("denoise_source.wav",
+services.setNoiseProfile ("denoise_source.wav",
                             //"silence_sample.wav",
                             // "silence_wav_d05_a1.wav",
                             //"silence_ogg_d05_a1.ogg",

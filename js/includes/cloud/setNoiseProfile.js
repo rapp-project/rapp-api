@@ -13,7 +13,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class setDenoiseProfile
+ * @class setNoiseProfile
  * @memberof RAPPCloud
  * @description Setting the denoising audio profile for speech recognition
  * @version 1
@@ -23,7 +23,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param audio_source is a string with the audio source type
  */
 
-RAPPCloud.prototype.setDenoiseProfile = function ( file, user, audio_source )
+RAPPCloud.prototype.setNoiseProfile = function ( file, user, audio_source )
 {
     var cloud = this;    
 	var form = new formData();
@@ -34,7 +34,7 @@ RAPPCloud.prototype.setDenoiseProfile = function ( file, user, audio_source )
 	form.append('audio_source', audio_source);
 	form.append('file_uri', fs.createReadStream(file), { filename: filename });
 	
-	var r = request.post(cloud.cloud_url + '/hop/set_denoise_profile/ ', function(error, res, json){ 
+	var r = request.post(cloud.cloud_url + '/hop/set_noise_profile/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
 			handle_reply(json);
 			}
@@ -54,7 +54,7 @@ RAPPCloud.prototype.setDenoiseProfile = function ( file, user, audio_source )
 		try {
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('setDenoiseProfile JSON error: ' + json_obj.error);
+				console.log('setNoiseProfile JSON error: ' + json_obj.error);
 			}
 			
 		} catch (e) {
@@ -71,4 +71,4 @@ RAPPCloud.prototype.setDenoiseProfile = function ( file, user, audio_source )
 
 
 /// Export
-module.exports = RAPPCloud.setDenoiseProfile;
+module.exports = RAPPCloud.setNoiseProfile;
