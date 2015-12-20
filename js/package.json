@@ -1,7 +1,7 @@
 {
   "name": "js",
   "version": "0.0.0",
-  "description": "Containes RappCloud API modules used for interfering wth RAPP Platform.",
+  "description": "Contains RappCloud API modules used for interfering wth RAPP Platform.",
   "engines": {
     "node": ">= 0.10.0"
   },
