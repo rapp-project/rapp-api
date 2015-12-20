@@ -47,25 +47,25 @@ RAPPCloud.prototype.ontologySubclassesOf = function ( query, callback )
     
     function handle_reply( json )
     {
-		var json_obj;
-		try {
-			json_obj = JSON.parse(json);
-			// JSON reply is: { results: [], trace: [], error: '' }
-		
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('ontologySubClassesOf JSON error: ' + json_obj.error);
-			}
-			if (json_obj.results){
-				_delegate(json_obj.results);
-			}
-		} catch (e) {
-			return console.error(e);
-		}
-	}
-	
-	function error_handler( error ) {
-		return console.error(error);
-	}   
+        var json_obj;
+        try {
+            json_obj = JSON.parse(json);
+            // JSON reply is: { results: [], trace: [], error: '' }
+    
+            if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+                    console.log('ontologySubClassesOf JSON error: ' + json_obj.error);
+            }
+            if (json_obj.results){
+                    _delegate(json_obj.results);
+            }
+        } catch (e) {
+            return console.error(e);
+        }
+    }
+    
+    function error_handler( error ) {
+            return console.error(error);
+    }   
 };
 
 /// Export

@@ -25,14 +25,14 @@ public:
                            )
     : rapp::services::asio_service_http(), delegate__ ( callback )
     {
+        // TODO: use escape_string
         post_ = "query="+query;
-
         header_ = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
-        callback_ = std::bind ( &ontologySuperClassesOf::handle_reply, this, std::placeholders::_1 );
+        callback_ = std::bind(&ontologySuperClassesOf::handle_reply, this, std::placeholders::_1);
      }
       
 private:
