@@ -557,11 +557,12 @@ class RappCloud:
     #
     #  @return Rapp Platform Service API call response object.
     #
-    def cognitive_get_scores(self, username, upToTime):
+    def cognitive_get_scores(self, username, upToTime, testType):
         files = {}
         payload = {
             'user': username,
-            'up_to_time': upToTime
+            'up_to_time': upToTime,
+            'test_type': testType
         }
         url = self.serviceUrl_['cognitive_get_scores']
 
