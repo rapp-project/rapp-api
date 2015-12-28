@@ -578,12 +578,13 @@ class RappCloud:
     #
     #  @return Rapp Platform Service API call response object.
     #
-    def cognitive_get_history(self, username, fromTime,toTime):
+    def cognitive_get_history(self, username, fromTime, toTime, testType):
         files = {}
         payload = {
             'user': username,
             'from_time': fromTime,
-            'to_time': toTime
+            'to_time': toTime,
+            'test_type': testType
         }
         url = self.serviceUrl_['cognitive_get_history']
 
