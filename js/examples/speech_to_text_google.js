@@ -6,12 +6,7 @@ RAPPCloud.speechDetectionGoogle = require('speechDetectionGoogle');
 
 var services = new RAPPCloud( );
 
-/** 
- * This is the method that will handle the reply by the services.speech2Text
- * Do what you want with it - REMEMBER: The service is Asynchronous!!!
- */
- 
- var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
+var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
 										 //"yes-no.wav";
 										 //"nao_wav_d05_a1.wav";
 										 //"nao_ogg_d05_a1.ogg"; 
@@ -22,6 +17,10 @@ var services = new RAPPCloud( );
 		     //"recording_tuesday.ogg";
 		     //"recording_triti.ogg";
 		    				   
+/** 
+ * This is the method that will handle the reply by the services.speechDetectionGoogle
+ * Do what you want with it - REMEMBER: The service is Asynchronous!!!
+ */
  
 function handler ( possible_vectors )
 {

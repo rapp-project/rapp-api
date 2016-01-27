@@ -6,12 +6,7 @@ RAPPCloud.speechDetectionSphinx4 = require('speechDetectionSphinx4');
 
 var services = new RAPPCloud( );
 
-/** 
- * This is the method that will handle the reply by the services.speech2Text
- * Do what you want with it - REMEMBER: The service is Asynchronous!!!
- */
- 
- var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
+var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
 										 //"yes-no.wav";
 										 //"nao_wav_d05_a1.wav";
 										 //"nao_ogg_d05_a1.ogg"; 
@@ -20,8 +15,7 @@ var services = new RAPPCloud( );
 		     //"recording_yes.ogg";
 		     //"recording_no.ogg";
 		     //"recording_tuesday.ogg";
-		     //"recording_triti.ogg";
-		    
+		     //"recording_triti.ogg";    
 var grammar = [];
 var words = //["tuesday", "monday"];
 					   //["yes", "no"];
@@ -36,6 +30,11 @@ var sentences = //["tuesday", "monday"];
 					   //["email", "robot"];
 					   ["check", "my", "emails", "robot"];
 					   //["Τρίτη", "Δευτέρα"];					   
+
+/** 
+ * This is the method that will handle the reply by the services.speechDetectionSphinx4
+ * Do what you want with it - REMEMBER: The service is Asynchronous!!!
+ */
  
 function handler ( words_detected )
 {
@@ -60,4 +59,3 @@ services.speechDetectionSphinx4( audio,           // audio file
 								words,           // words to be considered
 								sentences,       // sentences to be considered
 								handler );
-	
