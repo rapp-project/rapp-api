@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Import the faceDetector JS API Service & Init the RAPPCloud Object
+// Import the speechDetectionSphinx4 JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('RAPPCloud');
 RAPPCloud.speechDetectionSphinx4 = require('speechDetectionSphinx4');
 
