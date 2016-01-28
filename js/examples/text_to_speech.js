@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-// Import the faceDetector JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud');
-RAPPCloud.textToSpeech = require('../includes/cloud/textToSpeech');
+// Import the textToSpeech JS API Service & Init the RAPPCloud Object
+var RAPPCloud = require('RAPPCloud');
+RAPPCloud.textToSpeech = require('textToSpeech');
 
 var services = new RAPPCloud( );
 
 var text = "Hello human";
 
 /** 
- * This is the method that will handle the reply by the services.speechDetectionSphinx4
+ * This is the method that will handle the reply by the services.textToSpeech
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
  

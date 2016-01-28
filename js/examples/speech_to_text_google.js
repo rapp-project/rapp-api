@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Import the faceDetector JS API Service & Init the RAPPCloud Object
+// Import the speechDetectionGoogle JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('RAPPCloud');
 RAPPCloud.speechDetectionGoogle = require('speechDetectionGoogle');
 
