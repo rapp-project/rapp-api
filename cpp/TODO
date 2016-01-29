@@ -1,7 +1,0 @@
-NOTE: klpanagi: Authentication is hardcoded into qr_detection ONLY!
-      		if we need token-based authentication, we need to implemented it across the API.
-
-
-NOTE: JSON parameters send in speech recognition are NOT QUOTE escaped!
-
-

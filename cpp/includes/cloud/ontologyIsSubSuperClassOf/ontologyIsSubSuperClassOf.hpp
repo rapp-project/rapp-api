@@ -27,9 +27,9 @@ public:
                                )
     : rapp::services::asio_service_http(), delegate__ ( callback )
     {
+        // TODO: `Use escape_string`
         post_ = "parent_class=" + parent + "&child_class=" + child + "&recursive="
                 + ( recursive == true ? "true" : "false" );
-
         header_ = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";

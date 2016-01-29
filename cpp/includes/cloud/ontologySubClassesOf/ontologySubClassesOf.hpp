@@ -28,15 +28,14 @@ public:
                          )
     : rapp::services::asio_service_http(), delegate__ ( callback )
     {
+        // TODO: use escape_string
         post_ = "query="+query;
-
         header_ = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
-        
-        callback_ = std::bind ( &ontologySubClassesOf::handle_reply, this, std::placeholders::_1 );
+        callback_ = std::bind(&ontologySubClassesOf::handle_reply, this, std::placeholders::_1);
      }
       
 private:
@@ -52,8 +51,8 @@ private:
             boost::property_tree::read_json( ss, tree );
         
             // JSON reply is: { results: [], trace: [], error: '' }
-            for ( auto child : tree.get_child( "results" ) )
-                classes.push_back ( child.second.get_value<std::string>() );
+            for (auto child : tree.get_child("results"))
+                classes.push_back( child.second.get_value<std::string>() );
 
             // Check for Errors returned by the api.rapp.cloud
             for ( auto child : tree.get_child( "error" ) )
@@ -73,7 +72,7 @@ private:
     }
       
     /// The callback called upon completion of receiving the detected faces
-    std::function< void( std::vector<std::string> classes ) > delegate__;
+    std::function<void(std::vector<std::string> classes)> delegate__;
 };
   
 }

@@ -38,7 +38,7 @@ You can, of course include specific headers if you wish to.
 To link with it, use the lrapp-0.1.so (shared library) or with the static version.
 For linking instructions, please have a look at CMake helpfiles.
 
-## OSes with older G++
+## OSes with older gcc/g++
 Some OSes do not ship with a newer *g++*, or you may be for whatever reason stuck with an older version.
 In this case, and assuming you do not want to build a newer g++ in the Robot OS,
 you can build the API with a statically linked libstdc.

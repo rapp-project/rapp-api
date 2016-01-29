@@ -240,6 +240,27 @@ protected:
         return uid;
     }
 
+    std::string escape_string(const std::string & str) 
+    {
+        std::ostringstream ss;
+        for (auto iter = str.cbegin(); iter != str.cend(); iter++)
+        {
+            switch (*iter)
+            {
+                case '\\': ss << "\\\\"; break;
+                case '"': ss << "\\\""; break;
+                case '/': ss << "\\/"; break;
+                case '\b': ss << "\\b"; break;
+                case '\f': ss << "\\f"; break;
+                case '\n': ss << "\\n"; break;
+                case '\r': ss << "\\r"; break;
+                case '\t': ss << "\\t"; break;
+                default: ss << *iter; break;
+            }
+        }
+        return ss.str();
+    } 
+
     
     /// Header that will be used
     std::string header_;

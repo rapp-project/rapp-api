@@ -1,5 +1,6 @@
 #ifndef RAPP_ROBOT_NAO
 #define RAPP_ROBOT_NAO
+// Do NOT INCLUDE anything in the header - put it in the Includes Internal Header instead
 #include "Includes.ihh"
 namespace rapp {
 namespace robot {

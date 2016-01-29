@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
-
 // Import the ontologySubclassOf JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('./../RAPPCloud.js');
-RAPPCloud.ontologySubclassesOf = require('./../includes/cloud/ontologySubclassesOf/ontologySubclassesOf.js');
-RAPPCloud.ontologySuperclassesOf = require('./../includes/cloud/ontologySuperclassesOf/ontologySuperclassesOf.js');
-RAPPCloud.ontologySubSuperClassOf = require('./../includes/cloud/ontologySubSuperClassOf/ontologySubSuperClassOf.js');
+var RAPPCloud = require('RAPPCloud');
+RAPPCloud.qrDetector = require('ontologySubclassesOf');
+RAPPCloud.qrDetector = require('ontologySuperclassesOf');
+RAPPCloud.qrDetector = require('ontologySubSuperClassOf');
 
 var services = new RAPPCloud( );
 var query='Oven';
@@ -17,7 +16,7 @@ var query='Oven';
 function cb1 ( classes )
 {
     console.log ( 'Subclasses of ' + query + ':');
-    for (i = 0; i < classes.length; i++) {
+    for (var i = 0; i < classes.length; i++) {
 		console.log ( classes[i] );
 	}
 }
@@ -29,7 +28,7 @@ function cb1 ( classes )
 function cb2 ( classes )
 {
     console.log ( 'Superclasses of ' + query + ':');
-    for (i = 0; i < classes.length; i++) {
+    for (var i = 0; i < classes.length; i++) {
 		console.log ( classes[i] );
 	}
 }

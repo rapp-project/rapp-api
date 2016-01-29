@@ -12,7 +12,7 @@ namespace cloud {
     * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
     */
 
-    /// api.rapp.cloud - use deployment IP@ITI
+    /// api.rapp.cloud - use deployment IP@ITI Deployment: 155.207.19.13, Development: 155.207.19.229
     constexpr char address[] = "localhost";
 
     /// api.rapp.cloud - HOP server port

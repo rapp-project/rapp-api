@@ -2,6 +2,7 @@
 
 /**
  * Define the RAPP Object object
+ * @namespace RAPPObject
  */
 function RAPPObject ( )
 {

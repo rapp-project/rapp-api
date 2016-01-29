@@ -46,10 +46,10 @@ BOOST_AUTO_TEST_CASE( constructors_test )
     // NOTE: Use lena.jpg as the file
 
     // Construct from a file-path
-    rapp::object::picture lena ( "Lenna.jpg" );
+    rapp::object::picture lena ( "Lenna.png" );
 
     // Open a byte steam from file, and construct the picture
-    std::ifstream bytestream( "Lenna.jpg", std::ios::in | std::ios::binary | std::ios::ate );
+    std::ifstream bytestream( "Lenna.png", std::ios::in | std::ios::binary | std::ios::ate );
     rapp::object::picture b_copy( bytestream );
     BOOST_CHECK( lena == b_copy );
 
@@ -73,6 +73,13 @@ BOOST_AUTO_TEST_CASE( constructors_test )
 
     //BOOST_CHECK_PREDICATE( std::not_equal_to<rapp::object::audio>(), (t1)(t2) );
     BOOST_CHECK( t2 == t2_cpy );
+
+    rapp::object::OGGfile og1 ("recording_sentence1.ogg");
+    rapp::object::OGGfile og2 ( og1 );
+    //rapp::object::WAVfileSingleChannel wv1 ("yes-no.wav");
+
+    BOOST_CHECK( og1 == og2 );
+    //BOOST_CHECK( og1 != wv1 );
 }
 
 BOOST_AUTO_TEST_SUITE_END( )

@@ -1,6 +1,0 @@
-External Dependencies:
-1. You need to install nodejs in order to be able to run the examples.
-2. You also need form data library. In order to install it execute:
-  sudo npm install form-data  , inside your node_modules folder. Here you can find more details: https://www.npmjs.com/package/form-data
-
-test.js and the examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
