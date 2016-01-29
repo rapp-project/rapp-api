@@ -1,19 +1,18 @@
-#ifndef RAPP_CLOUD_SPEECH_TO_TEXT
-#define RAPP_CLOUD_SPEECH_TO_TEXT
-#include "Includes.ihh"
+#ifndef RAPP_CLOUD_SPEECH_TO_TEXT_SPHINX4
+#define RAPP_CLOUD_SPEECH_TO_TEXT_SPHINX4
+#include "includes.ihh"
 namespace rapp {
 namespace cloud {
 /**
- * @class speechToText
- * @brief Asynchronous Service which will request the cloud to process speech-to-text
+ * @class speech_detection_sphinx4
+ * @brief Asynchronous Service which will request the cloud to process speech-to-text using CMU sphinx4
  * @version 1
  * @date 19-September-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speechToText : public rapp::services::asio_service_http
+class speech_detection_sphinx4 : public rapp::services::asio_service_http
 {
 public:
-
     /**
      * @brief Contrusct a speechToText handler
      * @param audio is the actual binary sound file
@@ -24,22 +23,21 @@ public:
      * @param sentences will be under consideration
      * @param callback will be executed once the rapp cloud has responded
      */
-    speechToText (
-                    const std::shared_ptr<rapp::object::audio> file,
-                    const std::string language,
-                    const std::string user,
-                    const std::vector<std::string> grammar,
-                    const std::vector<std::string> words,
-                    const std::vector<std::string> sentences,
-                    std::function< void( std::vector<std::string> words ) > callback
-                 )
-    : rapp::services::asio_service_http (), delegate_ ( callback )
+    speech_detection_sphinx4(
+							  const std::shared_ptr<rapp::object::audio> file,
+							  const std::string language,
+							  const std::string user,
+							  const std::vector<std::string> grammar,
+							  const std::vector<std::string> words,
+							  const std::vector<std::string> sentences,
+							  std::function<void(std::vector<std::string> words)> callback
+						    )
+	: rapp::services::asio_service_http (), delegate_(callback)
     {
-        assert( file );
-
+        assert(file);
         // Create a new random boundary
-        std::string boundary = randomBoundary();
-        std::string fname =  randomBoundary() + file->extension(); 
+        std::string boundary = random_boundary();
+        std::string fname =  random_boundary() + file->extension(); 
         // Boundary start and 1st POST
         post_  = "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"language\"\r\n\r\n";
@@ -56,23 +54,21 @@ public:
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"grammar\"\r\n\r\n";
         post_ += "[ ";
-        for ( const auto gram : grammar ) post_ += "\"" + gram + "\",";
+        for (const auto gram : grammar ) post_ += "\"" + gram + "\",";
         post_.pop_back();
         post_ += "]\r\n";
         // Words[]
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"words\"\r\n\r\n";
         post_ += "[ ";
-        // TODO - escape_string
-        for ( const auto word : words ) post_ += "\"" + word + "\",";
+        for (const auto word : words) post_ += "\"" + escape_string(word) + "\",";
         post_.pop_back();
         post_ += "]\r\n";
         // Sentences[]
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"sentences\"\r\n\r\n";
         post_ += "[ ";
-        // TODO - escape_string
-        for ( const auto sent : sentences ) post_ += "\"" + sent + "\",";
+        for (const auto sent : sentences) post_ += "\"" + escape_string(sent) + "\",";
         post_.pop_back();
         post_ += "]\r\n";
         // file_uri
@@ -93,47 +89,41 @@ public:
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
         // bind the base class callback, to our handle_reply
-        callback_ = std::bind(&speechToText::handle_reply, this, std::placeholders::_1);
+        callback_ = std::bind(&speech_detection_sphinx4::handle_reply, this, std::placeholders::_1);
     }
 
 private:
     
-    void handle_reply ( std::string json )
+    void handle_reply(std::string json)
     {
-        std::stringstream ss ( json );
+        std::stringstream ss(json);
         std::vector<std::string> words;        
-        std::cout << "rapp::cloud::speechToText JSON:" << json << std::endl;
-
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json( ss, tree );
-       
             // JSON response is: { words: [], error: '' } 
             for ( auto child : tree.get_child( "words" ) )
                 words.push_back ( child.second.get_value<std::string>() );
-
             // Check for error response from api.rapp.cloud
             for ( auto child : tree.get_child( "error" ) )
             {
                 const std::string value = child.second.get_value<std::string>();
                 if ( !value.empty() )
-                    std::cerr << "speechToText error: " << value << std::endl;
+                    std::cerr << "speech_detection_sphinx4 error: " << value << std::endl;
             }
         }
-        catch( boost::property_tree::json_parser::json_parser_error & je )
+        catch(boost::property_tree::json_parser::json_parser_error & je)
         {
-            std::cerr << "speechToText::handle_reply Error parsing: " << je.filename() 
+            std::cerr << "speech_detection_sphinx4::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        
-        delegate_( words );
+        delegate_(words);
     }
 
     /// The callback called upon completion of receiving the detected words
-    std::function< void( std::vector<std::string> words ) > delegate_;
-
+    std::function<void(std::vector<std::string> words)> delegate_;
 };
 }
 }

@@ -1,10 +1,8 @@
 #ifndef RAPP_ASIO_SERVICE_HTTP
 #define RAPP_ASIO_SERVICE_HTTP
 #include "Includes.ihh"
-
 namespace rapp {
 namespace services {
-    
 /**
  * @class asio_service_http
  * @brief base class for asynchronous http websockets used for connecting to cloud services
@@ -223,20 +221,17 @@ protected:
     }
     
     /// Create a random boundary for the multipart/form in HTTP
-    std::string randomBoundary ( ) const
+    std::string random_boundary() const
     {
-        std::string chars( "abcdefghijklmnopqrstuvwxyz"
-                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                           "1234567890" );
-        
+        std::string chars("abcdefghijklmnopqrstuvwxyz"
+                          "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                          "1234567890");
         boost::random::random_device rng;
         std::string uid;
-        
         // Randomly chose 16 characters
         boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
         for ( int i = 0; i < 16; ++i )
             uid.push_back( chars[index_dist(rng)] );
-        
         return uid;
     }
 

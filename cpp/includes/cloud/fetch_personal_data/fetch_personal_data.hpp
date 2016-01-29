@@ -1,17 +1,16 @@
-#ifndef RAPP_SERVICE_CLOUD_FETCH_PERSONAL_DATA
-#define RAPP_SERVICE_CLOUD_FETCH_PERSONAL_DATA
-#include "Includes.ihh"
-
+#ifndef RAPP_CLOUD_FETCH_PERSONAL_DATA
+#define RAPP_CLOUD_FETCH_PERSONAL_DATA
+#include "includes.ihh"
 namespace rapp {
 namespace cloud {
 /**
- * @class fetchPersonalData
+ * @class fetch_personal_data
  * @brief Get all personal data for a specific user
  * @version 1
  * @date 18-April-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class fetchPersonalData : public rapp::services::asio_service_http
+class fetch_personal_data : public rapp::services::asio_service_http
 {
 public:
     
@@ -21,7 +20,7 @@ public:
      * @param callback is the functor that will received the obtained data
      * @note this is asynchronous, not serial, execution time may vary
      */
-    fetchPersonalData (
+    fetch_personal_data (
                         const std::string user,
                         std::function < void( const std::string ) > callback
                       )
@@ -29,17 +28,14 @@ public:
     {
         // Form the POST string - simple argument
         post_ = "user="+user+"\r\n";
-        
         // Craft the full URI
         const std::string uri = "/hop/fetch_personal_data/";
-        
         // Form the Header
         header_ = "POST " + uri + " HTTP/1.1\r\n";
         header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
-        
         // bind the base class callback, to our handle_reply
         callback_ = std::bind ( &fetchPersonalData::handle_reply, this, std::placeholders::_1 );
     }
