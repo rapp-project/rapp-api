@@ -19,12 +19,12 @@ public:
      * @param query is the entity for which we will try to acquire its ?
      * @param callback is the functor that will receive the classes discovered
      */
-    ontology_issubsuperclass_of(
-                                 const std::string parent,
-                                 const std::string child,
-                                 bool recursive,
-                                 std::function<void(bool result)> callback
-                               )
+    ontology_is_subsuperclass_of(
+                                   const std::string parent,
+                                   const std::string child,
+                                   bool recursive,
+                                   std::function<void(bool result)> callback
+                                )
     : rapp::services::asio_service_http(), delegate__ (callback)
     {
         post_ = "parent_class=" + escape_string(parent) + "&child_class=" 
@@ -57,12 +57,12 @@ private:
             {
                 const std::string value = child.second.get_value<std::string>();
                 if ( !value.empty() )
-                    std::cerr << "ontologyIsSubSuperClassOf JSON error: " << value << std::endl;
+                    std::cerr << "ontology_is_subsuperclass_of JSON error: " << value << std::endl;
             }
         }
         catch( boost::property_tree::json_parser::json_parser_error & je )
         {
-            std::cerr << "ontologyIsSubSuperClassOf::handle_reply Error parsing: " << je.filename() 
+            std::cerr << "ontology_is_subsuperclass_of::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
@@ -72,7 +72,6 @@ private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(bool result)> delegate__;
 };
-  
 }
 }
 #endif

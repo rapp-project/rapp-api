@@ -1,5 +1,5 @@
-#ifndef RAPP_CLOUD_DENOISEPROFILE
-#define RAPP_CLOUD_DENOISEPROFILE
+#ifndef RAPP_CLOUD_SET_DENOISE_PROFILE
+#define RAPP_CLOUD_SET_DENOISE_PROFILE
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
@@ -14,13 +14,14 @@ class set_denoise_profile : public rapp::services::asio_service_http
 {
 public:
     /**
-     * This class does not return something, it only captures an error
+     * @brief  
+	 * @note This class does not return something, it only captures an error
      */
     set_denoise_profile(
-						const std::shared_ptr<rapp::object::audio> file,
-                        const std::string user,
-                        const std::string audio_source
-                   )
+						 const std::shared_ptr<rapp::object::audio> file,
+                         const std::string user,
+                         const std::string audio_source
+					   )
     : rapp::services::asio_service_http ()
     {
         assert(file);

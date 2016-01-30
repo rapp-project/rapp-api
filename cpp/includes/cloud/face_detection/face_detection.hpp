@@ -4,13 +4,13 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class face_detector
+ * @class face_detection
  * @brief Asynchronous Service which will request the cloud to detect faces
  * @version 6
  * @date 26-April-2015
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face_detector : public rapp::services::asio_service_http
+class face_detection : public rapp::services::asio_service_http
 {
 public:
           
@@ -21,13 +21,13 @@ public:
      * @param fast defines if this will be a fast call or not.
      * @param callback is the function that will receive a vector of the detected face(s) coordinates
      */
-    face_detector (
+    face_detection(
                     const std::shared_ptr<rapp::object::picture> image,
                     const std::string image_format,
                     bool fast,
                     std::function<void(std::vector<rapp::object::face>)> callback
-                 )
-    : rapp::services::asio_service_http (), delegate_ (callback)
+                  )
+    : rapp::services::asio_service_http (), delegate_(callback)
     {
         assert(image);
         // Create a new random boundary
@@ -57,7 +57,7 @@ public:
         header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
         // bind the base class callback, to our handle_reply
-        callback_ = std::bind(&face_detector::handle_reply, this, std::placeholders::_1);
+        callback_ = std::bind(&face_detection::handle_reply, this, std::placeholders::_1);
     }
 
 private:
@@ -66,7 +66,6 @@ private:
     {   
         std::stringstream ss(json);
         std::vector<rapp::object::face> faces;
-
         try
         {
             boost::property_tree::ptree tree;
@@ -75,7 +74,6 @@ private:
             {
                 std::tuple<float,float,float> up_left;
                 std::tuple<float,float,float> down_right;
-
                 for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter)
                 {
                     if (iter->first == "up_left_point")
@@ -84,7 +82,6 @@ private:
                         {
                            if (it.first == "x")
                                std::get<0>(up_left) = it.second.get_value<float>();
-
                            else if (it.first == "y")
                                std::get<1>(up_left) = it.second.get_value<float>();
                         }
@@ -95,7 +92,6 @@ private:
                         {
                             if ( it.first == "x" )
                                 std::get<0>( down_right) = it.second.get_value<float>();
-
                             else if ( it.first == "y" )
                                 std::get<1>( down_right ) = it.second.get_value<float>();
                         }
@@ -111,11 +107,11 @@ private:
         }
         catch ( boost::property_tree::json_parser::json_parser_error & je )
         {
-            std::cerr << "faceDetector::handle_reply Error parsing: " << je.filename() 
+            std::cerr << "face_detection::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        delegate_( faces );
+        delegate_(faces);
     }    
      
     /// The callback called upon completion of receiving the detected faces
