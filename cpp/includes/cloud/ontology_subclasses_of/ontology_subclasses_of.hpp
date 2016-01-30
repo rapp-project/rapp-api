@@ -36,6 +36,7 @@ public:
      }
       
 private:
+	§
     void handle_reply(std::string json)
     {
         std::vector<std::string> classes;
@@ -48,14 +49,14 @@ private:
             for (auto child : tree.get_child("results"))
                 classes.push_back( child.second.get_value<std::string>() );
             // Check for Errors returned by the api.rapp.cloud
-            for ( auto child : tree.get_child( "error" ) )
+            for (auto child : tree.get_child("error"))
             {
                 const std::string value = child.second.get_value<std::string>();
                 if ( !value.empty() )
                     std::cerr << "ontology_subclasses_of JSON error: " << value << std::endl;
             }
         }
-        catch( boost::property_tree::json_parser::json_parser_error & je )
+        catch(boost::property_tree::json_parser::json_parser_error & je)
         {
             std::cerr << "ontology_subclasses_of::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
