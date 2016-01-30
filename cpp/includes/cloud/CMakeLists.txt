@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 add_subdirectory(available_services)
-add_subdirectory(cognitive_test_choser)
+add_subdirectory(cognitive_test_chooser)
 add_subdirectory(face_detection)
 add_subdirectory(fetch_personal_data)
 add_subdirectory(ontology_is_subsuperclass_of)

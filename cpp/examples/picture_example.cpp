@@ -1,12 +1,17 @@
 #include "../includes/objects/picture/picture.hpp"
 #include <memory>
-
-int main ( int argc, char * argv[] )
+///
+/// Open a picture and load it into an object
+///
+int main(int argc, char * argv[])
 {
-    // Open picture.
-    auto pic = std::make_shared<rapp::object::picture> ( "picture.jpg" );
-    
-    pic->save( "copy_of_picture.jpg" );
-    
+    if (argc == 2)
+    {
+        std::string file(argv[1]);
+        // Open picture.
+        auto pic = rapp::object::picture(file);
+        pic.save("copy_of_"+file);
+        std::cout << "Picture is a " << pic.type() << std::endl;
+    }
     return 0;
 }

@@ -6,7 +6,7 @@ namespace cloud {
 /**
  * @class text_to_speech
  * @brief Asynchronous Service will obtain speech audio from text
- * @version 6
+ * @version 1
  * @date January 2016
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */

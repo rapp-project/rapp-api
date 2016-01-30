@@ -1,31 +1,34 @@
 #include "../includes/service/service_controller/service_controller.hpp"
-#include "../includes/cloud/setDenoiseProfile/setDenoiseProfile.hpp"
+#include "../includes/cloud/set_denoise_profile/set_denoise_profile.hpp"
 #include "../includes/objects/audio/audio.hpp"
-
-int main ( int argc, char ** argv )
+///
+/// set a denoise profile for a specific user
+/// argv[1] : audio file
+/// argv[2] : audio type (@see audio.hpp) e.g.: `microphone_wav`, 
+///                                             `nao_single_channel_wav`
+///                                             `nao_quad_channel_wav`
+///                                             `ogg`
+/// argv[3] : user (by default: `rapp`)
+///
+int main(int argc, char ** argv)
 {
-    if ( argc == 2 )
+    if (argc == 4)
     {
-        std::cout << "set denoise using: " << argv[1] << std::endl;
+        std::cout << "denoise file: " << argv[1] << std::endl;
         std::string file = argv[1];
+        std::cout << "audio source: " << argv[2] << std::endl;
+        std::string type = argv[2];
+        std::cout << "denoise user: " << argv[3] << std::endl;
+        std::string user = argv[3];
         rapp::services::service_controller ctrl;
-
-        auto audio = std::make_shared<rapp::object::audio>( file
-                                                                //"denoise_source.wav"
-                                                                //"silence_sample.wav"
-                                                                // "silence_wav_d05_a1.wav"
-                                                                //"silence_ogg_d05_a1.ogg" 
-                                                               );
-        assert( audio );        
-        auto set_denoise = std::make_shared<rapp::cloud::setDenoiseProfile>( audio, 
-                                                                             "rapp",
-                                                                             //"nao_wav_1_ch"
-                                                                             //"nao_wav_4_ch" 
-                                                                             "nao_ogg" 
-                                                                           ); 
-        ctrl.runJob ( set_denoise );
+        if (auto audio = std::make_shared<rapp::object::audio>(file))
+        {
+            auto set_denoise = std::make_shared<rapp::cloud::set_denoise_profile>(audio, user, type);
+            ctrl.run_job(set_denoise);
+        }
     }
     else
-        std::cerr << "you didn't specify a denoising audi file" << std::endl;
+        std::cerr << "incorrect params" << std::endl;
+
     return 0;
 }
