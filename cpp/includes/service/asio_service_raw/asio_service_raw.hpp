@@ -11,10 +11,7 @@ namespace services {
  * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * @warning this class does not support SSL/TLS sockets
  * 
- * WARNING RESTRUCTURE AS HEADER ONLY !!!! FACILIATE THE USAGE OF STREAMING BUFFERS FROM CLIENT TO SERVER
- *         AS THIS IS THE ONLY THING WE WILL USE THIS CLASS FOR !!!
- * 
- * WARNING THE virtual methods below are of no use - see how asio_service_http has been reworked and do the same here
+ * DEPRECATED - REMOVE
  */
 class asio_service_raw : public asio_socket
 {

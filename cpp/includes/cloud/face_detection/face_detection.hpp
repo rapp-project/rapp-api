@@ -17,13 +17,11 @@ public:
     /**
      * @brief Constructor
      * @param image is the input image @see rapp::object::picture
-     * @param image_format is the image format
      * @param fast defines if this will be a fast call or not.
      * @param callback is the function that will receive a vector of the detected face(s) coordinates
      */
     face_detection(
                     const std::shared_ptr<rapp::object::picture> image,
-                    const std::string image_format,
                     bool fast,
                     std::function<void(std::vector<rapp::object::face>)> callback
                   )
@@ -33,15 +31,15 @@ public:
         // Create a new random boundary
         std::string boundary = random_boundary();
         // Create a random file name + extension
-        std::string fname = random_boundary() + "." + image_format;
+        std::string fname = random_boundary()+"."+image->type();
 		// set the `fast` param
-        post_  = "--" + boundary + "\r\n";
+        post_  = "--"+boundary+"\r\n";
         post_ += "Content-Disposition: form-data; name=\"fast\"\r\n\r\n";
-        post_ += (fast ? "1" : "0") + "\r\n";
+        post_ += (fast ? std::string("1") : std::string("0")) + "\r\n";
         // Create the Multi-form POST field
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname  + "\"\r\n";
-        post_ += "Content-Type: image/" + image_format + "\r\n";
+        post_ += "--"+boundary+"\r\n";
+        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n";
+        post_ += "Content-Type: image/"+image->type()+"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
         // Append binary data
         auto imagebytes = image->bytearray();
@@ -52,10 +50,10 @@ public:
         auto size = post_.size() * sizeof( std::string::value_type );
         // Form the Header
         header_ =  "POST /hop/face_detection HTTP/1.1\r\n";
-        header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
+        header_ += "Host: "+std::string(rapp::cloud::address)+"\r\n";
         header_ += "Connection: close\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
-        header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+        header_ += "Content-Length: "+boost::lexical_cast<std::string>(size)+"\r\n";
+        header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
         // bind the base class callback, to our handle_reply
         callback_ = std::bind(&face_detection::handle_reply, this, std::placeholders::_1);
     }

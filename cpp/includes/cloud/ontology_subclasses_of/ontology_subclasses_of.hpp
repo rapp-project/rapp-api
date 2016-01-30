@@ -26,7 +26,7 @@ public:
                           )
     : rapp::services::asio_service_http(), delegate__(callback)
     {
-        post_ = "query="+escapce_string(query);
+        post_ = "query="+escape_string(query);
         header_ = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
@@ -36,7 +36,7 @@ public:
      }
       
 private:
-	§
+	
     void handle_reply(std::string json)
     {
         std::vector<std::string> classes;
