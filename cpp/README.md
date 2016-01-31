@@ -35,8 +35,8 @@ $ make
 * `-DBUILD_TESTS=ON`            optional, compile various tests - run with `make test`
 * `-DBUILD_EXAMPLES=ON`         optional, compile various examples (see directory `build`)
 * `-DCMAKE_BUILD_TYPE=Debug`    optional, enable debug symbols - default is `Release`
-* `-DSTATIC_LIBSTD=ON`          optional, compile statically against libstdc++
-* `-DOPEN_NAO=ON`               optional, compiling on OpenNAO requires additional CXX flags
+* `-DSTATIC_LIBSTD=ON`          optional, compile statically against `libstdc++`
+* `-DOPEN_NAO=ON`               optional & experimental, building for OpenNAO requires additional flags
 
 # Installing
 
