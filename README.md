@@ -47,4 +47,6 @@ Each language API has a `README.md` with detailed instructions on how to use it.
 - Konstaninos Panayiotou, **[klpanagi@gmail.com]**
 - Lazaros Penteridis, **[lp@ortelio.co.uk]**
 
-## Please read `CONTRIBUTING.md` before submitting/contributing to this project.
+## Contributing
+
+- Please read `CONTRIBUTING.md` before submitting/contributing to this project.
