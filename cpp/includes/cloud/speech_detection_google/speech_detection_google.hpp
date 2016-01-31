@@ -4,18 +4,22 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class speech_detection_google
- * @brief Asynchronous Service which will request the cloud to process speech-to-text using Google
- * @version 1
- * @date January 2016
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class speech_detection_google
+ * \brief Asynchronous Service which will request the cloud to process speech-to-text using Google
+ * \version 1
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class speech_detection_google : public rapp::services::asio_service_http
 {
 public:
 	/**
-	 * @brief construct the handler which will query the Google API
-	 * @param 
+	 * \brief construct the handler which will query the Google API
+	 * \param  file is the audio file used for speech recognition.
+     * \note the audio file should be an inheriting class (\see objects/audio/audio.hpp)
+     * \param language defines the language used for speech recognition (e.g., 'en', 'gr', etc.)
+     * \param user is required so that denoising can take place
+     * \param callback is the functor/lambda/function pointer delegate that will receive the result
 	 */
 	speech_detection_google(
 							  const std::shared_ptr<rapp::object::audio> file,
@@ -97,7 +101,6 @@ private:
 
     /// The callback called upon completion of receiving the detected words
     std::function<void(std::vector<std::string> words)> delegate_;
-
 };
 }
 }

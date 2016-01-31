@@ -4,20 +4,19 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class ontology_is_subsuperclass_of
- * @brief query if sub class is a super class of param 
- * @version 1
- * @date January 2016
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class ontology_is_subsuperclass_of
+ * \brief query if sub class is a super class of param 
+ * \version 2
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class ontology_is_subsuperclass_of : public rapp::services::asio_service_http
 {
 public:
-    
     /**
-     * @brief Constructor for this handler
-     * @param query is the entity for which we will try to acquire its ?
-     * @param callback is the functor that will receive the classes discovered
+     * \brief Constructor for this handler
+     * \param query is the entity for which we will try to acquire its ?
+     * \param callback is the functor that will receive the classes discovered
      */
     ontology_is_subsuperclass_of(
                                    const std::string parent,
@@ -25,7 +24,7 @@ public:
                                    bool recursive,
                                    std::function<void(bool result)> callback
                                 )
-    : rapp::services::asio_service_http(), delegate__ (callback)
+    : rapp::services::asio_service_http(), delegate__(callback)
     {
         post_ = "parent_class=" + escape_string(parent) + "&child_class=" 
 				+ escape_string(child) + "&recursive=" 
@@ -33,7 +32,7 @@ public:
         header_ = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
         header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n";
         header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
+        header_ += "Content-Length: " + boost::lexical_cast<std::string>(post_.length()) + "\r\n";
         header_ += "Connection: close\r\n\r\n";
         callback_ = std::bind(&ontology_is_subsuperclass_of::handle_reply, this, std::placeholders::_1);
      }
@@ -48,12 +47,12 @@ private:
         try
         {
             boost::property_tree::ptree tree;
-            boost::property_tree::read_json( ss, tree );
+            boost::property_tree::read_json(ss, tree);
             // JSON reply is: { results: [], trace: [], error: '' }
-            for ( auto child : tree.get_child( "result" ) )
+            for (auto child : tree.get_child( "result"))
                 result = child.second.get_value<bool>();
             // Check for Errors returned by the api.rapp.cloud
-            for ( auto child : tree.get_child( "error" ) )
+            for (auto child : tree.get_child("error"))
             {
                 const std::string value = child.second.get_value<std::string>();
                 if ( !value.empty() )

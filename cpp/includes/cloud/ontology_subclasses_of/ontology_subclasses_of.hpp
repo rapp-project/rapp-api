@@ -4,21 +4,19 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class ontology_subclasses_of
- * @brief Asynchronous Service which will request the Ontology Subclass of/for an Input
- * @version 3
- * @date 19-September-2015
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- * HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
- * HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
+ * \class ontology_subclasses_of
+ * \brief Asynchronous Service which will request the Ontology Subclass of/for an Input
+ * \version 4
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class ontology_subclasses_of : public rapp::services::asio_service_http
 {
 public:
     /**
-     * @brief Constructor for this handler
-     * @param query is the entity for which we will try to acquire its Super-Ordinates
-     * @param callback is the functor that will receive the classes discovered
+     * \brief Constructor for this handler
+     * \param query is the entity for which we will try to acquire its Super-Ordinates
+     * \param callback is the functor that will receive the classes discovered
      */
     ontology_subclasses_of(
                             std::string query,
@@ -68,7 +66,6 @@ private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<std::string> classes)> delegate__;
 };
-  
 }
 }
 #endif

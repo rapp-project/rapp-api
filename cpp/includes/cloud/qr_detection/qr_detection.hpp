@@ -4,24 +4,24 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class qr_detection
- * @brief Asynchronous Service which will request the cloud to detect QR codes
- * @version 3
- * @date January 2016
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class qr_detection
+ * \brief Asynchronous Service which will request the cloud to detect QR codes
+ * \version 3
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class qr_detection : public rapp::services::asio_service_http
 {
 public:
     /**
-    * @brief Constructor
-    * @param image is a picture object pointer
-    * @param callback is the function that will receive a vector of detected qr(s)
-    * @param image_format must be defined, e.g.: jpeg, png, gif, etc.
+    * \brief Constructor
+    * \param image is a picture object pointer
+    * \param callback is the function that will receive a vector of detected qr(s)
+    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
     */
     qr_detection(
                   const std::shared_ptr<rapp::object::picture> image,
-                  std::function<void(std::vector<rapp::object::qrCode>)> callback
+                  std::function<void(std::vector<rapp::object::qr_code>)> callback
                 )
     : rapp::services::asio_service_http (), delegate__(callback)
     {
@@ -45,7 +45,6 @@ public:
         // Form the Header
         header_ =  "POST /hop/qr_detection HTTP/1.1\r\n";
         header_ += "Host: "+std::string(rapp::cloud::address)+"\r\n";
-        header_ += "Authorization: Basic "+std::string(rapp::cloud::auth_token)+"\r\n"; 
         header_ += "Connection: close\r\n";
         header_ += "Content-Length: "+boost::lexical_cast<std::string>(size)+"\r\n";
         header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
@@ -58,7 +57,7 @@ private:
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
-        std::vector<rapp::object::qrCode> qrCodes;
+        std::vector<rapp::object::qr_code> qrCodes;
         try
         {
             boost::property_tree::ptree tree;
@@ -66,18 +65,18 @@ private:
             for (auto child : tree.get_child("qr_centers"))
             {
                 std::tuple<float,float,std::string> qrcode;
-                for ( auto iter = child.second.begin(); iter != child.second.end(); ++iter )
+                for (auto iter = child.second.begin(); iter != child.second.end(); ++iter)
                 {
                     if ( iter->first == "x" )
-                        std::get<0>( qrcode ) = iter->second.get_value<float>();
+                        std::get<0>(qrcode) = iter->second.get_value<float>();
                     else if ( iter->first == "y" )
-                        std::get<1>( qrcode ) = iter->second.get_value<float>();
+                        std::get<1>(qrcode) = iter->second.get_value<float>();
                     else if ( iter->first == "message" )
-                        std::get<2>( qrcode ) = iter->second.get_value<std::string>();
+                        std::get<2>(qrcode) = iter->second.get_value<std::string>();
                 }
-                qrCodes.push_back(rapp::object::qrCode(std::get<0>(qrcode),
-                                                       std::get<1>(qrcode),
-                                                       std::get<2>(qrcode)));
+                qrCodes.push_back(rapp::object::qr_code(std::get<0>(qrcode),
+                                                        std::get<1>(qrcode),
+                                                        std::get<2>(qrcode)));
             }
         }
         catch( boost::property_tree::json_parser::json_parser_error & je )
@@ -90,7 +89,7 @@ private:
     }
 
     /// The callback called upon completion of receiving the detected faces
-    std::function<void(std::vector<rapp::object::qrCode>)> delegate__;
+    std::function<void(std::vector<rapp::object::qr_code>)> delegate__;
 };
 }
 }

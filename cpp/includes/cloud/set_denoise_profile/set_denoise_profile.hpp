@@ -4,23 +4,26 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class set_denoise_profile
- * @brief setting the denoising audio profile for speech recognition 
- * @version 2
- * @date 20-September-2015
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class set_denoise_profile
+ * \brief setting the denoising audio profile for speech recognition 
+ * \version 2
+ * \date 20-September-2015
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class set_denoise_profile : public rapp::services::asio_service_http
 {
 public:
     /**
-     * @brief  
-	 * @note This class does not return something, it only captures an error
+     * \brief set a de-noising profile for a user (for speech recognition) 
+	 * \note This class does not return something, it only captures an error
+     * \param file is the noise audio file used for de-noising
+     * \param user is the user denoise profile
+     * \note the file base class should not be used, instead use of if the
+     * inheriting classes (\see objects/audio/audio.hpp) which define their `audio_source`.
      */
     set_denoise_profile(
 						 const std::shared_ptr<rapp::object::audio> file,
-                         const std::string user,
-                         const std::string audio_source
+                         const std::string user
 					   )
     : rapp::services::asio_service_http ()
     {
@@ -36,23 +39,23 @@ public:
         // Create the name for the audio file
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
-        post_ += audio_source + "\r\n";
+        post_ += file->audio_source() + "\r\n";
         // Create the Multi-form POST field for the actualAUDIO/WAV data
         post_ += "--" + boundary + "\r\n";
         post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+".audio\"\r\n";
         post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
         // Append binary data
         auto bytes = file->bytearray();
-        post_.insert( post_.end(), bytes.begin(), bytes.end() );
+        post_.insert(post_.end(), bytes.begin(), bytes.end());
         post_ += "\r\n";
         post_ += "--" + boundary + "--";
         // Count Data size
         auto size = post_.size() * sizeof(std::string::value_type);
         // Form the Header
         header_ =  "POST /hop/set_denoise_profile HTTP/1.1\r\n";
-        header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
+        header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n";
         header_ += "Connection: close\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
+        header_ += "Content-Length: " + boost::lexical_cast<std::string>(size) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
         // bind the base class callback, to our handle_reply
         callback_ = std::bind(&set_denoise_profile::handle_reply, this, std::placeholders::_1);

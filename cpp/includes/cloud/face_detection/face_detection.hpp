@@ -4,21 +4,20 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class face_detection
- * @brief Asynchronous Service which will request the cloud to detect faces
- * @version 6
- * @date 26-April-2015
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class face_detection
+ * \brief Asynchronous Service which will request the cloud to detect faces
+ * \version 7
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class face_detection : public rapp::services::asio_service_http
 {
 public:
-          
     /**
-     * @brief Constructor
-     * @param image is the input image @see rapp::object::picture
-     * @param fast defines if this will be a fast call or not.
-     * @param callback is the function that will receive a vector of the detected face(s) coordinates
+     * \brief Constructor
+     * \param image is the input image \see rapp::object::picture
+     * \param fast defines if this will be a fast call or not.
+     * \param callback is the function that will receive a vector of detected face(s) 
      */
     face_detection(
                     const std::shared_ptr<rapp::object::picture> image,

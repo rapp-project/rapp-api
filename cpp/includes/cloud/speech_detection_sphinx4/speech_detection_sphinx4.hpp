@@ -4,24 +4,26 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class speech_detection_sphinx4
- * @brief Asynchronous Service which will request the cloud to process speech-to-text using CMU sphinx4
- * @version 1
- * @date 19-September-2015
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class speech_detection_sphinx4
+ * \brief Asynchronous Service which will request the cloud to process speech-to-text using CMU sphinx4
+ * \version 1
+ * \date 19-September-2015
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class speech_detection_sphinx4 : public rapp::services::asio_service_http
 {
 public:
     /**
-     * @brief Contrusct a speechToText handler
-     * @param audio is the actual binary sound file
-     * @param language is the language used for speech to text
-     * @param grammar is the Grammars used in Spc2Txt
-     * @param user is the user token
-     * @param words will be searched for in the audio
-     * @param sentences will be under consideration
-     * @param callback will be executed once the rapp cloud has responded
+     * \brief Contrusct a speechToText handler
+     * \param audio is the actual binary sound file
+     * \param language is the language used for speech to text
+     * \param grammar is the Grammars used in Spc2Txt
+     * \param user is the user token
+     * \param words will be searched for in the audio
+     * \param sentences will be under consideration
+     * \param callback will be executed once the rapp cloud has responded
+     * \note avoid using the class `audio` but insteas use one of it's derivatives.
+     * \see objects/audio/audio.hpp for more
      */
     speech_detection_sphinx4(
 							  const std::shared_ptr<rapp::object::audio> file,

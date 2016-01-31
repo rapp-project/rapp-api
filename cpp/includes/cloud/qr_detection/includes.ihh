@@ -10,6 +10,5 @@
 #include <boost/algorithm/string/replace.hpp>
 
 #include "../../service/asio_service_http/asio_service_http.hpp"
-
-#include "../../objects/qrCode/qrCode.hpp"
+#include "../../objects/qr_code/qr_code.hpp"
 #include "../../objects/picture/picture.hpp"

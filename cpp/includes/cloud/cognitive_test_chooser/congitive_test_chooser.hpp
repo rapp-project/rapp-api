@@ -4,18 +4,19 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class cognitive_test_choster
- * @brief chose a congitive game to play 
- * @version 1
- * @date January 2016
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class cognitive_test_choster
+ * \brief chose a congitive game to play 
+ * \version 1
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class cognitive_test_choser : public rapp::services::asio_service_http
 {
 public:
 	/**
-	 * @brief handler obtains a cognitive test from cloud.rapp
-	 * @param user - @param test_type
+	 * \brief handler obtains a cognitive test from cloud.rapp
+	 * \param user set the user
+     * \param test_type set the test type
 	 */
 	cognitive_test_choser(
 							const std::string user,

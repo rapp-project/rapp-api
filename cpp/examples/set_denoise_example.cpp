@@ -20,11 +20,24 @@ int main(int argc, char ** argv)
         std::string type = argv[2];
         std::cout << "denoise user: " << argv[3] << std::endl;
         std::string user = argv[3];
+
         rapp::services::service_controller ctrl;
-        if (auto audio = std::make_shared<rapp::object::audio>(file))
+        std::shared_ptr<rapp::object::audio> audio;
+
+        if (type == "microphone_wav")
+            audio = std::make_shared<rapp::object::microphone_wav>(file);
+        else if (type == "nao_single_channel_wav")
+            audio = std::make_shared<rapp::object::nao_single_channel_wav>(file);
+        else if (type == "nao_quad_channel_wav")
+            audio = std::make_shared<rapp::object::nao_quad_channel_wav>(file);
+        else if (type == "ogg")
+            audio = std::make_shared<rapp::object::ogg>(file);
+        else
+            throw std::runtime_error("uknown audio source");
+
+        if (audio)
         {
-            auto set_denoise = std::make_shared<rapp::cloud::set_denoise_profile>(audio, user, type);
-            ctrl.run_job(set_denoise);
+            ctrl.run_job(std::make_shared<rapp::cloud::set_denoise_profile>(audio, user));
         }
     }
     else

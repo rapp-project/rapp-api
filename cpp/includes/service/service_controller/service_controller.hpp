@@ -4,11 +4,11 @@
 namespace rapp {
 namespace services {
 /**
- * @class service_controller
- * @brief Main class that controllers RAPP Services
- * @version 2
- * @date 20-April-2014
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class service_controller
+ * \brief Main class that controllers RAPP Services
+ * \version 
+ * \date January-2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
  * This class controls services (be it on cloud or robot). A service is a callable function
  * which offers some type of functionality to the callee.
@@ -29,30 +29,22 @@ public:
     boost::asio::io_service & queue();
 
     /**
-     * @brief Run one service job
-     * @param client is the actual object pointer that will be executed in a single operation
-     * @note upon completion, the object's handler will be invoked
-     * @note this method will block, until job is finished
+     * \brief Run one service job
+     * \param client is the actual object pointer that will be executed in a single operation
+     * \note upon completion, the object's handler will be invoked
+     * \note this method will block, until job is finished
      */
     void run_job(const std::shared_ptr<asio_socket> job);
 
     /**
-     * @brief Run a group of jobs in a batch
-     * @param jobs is vector of constant pointers to client services
-     * @note upon completion, the each object's handler will be invoked
-     * @warning upon completion, the queue schedule will be reset.
+     * \brief Run a group of jobs in a batch
+     * \param jobs is vector of constant pointers to client services
+     * \note upon completion, the each object's handler will be invoked
+     * \warning upon completion, the queue schedule will be reset.
      */
     void run_jobs(std::vector<std::shared_ptr<asio_socket>> jobs);
 
 private:
-    /// Cloud Server Address
-    const std::string server_;
-    /// Username token
-    const std::string username_;
-    // NOTE: isnt this a duplicate from globals::auth_token ?
-    const std::string auth_base64_ = "cmFwcGRldjpyYXBwZGV2";
-    /// Authentication token
-    const std::string password_;
     /// IO service
     boost::asio::io_service io_service_;
     /// Endpoint Resolver

@@ -13,10 +13,10 @@ int main(int argc, char* argv[])
         rapp::services::service_controller ctrl;
         if(auto pic = std::make_shared<rapp::object::picture>(file))
         {
-            auto callback = [&](std::vector<rapp::object::qrCode> codes)
+            auto callback = [&](std::vector<rapp::object::qr_code> codes)
                             {
                                 std::cout << "found " << codes.size() << " QR codes" << std::endl;
-                                for ( const auto code : codes )
+                                for (const auto code : codes)
                                     std::cout << code.label() << std::endl;
                             };
             auto fdetect = std::make_shared<rapp::cloud::qr_detection>(pic, callback);
