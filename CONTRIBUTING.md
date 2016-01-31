@@ -161,7 +161,7 @@ Do not break up the definition and implementation files into different locations
 
     `foo/includes.ihh`
 
-4. Only include what is absolutely nessesairy, minimising dependencies.
+4. Only include what is absolutely necessary, minimising dependencies.
 5. Do not polute the namespace or class definitions with various `#include`/`require`,
 put all of them within your internal include header (`includes.ihh`/`includes.js`).
 
