@@ -1,9 +1,9 @@
 # Style guide
 
 This is style guide for RAPP-API contributors. 
+
 You should use it for any new code that you would add to this project 
-and try to format existing code to use this
-style.
+and try to format existing code to use this style.
 
 ## Formatting
 
@@ -13,7 +13,6 @@ style.
 4. Opening curly bracket is on the following line:
 
         // ✔:
-        ```
         struct name
         {
             // code
@@ -28,122 +27,92 @@ style.
         {
             // code
         }
-        ```
 
         // ✗:
-        ```
         void func() {
             // code
         }
-        ```
 
 5. Put space after `if`, `while` and `for` before conditions.
 
         // ✔:
-        ```
         if () {}
-        ```
+        
 
         // ✗:
-        ```
         if() {}
-        ```
 
 6. Put spaces before and after operators excluding increment and decrement;
 
         // ✔:
-        ```
         int a = 1 + 2 * 3;
         a++;
-        ```
 
         // ✗:
-        ```
         int a=1+2*3;
         a ++;
-        ```
 
 7. Never put spaces between function name and parameters list.
 
         // ✔:
-        ```
         func(args);
-        ```
 
         // ✗:
-        ```
         func (args);
-        ```
 
 8. Never put spaces after `(` and before `)`.
 9. Always put space after comma and semicolon.
 
         // ✔:
-        ```
         func(arg1, arg2);
 
         for (int i = 0; i < LENGTH; i++) {}
-        ```
 
         // ✗:
-        ```
         func(arg1,arg2);
 
         for (int i = 0;i<LENGTH;i++) {}
-        ```
 
 10. Function *Declaration parameters* should be aligned into new lines
 
         // ✔:
-        ```
         func(
                 param1,
                 param2,
                 param3
             );
-        ```
 
         // ✗:
-        ```
         func(param1, param2, param3);
-        ```
 
 11. Calling Functions with *multiple parameters* that would extend the line in width,
 should be broken into new lines where and when possible:
 
         // ✔:
-        ```
         func(param1,
              param2,
              func2(param3, param4),
              param5);
-        ```
 
         // ✗:
-        ```
         func(param1, param2, func2(param3, param4), param5);
-        ```
 
 12. Naming *class* members which are private should follow an underscore:
-The only excpetion to this rule is `struct` when a public member is used.
+The only excpetion to this rule is `struct` where the member is public.
 
         // ✔:
-        ```
         class foo
         {
         private:
             int var_;
         };
-        ```
 
         // ✗:
-        ```
         class foo
         {
         private:
             int var;
         };
-        ```
 
 ## Documentation
 
@@ -152,7 +121,7 @@ Document your code using [Doxygen][dox].
 1. Documentation comment should use double star notation or tripple slash:
 
         // ✔:
-        ```
+        
         /// Some var
         int var;
 
@@ -160,19 +129,17 @@ Document your code using [Doxygen][dox].
          * Some func
          */
         void func();
-        ```
 
 2. Use slash as tag mark:
 
         // ✔:
-        ```
+        
         /**
          * \param a an integer argument.
          * \param s a constant character pointer.
          * \return The results
          */
         int foo(int a, const char *s);
-        ```
 
 ## Naming
 
