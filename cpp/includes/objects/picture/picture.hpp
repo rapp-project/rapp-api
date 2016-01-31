@@ -4,11 +4,11 @@
 namespace rapp {
 namespace object {
 /**
- * @class picture
- * @brief class which wraps around raw bytes of a picture
- * @version 3
- * @date January 2016
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class picture
+ * \brief class which wraps around raw bytes of a picture
+ * \version 3
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class picture
 {
@@ -37,7 +37,7 @@ public:
     /// Assignment operator
     picture & operator=(const picture &) = default;
 
-    /// Are pictures same ?
+    /// picture equality
     bool operator==(const picture & rhs) const
     {
         return (this->bytearray_ == rhs.bytearray_);
@@ -84,7 +84,6 @@ private:
         bytearray_.resize(fileSize);
         bytestream.seekg(0, std::ios_base::beg);
         bytestream.read(&bytearray_[0], fileSize);
-
         // Check Magic Number to find picture format
         if ((unsigned int)bytearray_[0] == 0xFFFFFF89 
             && (unsigned int)bytearray_[1] == 0x00000050)

@@ -4,19 +4,19 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class ontology_superclasses_of
- * @brief async call to obtain superclasses of query
- * @version 3
- * @date January 2016
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class ontology_superclasses_of
+ * \brief async call to obtain superclasses of query
+ * \version 3
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class ontology_superclasses_of : public rapp::services::asio_service_http
-{
+{
 public:
     /**
-     * @brief Constructor for this handler
-     * @param query is the entity for which we will try to acquire its Super-Ordinates
-     * @param callback is the functor that will receive the classes discovered
+     * \brief Constructor for this handler
+     * \param query is the entity for which we will try to acquire its Super-Ordinates
+     * \param callback is the functor that will receive the classes discovered
      */
     ontology_superclasses_of(
                               const std::string query,

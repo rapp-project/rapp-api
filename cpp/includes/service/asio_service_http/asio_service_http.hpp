@@ -4,23 +4,22 @@
 namespace rapp {
 namespace services {
 /**
- * @class asio_service_http
- * @brief base class for asynchronous http websockets used for connecting to cloud services
- * @version 6
- * @date 26-April-2015
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- * 
- * @see http://www.jmarshall.com/easy/http/#postmethod for HTTP Protocol details
- * @warning this class does not support SSL/TLS sockets
+ * \class asio_service_http
+ * \brief base class for asynchronous http websockets used for connecting to cloud services
+ * \version 6
+ * \date 26-April-2015
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \see http://www.jmarshall.com/easy/http/#postmethod for HTTP Protocol details
+ * \warning this class does not support SSL/TLS sockets
  */
 class asio_service_http : public asio_socket
 {
 public:
     /** 
      * Schedule this client as a job for execution using
-     * @param query defines the actual URL/URI
-     * @param resolver is the URL/URI resolver reference
-     * @param io_service is the service queue on which this job will be scheduled to run
+     * \param query defines the actual URL/URI
+     * \param resolver is the URL/URI resolver reference
+     * \param io_service is the service queue on which this job will be scheduled to run
      */
     void schedule( 
                      boost::asio::ip::tcp::resolver::query & query,
@@ -44,7 +43,7 @@ protected:
     /// Hidden empty constructor is meant to be used only by inheriting classes
     asio_service_http() = default;
     
-    /// Handle an Error @param error is the raised error from the client
+    /// Handle an Error \param error is the raised error from the client
     void error_handler(const boost::system::error_code & error)
     {
         std::cerr << "asio_service_http error: " << error.message() << std::endl;
@@ -57,14 +56,14 @@ protected:
     }
     
     /** 
-     * @brief Callback for Handling Address Resolution
-     * @param err is a possible error
-     * @param endpoint_iterator is boost's hostname address handler
+     * \brief Callback for Handling Address Resolution
+     * \param err is a possible error
+     * \param endpoint_iterator is boost's hostname address handler
      */
     void handle_resolve( 
-                            const boost::system::error_code & err,
-                            boost::asio::ip::tcp::resolver::iterator endpoint_iterator
-                    )
+                         const boost::system::error_code & err,
+                         boost::asio::ip::tcp::resolver::iterator endpoint_iterator
+                       )
     {
         assert(socket);
         if (!err)
@@ -82,12 +81,12 @@ protected:
 
     /**
      * Callback for Handling Connection Events
-     * @param err is a possible error
-     * @param endpoint_iterator is boosts' hostname address handler
+     * \param err is a possible error
+     * \param endpoint_iterator is boosts' hostname address handler
      */
     void handle_connect( 
-                            const boost::system::error_code & err,
-                            boost::asio::ip::tcp::resolver::iterator endpoint_iterator
+                          const boost::system::error_code & err,
+                          boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                        )
     {
         assert(socket_);
@@ -112,7 +111,7 @@ protected:
         else error_handler(err);
     }
 
-    /// Callback for handling request and waiting for response @param err is a possible error
+    /// Callback for handling request and waiting for response \param err is a possible error
     void handle_write_request(const boost::system::error_code & err)
     {
         assert(socket_);
@@ -130,7 +129,7 @@ protected:
             error_handler(err);
     }
     
-    /// Callback for handling HTTP Header Response Data @param err is a possible error message
+    /// Callback for handling HTTP Header Response Data \param err is a possible error message
     void handle_read_status_line(const boost::system::error_code & err)
     {
         assert(socket_);
@@ -144,7 +143,6 @@ protected:
             response_stream >> status_code;
             std::string status_message;
             std::getline( response_stream, status_message );
-
             if (!response_stream || http_version.substr(0, 5) != "HTTP/")
             {
                 invalid_request("http Invalid response");
@@ -167,7 +165,7 @@ protected:
             error_handler(err);
     }
 
-    /// Callback for Handling Headers @param err is a possible error message
+    /// Callback for Handling Headers \param err is a possible error message
     void handle_read_headers(const boost::system::error_code & err)
     {
         assert(socket_);
@@ -184,7 +182,7 @@ protected:
         else error_handler(err);
     }
     
-    /// Callback for Handling Actual Data Contents @param err is a possible error message
+    /// Callback for Handling Actual Data Contents \param err is a possible error message
     void handle_read_content(const boost::system::error_code & err)
     {
         assert(socket_);
@@ -274,19 +272,14 @@ protected:
     
     /// Header that will be used
     std::string header_;
-    
     /// Actual post Data
     std::string post_;
-    
     /// Callback Handler - use with std::bind or boost variant
     std::function<void( std::string )> callback_;
-    
     /// Actual Socket
     std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
-    
     /// Request Container
     boost::asio::streambuf request_;
-    
     /// Response Container
     boost::asio::streambuf response_;
 };

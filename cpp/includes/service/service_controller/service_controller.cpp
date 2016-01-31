@@ -1,10 +1,8 @@
 #include "service_controller.hpp"
-
 namespace rapp 
 {
 namespace services 
 {
-
 service_controller::service_controller()
 : io_service_(), 
   query_(rapp::cloud::address, rapp::cloud::port), 

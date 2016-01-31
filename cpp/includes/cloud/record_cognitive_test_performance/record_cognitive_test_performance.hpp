@@ -4,21 +4,21 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class cognitive_test_choster
- * @brief chose a congitive game to play 
- * @version 1
- * @date January 2016
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class cognitive_test_choster
+ * \brief chose a congitive game to play 
+ * \version 1
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class record_cognitive_test_performance : public rapp::services::asio_service_http
 {
 public:
 	/**
-	 * @brief record congitive performance
-	 * @param user
-	 * @param test_instance
-	 * @param score
-	 * @note you must provide a callback which will obtain and parse
+	 * \brief record congitive performance
+	 * \param user the user who did the test
+	 * \param test_instance the test performed
+	 * \param score the score achieved
+	 * \note you must provide a callback which will obtain and parse
 	 *       the json reply from the cloud.
 	 */
 	record_cognitive_test_performance(

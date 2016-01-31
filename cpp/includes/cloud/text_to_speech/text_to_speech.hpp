@@ -4,20 +4,20 @@
 namespace rapp {
 namespace cloud {
 /**
- * @class text_to_speech
- * @brief Asynchronous Service will obtain speech audio from text
- * @version 1
- * @date January 2016
- * @author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \class text_to_speech
+ * \brief Asynchronous Service will obtain speech audio from text
+ * \version 1
+ * \date January 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class text_to_speech : public rapp::services::asio_service_http
 {
 public:
 	/**
-	 * @brief construct handler which will request speech audio from text
-	 * @param text is the text to be converted to audio
-	 * @param language is language
-	 * @callback will receive the speech audio object
+	 * \brief construct handler which will request speech audio from text
+	 * \param text is the text to be converted to audio
+	 * \param language is language
+	 * \callback will receive the speech audio object
 	 */
 	text_to_speech(
 					 const std::string text,
@@ -46,12 +46,29 @@ private:
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
-        std::vector<std::string> words;        
+        std::vector<rapp::types::byte> bytearray; 
         try
         {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
-			// TODO: parse reply, obtain raw bytes, insert into audio obj
+
+		    // capture audio payload (base64-encoded)	
+            for (auto child : tree.get_child("payload"))
+            {
+                // base64-encoded audio
+                std::string result = child.second.get_value<std::string>();
+                std::string decoded = decode64(result); 
+                bytearray(decoded.begin(), decoded.end());
+            }
+            // note: we're ignoring other JSON fields
+            // capture cloud errors
+            for (auto child : tree.get_child("error"))
+            {
+                const std::string value = child.second.get_value<std::string>();
+                if (!value.empty())
+                    std::cerr << "text_to_speech JSON error: " << value << std::endl;
+            }
+
 	    }
         catch(boost::property_tree::json_parser::json_parser_error & je)
         {
@@ -59,7 +76,8 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        delegate_(words);
+        rapp::object::audio result(bytearray);
+        delegate_(std::move(result));
     }
 
     /// The callback called upon completion of receiving the detected words
