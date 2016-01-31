@@ -36,6 +36,7 @@ Information on RAPP Platform front-end Web Services can he found [here](https://
 ## Tests
 
 See under each directory for `tests`, `examples`.
+
 Each language API has a `README.md` with detailed instructions on how to use it.
 
 [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -45,3 +46,5 @@ Each language API has a `README.md` with detailed instructions on how to use it.
 - Alexander Giokas, **[a.gkiokas@ortelio.co.uk]**
 - Konstaninos Panayiotou, **[klpanagi@gmail.com]**
 - Lazaros Penteridis, **[lp@ortelio.co.uk]**
+
+## Please read `CONTRIBUTING.md` before submitting/contributing to this project.
