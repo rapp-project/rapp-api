@@ -1,7 +1,7 @@
 # RAPP API (C++11)
 
 The C++ API code is portable, since it relies on cross-platform libraries: 
-- [lib BOOST](http://www.boost.org) and [C++ STL](https://en.wikipedia.org/wiki/Standard_Template_Library).
+[lib BOOST](http://www.boost.org) and [C++ STL](https://en.wikipedia.org/wiki/Standard_Template_Library).
 
 It uses asynchronous execution, inspired (and supported) by BOOST ASIO.
 It has been designed this way on purpose: you can send one or many *jobs* (e.g., service calls)
