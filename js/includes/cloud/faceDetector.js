@@ -72,7 +72,7 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 			}
 			_delegate(faces);
 		} catch (e) {
-			console.log("faceDetector::handle_reply Error parsing: ");
+			console.log('faceDetector::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}

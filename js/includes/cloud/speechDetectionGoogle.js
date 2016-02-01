@@ -34,7 +34,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 	
 	form.append('file_uri', fs.createReadStream(audio), { filename: filename });
 	form.append('audio_source', audio_source);
-	form.append('user', user);
+	form.append('user', cloud.escape_string(user));
 	form.append('language', language);
 	
 	var r = request.post(cloud.cloud_url + '/hop/speech_detection_google/ ', function(error, res, json){ 
@@ -78,7 +78,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 			}
 			_delegate(possible_vectors);
 		} catch (e) {
-			console.log("speechDetectionGoogle::handle_reply Error parsing: ");
+			console.log('speechDetectionGoogle::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}

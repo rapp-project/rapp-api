@@ -37,7 +37,7 @@ RAPPCloud.prototype.availableServices = function ( callback )
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
-            console.log ( "Error: " + response.statusCode );
+            console.log ( 'Error: ' + response.statusCode );
     });
 	
 	function handle_reply( json )

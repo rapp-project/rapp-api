@@ -22,7 +22,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 RAPPCloud.prototype.cognitiveTestChooser = function ( user, test_type, callback )
 {
     var cloud = this;
-    var body_string = 'user=' + user + '&test_type=' + test_type;
+    var body_string = 'user=' + cloud.escape_string(user) + '&test_type=' + cloud.escape_string(test_type);
     var _delegate = callback;
     
     request.post({
@@ -41,7 +41,7 @@ RAPPCloud.prototype.cognitiveTestChooser = function ( user, test_type, callback 
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
-            console.log ( "Error: " + response.statusCode );
+            console.log ( 'Error: ' + response.statusCode );
     });
     
     function handle_reply( json )

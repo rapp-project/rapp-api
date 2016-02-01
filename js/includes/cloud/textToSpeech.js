@@ -22,9 +22,9 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 RAPPCloud.prototype.textToSpeech = function ( text, language, callback )
 {
 	var cloud = this;
-    var body_string = 'text=' + text + '&language=' + language;
+    var body_string = 'text=' + cloud.escape_string(text) + '&language=' + language;
     var _delegate = callback;
-    
+
     request.post({
         headers: {
 //			'Authorization' : 'Basic cmFwcGRldjpyYXBwZGV2',
@@ -38,10 +38,11 @@ RAPPCloud.prototype.textToSpeech = function ( text, language, callback )
     {
         if ( !error && response.statusCode == 200)
             handle_reply( json );
+            
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
-            console.log ( "Error: " + response.statusCode );
+            console.log ( 'Error: ' + response.statusCode );
     });
     
     function handle_reply( json )
