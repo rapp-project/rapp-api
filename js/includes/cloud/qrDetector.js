@@ -73,7 +73,7 @@ RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
 			}
 			_delegate(codes);
 		} catch (e) {
-			console.log("qrDetector::handle_reply Error parsing: ");
+			console.log('qrDetector::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}

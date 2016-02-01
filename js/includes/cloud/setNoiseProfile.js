@@ -30,7 +30,7 @@ RAPPCloud.prototype.setNoiseProfile = function ( file, user, audio_source )
 	var ext = file.substr(file.lastIndexOf('.') + 1);
 	var filename = randomstring.generate() + '.' + ext;
 	
-	form.append('user', user);
+	form.append('user', cloud.escape_string(user));
 	form.append('audio_source', audio_source);
 	form.append('file_uri', fs.createReadStream(file), { filename: filename });
 	
@@ -58,7 +58,7 @@ RAPPCloud.prototype.setNoiseProfile = function ( file, user, audio_source )
 			}
 			
 		} catch (e) {
-			console.log("qrDetector::handle_reply Error parsing: ");
+			console.log('qrDetector::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}

@@ -79,6 +79,6 @@ RAPPNao.prototype =
             ws = undefined;
         };
     }
-}
+};
 
 module.exports.RAPPNao = RAPPNao;

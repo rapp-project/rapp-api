@@ -59,11 +59,11 @@ RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, a
 	
 	form.append('file_uri', fs.createReadStream(audio), { filename: filename });
 	form.append('language', language);
-	form.append('user', user);
+	form.append('user', cloud.escape_string(user));
 	form.append('audio_source', audio_source);
 	form.append('grammar', grammar_str);
-	form.append('words', words_str);
-	form.append('sentences', sentences_str);
+	form.append('words', cloud.escape_string(words_str));
+	form.append('sentences', cloud.escape_string(sentences_str));
 	
 	var r = request.post(cloud.cloud_url + '/hop/speech_detection_sphinx4/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
@@ -94,7 +94,7 @@ RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, a
 			}
 			_delegate(words_vector);
 		} catch (e) {
-			console.log("speechDetectionSphinx4::handle_reply Error parsing: ");
+			console.log('speechDetectionSphinx4::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}

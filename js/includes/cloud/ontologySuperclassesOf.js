@@ -23,7 +23,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 RAPPCloud.prototype.ontologySuperclassesOf = function ( query, callback )
 {
     var cloud = this;
-    var body_string = 'query=' + query;
+    var body_string = 'query=' + cloud.escape_string(query);
     var _delegate = callback;
     
     request.post({
@@ -42,7 +42,7 @@ RAPPCloud.prototype.ontologySuperclassesOf = function ( query, callback )
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
-            console.log ( "Error: " + response.statusCode );
+            console.log ( 'Error: ' + response.statusCode );
     });
     
     function handle_reply( json )

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the textToSpeech JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.textToSpeech = require('textToSpeech');
+var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
+RAPPCloud.textToSpeech = require('../includes/cloud/textToSpeech.js');
 
 var services = new RAPPCloud( );
 

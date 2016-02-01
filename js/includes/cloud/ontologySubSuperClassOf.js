@@ -23,7 +23,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursive, callback )
 {
     var cloud = this;
-    var body_string = 'parent_class=' + parent + '&child_class=' + child + '&recursive=' + recursive.toString();
+    var body_string = 'parent_class=' + cloud.escape_string(parent) + '&child_class=' + cloud.escape_string(child) + '&recursive=' + recursive.toString();
     var _delegate = callback;
     
     request.post({
@@ -42,7 +42,7 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
-            console.log ( "Error: " + response.statusCode );
+            console.log ( 'Error: ' + response.statusCode );
     });
     
     function handle_reply( json )
