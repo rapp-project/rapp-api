@@ -1,72 +1,177 @@
 #include "../includes/service/service_controller/service_controller.hpp"
-#include "../includes/cloud/speechToText/speechToText.hpp"
+#include "../includes/cloud/speech_detection_sphinx4/speech_detection_sphinx4.hpp"
 #include "../includes/objects/audio/audio.hpp"
+#include <boost/program_options.hpp>
+#include <string>
+#include <fstream>
+#include <streambuf>
 
-int main ( int argc, char** argv )
+namespace po = boost::program_options;
+
+// A helper function to simplify the main part.
+template<class T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& v)
 {
-    if ( argc == 2)
+    std::copy(v.begin(), v.end(), std::ostream_iterator<T>(os, " "));
+    return os;
+}
+
+// load a JSGF text file to a string
+std::string load_jsgf(const std::string filename)
+{
+    std::ifstream t(filename);
+    if (!t.is_open())
+        throw std::runtime_error("could not open: "+filename);
+    std::string str;
+    t.seekg(0, std::ios::end);   
+    str.reserve(t.tellg());
+    t.seekg(0, std::ios::beg);
+    str.assign((std::istreambuf_iterator<char>(t)),
+                std::istreambuf_iterator<char>());
+    return str;
+}
+
+///
+/// Query the CMU Sphinx4 engine for keywords and sentences using a WAV file
+/// argv[1]: audio file
+/// argv[2]: audio source type
+/// argv[3]: language
+/// argv[4]: user
+/// argv[5]: words to search for - OPTIONAL
+/// argv[6]: sentences to search for - OPTIONAL
+/// argv[7]: grammar file (JSGF text file) - OPTIONAL
+///
+int main(int argc, char* argv[])
+{
+    try
     {
-        std::cout << "speech2text using: " << argv[1] << std::endl;
-        std::string file = argv[1];
-        rapp::services::service_controller ctrl;
+        po::options_description desc("Allowed options - See headers `audio.hpp` and `speech_detection_sphinx4.hpp` for details");
+        desc.add_options()
+        ("help", "produce help message")
+        ("audio", po::value<std::string>(), "(required) the wav/pcm audio input")
+        ("audio-source", po::value<std::string>(), "(required) the audio source type")
+        ("lang", po::value<std::string>(), "(required) set language, e.g: `en` or `gr`")
+        ("user", po::value<std::string>(), "(required) set user, e.g: rapp")
+        ("words", po::value<std::vector<std::string>>()->multitoken(), 
+                  "(optional) keyword search, e.g: key book beer")
+        ("sentences", po::value<std::vector<std::string>>()->multitoken(),
+                   "(optional) sentence matching, e.g: find my keys")
+        ("jsgf", po::value<std::string>(), "(optional) JSGF grammar file");
 
-        // Load file
-        auto audio = std::make_shared<rapp::object::MicrophoneWAV>( file );
-        //auto audio = std::make_shared<rapp::object::NAOSingleChannelWAV>( file );
-        assert ( audio );
+        po::positional_options_description p;
+        p.add("input-file", -1);
 
-        std::cout << "audio source: " << audio->audio_source() << std::endl;
+        po::variables_map vm;
+        po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+        po::notify(vm);
 
-        // Keywords to search for
-        std::vector<std::string> words { };
+        int checks = 0;
+        std::string audio_file, audio_source, lang, user, jsgf = "";
+        std::vector<std::string> words = {}, sentences = {};
 
-        // JSGF Grammar
-        std::vector<std::string> grammar = 
-{
-"#JSGF V1.0\
-public <basicCmd> = <query> <verb> <object>;\
-<query> = (where | what | which | who | when);\
-<verb> = (is | are);\
-<object> = [the | a | my ] (keys | lunch | time | this | that | it | name | shoes | nurse | pills | lunch | remote | son | daugther );"
-};
+        if (vm.count("help"))
+        {
+            std::cout << "Usage: options_description [options]\n";
+            std::cout << desc;
+            return 0;
+        }
+        if (vm.count("audio"))
+        {
+            std::cout << "audio: " << vm["audio"].as<std::string>() << "\n";
+            checks++;
+            audio_file = vm["audio"].as<std::string>();
+        }
+        if (vm.count("audio-source"))
+        {
+            std::cout << "audio-source: " << vm["audio-source"].as<std::string>() << "\n";
+            checks++;
+            audio_source = vm["audio-source"].as<std::string>();
+        }
+        if (vm.count("lang"))
+        {
+            std::cout << "lang: " << vm["lang"].as<std::string>() << "\n";
+            checks++;
+            lang = vm["lang"].as<std::string>();
+        }
+        if (vm.count("user"))
+        {
+            std::cout << "user: " << vm["user"].as<std::string>() << "\n";
+            checks++;
+            user = vm["user"].as<std::string>();
+        }
+        if (vm.count("words"))
+        {
+            std::cout << "words: " << vm["words"].as<std::vector<std::string>>() << "\n";
+            words =  vm["words"].as<std::vector<std::string>>();
+        }
+        if (vm.count("sentences"))
+        {
+            std::cout << "sentences: " << vm["sentences"].as<std::vector<std::string>>() << "\n";
+            sentences = vm["sentences"].as<std::vector<std::string>>();
+        }
+        if (vm.count("jsgf"))
+        {
+            std::cout << "JSGF: " << vm["jsgf"].as<std::string>() << "\n";  
+            jsgf =  vm["jsgf"].as<std::string>();
+        }
 
-        // Complete setences
-        std::vector<std::string> sentences {  };
+        // we have the required params set
+        if (checks == 4)
+        {
+            rapp::services::service_controller ctrl;
+            std::shared_ptr<rapp::object::audio> audio;
+            std::vector<std::string> gram;
 
-        /*
-        std::cout << "keywords: " << std::endl;
-        for ( auto k : words )
-           std::cout << "\t" << k << std::endl;
+            if (audio_source == "microphone_wav")
+                audio = std::make_shared<rapp::object::microphone_wav>(audio_file);
+            else if (audio_source == "nao_single_channel_wav")
+                audio = std::make_shared<rapp::object::nao_single_channel_wav>(audio_file);
+            else if (audio_source == "nao_quad_channel_wav")
+                audio = std::make_shared<rapp::object::nao_quad_channel_wav>(audio_file);
+            else if (audio_source == "ogg")
+                audio = std::make_shared<rapp::object::ogg>(audio_file);
+            else
+                throw std::runtime_error("uknown audio source");
 
-        std::cout << "sentences: " << std::endl;
-        for ( auto s : sentences )
-           std::cout << "\t" << s << std::endl;
-        */
+            assert(audio);
+            if (!jsgf.empty())
+                gram.push_back(load_jsgf(jsgf));
 
-        std::cout << "grammar: " << std::endl;
-        for ( auto g : grammar )
-          std::cout << g << std::endl;
-
-        // ...
-        auto callback = [&]( std::vector<std::string> words  )
-                           {
-                               for ( const auto & str : words )
-                                   std::cout << str << " ";
-                               std::cout << std::endl;
-                           };
-
-        // Maybe we should move the parameter "user" to a Global Var, or to the Job Scheduler
-        auto sphinx_handle = std::make_shared<rapp::cloud::speechToText>( audio,           // audio file
-                                                                          "en",            // Language
-                                                                          "rapp",          // user
-                                                                          grammar,         // grammar ? (empty)
-                                                                          words,           // words to be considered
-                                                                          sentences,       // sentences to be considered
-                                                                          callback );
-        ctrl.runJob ( sphinx_handle );
+            if (audio)
+            {
+                auto callback = [&](std::vector<std::string> words)
+                                {
+                                    for (const auto & str : words)
+                                        std::cout << str << " ";
+                                    std::cout << std::endl;
+                                };
+                auto sphinx4_call = std::make_shared<rapp::cloud::speech_detection_sphinx4>(audio,        // audio file
+                                                                                            lang,         // Language
+                                                                                            user,         // user
+                                                                                            gram,         // grammar
+                                                                                            words,        // words
+                                                                                            sentences,    // sentences
+                                                                                            callback);
+                ctrl.run_job(sphinx4_call);
+            }
+        }
+        else
+        {
+            std::cerr << "missing required arguments -- please see \"--help\"\n";
+        }
     }
-    else
-       std::cerr << "no audio file argument" << std::endl;
+    catch(std::exception & e)
+    {
+        std::cerr << "error: " << e.what() << "\n";
+        return 1;
+    }
+    catch(...) 
+    {
+        std::cerr << "Exception of unknown type!\n";
+    }
+
+    /*
+    */
 
     return 0;
 }
