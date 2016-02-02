@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-// Import the cognitiveTestPerformance JS API Service & Init the RAPPCloud Object
+// Import the record_cognitive_test_performance JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('RAPPCloud');
-RAPPCloud.cognitiveTestChooser = require('cognitiveTestChooser');
-RAPPCloud.cognitiveTestChooser = require('cognitiveTestPerformance');
+RAPPCloud.cognitive_test_chooser = require('cognitive_test_chooser');
+RAPPCloud.cognitive_test_chooser = require('record_cognitive_test_performance');
 
 var services = new RAPPCloud( );
 
 /** 
- * This is the method that will handle the reply by the service.cognitiveTestChooser
+ * This is the method that will handle the reply by the service.cognitive_test_chooser
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
 function cb1 ( questions, possib_ans, correct_ans, test_instance, test_type, test_subtype )
@@ -22,7 +22,7 @@ function cb1 ( questions, possib_ans, correct_ans, test_instance, test_type, tes
 }
 
 /** 
- * This is the method that will handle the reply by the service.cognitiveTestPerformance
+ * This is the method that will handle the reply by the service.record_cognitive_test_performance
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
 function cb2 ( performance_entry )
@@ -30,11 +30,11 @@ function cb2 ( performance_entry )
 	console.log( performance_entry );
 }
 
-services.cognitiveTestChooser('rapp', // 'ArithmeticCts',
+services.cognitive_test_chooser('rapp', // 'ArithmeticCts',
 								    // 'AwarenessCts',
 									 'ReasoningCts', 
 									cb1 );
 						
-services.cognitiveTestPerformance('rapp', "ReasoningCts_pQmhNKHv", 1, cb2 );
+services.record_cognitive_test_performance('rapp', "ReasoningCts_pQmhNKHv", 1, cb2 );
 
 

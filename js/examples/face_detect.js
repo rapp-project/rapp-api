@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-// Import the faceDetector JS API Service & Init the RAPPCloud Object
+// Import the face_detection JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('RAPPCloud');
-RAPPCloud.faceDetector = require('faceDetector');
+RAPPCloud.face_detection = require('face_detection');
 
 var services = new RAPPCloud( );
 
 
 /** 
- * This is the method that will handle the reply by the service.faceDetector
+ * This is the method that will handle the reply by the service.face_detection
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
 function handler ( faces )
@@ -19,4 +19,4 @@ function handler ( faces )
 		console.log ( 'No faces detected');
 }
 
-services.faceDetector('two_faces.jpg', 'jpg', handler );
+services.face_detection('two_faces.jpg', 'jpg', handler );

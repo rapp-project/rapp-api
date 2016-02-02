@@ -16,7 +16,7 @@ RAPPObject.qrCode = require(path.join(__objectsDir, 'face.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class faceDetector
+ * @class face_detection
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the cloud to detect faces
  * @version 1
@@ -26,7 +26,7 @@ RAPPObject.qrCode = require(path.join(__objectsDir, 'face.js'));
  * @param callback is the function that will receive a vector of the detected face(s) coordinates
  * @param fast is a string. Only valid values 'true' and 'false'. When 'true' the fast face detection service is called, which should be used for tracking applications
  */
-RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
+RAPPCloud.prototype.face_detection = function ( image, image_format, callback )
 {
     fast = typeof fast !== 'undefined' ? fast : 'false';
     var cloud = this;
@@ -72,7 +72,7 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 			}
 			_delegate(faces);
 		} catch (e) {
-			console.log('faceDetector::handle_reply Error parsing: ');
+			console.log('face_detection::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -85,4 +85,4 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 
 
 /// Export
-module.exports = RAPPCloud.faceDetector;
+module.exports = RAPPCloud.face_detection;

@@ -10,19 +10,20 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class cognitiveTestChooser
+ * @class ontology_is_subsuperclass_of
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the record_cognitive_test_chooser web service for an Input
+ * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param user is the username of client used to retrieve information from database.
- * @param test_type is the Cognitive Exercise test type. Can be one of ['ArithmeticCts', 'AwarenessCts', 'ReasoningCts']
+ * @param parent is the parent class in question
+ * @param child is the child of the parent class in question
+ * @param recursive is a boolean argument, when true the function checks for indirect parent-child relationship as well
  * @param callback is the function that will receive the result
  */
-RAPPCloud.prototype.cognitiveTestChooser = function ( user, test_type, callback )
+RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, recursive, callback )
 {
     var cloud = this;
-    var body_string = 'user=' + cloud.escape_string(user) + '&test_type=' + cloud.escape_string(test_type);
+    var body_string = 'parent_class=' + cloud.escape_string(parent) + '&child_class=' + cloud.escape_string(child) + '&recursive=' + recursive.toString();
     var _delegate = callback;
     
     request.post({
@@ -31,7 +32,7 @@ RAPPCloud.prototype.cognitiveTestChooser = function ( user, test_type, callback 
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
-        url: cloud.cloud_url + '/hop/cognitive_test_chooser/ ',
+        url: cloud.cloud_url + '/hop/ontology_is_subsuperclass_of/ ',
         body: body_string
     },
     function ( error, response, json ) 
@@ -49,12 +50,12 @@ RAPPCloud.prototype.cognitiveTestChooser = function ( user, test_type, callback 
 		var json_obj;
 		try {
 			json_obj = JSON.parse(json);
-			// JSON reply is: { questions: [], possib_ans: [], correct_ans: [], test_instance: '', test_type: '', test_subtype: '', error: '' }
+			// JSON reply is: { "result":true,"trace":[],"error":"" }
 		
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('cognitiveTestChooser JSON error: ' + json_obj.error);
+				console.log('ontology_is_subsuperclass_of JSON error: ' + json_obj.error);
 			}
-			_delegate( json_obj.questions, json_obj.possib_ans, json_obj.correct_ans, json_obj.test_instance, json_obj.test_type, json_obj.test_subtype );
+			_delegate( parent, child, json_obj.result);
 		} catch (e) {
 			return console.error(e);
 		}
@@ -66,4 +67,4 @@ RAPPCloud.prototype.cognitiveTestChooser = function ( user, test_type, callback 
 };
 
 /// Export
-module.exports = RAPPCloud.cognitiveTestChooser;
+module.exports = RAPPCloud.ontology_is_subsuperclass_of;

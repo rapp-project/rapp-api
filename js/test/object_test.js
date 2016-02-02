@@ -3,7 +3,7 @@
 var test = require('unit.js');
 var path = require('path');
 
-// Import the faceDetector JS API Service & Init the RAPPCloud Object
+// Import the JS API Objects & Init the RAPPObject Object
 var __objectsDir = path.join(__dirname, '..', 'includes', 'objects');
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
 RAPPObject.face = require(path.join(__objectsDir, 'face.js'));
