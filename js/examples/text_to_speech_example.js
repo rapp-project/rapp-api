@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-// Import the textToSpeech JS API Service & Init the RAPPCloud Object
+// Import the text_to_speech JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
-RAPPCloud.textToSpeech = require('../includes/cloud/textToSpeech.js');
+RAPPCloud.text_to_speech = require('../includes/cloud/text_to_speech.js');
 
 var services = new RAPPCloud( );
 
 var text = "Hello human";
 
 /** 
- * This is the method that will handle the reply by the services.textToSpeech
+ * This is the method that will handle the reply by the services.text_to_speech
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
  
@@ -25,4 +25,4 @@ function handler ( audio_data, encoding, basename )
 	}); 
 }
 
-services.textToSpeech( text, "en", handler );
+services.text_to_speech( text, "en", handler );

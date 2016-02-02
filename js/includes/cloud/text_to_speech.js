@@ -9,36 +9,36 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
- * 
- * @class cognitiveTestPerformance
- * @memberof RAPPCloud
- * @description Asynchronous Service which will request the record_cognitive_test_performance web service for an Input
+ *
+ * @class text_to_speech
+ * @description Asynchronous Service which will request the cloud to process TTS
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param user is the username of client used to retrieve information from database.
- * @param test_instance is the Cognitive Exercise test instance. The full cognitive test entry name as reported by the cognitive_test_chooser()
- * @param score User's performance score on given test entry.
- * @param callback is the function that will receive the result
+ * @param text is the text to become speech
+ * @param language is the language of the text
+ * @param callback will be executed once the rapp cloud has responded
  */
-RAPPCloud.prototype.cognitiveTestPerformance = function ( user, test_instance, score, callback )
+ 
+RAPPCloud.prototype.text_to_speech = function ( text, language, callback )
 {
-    var cloud = this;
-    var body_string = 'user=' + cloud.escape_string(user) + '&test_instance=' + cloud.escape_string(test_instance) + '&score=' + score;
+	var cloud = this;
+    var body_string = 'text=' + cloud.escape_string(text) + '&language=' + language;
     var _delegate = callback;
-    
+
     request.post({
         headers: {
 //			'Authorization' : 'Basic cmFwcGRldjpyYXBwZGV2',
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
-        url: cloud.cloud_url + '/hop/record_cognitive_test_performance/ ',
+        url: cloud.cloud_url + '/hop/text_to_speech/ ',
         body: body_string
     },
     function ( error, response, json ) 
     {
         if ( !error && response.statusCode == 200)
             handle_reply( json );
+            
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
@@ -50,12 +50,12 @@ RAPPCloud.prototype.cognitiveTestPerformance = function ( user, test_instance, s
 		var json_obj;
 		try {
 			json_obj = JSON.parse(json);
-			// JSON reply is: { performance_entry: '', error: '' }
+			// JSON reply is: { payload: <audio_data>, basename: <audio_file_basename>, encoding: <payload_encoding>, error: <error_message> }
 		
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('cognitiveTestPerformance JSON error: ' + json_obj.error);
+				console.log('text_to_speech JSON error: ' + json_obj.error);
 			}
-			_delegate( json_obj.performance_entry );
+			_delegate( json_obj.payload, json_obj.encoding, json_obj.basename);
 		} catch (e) {
 			return console.error(e);
 		}
@@ -63,8 +63,9 @@ RAPPCloud.prototype.cognitiveTestPerformance = function ( user, test_instance, s
 	
 	function error_handler( error ) {
 		return console.error(error);
-	}   
+	}	
 };
 
+
 /// Export
-module.exports = RAPPCloud.cognitiveTestPerformance;
+module.exports = RAPPCloud.text_to_speech;

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-// Import the speechDetectionGoogle JS API Service & Init the RAPPCloud Object
+// Import the speech_detection_google JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('RAPPCloud');
-RAPPCloud.speechDetectionGoogle = require('speechDetectionGoogle');
+RAPPCloud.speech_detection_google = require('speech_detection_google');
 
 var services = new RAPPCloud( );
 
@@ -18,7 +18,7 @@ var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
 		     //"recording_triti.ogg";
 		    				   
 /** 
- * This is the method that will handle the reply by the services.speechDetectionGoogle
+ * This is the method that will handle the reply by the services.speech_detection_google
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
  
@@ -37,7 +37,7 @@ function handler ( possible_vectors )
 		console.log ( 'No words found');
 }
 
-services.speechDetectionGoogle( audio,           // audio file
+services.speech_detection_google( audio,           // audio file
 								"nao_ogg",       // Audio Source Type
 								"rapp",          // user
 								"en",            // Language

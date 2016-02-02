@@ -10,20 +10,20 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class ontologySubSuperClassOf
+ * @class record_cognitive_test_performance
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
+ * @description Asynchronous Service which will request the record_cognitive_test_performance web service for an Input
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param parent is the parent class in question
- * @param child is the child of the parent class in question
- * @param recursive is a boolean argument, when true the function checks for indirect parent-child relationship as well
+ * @param user is the username of client used to retrieve information from database.
+ * @param test_instance is the Cognitive Exercise test instance. The full cognitive test entry name as reported by the cognitive_test_chooser()
+ * @param score User's performance score on given test entry.
  * @param callback is the function that will receive the result
  */
-RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursive, callback )
+RAPPCloud.prototype.record_cognitive_test_performance = function ( user, test_instance, score, callback )
 {
     var cloud = this;
-    var body_string = 'parent_class=' + cloud.escape_string(parent) + '&child_class=' + cloud.escape_string(child) + '&recursive=' + recursive.toString();
+    var body_string = 'user=' + cloud.escape_string(user) + '&test_instance=' + cloud.escape_string(test_instance) + '&score=' + score;
     var _delegate = callback;
     
     request.post({
@@ -32,7 +32,7 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
-        url: cloud.cloud_url + '/hop/ontology_is_subsuperclass_of/ ',
+        url: cloud.cloud_url + '/hop/record_cognitive_test_performance/ ',
         body: body_string
     },
     function ( error, response, json ) 
@@ -50,12 +50,12 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
 		var json_obj;
 		try {
 			json_obj = JSON.parse(json);
-			// JSON reply is: { "result":true,"trace":[],"error":"" }
+			// JSON reply is: { performance_entry: '', error: '' }
 		
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('ontologySubSuperClassOf JSON error: ' + json_obj.error);
+				console.log('record_cognitive_test_performance JSON error: ' + json_obj.error);
 			}
-			_delegate( parent, child, json_obj.result);
+			_delegate( json_obj.performance_entry );
 		} catch (e) {
 			return console.error(e);
 		}
@@ -67,4 +67,4 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
 };
 
 /// Export
-module.exports = RAPPCloud.ontologySubSuperClassOf;
+module.exports = RAPPCloud.record_cognitive_test_performance;

@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-// Import the faceDetector JS API Service & Init the RAPPCloud Object
+// Import the face_detection JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('RAPPCloud');
-RAPPCloud.qrDetector = require('qrDetector');
+RAPPCloud.qr_detection = require('qr_detection');
 var services = new RAPPCloud( );
 
 /** 
- * This is the method that will handle the reply by the services.qrDetector
+ * This is the method that will handle the reply by the services.qr_detection
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
 function handler ( codes )
@@ -21,4 +21,4 @@ function handler ( codes )
 		console.log ( 'No qrCodes detected');
 }
 
-services.qrDetector( 'qrcode.png', 'png', handler );
+services.qr_detection( 'qrcode.png', 'png', handler );

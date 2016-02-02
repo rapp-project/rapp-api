@@ -17,7 +17,7 @@ RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class qrDetector
+ * @class qr_detection
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the cloud to detect QR Codes
  * @version 1
@@ -26,7 +26,7 @@ RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
  * @param image_format is the image format
  * @param callback is the function that will receive a vector of detected qr(s)
  */
-RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
+RAPPCloud.prototype.qr_detection = function ( image, image_format, callback )
 {
     var cloud = this;
     var object = new RAPPObject( );
@@ -73,7 +73,7 @@ RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
 			}
 			_delegate(codes);
 		} catch (e) {
-			console.log('qrDetector::handle_reply Error parsing: ');
+			console.log('qr_detection::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -86,4 +86,4 @@ RAPPCloud.prototype.qrDetector = function ( image, image_format, callback )
 
 
 /// Export
-module.exports = RAPPCloud.qrDetector;
+module.exports = RAPPCloud.qr_detection;
