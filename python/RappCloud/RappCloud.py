@@ -569,6 +569,19 @@ class RappCloud:
         returnData = CloudInterface.callService(url, payload, files, self.auth_)
         return returnData
 
+
+    def user_personal_info(self, user):
+        files = {}
+        payload = {
+            'user': user        
+        }
+        url = self.serviceUrl_['user_personal_info']
+
+        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        return returnData
+
+
+
     ## API call for cognitive-get-user-cores RAPP Platform
     #    front-end service
     #
