@@ -516,7 +516,7 @@ class RappCloud:
             'test_instance': test,
             'score': score
         }
-        url = self.serviceUrl_['record_cognitive_test_performance']
+        url = self.serviceUrl_['cognitive_record_performance']
 
         returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
