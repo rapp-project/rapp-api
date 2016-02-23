@@ -16,3 +16,4 @@ services:
     - cognitive_get_scores
     - cognitive_get_history
     - user_personal_info
+    - email_send

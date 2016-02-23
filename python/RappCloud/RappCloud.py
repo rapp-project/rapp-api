@@ -576,3 +576,31 @@ class RappCloud:
 
         returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
+
+
+    ## API call for email-send RAPP Platform service
+    #
+    #  @param email
+    #  @param passwd
+    #  @param server
+    #  @param port
+    #  @param recipients
+    #  @param body
+    #  @param subject
+    #  @param file_uri Can be a zip file!
+    ##
+    def send_email(self, email, passwd, server, port, recipients, body,\
+            subject, file_uri):
+        payload = {
+            'email': email,
+            'passwd': passwd,
+            'server': server,
+            'port': port,
+            'recipients': json.dumps(recipients),
+            'body': body,
+            'subject': subject
+        }
+        url = self.serviceUrl_['email_send']
+        returnData = self.serviceController.run_job(url, payload, [file_uri], self.auth_)
+        return returnData
+
