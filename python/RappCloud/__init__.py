@@ -6,5 +6,5 @@
 #
 
 from RappCloud import RappCloud
-import CloudInterface
-import RandStrGen
+# import CloudInterface
+# import RandStrGen

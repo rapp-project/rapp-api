@@ -4,4 +4,4 @@
 #
 
 
-from CloudInterface import CloudInterface
+from ServiceControllerSync import ServiceControllerSync

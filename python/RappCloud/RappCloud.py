@@ -29,7 +29,7 @@
 import json
 import os
 import sys
-from CloudInterface import CloudInterface
+from ServiceController import ServiceControllerSync
 from RandStrGen import RandStrGen
 from ConfigParser import SafeConfigParser
 import yaml
@@ -60,6 +60,7 @@ class RappCloud:
         self.__parse_services_cfg()
         self.__parse_auth_cfg()
         self.__randStrSize = 5
+        self.serviceController = ServiceControllerSync()
 
 
     ## Parse and load Rapp Platform authentication parameters.
@@ -228,14 +229,11 @@ class RappCloud:
             'user': user
         }
 
-        fileName = self.__appendRandStr(file_uri)
         # -- Files to be added into to post request
-        files = {
-            'file_uri': (fileName, open(file_uri, 'rb'))
-        }
+        files = [file_uri]
         url = self.serviceUrl_['speech_detection_sphinx4']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -261,14 +259,11 @@ class RappCloud:
             'language': language
         }
 
-        fileName = self.__appendRandStr(file_uri)
         # -- Files to be added into to post request
-        files = {
-            'file_uri': (fileName, open(file_uri, 'rb'))
-        }
+        files = [file_uri]
         url = self.serviceUrl_['speech_detection_google']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -284,19 +279,16 @@ class RappCloud:
     #  @return Rapp Platform Service response object.
     #
     def set_noise_profile(self, file_uri, audio_source, user):
-        fileName = self.__appendRandStr(file_uri)
         # -- Craft the data payload for the post request
         payload = {
             'user': user,
             'audio_source': audio_source
         }
-        # -- Files to be added into to poset request
-        files = {
-            'file_uri': (fileName, open(file_uri, 'rb'))
-        }
+        files = [file_uri]
+
         url = self.serviceUrl_['set_noise_profile']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -309,15 +301,12 @@ class RappCloud:
     #  @return Rapp Platform Service response object.
     #
     def qr_detection(self, file_uri):
-        fileName = self.__appendRandStr(file_uri)
-        files = {
-            'file_uri': (fileName, open(file_uri, 'rb'))
-        }
-
         payload = {}
+        files = [file_uri]
+
         url = self.serviceUrl_['qr_detection']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -330,16 +319,16 @@ class RappCloud:
     #  @return Rapp Platform Service response object.
     #
     def face_detection(self, file_uri, fast = False):
-        fileName = self.__appendRandStr(file_uri)
-        files = {
-            'file_uri': (fileName, open(file_uri, 'rb'))
-        }
         payload = {
             'fast': bool(fast)
         }
+
+        files = [file_uri]
+
         url = self.serviceUrl_['face_detection']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, [file_uri],\
+                self.auth_)
         return returnData
 
 
@@ -355,10 +344,10 @@ class RappCloud:
         payload = {
             'query': query,
         }
-        files = {}
+        files = []
         url = self.serviceUrl_['ontology_subclasses_of']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -373,10 +362,10 @@ class RappCloud:
         payload = {
             'query': query,
         }
-        files = {}
+        files = []
         url = self.serviceUrl_['ontology_superclasses_of']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -399,26 +388,10 @@ class RappCloud:
             'child_class': child_class,
             'recursive': rec
         }
-        files = {}
+        files = []
         url = self.serviceUrl_['ontology_is_subsuperclass_of']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
-        return returnData
-
-
-    ## NOT SUPPORTED. DEPRECATED!!!
-    def detect_objects(self, fileUri, limit):
-        fileName = self.__appendRandStr(fileUri)
-        # -- Files to be added into to poset request
-        files = {
-            'file_uri': (fileName, open(fileUri, 'rb'))
-        }
-        payload = {
-            'limit': int(limit)
-        }
-        url = self.serviceUrl_['detect_objects']
-
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -437,10 +410,10 @@ class RappCloud:
         payload = {
             'dummyVar': ''
         }
-        files = {}
+        files = []
         url = self.serviceUrl_['available_services']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -457,14 +430,14 @@ class RappCloud:
     #  @return Rapp Platform Service API call response object.
     #
     def text_to_speech(self, text, language, dest):
-        files = {}
+        files = []
         payload = {
             'text': text,
             'language': language
         }
         url = self.serviceUrl_['text_to_speech']
 
-        response = CloudInterface.callService(url, payload, files, self.auth_)
+        response = self.serviceController.run_job(url, payload, files, self.auth_)
         returnData = {}
         # Parse response error field.
         if response['error']:
@@ -514,14 +487,14 @@ class RappCloud:
     #  @return Rapp Platform Service API call response object.
     #
     def cognitive_test_chooser(self, user, testType):
-        files = {}
+        files = []
         payload = {
             'user': user,
             'test_type': testType
         }
         url = self.serviceUrl_['cognitive_test_chooser']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -537,7 +510,7 @@ class RappCloud:
     #  @return Rapp Platform Service API call response object.
     #
     def record_cognitive_test_performance(self, user, test, score):
-        files = {}
+        files = []
         payload = {
             'user': user,
             'test_instance': test,
@@ -545,7 +518,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['record_cognitive_test_performance']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
     ## API call for cognitive-get-user-cores RAPP Platform
@@ -558,7 +531,7 @@ class RappCloud:
     #  @return Rapp Platform Service API call response object.
     #
     def cognitive_get_scores(self, username, upToTime, testType):
-        files = {}
+        files = []
         payload = {
             'user': username,
             'up_to_time': upToTime,
@@ -566,7 +539,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['cognitive_get_scores']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
@@ -592,7 +565,7 @@ class RappCloud:
     #  @return Rapp Platform Service API call response object.
     #
     def cognitive_get_history(self, username, fromTime, toTime, testType):
-        files = {}
+        files = []
         payload = {
             'user': username,
             'from_time': fromTime,
@@ -601,5 +574,5 @@ class RappCloud:
         }
         url = self.serviceUrl_['cognitive_get_history']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
