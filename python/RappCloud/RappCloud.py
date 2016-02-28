@@ -550,7 +550,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['user_personal_info']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
         return returnData
 
 
