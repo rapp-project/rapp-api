@@ -601,6 +601,24 @@ class RappCloud:
             'subject': subject
         }
         url = self.serviceUrl_['email_send']
+
         returnData = self.serviceController.run_job(url, payload, [file_uri], self.auth_)
+        return returnData
+
+    def email_fetch(self, email, passwd, server, port="", from_date=0, \
+            to_date=10000000, email_status="", num_emails=25):
+        payload = {
+            'email': email,
+            'passwd': passwd,
+            'server': server,
+            'port': port,
+            'from_date': from_date,
+            'to_date': to_date,
+            'email_status': email_status,
+            'num_emails': num_emails
+        }
+        url = self.serviceUrl_['email_fetch']
+
+        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
         return returnData
 
