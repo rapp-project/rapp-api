@@ -605,6 +605,7 @@ class RappCloud:
         returnData = self.serviceController.run_job(url, payload, [file_uri], self.auth_)
         return returnData
 
+
     def email_fetch(self, email, passwd, server, port="", from_date=0, \
             to_date=10000000, email_status="", num_emails=25):
         payload = {
@@ -618,6 +619,22 @@ class RappCloud:
             'num_emails': num_emails
         }
         url = self.serviceUrl_['email_fetch']
+
+        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
+        return returnData
+
+
+    def news_stories_fetch(self, newsEngine='', keywords=[], excludeTitles=[], \
+            region='', topic='', numNews=25):
+        payload = {
+            'news_engine': newsEngine,
+            'keywords': keywords,
+            'exclude_titles': excludeTitles,
+            'region': region,
+            'topic': topic,
+            'num_news': numNews
+        }
+        url = self.serviceUrl_['news_explore']
 
         returnData = self.serviceController.run_job(url, payload, [], self.auth_)
         return returnData

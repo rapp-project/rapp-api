@@ -18,3 +18,4 @@ services:
     - user_personal_info
     - email_send
     - email_fetch
+    - news_explore
