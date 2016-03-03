@@ -29,11 +29,13 @@
 import json
 import os
 import sys
-from ServiceController import ServiceControllerSync
-from RandStrGen import RandStrGen
-from ConfigParser import SafeConfigParser
 import yaml
 import base64
+from ConfigParser import SafeConfigParser
+
+from ServiceController import ServiceControllerSync
+from RandStrGen import RandStrGen
+from Utils import Net
 #import magic
 
 __path__ = os.path.dirname(__file__)
@@ -635,6 +637,20 @@ class RappCloud:
             'num_news': numNews
         }
         url = self.serviceUrl_['news_explore']
+
+        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
+        return returnData
+
+
+    def geolocation(self, ipaddr='', engine=''):
+        if ipaddr == '':
+          ipaddr = Net.ipaddr_connected()
+
+        payload = {
+            'ipaddr': ipaddr,
+            'engine': engine
+        }
+        url = self.serviceUrl_['geolocation']
 
         returnData = self.serviceController.run_job(url, payload, [], self.auth_)
         return returnData

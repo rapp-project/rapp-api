@@ -19,3 +19,4 @@ services:
     - email_send
     - email_fetch
     - news_explore
+    - geolocation
