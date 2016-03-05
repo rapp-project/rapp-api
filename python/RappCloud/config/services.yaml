@@ -21,3 +21,4 @@ services:
     - news_explore
     - geolocation
     - weather_report_forecast
+    - weather_report_current
