@@ -20,3 +20,4 @@ services:
     - email_fetch
     - news_explore
     - geolocation
+    - weather_report_forecast

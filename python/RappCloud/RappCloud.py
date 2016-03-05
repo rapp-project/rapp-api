@@ -655,3 +655,15 @@ class RappCloud:
         returnData = self.serviceController.run_job(url, payload, [], self.auth_)
         return returnData
 
+
+    def weather_report_forecast(self, city, weatherReporter='', metric=0):
+        payload = {
+            'city': city,
+            'weather_reporter': weatherReporter,
+            'metric': metric
+        }
+        url = self.serviceUrl_['weather_report_forecast']
+
+        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
+        return returnData
+
