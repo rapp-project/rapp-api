@@ -80,7 +80,7 @@ class RappCloud:
 
         for service in srvList:
             self.services_.append(service)
-            self.serviceUrl_[service] = 'http://' + self.platformIP_ + \
+            self.serviceUrl_[service] = 'https://' + self.platformIP_ + \
                 ':' + str(self.servicePort_) + '/hop/' + service
 
 
@@ -180,11 +180,10 @@ class RappCloud:
             'user': user
         }
 
-        # -- Files to be added into to post request
         files = [file_uri]
-        url = self.serviceUrl_['speech_detection_sphinx4']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'speech_detection_sphinx4', payload, files)
         return returnData
 
 
@@ -210,11 +209,10 @@ class RappCloud:
             'language': language
         }
 
-        # -- Files to be added into to post request
         files = [file_uri]
-        url = self.serviceUrl_['speech_detection_google']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'speech_detection_google', payload, files)
         return returnData
 
 
@@ -237,9 +235,8 @@ class RappCloud:
         }
         files = [file_uri]
 
-        url = self.serviceUrl_['set_noise_profile']
-
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'set_noise_profile', payload, files)
         return returnData
 
 
@@ -255,9 +252,8 @@ class RappCloud:
         payload = {}
         files = [file_uri]
 
-        url = self.serviceUrl_['qr_detection']
-
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'qr_detection', payload, files)
         return returnData
 
 
@@ -276,9 +272,8 @@ class RappCloud:
 
         files = [file_uri]
 
-        url = self.serviceUrl_['face_detection']
-
-        returnData = self.serviceController.run_job(url, payload, [file_uri])
+        returnData = self.serviceController.run_job( \
+                'face_detection', payload, [file_uri])
         return returnData
 
 
@@ -297,7 +292,8 @@ class RappCloud:
         files = []
         url = self.serviceUrl_['ontology_subclasses_of']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'ontology_subclasses_of', payload, files)
         return returnData
 
 
@@ -313,9 +309,9 @@ class RappCloud:
             'query': query,
         }
         files = []
-        url = self.serviceUrl_['ontology_superclasses_of']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'ontology_superclasses_of', payload, files)
         return returnData
 
 
@@ -339,9 +335,9 @@ class RappCloud:
             'recursive': rec
         }
         files = []
-        url = self.serviceUrl_['ontology_is_subsuperclass_of']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'ontology_is_subsuperclass_of', payload, files)
         return returnData
 
 
@@ -361,9 +357,9 @@ class RappCloud:
             'dummyVar': ''
         }
         files = []
-        url = self.serviceUrl_['available_services']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'available_services', payload, files)
         return returnData
 
 
@@ -385,9 +381,9 @@ class RappCloud:
             'text': text,
             'language': language
         }
-        url = self.serviceUrl_['text_to_speech']
 
-        response = self.serviceController.run_job(url, payload, files)
+        response = self.serviceController.run_job( \
+                'text_to_speech', payload, files)
         returnData = {}
         # Parse response error field.
         if response['error']:
@@ -442,9 +438,9 @@ class RappCloud:
             'user': user,
             'test_type': testType
         }
-        url = self.serviceUrl_['cognitive_test_chooser']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'cognitive_test_chooser', payload, files)
         return returnData
 
 
@@ -466,9 +462,9 @@ class RappCloud:
             'test_instance': test,
             'score': score
         }
-        url = self.serviceUrl_['cognitive_record_performance']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'cognitive_record_performance', payload, files)
         return returnData
 
     ## API call for cognitive-get-user-cores RAPP Platform
@@ -487,20 +483,20 @@ class RappCloud:
             'up_to_time': upToTime,
             'test_type': testType
         }
-        url = self.serviceUrl_['cognitive_get_scores']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'cognitive_get_scores', payload, files)
         return returnData
 
 
     def user_personal_info(self, user):
         files = {}
         payload = {
-            'user': user        
+            'user': user
         }
-        url = self.serviceUrl_['user_personal_info']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'user_personal_info', payload, files)
         return returnData
 
 
@@ -522,9 +518,9 @@ class RappCloud:
             'to_time': toTime,
             'test_type': testType
         }
-        url = self.serviceUrl_['cognitive_get_history']
 
-        returnData = self.serviceController.run_job(url, payload, files)
+        returnData = self.serviceController.run_job( \
+                'cognitive_get_history', payload, files)
         return returnData
 
 
@@ -550,9 +546,9 @@ class RappCloud:
             'body': body,
             'subject': subject
         }
-        url = self.serviceUrl_['email_send']
 
-        returnData = self.serviceController.run_job(url, payload, [file_uri])
+        returnData = self.serviceController.run_job( \
+                'email_send', payload, [file_uri])
         return returnData
 
 
@@ -570,7 +566,8 @@ class RappCloud:
         }
         url = self.serviceUrl_['email_fetch']
 
-        returnData = self.serviceController.run_job(url, payload, [])
+        returnData = self.serviceController.run_job( \
+                'email_fetch', payload, [])
         return returnData
 
 
@@ -584,9 +581,9 @@ class RappCloud:
             'topic': topic,
             'num_news': numNews
         }
-        url = self.serviceUrl_['news_explore']
 
-        returnData = self.serviceController.run_job(url, payload, [])
+        returnData = self.serviceController.run_job( \
+                'news_explore', payload, [])
         return returnData
 
 
@@ -598,9 +595,8 @@ class RappCloud:
             'ipaddr': ipaddr,
             'engine': engine
         }
-        url = self.serviceUrl_['geolocation']
 
-        returnData = self.serviceController.run_job(url, payload, [])
+        returnData = self.serviceController.run_job('geolocation', payload, [])
         return returnData
 
 
@@ -610,9 +606,9 @@ class RappCloud:
             'weather_reporter': weatherReporter,
             'metric': metric
         }
-        url = self.serviceUrl_['weather_report_forecast']
 
-        returnData = self.serviceController.run_job(url, payload, [])
+        returnData = self.serviceController.run_job( \
+                'weather_report_forecast', payload, [])
         return returnData
 
 
@@ -622,8 +618,8 @@ class RappCloud:
             'weather_reporter': weatherReporter,
             'metric': metric
         }
-        url = self.serviceUrl_['weather_report_current']
 
-        returnData = self.serviceController.run_job(url, payload, [])
+        returnData = self.serviceController.run_job( \
+                'weather_report_current', payload, [])
         return returnData
 

@@ -37,6 +37,11 @@ class ServiceControllerBase(object):
   #  TODO
   ##
   def __init__(self):
+    self.platform = {
+        "protocol": "https",  # Default
+        "ipaddr": "155.207.33.185",
+        "port": "9001"
+    }
     pass
 
 
@@ -67,10 +72,15 @@ class ServiceControllerBase(object):
     return tuple_
 
 
-  def post_request(self, url, payload, files, basicAuth):
+  def post_request(self, srvUrlName, payload, files, basicAuth):
     pass
 
 
   def basename(self, filepath):
     return path.basename(filepath)
+
+
+  def svc_url(self, svcUrlName):
+    return self.platform['protocol'] + '://' + self.platform['ipaddr'] + \
+        ':' + self.platform['port'] + '/hop/' + svcUrlName
 

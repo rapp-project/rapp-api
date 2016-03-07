@@ -44,6 +44,7 @@ class ServiceControllerSync(ServiceControllerBase):
 
   def __init__(self):
     ServiceControllerBase.__init__(self)
+    self.protocol = "https"
 
     ## Performs Platform's HOP Web Service request.
     #
@@ -80,10 +81,12 @@ class ServiceControllerSync(ServiceControllerBase):
     return resp
 
 
-  def post_request(self, url, payload, files):
+  def post_request(self, svcUrlName, payload, files):
+    svcUrl = self.svc_url(svcUrlName)
+    print svcUrl
     try:
-      response = requests.post(url, data=payload, files=files,  \
-          auth=RAPPAuth("1234"))
+      response = requests.post(url=svcUrl, data=payload, files=files,  \
+          auth=RAPPAuth("1234"), verify=False)
     except ConnectionError as e:
       print "Cannot resolve domain name [%s]" % url
       print e
