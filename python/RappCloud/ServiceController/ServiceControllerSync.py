@@ -31,6 +31,7 @@ import requests
 from requests.auth import HTTPBasicAuth  # Http basic authentication
 from requests.exceptions import *  # Requests Exceptions
 from ServiceControllerBase import *
+from RAPPAuth import RAPPAuth
 import json
 
 
@@ -54,7 +55,7 @@ class ServiceControllerSync(ServiceControllerBase):
     #
     #   @return Rapp Platform Service response object.
     #
-  def run_job(self, url, payload, files, basicAuth):
+  def run_job(self, url, payload, files):
       #  Python-Requests module does not support empty parameter fields.
       #  Passing empty parameter ('param1': '') will result in a corrupted
       #  payload definition.
@@ -75,6 +76,37 @@ class ServiceControllerSync(ServiceControllerBase):
     for i in toRemove:
       del payload[i]
 
-    resp = self.post_request(url, payload, multiFiles, basicAuth)
+    resp = self.post_request(url, payload, multiFiles)
     return resp
+
+
+  def post_request(self, url, payload, files):
+    try:
+      response = requests.post(url, data=payload, files=files,  \
+          auth=RAPPAuth("1234"))
+    except ConnectionError as e:
+      print "Cannot resolve domain name [%s]" % url
+      print e
+      returnData = {
+        'error': str(e.message)
+      }
+    except HTTPError as e:
+      print "HTTP Error: %s" % e.message
+      returnData = {
+        'error': str(e.mesasge)
+      }
+    except Exception as e: # Catch all exceptions
+      returnData = {
+        'error': str(e)
+      }
+    else:
+      if self.is_json(response.content):
+        returnData = json.loads(response.content)
+      else:  # Check if binary data (responseFile)
+        # Return file type too
+        returnData = {
+          'payload': response.content,
+          'error': 'Non JSON Response!!!!'
+        }
+    return returnData
 

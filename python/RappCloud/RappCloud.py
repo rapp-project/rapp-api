@@ -57,44 +57,10 @@ class RappCloud:
         self.servicePort_ = ''
         self.services_ = []
         self.serviceUrl_ = {}
-        self.auth_ = {}
         self.__parse_platform_cfg()
         self.__parse_services_cfg()
-        self.__parse_auth_cfg()
         self.__randStrSize = 5
         self.serviceController = ServiceControllerSync()
-
-
-    ## Parse and load Rapp Platform authentication parameters.
-    #
-    #  @param self The object pointer.
-    #
-    def __parse_auth_cfg(self):
-        cfgFilePath = os.path.join(self.cfgFileDir_, 'auth.cfg')
-        section = 'Auth'
-        try:
-            self.cfgParser_.read(cfgFilePath)
-        except Exception as e:
-            print "Could not load user authentication parameters from file [%s]" \
-                % cfgFilePath
-            print e
-            sys.exit(1)
-        if not self.cfgParser_.has_section(section):
-            print "\033[0mCfg file {%s} is missing section [%s]\033[0m" \
-                % (cfgFilePath, section)
-            sys.exit(1)
-
-        if self.cfgParser_.has_option(section, 'username'):
-            self.auth_['username'] = self.cfgParser_.get(section, 'username')
-        else:
-            print "Cfg file [%s] is missing option <username>"
-            sys.exit(1)
-
-        if self.cfgParser_.has_option(section, 'password'):
-            self.auth_['password'] = self.cfgParser_.get(section, 'password')
-        else:
-            print "Cfg file [%s] is missing option <password>"
-            sys.exit(1)
 
 
     ## Parse and load Rapp Platform Web Services info.
@@ -175,23 +141,6 @@ class RappCloud:
         return newName
 
 
-    ## Call different services throught a single method. Not implemented yet!
-    #    This method will be fully implemented on v0.6.0
-    #
-    #  @param self The object pointer.
-    #  @param service_name The Rapp Platform Service to call.
-    #  @param args
-    #
-    def call_service(self, service_name, args):
-        print '[%s] service request' % service_name
-        # --- Validate existence for the requested service. --- #
-        if service_name in self.services_:
-            pass
-        else:
-            # --- Throw an excetion --- #
-            print "Service [%s] does not exist" % service_name
-
-
     ## Returns a list with the available RAPP Platform services
     #
     #  @param self The object pointer
@@ -235,7 +184,7 @@ class RappCloud:
         files = [file_uri]
         url = self.serviceUrl_['speech_detection_sphinx4']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -265,7 +214,7 @@ class RappCloud:
         files = [file_uri]
         url = self.serviceUrl_['speech_detection_google']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -290,7 +239,7 @@ class RappCloud:
 
         url = self.serviceUrl_['set_noise_profile']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -308,7 +257,7 @@ class RappCloud:
 
         url = self.serviceUrl_['qr_detection']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -329,8 +278,7 @@ class RappCloud:
 
         url = self.serviceUrl_['face_detection']
 
-        returnData = self.serviceController.run_job(url, payload, [file_uri],\
-                self.auth_)
+        returnData = self.serviceController.run_job(url, payload, [file_uri])
         return returnData
 
 
@@ -349,7 +297,7 @@ class RappCloud:
         files = []
         url = self.serviceUrl_['ontology_subclasses_of']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -367,7 +315,7 @@ class RappCloud:
         files = []
         url = self.serviceUrl_['ontology_superclasses_of']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -393,7 +341,7 @@ class RappCloud:
         files = []
         url = self.serviceUrl_['ontology_is_subsuperclass_of']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -415,7 +363,7 @@ class RappCloud:
         files = []
         url = self.serviceUrl_['available_services']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -439,7 +387,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['text_to_speech']
 
-        response = self.serviceController.run_job(url, payload, files, self.auth_)
+        response = self.serviceController.run_job(url, payload, files)
         returnData = {}
         # Parse response error field.
         if response['error']:
@@ -496,7 +444,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['cognitive_test_chooser']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -520,7 +468,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['cognitive_record_performance']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
     ## API call for cognitive-get-user-cores RAPP Platform
@@ -541,7 +489,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['cognitive_get_scores']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -552,7 +500,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['user_personal_info']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -576,7 +524,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['cognitive_get_history']
 
-        returnData = self.serviceController.run_job(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job(url, payload, files)
         return returnData
 
 
@@ -604,7 +552,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['email_send']
 
-        returnData = self.serviceController.run_job(url, payload, [file_uri], self.auth_)
+        returnData = self.serviceController.run_job(url, payload, [file_uri])
         return returnData
 
 
@@ -622,7 +570,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['email_fetch']
 
-        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
+        returnData = self.serviceController.run_job(url, payload, [])
         return returnData
 
 
@@ -638,7 +586,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['news_explore']
 
-        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
+        returnData = self.serviceController.run_job(url, payload, [])
         return returnData
 
 
@@ -652,7 +600,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['geolocation']
 
-        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
+        returnData = self.serviceController.run_job(url, payload, [])
         return returnData
 
 
@@ -664,7 +612,7 @@ class RappCloud:
         }
         url = self.serviceUrl_['weather_report_forecast']
 
-        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
+        returnData = self.serviceController.run_job(url, payload, [])
         return returnData
 
 
@@ -676,6 +624,6 @@ class RappCloud:
         }
         url = self.serviceUrl_['weather_report_current']
 
-        returnData = self.serviceController.run_job(url, payload, [], self.auth_)
+        returnData = self.serviceController.run_job(url, payload, [])
         return returnData
 

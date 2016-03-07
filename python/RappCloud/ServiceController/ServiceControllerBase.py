@@ -68,35 +68,7 @@ class ServiceControllerBase(object):
 
 
   def post_request(self, url, payload, files, basicAuth):
-    try:
-      response = requests.post(url, data=payload, files=files,  \
-          auth=HTTPBasicAuth(basicAuth['username'], \
-          basicAuth['password']))
-    except ConnectionError as e:
-      print "Cannot resolve domain name [%s]" % url
-      print e
-      returnData = {
-        'error': str(e.message)
-      }
-    except HTTPError as e:
-      print "HTTP Error: %s" % e.message
-      returnData = {
-        'error': str(e.mesasge)
-      }
-    except Exception as e: # Catch all exceptions
-      returnData = {
-        'error': str(e)
-      }
-    else:
-      if self.is_json(response.content):
-        returnData = json.loads(response.content)
-      else:  # Check if binary data (responseFile)
-        # Return file type too
-        returnData = {
-          'payload': response.content,
-          'error': 'Non JSON Response!!!!'
-        }
-      return returnData
+    pass
 
 
   def basename(self, filepath):
