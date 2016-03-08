@@ -566,9 +566,21 @@ class RappCloud:
         }
         url = self.serviceUrl_['email_fetch']
 
-        returnData = self.serviceController.run_job( \
+        resp = self.serviceController.run_job( \
                 'email_fetch', payload, [])
-        return returnData
+
+
+        for i in range(0, len(resp['emails'])):
+            for j in range(0, len(resp['emails'][i]['attachments'])):
+                try:
+                    # Decode base64 str to raw data
+                    rawData = base64.b64decode( \
+                            resp['emails'][i]['attachments'][j]['data'])
+
+                    resp['emails'][i]['attachments'][j]['data'] = rawData
+                except Exception as e:
+                    print e
+        return resp
 
 
     def news_stories_fetch(self, newsEngine='', keywords=[], excludeTitles=[], \

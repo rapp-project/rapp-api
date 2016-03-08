@@ -38,7 +38,7 @@ class ServiceControllerBase(object):
   ##
   def __init__(self):
     self.platform = {
-        "protocol": "https",  # Default
+        "protocol": "http",  # Default
         "ipaddr": "155.207.33.185",
         "port": "9001"
     }
