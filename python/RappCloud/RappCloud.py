@@ -635,3 +635,12 @@ class RappCloud:
                 'weather_report_current', payload, [])
         return returnData
 
+
+    def object_recognition(self, filePath):
+        payload = {}
+        files = [filePath]
+
+        returnData = self.serviceController.run_job( \
+                'object_recognition', payload, files)
+        return returnData
+
