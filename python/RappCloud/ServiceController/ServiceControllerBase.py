@@ -37,7 +37,7 @@ class ServiceControllerBase(object):
   #  TODO
   ##
   def __init__(self):
-    self.platform = {
+    self.connection= {
         "protocol": "http",  # Default
         "ipaddr": "155.207.33.185",
         "port": "9001"
@@ -81,6 +81,6 @@ class ServiceControllerBase(object):
 
 
   def svc_url(self, svcUrlName):
-    return self.platform['protocol'] + '://' + self.platform['ipaddr'] + \
-        ':' + self.platform['port'] + '/hop/' + svcUrlName
+    return self.connection['protocol'] + '://' + self.connection['ipaddr'] + \
+        ':' + self.connection['port'] + '/hop/' + svcUrlName
 

@@ -53,35 +53,17 @@ class RappCloud:
         self.cfgFileDir_ = os.path.join(__path__, 'config')
         self.cfgParser_ = SafeConfigParser()
         self.platform_params_ = None
-        self.platformIP_ = ''
-        self.servicePort_ = ''
+
+        self.cloudParams_ = {
+            'ipaddr': '',
+            'port': '',
+            'protocol': ''
+        };
+
         self.services_ = []
-        self.serviceUrl_ = {}
         self.__parse_platform_cfg()
-        self.__parse_services_cfg()
         self.__randStrSize = 5
-        self.serviceController = ServiceControllerSync()
-
-
-    ## Parse and load Rapp Platform Web Services info.
-    #
-    #  @param self The object pointer.
-    #
-    def __parse_services_cfg(self):
-        cfgFilePath = os.path.join(self.cfgFileDir_, 'services.yaml')
-        srvList = []
-        with open(cfgFilePath, 'r') as ymlfile:
-            cfg = yaml.safe_load(ymlfile)
-
-        if 'services' in cfg:
-            services = cfg['services']
-            if 'list' in services:
-                srvList = services['list']
-
-        for service in srvList:
-            self.services_.append(service)
-            self.serviceUrl_[service] = 'https://' + self.platformIP_ + \
-                ':' + str(self.servicePort_) + '/hop/' + service
+        self.serviceController = ServiceControllerSync(self.cloudParams_)
 
 
     ## Parse and load Rapp Platform parameters.
@@ -118,12 +100,18 @@ class RappCloud:
 
         if self.cfgParser_.has_option(useSection, 'ipv4_addr') and \
                 self.cfgParser_.has_option(useSection, 'port'):
-            self.platformIP_ = self.cfgParser_.get(useSection, 'ipv4_addr')
-            self.servicePort_ = self.cfgParser_.get(useSection, 'port')
+            self.cloudParams_['ipaddr'] = self.cfgParser_.get(useSection, 'ipv4_addr')
+            self.cloudParams_['port'] = self.cfgParser_.get(useSection, 'port')
         else:
             print "Missing options {ipv4_addr} and {port} in cfg file [%s]" \
                 % cfgFilePath
             sys.exit(1)
+        if self.cfgParser_.has_option(useSection, 'protocol'):
+            self.cloudParams_['protocol'] = self.cfgParser_.get(useSection, 'protocol')
+        else:
+            print "Missing {protocol} option in platform cfg file." + \
+                    "Falling back to default {http}"
+            self.cloudParams_['protocol'] = 'http'
 
 
     ## Append a random string as a postFix to the input filePath.
@@ -290,7 +278,6 @@ class RappCloud:
             'query': query,
         }
         files = []
-        url = self.serviceUrl_['ontology_subclasses_of']
 
         returnData = self.serviceController.run_job( \
                 'ontology_subclasses_of', payload, files)
@@ -564,7 +551,6 @@ class RappCloud:
             'email_status': email_status,
             'num_emails': num_emails
         }
-        url = self.serviceUrl_['email_fetch']
 
         resp = self.serviceController.run_job( \
                 'email_fetch', payload, [])

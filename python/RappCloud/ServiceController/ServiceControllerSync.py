@@ -42,9 +42,13 @@ import json
 #
 class ServiceControllerSync(ServiceControllerBase):
 
-  def __init__(self):
+  def __init__(self, connect={}):
     ServiceControllerBase.__init__(self)
-    self.protocol = "https"
+
+    self.connection['ipaddr'] = connect['ipaddr']
+    self.connection['port'] = connect['port']
+    self.connection['protocol'] = connect['protocol']
+
 
     ## Performs Platform's HOP Web Service request.
     #
@@ -83,7 +87,7 @@ class ServiceControllerSync(ServiceControllerBase):
 
   def post_request(self, svcUrlName, payload, files):
     svcUrl = self.svc_url(svcUrlName)
-    print svcUrl
+    # print svcUrl
     try:
       response = requests.post(url=svcUrl, data=payload, files=files,  \
           auth=RAPPAuth("1234"), verify=False)
