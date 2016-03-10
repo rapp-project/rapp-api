@@ -630,3 +630,35 @@ class RappCloud:
                 'object_recognition', payload, files)
         return returnData
 
+
+    ##
+    #   @brief Calls hazard_detection_light_check() RAPP Platform front-end service.
+    #   @return Return answer from RAPP Platform.
+    ##
+    def hazard_detection_light_check(self, fileUri):
+        fileName = self.__appendRandStr(fileUri)
+        files = {
+            'file_uri': (fileName, open(fileUri, 'rb'))
+        }
+        payload = {}
+        url = self.serviceUrl_['hazard_detection_light_check']
+
+        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        return returnData
+    #============================================================================
+
+    ##
+    #   @brief Calls hazard_detection_door_check() RAPP Platform front-end service.
+    #   @return Return answer from RAPP Platform.
+    ##
+    def hazard_detection_door_check(self, fileUri):
+        fileName = self.__appendRandStr(fileUri)
+        files = {
+            'file_uri': (fileName, open(fileUri, 'rb'))
+        }
+        payload = {}
+        url = self.serviceUrl_['hazard_detection_door_check']
+
+        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        return returnData
+    #============================================================================

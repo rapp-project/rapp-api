@@ -22,3 +22,5 @@ services:
     - geolocation
     - weather_report_forecast
     - weather_report_current
+    - hazard_detection_light_check
+    - hazard_detection_door_check
