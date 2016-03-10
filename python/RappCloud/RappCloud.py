@@ -635,15 +635,11 @@ class RappCloud:
     #   @brief Calls hazard_detection_light_check() RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
     ##
-    def hazard_detection_light_check(self, fileUri):
-        fileName = self.__appendRandStr(fileUri)
-        files = {
-            'file_uri': (fileName, open(fileUri, 'rb'))
-        }
+    def hazard_detection_light_check(self, file_uri):
         payload = {}
-        url = self.serviceUrl_['hazard_detection_light_check']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job('hazard_detection_light_check', payload, [file_uri])
+
         return returnData
     #============================================================================
 
@@ -651,14 +647,11 @@ class RappCloud:
     #   @brief Calls hazard_detection_door_check() RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
     ##
-    def hazard_detection_door_check(self, fileUri):
-        fileName = self.__appendRandStr(fileUri)
-        files = {
-            'file_uri': (fileName, open(fileUri, 'rb'))
-        }
+    def hazard_detection_door_check(self, file_uri):
         payload = {}
-        url = self.serviceUrl_['hazard_detection_door_check']
 
-        returnData = CloudInterface.callService(url, payload, files, self.auth_)
+        returnData = self.serviceController.run_job('hazard_detection_door_check', payload, [file_uri])
+
         return returnData
     #============================================================================
+
