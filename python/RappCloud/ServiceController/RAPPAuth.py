@@ -35,5 +35,5 @@ class RAPPAuth(AuthBase):
 
   def __call__(self, r):
     # modify and return the request
-    r.headers['X-RAPPAuth'] = self.token
+    r.headers['Accept-Token'] = self.token
     return r
