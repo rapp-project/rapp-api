@@ -245,6 +245,22 @@ class RappCloud:
         return returnData
 
 
+    ## API call for Human-Detection RAPP Platform front-end service.
+    #
+    #  @param self The object pointer.
+    #  @param file_uri Path to the image file to be given as input
+    #    to the human_detection Platform Service.
+    #
+    #  @return Rapp Platform Service response object.
+    #
+    def human_detection(self, file_uri):
+        payload = {}
+        files = [file_uri]
+
+        returnData = self.serviceController.run_job( \
+                'human_detection', payload, files)
+        return returnData
+
     ## API call for Face-Detection RAPP Platform front-end service.
     #
     #  @param self The object pointer.
