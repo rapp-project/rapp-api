@@ -71,7 +71,7 @@ class ServiceControllerSync(ServiceControllerBase):
 
     multiFiles = []
     for f in files:
-      fTuple = self.make_file_tuple(f, 'file_uri')
+      fTuple = self.make_file_tuple(f['path'], f['field_name'])
       multiFiles.append(fTuple)
 
     toRemove = []
