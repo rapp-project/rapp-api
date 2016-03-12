@@ -688,3 +688,20 @@ class RappCloud:
                 'path_planning_upload_map', payload, files)
         return response
 
+
+    def path_planning_plan_path_2d(self, user, map_name, robot_type, \
+            algorithm, start, goal):
+        payload = {
+          'user': user,
+          'map_name': map_name,
+          'robot_type': robot_type,
+          'algorithm': algorithm,
+          'start': start,
+          'goal': goal
+        }
+        files = []
+
+        response = self.serviceController.run_job( \
+                'path_planning_plan_path_2d', payload, files)
+        return response
+
