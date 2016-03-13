@@ -10,7 +10,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class ontologySubSuperClassOf
+ * @class ontology_is_subsuperclass_of
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
  * @version 1
@@ -20,10 +20,10 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param recursive is a boolean argument, when true the function checks for indirect parent-child relationship as well
  * @param callback is the function that will receive the result
  */
-RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursive, callback )
+RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, recursive, callback )
 {
     var cloud = this;
-    var body_string = 'parent_class=' + parent + '&child_class=' + child + '&recursive=' + recursive.toString();
+    var body_string = 'parent_class=' + cloud.escape_string(parent) + '&child_class=' + cloud.escape_string(child) + '&recursive=' + recursive.toString();
     var _delegate = callback;
     
     request.post({
@@ -42,7 +42,7 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
-            console.log ( "Error: " + response.statusCode );
+            console.log ( 'Error: ' + response.statusCode );
     });
     
     function handle_reply( json )
@@ -53,7 +53,7 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
 			// JSON reply is: { "result":true,"trace":[],"error":"" }
 		
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('ontologySubSuperClassOf JSON error: ' + json_obj.error);
+				console.log('ontology_is_subsuperclass_of JSON error: ' + json_obj.error);
 			}
 			_delegate( parent, child, json_obj.result);
 		} catch (e) {
@@ -67,4 +67,4 @@ RAPPCloud.prototype.ontologySubSuperClassOf = function ( parent, child, recursiv
 };
 
 /// Export
-module.exports = RAPPCloud.ontologySubSuperClassOf;
+module.exports = RAPPCloud.ontology_is_subsuperclass_of;

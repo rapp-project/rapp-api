@@ -10,26 +10,23 @@ var __cloudDir = path.join(__dirname);
 var __objectsDir = path.join(__dirname, '..', 'objects');
 
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
-var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
-//RAPPObject.qrCode = require(path.join(__objectsDir, 'object.js'));
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class objectDetector
+ * @class hazard_detection_light_check
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the cloud to detect objects
+ * @description Asynchronous Service which will request the cloud to check light
  * @version 1
- * @author Lazaros Penteridis <lp@ortelio.co.uk>
+ * @author Maciej Stefańczyk <M.Stefanczyk@elka.pw.edu.pl>
  * @param image is the input image 
  * @param image_format is the image format
- * @param callback is the function that will receive a vector of the detected object(s) coordinates
+ * @param callback is the function that will receive an estimated light level [0..100]
  */
-RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
+RAPPCloud.prototype.hazard_detection_light_check = function ( image, image_format, callback )
 {
-    var cloud = this;
-    var object = new RAPPObject( );
-    var _delegate=callback;
+	var cloud = this;
+	var _delegate=callback;
 	var form = new formData();
 	var filename = randomstring.generate() + '.' + image_format;
 	
@@ -38,7 +35,7 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 		contentType: 'image/' + image_format 
 	});
 
-	var r = request.post(cloud.cloud_url + '/hop/detect_objects/ ', function(error, res, json){ 
+	var r = request.post(cloud.cloud_url + '/hop/hazard_detection_light_check/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
 			handle_reply( json );
 		}
@@ -53,9 +50,8 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 	r.setHeader('Connection', 'close');
 
 	function handle_reply( json )
-    {
+	{
 		var json_obj;
-		var faces = [];
 		try {
 			var i;
 			json_obj = JSON.parse(json);
@@ -63,14 +59,10 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 				console.log('faceDetection JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: { "faces":[{"up_left_point":{"x":212.0,"y":200.0},"down_right_point":{"x":391.0,"y":379.0}}],"error":""}
-			for (i=0; i<json_obj.faces.length; i++){
-				var up_left = json_obj.faces[i].up_left_point;
-				var down_right = json_obj.faces[i].down_right_point;
-				faces.push(new object.Face( up_left.x, up_left.y, down_right.x, down_right.y ));
-			}
-			_delegate(faces);
+			light_level = json_obj.light_level;
+			_delegate(light_level);
 		} catch (e) {
-			console.log("faceDetector::handle_reply Error parsing: ");
+			console.log('face_detection::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -83,4 +75,4 @@ RAPPCloud.prototype.faceDetector = function ( image, image_format, callback )
 
 
 /// Export
-module.exports = RAPPCloud.faceDetector;
+module.exports = RAPPCloud.hazard_detection_light_check;

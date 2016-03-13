@@ -13,7 +13,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  *
- * @class speechDetectionSphinx4
+ * @class speech_detection_sphinx4
  * @description Asynchronous Service which will request the cloud to process speech-to-text
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
@@ -27,7 +27,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, audio_source, grammar, words, sentences, callback )
+RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, user, audio_source, grammar, words, sentences, callback )
 {
     var cloud = this;
     var _delegate=callback;
@@ -45,21 +45,21 @@ RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, a
 	
 	var sentences_str = '[';
 	for (i=0; i<sentences.length; i++) {
-		sentences_str += '"' + sentences[i] + '"';
+		sentences_str += '"' + cloud.escape_string(sentences[i]) + '"';
 		if ( i != sentences.length-1 ) sentences_str += ',';
 	}
 	sentences_str += ']';
 	
 	var words_str = '[';
 	for (i=0; i<words.length; i++) {
-		words_str += '"' + words[i] + '"';
+		words_str += '"' + cloud.escape_string(words[i]) + '"';
 		if ( i != words.length-1 ) words_str += ',';
 	}
 	words_str += ']';
 	
 	form.append('file_uri', fs.createReadStream(audio), { filename: filename });
 	form.append('language', language);
-	form.append('user', user);
+	form.append('user', cloud.escape_string(user));
 	form.append('audio_source', audio_source);
 	form.append('grammar', grammar_str);
 	form.append('words', words_str);
@@ -86,7 +86,7 @@ RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, a
 		try {
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('speechDetectionSphinx4 JSON error: ' + json_obj.error);
+				console.log('speech_detection_sphinx4 JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"words":["check","my","emails"],"error":""}
 			for (i=0; i<json_obj.words.length; i++){
@@ -94,7 +94,7 @@ RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, a
 			}
 			_delegate(words_vector);
 		} catch (e) {
-			console.log("speechDetectionSphinx4::handle_reply Error parsing: ");
+			console.log('speech_detection_sphinx4::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -107,4 +107,4 @@ RAPPCloud.prototype.speechDetectionSphinx4 = function ( audio, language, user, a
 
 
 /// Export
-module.exports = RAPPCloud.speechDetectionSphinx4;
+module.exports = RAPPCloud.speech_detection_sphinx4;

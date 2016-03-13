@@ -10,20 +10,20 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class ontologySuperClassesOf
+ * @class ontology_subclasses_of
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the Ontology Superclasses of/for an Input - Constructor for this handler
+ * @description Asynchronous Service which will request the Ontology Subclasses of/for an Input - Constructor for this handler
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @see HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
  * @see HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
- * @param query is the entity for which we will try to acquire its Super-Ordinates
+ * @param query is the entity for which we will try to acquire its Sub-Ordinates
  * @param callback is the function that will receive the classes discovered
  */
-RAPPCloud.prototype.ontologySuperclassesOf = function ( query, callback )
+RAPPCloud.prototype.ontology_subclasses_of = function ( query, callback )
 {
     var cloud = this;
-    var body_string = 'query=' + query;
+    var body_string = 'query=' + cloud.escape_string(query);
     var _delegate = callback;
     
     request.post({
@@ -32,7 +32,7 @@ RAPPCloud.prototype.ontologySuperclassesOf = function ( query, callback )
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
-        url: cloud.cloud_url + '/hop/ontology_superclasses_of/ ',
+        url: cloud.cloud_url + '/hop/ontology_subclasses_of/ ',
         body: body_string
     },
     function ( error, response, json ) 
@@ -42,31 +42,31 @@ RAPPCloud.prototype.ontologySuperclassesOf = function ( query, callback )
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
-            console.log ( "Error: " + response.statusCode );
+            console.log ( 'Error: ' + response.statusCode );
     });
     
     function handle_reply( json )
     {
-		var json_obj;
-		try {
-			json_obj = JSON.parse(json);
-			// JSON reply is: { results: [], trace: [], error: '' }
-		
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('ontologySuperClassesOf JSON error: ' + json_obj.error);
-			}
-			if (json_obj.results){
-				_delegate(json_obj.results);
-			}
-		} catch (e) {
-			return console.error(e);
-		}
-	}
-	
-	function error_handler( error ) {
-		return console.error(error);
-	}   
+        var json_obj;
+        try {
+            json_obj = JSON.parse(json);
+            // JSON reply is: { results: [], trace: [], error: '' }
+    
+            if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+                    console.log('ontology_subclasses_of JSON error: ' + json_obj.error);
+            }
+            if (json_obj.results){
+                    _delegate(json_obj.results);
+            }
+        } catch (e) {
+            return console.error(e);
+        }
+    }
+    
+    function error_handler( error ) {
+            return console.error(error);
+    }   
 };
 
 /// Export
-module.exports = RAPPCloud.ontologySuperclassesOf;
+module.exports = RAPPCloud.ontology_subclasses_of;

@@ -9,20 +9,21 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
- *
- * @class textToSpeech
- * @description Asynchronous Service which will request the cloud to process TTS
+ * 
+ * @class ontology_superclasses_of
+ * @memberof RAPPCloud
+ * @description Asynchronous Service which will request the Ontology Superclasses of/for an Input - Constructor for this handler
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param text is the text to become speech
- * @param language is the language of the text
- * @param callback will be executed once the rapp cloud has responded
+ * @see HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
+ * @see HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
+ * @param query is the entity for which we will try to acquire its Super-Ordinates
+ * @param callback is the function that will receive the classes discovered
  */
- 
-RAPPCloud.prototype.textToSpeech = function ( text, language, callback )
+RAPPCloud.prototype.ontology_superclasses_of = function ( query, callback )
 {
-	var cloud = this;
-    var body_string = 'text=' + text + '&language=' + language;
+    var cloud = this;
+    var body_string = 'query=' + cloud.escape_string(query);
     var _delegate = callback;
     
     request.post({
@@ -31,7 +32,7 @@ RAPPCloud.prototype.textToSpeech = function ( text, language, callback )
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
-        url: cloud.cloud_url + '/hop/text_to_speech/ ',
+        url: cloud.cloud_url + '/hop/ontology_superclasses_of/ ',
         body: body_string
     },
     function ( error, response, json ) 
@@ -41,7 +42,7 @@ RAPPCloud.prototype.textToSpeech = function ( text, language, callback )
         else if ( error )
             error_handler ( error );
         else if ( response.statusCode != 200 )
-            console.log ( "Error: " + response.statusCode );
+            console.log ( 'Error: ' + response.statusCode );
     });
     
     function handle_reply( json )
@@ -49,12 +50,14 @@ RAPPCloud.prototype.textToSpeech = function ( text, language, callback )
 		var json_obj;
 		try {
 			json_obj = JSON.parse(json);
-			// JSON reply is: { payload: <audio_data>, basename: <audio_file_basename>, encoding: <payload_encoding>, error: <error_message> }
+			// JSON reply is: { results: [], trace: [], error: '' }
 		
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('textToSpeech JSON error: ' + json_obj.error);
+				console.log('ontology_superclasses_of JSON error: ' + json_obj.error);
 			}
-			_delegate( json_obj.payload, json_obj.encoding, json_obj.basename);
+			if (json_obj.results){
+				_delegate(json_obj.results);
+			}
 		} catch (e) {
 			return console.error(e);
 		}
@@ -62,9 +65,8 @@ RAPPCloud.prototype.textToSpeech = function ( text, language, callback )
 	
 	function error_handler( error ) {
 		return console.error(error);
-	}	
+	}   
 };
 
-
 /// Export
-module.exports = RAPPCloud.textToSpeech;
+module.exports = RAPPCloud.ontology_superclasses_of;

@@ -13,7 +13,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class setNoiseProfile
+ * @class set_noise_profile
  * @memberof RAPPCloud
  * @description Setting the denoising audio profile for speech recognition
  * @version 1
@@ -23,14 +23,14 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param audio_source is a string with the audio source type
  */
 
-RAPPCloud.prototype.setNoiseProfile = function ( file, user, audio_source )
+RAPPCloud.prototype.set_noise_profile = function ( file, user, audio_source )
 {
     var cloud = this;    
 	var form = new formData();
 	var ext = file.substr(file.lastIndexOf('.') + 1);
 	var filename = randomstring.generate() + '.' + ext;
 	
-	form.append('user', user);
+	form.append('user', cloud.escape_string(user));
 	form.append('audio_source', audio_source);
 	form.append('file_uri', fs.createReadStream(file), { filename: filename });
 	
@@ -54,11 +54,11 @@ RAPPCloud.prototype.setNoiseProfile = function ( file, user, audio_source )
 		try {
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('setNoiseProfile JSON error: ' + json_obj.error);
+				console.log('set_noise_profile JSON error: ' + json_obj.error);
 			}
 			
 		} catch (e) {
-			console.log("qrDetector::handle_reply Error parsing: ");
+			console.log('set_noise_profile::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -71,4 +71,4 @@ RAPPCloud.prototype.setNoiseProfile = function ( file, user, audio_source )
 
 
 /// Export
-module.exports = RAPPCloud.setNoiseProfile;
+module.exports = RAPPCloud.set_noise_profile;

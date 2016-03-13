@@ -13,7 +13,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  *
- * @class speechDetectionGoogle
+ * @class speech_detection_google
  * @description Asynchronous Service which will request the cloud to process speech-to-text
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
@@ -24,7 +24,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user, language, callback )
+RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, user, language, callback )
 {
     var cloud = this;
     var _delegate=callback;
@@ -34,7 +34,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 	
 	form.append('file_uri', fs.createReadStream(audio), { filename: filename });
 	form.append('audio_source', audio_source);
-	form.append('user', user);
+	form.append('user', cloud.escape_string(user));
 	form.append('language', language);
 	
 	var r = request.post(cloud.cloud_url + '/hop/speech_detection_google/ ', function(error, res, json){ 
@@ -58,7 +58,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 			var i;
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('speechDetectionGoogle JSON error: ' + json_obj.error);
+				console.log('speech_detection_google JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"words":["check","minus"],"alternatives":[["check","-"],["check","my","mail"],["Tech","-"],["take","-"],["10","-"],["check","cashing"],["check","in"],["check","cash"]],"error":""}
 			var possible_vectors = new Array(json_obj.alternatives.length + 1);
@@ -78,7 +78,7 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 			}
 			_delegate(possible_vectors);
 		} catch (e) {
-			console.log("speechDetectionGoogle::handle_reply Error parsing: ");
+			console.log('speech_detection_google::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -91,4 +91,4 @@ RAPPCloud.prototype.speechDetectionGoogle = function ( audio, audio_source, user
 
 
 /// Export
-module.exports = RAPPCloud.speechDetectionGoogle;
+module.exports = RAPPCloud.speech_detection_google;
