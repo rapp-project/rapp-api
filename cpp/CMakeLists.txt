@@ -57,7 +57,7 @@ WORKING_DIRECTORY /usr/local/lib)")
 endif()
 # Header install dir
 install (DIRECTORY ${INCLUDES}/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
-# Install Global header - TODO: Check that it works!
+# Install Global header
 install (FILES ${PROJECT_NAME} DESTINATION /usr/local/include/${PROJECT_NAME}) #copy global include header
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
@@ -76,26 +76,26 @@ if (${BUILD_EXAMPLES})
 else()
     message(STATUS "Not Building examples - enable with `-DBUILD_EXAMPLES=ON`")
 endif()
-# TODO: Re-enable TESTS and make sure they work !!!
+# make test
 if (${BUILD_TESTS})
     set (TESTS ${TESTS} tests)
-    #enable_testing ()
-    #add_executable(object_test          ${TESTS}/object_test.cpp)
-    #add_executable(cloud_test           ${TESTS}/cloud_test.cpp)
-    #add_executable(service_test         ${TESTS}/service_test.cpp)
-    #add_test(unit_object_test            object_test) 
-    #add_test(unit_cloud_test             cloud_test) 
-    #add_test(unit_service_test           service_test)
-    #target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-    #                                      rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    #target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
-    #                                      ${Boost_SYSTEM_LIBRARY}
-    #                                      ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-    #                                      rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    #target_link_libraries(cloud_test     ${CMAKE_THREAD_LIBS_INIT} 
-    #                                      ${Boost_SYSTEM_LIBRARY}
-    #                                      ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-    #                                      rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    enable_testing ()
+    add_executable(object_test          ${TESTS}/object_test.cpp)
+    add_executable(cloud_test           ${TESTS}/cloud_test.cpp)
+    add_executable(service_test         ${TESTS}/service_test.cpp)
+    add_test(unit_object_test            object_test) 
+    add_test(unit_cloud_test             cloud_test) 
+    add_test(unit_service_test           service_test)
+    target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+                                         rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
+                                         ${Boost_SYSTEM_LIBRARY}
+                                         ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+                                         rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(cloud_test     ${CMAKE_THREAD_LIBS_INIT}
+                                         ${Boost_SYSTEM_LIBRARY}
+                                         ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+                                         rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     message(STATUS "Building tests, they will be placed in the `build` directory")
 else()
     message(STATUS "Not Building tests - enable with `-DBUILD_TESTS=ON`")
