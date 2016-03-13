@@ -59,6 +59,20 @@ You can of course include specific headers if you wish to.
 To link with the `api` use the `librapp.so` (shared library) or with the static version `librapp.a`.
 For linking instructions, please have a look at CMake helpfiles.
 
+# Testing
+
+Simply run:
+
+```
+make test
+```
+
+in your build directory.
+Any complains about a file not found, means you have to copy the file from under `testdata` into `build`.
+For cloud tests, you must make sure there is a RAPP platform instance running and accessible, and pointed to
+by your config files.
+
+
 # OS with old gcc/g++
 
 Some OSes do not ship with a newer *g++* (versions 4.8 and up), 
