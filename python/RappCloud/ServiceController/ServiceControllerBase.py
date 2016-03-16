@@ -46,13 +46,6 @@ class ServiceControllerBase(object):
 
 
   ##
-  #  TODO
-  ##
-  def callService(self):
-    pass
-
-
-  ##
   #  Check if a dic is represented in json string format.
   #  @param obj dictionary
   ##
@@ -84,18 +77,15 @@ class ServiceControllerBase(object):
   #
   #  {httpFieldName: {filename: '', file descriptor: }}
   ##
-  def _make_payload_tuple(self, payload, httpField='' ):
+  def _make_payload_dic(self, payload, httpField='' ):
     if httpField == '':
-        httpField = 'json'
-    tuple_ = (httpField, json.dumps(payload))
-    return tuple_
+      httpField = 'json'
+    dic = {httpField: json.dumps(payload)}
+    return dic
 
 
-  ##
-  # Astract - Inherit and implement
-  ##
-  def post_request(self, srvUrlName, payload, files, basicAuth):
-    pass
+  def run_job(self):
+    raise ValueError('Base ServiceController class method not implemented')
 
 
   ##
@@ -112,10 +102,4 @@ class ServiceControllerBase(object):
     return self.connection['protocol'] + '://' + self.connection['ipaddr'] + \
         ':' + self.connection['port'] + '/hop/' + svcUrlName
 
-
-  ##
-  # TODO
-  ##
-  def _handle_response(self, resp):
-      pass
 
