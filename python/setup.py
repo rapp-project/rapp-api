@@ -17,7 +17,9 @@ def read(fname):
 
 
 setup(
-    install_requires = [],
+    install_requires = [
+      'requests>=2.9.1'
+    ],
     name='RappCloud',
     version='0.1.0',
     description='Rapp Platform Python API',
