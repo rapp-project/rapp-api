@@ -18,7 +18,8 @@ def read(fname):
 
 setup(
     install_requires = [
-      'requests>=2.9.1'
+      'requests>=2.9.1',
+      'ndg-httpsclient'
     ],
     name='RappCloud',
     version='0.1.0',
