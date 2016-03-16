@@ -638,9 +638,9 @@ class RappCloud:
         return returnData
 
 
-    def object_recognition(self, filePath):
+    def object_recognition(self, filepath):
         payload = {}
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job( \
                 'object_recognition', payload, files)
