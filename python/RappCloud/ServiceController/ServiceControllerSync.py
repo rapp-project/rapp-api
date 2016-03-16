@@ -42,12 +42,13 @@ import json
 #
 class ServiceControllerSync(ServiceControllerBase):
 
-  def __init__(self, connect={}):
-    ServiceControllerBase.__init__(self)
+  def __init__(self, connect):
+        super(ServiceControllerSync, self).__init__()
 
-    self.connection['ipaddr'] = connect['ipaddr']
-    self.connection['port'] = connect['port']
-    self.connection['protocol'] = connect['protocol']
+        self.connection['ipaddr'] = connect['ipaddr']
+        self.connection['port'] = connect['port']
+        self.connection['protocol'] = connect['protocol']
+        self.session_ = requests.Session()
 
 
     ## Performs Platform's HOP Web Service request.
@@ -71,7 +72,7 @@ class ServiceControllerSync(ServiceControllerBase):
 
     multiFiles = []
     for f in files:
-      fTuple = self.make_file_tuple(f['path'], f['field_name'])
+      fTuple = self._make_file_tuple(f['path'], f['field_name'])
       multiFiles.append(fTuple)
 
     toRemove = []
@@ -86,7 +87,10 @@ class ServiceControllerSync(ServiceControllerBase):
 
 
   def post_request(self, svcUrlName, payload, files):
-    svcUrl = self.svc_url(svcUrlName)
+    svcUrl = self._svc_url(svcUrlName)
+    hopHack = ('hop', (None, json.dumps(payload)))
+    # files.append(hopHack)
+    payload = {'data': json.dumps(payload)}
     # print svcUrl
     try:
       response = requests.post(url=svcUrl, data=payload, files=files,  \
@@ -109,11 +113,29 @@ class ServiceControllerSync(ServiceControllerBase):
     else:
       if self.is_json(response.content):
         returnData = json.loads(response.content)
-      else:  # Check if binary data (responseFile)
-        # Return file type too
+      else:
         returnData = {
           'payload': response.content,
           'error': 'Non JSON Response!!!!'
         }
     return returnData
 
+
+  def _init_new_session(self):
+    self._session = requests.Session()
+
+
+  def post_session_once(self, svcUrl, data, files):
+    url = self._svc_url(svcUrl)
+    payload = _make_payload_tuple(data)
+
+
+    with requests.Session() as session:
+      session.post(url=svc, data=payload, files=files)
+
+
+  ##
+  #  TODO
+  ##
+  def handle_exception(self):
+    pass

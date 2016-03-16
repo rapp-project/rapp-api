@@ -27,10 +27,11 @@
 #
 
 import requests
-from requests.auth import HTTPBasicAuth  # Http basic authentication
+# from requests.auth import HTTPBasicAuth  # Http basic authentication
 from requests.exceptions import *  # Requests Exceptions
 import json
 from os import path
+
 
 class ServiceControllerBase(object):
   ##
@@ -42,7 +43,6 @@ class ServiceControllerBase(object):
         "ipaddr": "155.207.33.185",
         "port": "9001"
     }
-    pass
 
 
   ##
@@ -53,7 +53,8 @@ class ServiceControllerBase(object):
 
 
   ##
-  #  TODO
+  #  Check if a dic is represented in json string format.
+  #  @param obj dictionary
   ##
   def is_json(self, obj):
     try:
@@ -64,23 +65,57 @@ class ServiceControllerBase(object):
 
 
   ##
-  #  TODO
+  #  Make file tuples for multipart/form-data http/s requests.
+  #  @param filepath The path to the file.
+  #  @param optional Http field name value.
+  #
+  #  {httpFieldName: {filename: '', file descriptor: }}
   ##
-  def make_file_tuple(self, filepath, boundaryName ):
-    filename = self.basename(filepath)
-    tuple_ = (boundaryName, (filename, open(filepath, 'rb')))
+  def _make_file_tuple(self, filepath, httpField='file' ):
+    filename = self.__basename(filepath)
+    tuple_ = (httpField, (filename, open(filepath, 'rb')))
     return tuple_
 
 
+  ##
+  #  @brief Make payload tuple for multipart/form-data http/s requests.
+  #  @param payload Data payload - dictionary.
+  #  @param httpField Optional http field name value.
+  #
+  #  {httpFieldName: {filename: '', file descriptor: }}
+  ##
+  def _make_payload_tuple(self, payload, httpField='' ):
+    if httpField == '':
+        httpField = 'json'
+    tuple_ = (httpField, json.dumps(payload))
+    return tuple_
+
+
+  ##
+  # Astract - Inherit and implement
+  ##
   def post_request(self, srvUrlName, payload, files, basicAuth):
     pass
 
 
-  def basename(self, filepath):
+  ##
+  # Return the bassename of input filepath.
+  ##
+  def __basename(self, filepath):
     return path.basename(filepath)
 
 
-  def svc_url(self, svcUrlName):
+  ##
+  #  Craft patform service full url path.
+  ##
+  def _svc_url(self, svcUrlName):
     return self.connection['protocol'] + '://' + self.connection['ipaddr'] + \
         ':' + self.connection['port'] + '/hop/' + svcUrlName
+
+
+  ##
+  # TODO
+  ##
+  def _handle_response(self, resp):
+      pass
 
