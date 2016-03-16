@@ -33,6 +33,7 @@ from requests.exceptions import *  # Requests Exceptions
 from ServiceControllerBase import *
 from RAPPAuth import RAPPAuth
 import json
+import time
 
 
 ## @class CloudInterface
@@ -42,33 +43,40 @@ import json
 #
 class ServiceControllerSync(ServiceControllerBase):
 
-  def __init__(self, connect):
-        super(ServiceControllerSync, self).__init__()
+  def __init__(self, connect, timeout=None, token="", \
+          persistent_connection=True):
+    self.timeout_ = timeout
+    super(ServiceControllerSync, self).__init__()
 
-        self.connection['ipaddr'] = connect['ipaddr']
-        self.connection['port'] = connect['port']
-        self.connection['protocol'] = connect['protocol']
-        self.session_ = requests.Session()
+    self.connection['ipaddr'] = connect['ipaddr']
+    self.connection['port'] = connect['port']
+    self.connection['protocol'] = connect['protocol']
+    self.token_ = token
+    self.persistentConn_ = persistent_connection
+    if self.persistentConn_:
+        # Initialize the Session object to be used for the http
+        #  persistent connection
+        self.__http_persistent_connection()
 
 
-    ## Performs Platform's HOP Web Service request.
-    #
-    #   @param basicAuth Basic http authentication credentials
-    #       {'username': '', 'password': ''}
-    #   @param url Post request destination Url.
-    #   @param payload data payload of the post request.
-    #   @param files multipart post file field.
-    #
-    #   @return Rapp Platform Service response object.
-    #
-  def run_job(self, url, payload, files):
-      #  Python-Requests module does not support empty parameter fields.
-      #  Passing empty parameter ('param1': '') will result in a corrupted
-      #  payload definition.
-      #  Referenced issue on github:
-      #      https://github.com/kennethreitz/requests/issues/2651
-      #  Below we provide a temporary fix to this issue.
-      #      Deleting values from payload literal does the job!
+  ## Performs Platform's HOP Web Service request.
+  #
+  #   @param basicAuth Basic http authentication credentials
+  #       {'username': '', 'password': ''}
+  #   @param url Post request destination Url.
+  #   @param payload data payload of the post request.
+  #   @param files multipart post file field.
+  #
+  #   @return Rapp Platform Service response object.
+  #
+  def run_job(self, svcUrlName, payload, files):
+    #  Python-Requests module does not support empty parameter fields.
+    #  Passing empty parameter ('param1': '') will result in a corrupted
+    #  payload definition.
+    #  Referenced issue on github:
+    #      https://github.com/kennethreitz/requests/issues/2651
+    #  Below we provide a temporary fix to this issue.
+    #      Deleting values from payload literal does the job!
 
     multiFiles = []
     for f in files:
@@ -82,60 +90,95 @@ class ServiceControllerSync(ServiceControllerBase):
     for i in toRemove:
       del payload[i]
 
-    resp = self.post_request(url, payload, multiFiles)
+    url = self._svc_url(svcUrlName)
+    if self.persistentConn_:
+        resp = self.__post_persistent(url, payload, multiFiles)
+    else:
+        resp = self.__post_session_once(url, payload, multiFiles)
     return resp
 
 
-  def post_request(self, svcUrlName, payload, files):
-    svcUrl = self._svc_url(svcUrlName)
-    hopHack = ('hop', (None, json.dumps(payload)))
-    # files.append(hopHack)
-    payload = {'data': json.dumps(payload)}
-    # print svcUrl
+  ##
+  #  @brief Create instance Session Object. The Session object is stored
+  #   as a member variable. Used to perform http persistent connections
+  #   connection: 'heep-alive'
+  ##
+  def __http_persistent_connection(self):
+    self.session_ = requests.Session()
+
+
+
+  ##
+  #  @brief General member method to perform a .post request to the
+  #    Platform service.
+  #    If files are specified, then multipart/form-data form is used.
+  #    Otherwhise, x-www-urlencoded form is used.
+  #
+  #  @param session The session oject to use for this request.
+  #  @param urlpath The complete urlpath of the request.
+  #  @param data The data to send. Literal.
+  #  @param files Files to send.
+  #
+  def post_request(self, session, urlpath, data={}, files=[]):
+    # payload = self._make_payload_dic(data)
+    payload = data
     try:
-      response = requests.post(url=svcUrl, data=payload, files=files,  \
-          auth=RAPPAuth("1234"), verify=False)
-    except ConnectionError as e:
-      print "Cannot resolve domain name [%s]" % url
-      print e
-      returnData = {
-        'error': str(e.message)
-      }
-    except HTTPError as e:
-      print "HTTP Error: %s" % e.message
-      returnData = {
-        'error': str(e.mesasge)
-      }
-    except Exception as e: # Catch all exceptions
-      returnData = {
-        'error': str(e)
+        resp = session.post(url=urlpath, data=payload, files=files, \
+          timeout=self.timeout_, verify=False, auth=RAPPAuth(self.token_))
+    except RequestException as e:
+      errorMsg = self.handle_exception(e)
+      resp = {
+          'error': errorMsg
       }
     else:
-      if self.is_json(response.content):
-        returnData = json.loads(response.content)
+      if self.is_json(resp.content):
+        resp = json.loads(resp.content)
       else:
-        returnData = {
-          'payload': response.content,
-          'error': 'Non JSON Response!!!!'
+        resp = {
+          'payload': resp.content,
+          'error': 'Non application/json response'
         }
-    return returnData
+    return resp
 
 
-  def _init_new_session(self):
-    self._session = requests.Session()
-
-
-  def post_session_once(self, svcUrl, data, files):
-    url = self._svc_url(svcUrl)
-    payload = _make_payload_tuple(data)
-
-
+  def __post_session_once(self, urlpath, data, files):
     with requests.Session() as session:
-      session.post(url=svc, data=payload, files=files)
+      resp = self.post_request(session, urlpath, data, files)
+    return resp
+
+
+  def __post_persistent(self, urlpath, data, files):
+    return self.post_request(self.session_, urlpath, data, files)
 
 
   ##
-  #  TODO
+  #  @brief Load Platform application token by path.
+  #  @TODO
   ##
-  def handle_exception(self):
+  def __load_token(self, tokenpath):
     pass
+
+
+  ##
+  #  @brief handles exceptions and return an error message that complies to the
+  #   Exception caught.
+  #
+  #  @param exc Exception
+  ##
+  def handle_exception(self, exc):
+    print type(exc)
+    errorMsg = ''
+    if type(exc) is ConnectionError:
+      errorMsg = "Connection Error"
+    elif type(exc) is HTTPError:
+      errorMsg = "An HTTP error occured"
+    elif type(exc) is ConnectTimeout:
+      errorMsg = "The request timed out while trying to connect to the remote server"
+    elif type(exc) is ReadTimeout:
+      errorMsg = "The server did not send any data in the allotted amount of time."
+    elif type(exc) is Timeout:
+      errorMsg = "Connection Timeout exception."
+    else:
+      errorMsg = "Catched Exception %s" %exc
+
+    return errorMsg
