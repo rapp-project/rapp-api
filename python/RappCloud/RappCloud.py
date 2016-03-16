@@ -157,7 +157,7 @@ class RappCloud:
     #  @return Rapp Platform Service response object.
     #
     def speech_detection_sphinx4(self, language, audio_source, words, \
-                                 sentences, grammar, file_uri, user):
+                                 sentences, grammar, filepath, user):
         # -- Craft the data payload for the post request
         payload = {
             'language':language,
@@ -168,7 +168,7 @@ class RappCloud:
             'user': user
         }
 
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job( \
                 'speech_detection_sphinx4', payload, files)
@@ -189,7 +189,7 @@ class RappCloud:
     #
     #  @return Rapp Platform Service response object.
     #
-    def speech_detection_google(self, file_uri, audio_source, user, language):
+    def speech_detection_google(self, filepath, audio_source, user, language):
         # -- Craft the data payload for the post request
         payload = {
             'audio_source': audio_source,
@@ -197,7 +197,7 @@ class RappCloud:
             'language': language
         }
 
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job( \
                 'speech_detection_google', payload, files)
@@ -215,13 +215,13 @@ class RappCloud:
     #
     #  @return Rapp Platform Service response object.
     #
-    def set_noise_profile(self, file_uri, audio_source, user):
+    def set_noise_profile(self, filepath, audio_source, user):
         # -- Craft the data payload for the post request
         payload = {
             'user': user,
             'audio_source': audio_source
         }
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job( \
                 'set_noise_profile', payload, files)
@@ -236,9 +236,9 @@ class RappCloud:
     #
     #  @return Rapp Platform Service response object.
     #
-    def qr_detection(self, file_uri):
+    def qr_detection(self, filepath):
         payload = {}
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job( \
                 'qr_detection', payload, files)
@@ -253,9 +253,9 @@ class RappCloud:
     #
     #  @return Rapp Platform Service response object.
     #
-    def human_detection(self, file_uri):
+    def human_detection(self, filepath):
         payload = {}
-        files = [file_uri]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job( \
                 'human_detection', payload, files)
@@ -269,11 +269,11 @@ class RappCloud:
     #
     #  @return Rapp Platform Service response object.
     #
-    def face_detection(self, file_uri, fast = False):
+    def face_detection(self, filepath, fast = False):
         payload = {
             'fast': bool(fast)
         }
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job( \
                 'face_detection', payload, files)
@@ -538,7 +538,7 @@ class RappCloud:
     #  @param file_uri Can be a zip file!
     ##
     def send_email(self, email, passwd, server, port, recipients, body,\
-            subject, file_uri):
+            subject, filepath):
         payload = {
             'email': email,
             'passwd': passwd,
@@ -548,7 +548,7 @@ class RappCloud:
             'body': body,
             'subject': subject
         }
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job( \
                 'email_send', payload, files)
@@ -651,9 +651,9 @@ class RappCloud:
     #   @brief Calls hazard_detection_light_check() RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
     ##
-    def hazard_detection_light_check(self, file_uri):
+    def hazard_detection_light_check(self, filepath):
         payload = {}
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job('hazard_detection_light_check', payload, files)
 
@@ -664,9 +664,9 @@ class RappCloud:
     #   @brief Calls hazard_detection_door_check() RAPP Platform front-end service.
     #   @return Return answer from RAPP Platform.
     ##
-    def hazard_detection_door_check(self, file_uri):
+    def hazard_detection_door_check(self, filepath):
         payload = {}
-        files = [{'path': file_uri, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file_uri'}]
 
         returnData = self.serviceController.run_job('hazard_detection_door_check', payload, files)
 
