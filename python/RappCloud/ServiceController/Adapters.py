@@ -26,8 +26,11 @@ from OpenSSL import SSL
 import requests
 
 # Tell urllib3 to switch the ssl backend to PyOpenSSL
-import urllib3.contrib.pyopenssl
-urllib3.contrib.pyopenssl.inject_into_urllib3()
+try:
+  import urllib3.contrib.pyopenssl
+  urllib3.contrib.pyopenssl.inject_into_urllib3()
+except ImportError:
+  pass
 
 # Disable Insecure Request Warning caused due to missing https cert verification
 requests.packages.urllib3.disable_warnings()
