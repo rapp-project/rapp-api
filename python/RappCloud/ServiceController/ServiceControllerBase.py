@@ -38,7 +38,7 @@ class ServiceControllerBase(object):
   #  TODO
   ##
   def __init__(self):
-    self.connection= {
+    self.connection_= {
         "protocol": "http",  # Default
         "ipaddr": "155.207.33.185",
         "port": "9001"
@@ -99,7 +99,7 @@ class ServiceControllerBase(object):
   #  Craft patform service full url path.
   ##
   def _svc_url(self, svcUrlName):
-    return self.connection['protocol'] + '://' + self.connection['ipaddr'] + \
-        ':' + self.connection['port'] + '/hop/' + svcUrlName
+    return self.connection_['protocol'] + '://' + self.connection_['ipaddr'] + \
+        ':' + self.connection_['port'] + '/hop/' + svcUrlName
 
 

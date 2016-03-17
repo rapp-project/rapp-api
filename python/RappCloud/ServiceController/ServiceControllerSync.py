@@ -31,9 +31,13 @@ import requests
 from requests.auth import HTTPBasicAuth  # Http basic authentication
 from requests.exceptions import *  # Requests Exceptions
 from ServiceControllerBase import *
-from RAPPAuth import RAPPAuth
+
 import json
 import time
+
+from RAPPAuth import RAPPAuth
+from requests.adapters import HTTPAdapter
+from Adapters import TLSAdapter as SSLAdapter
 
 
 ## @class CloudInterface
@@ -48,9 +52,9 @@ class ServiceControllerSync(ServiceControllerBase):
     self.timeout_ = timeout
     super(ServiceControllerSync, self).__init__()
 
-    self.connection['ipaddr'] = connect['ipaddr']
-    self.connection['port'] = connect['port']
-    self.connection['protocol'] = connect['protocol']
+    self.connection_['ipaddr'] = connect['ipaddr']
+    self.connection_['port'] = connect['port']
+    self.connection_['protocol'] = connect['protocol']
     self.token_ = token
     self.persistentConn_ = persistent_connection
     if self.persistentConn_:
@@ -105,6 +109,7 @@ class ServiceControllerSync(ServiceControllerBase):
   ##
   def __http_persistent_connection(self):
     self.session_ = requests.Session()
+    self.__mount_adapters(self.session_)
 
 
 
@@ -125,6 +130,7 @@ class ServiceControllerSync(ServiceControllerBase):
     try:
         resp = session.post(url=urlpath, data=payload, files=files, \
           timeout=self.timeout_, verify=False, auth=RAPPAuth(self.token_))
+        header = resp.headers
     except RequestException as e:
       errorMsg = self.handle_exception(e)
       resp = {
@@ -143,6 +149,7 @@ class ServiceControllerSync(ServiceControllerBase):
 
   def __post_session_once(self, urlpath, data, files):
     with requests.Session() as session:
+      self.__mount_adapters(self.session_)
       resp = self.post_request(session, urlpath, data, files)
     return resp
 
@@ -150,6 +157,10 @@ class ServiceControllerSync(ServiceControllerBase):
   def __post_persistent(self, urlpath, data, files):
     return self.post_request(self.session_, urlpath, data, files)
 
+
+  def __mount_adapters(self, session):
+    session.mount("http://", HTTPAdapter())
+    session.mount("https://", SSLAdapter())
 
   ##
   #  @brief Load Platform application token by path.
