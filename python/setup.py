@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import RappCloud
 import os
 try:
     from setuptools import setup, find_packages
@@ -18,7 +17,7 @@ def read(fname):
 
 setup(
     install_requires = [
-      'requests>=2.9.1'
+      'requests>=2.9.1',
       'ndg-httpsclient',
       'pyopenssl',
       'pyasn1'
