@@ -74,31 +74,12 @@ class ServiceControllerSync(ServiceControllerBase):
   #   @return Rapp Platform Service response object.
   #
   def run_job(self, svcUrlName, payload, files):
-    #  Python-Requests module does not support empty parameter fields.
-    #  Passing empty parameter ('param1': '') will result in a corrupted
-    #  payload definition.
-    #  Referenced issue on github:
-    #      https://github.com/kennethreitz/requests/issues/2651
-    #  Below we provide a temporary fix to this issue.
-    #      Deleting values from payload literal does the job!
-
-    multiFiles = []
-    for f in files:
-      fTuple = self._make_file_tuple(f['path'], f['field_name'])
-      multiFiles.append(fTuple)
-
-    toRemove = []
-    for param in payload:
-      if not payload[param]:
-        toRemove.append(param)
-    for i in toRemove:
-      del payload[i]
-
     url = self._svc_url(svcUrlName)
+
     if self.persistentConn_:
-        resp = self.__post_persistent(url, payload, multiFiles)
+        resp = self.__post_persistent(url, payload, files)
     else:
-        resp = self.__post_session_once(url, payload, multiFiles)
+        resp = self.__post_session_once(url, payload, files)
     return resp
 
 
@@ -125,10 +106,20 @@ class ServiceControllerSync(ServiceControllerBase):
   #  @param files Files to send.
   #
   def post_request(self, session, urlpath, data={}, files=[]):
-    # payload = self._make_payload_dic(data)
-    payload = data
+    payload = self._make_payload_dic(data)
+    _files = []
+    for f in files:
+      try:
+        fTuble = self._make_file_tuple(f['path'], f['field_name'])
+      except Exception as e:
+        print e
+      else:
+        _files.append(fTuble)
+
+    # print payload
+    # payload = data
     try:
-        resp = session.post(url=urlpath, data=payload, files=files, \
+        resp = session.post(url=urlpath, data=payload, files=_files, \
           timeout=self.timeout_, verify=False, auth=RAPPAuth(self.token_))
         header = resp.headers
     except RequestException as e:
@@ -139,6 +130,10 @@ class ServiceControllerSync(ServiceControllerBase):
     else:
       if self.is_json(resp.content):
         resp = json.loads(resp.content)
+      elif "This service is unknown!" in resp.content:
+        resp = {
+          'error': 'Connection Error. Service does not exist...is uknown!'
+        }
       else:
         resp = {
           'payload': resp.content,
@@ -177,7 +172,6 @@ class ServiceControllerSync(ServiceControllerBase):
   #  @param exc Exception
   ##
   def handle_exception(self, exc):
-    print type(exc)
     errorMsg = ''
     if type(exc) is ConnectionError:
       errorMsg = "Connection Error"

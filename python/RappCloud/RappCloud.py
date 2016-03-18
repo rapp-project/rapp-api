@@ -160,15 +160,15 @@ class RappCloud:
                                  sentences, grammar, filepath, user):
         # -- Craft the data payload for the post request
         payload = {
-            'language':language,
-            'audio_source':audio_source,
-            'words':json.dumps(words),
-            'sentences':json.dumps(sentences),
-            'grammar':json.dumps(grammar),
+            'language': language,
+            'audio_source': audio_source,
+            'words': words,
+            'sentences': sentences,
+            'grammar': grammar,
             'user': user
         }
 
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job( \
                 'speech_detection_sphinx4', payload, files)
@@ -197,7 +197,7 @@ class RappCloud:
             'language': language
         }
 
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job( \
                 'speech_detection_google', payload, files)
@@ -221,7 +221,7 @@ class RappCloud:
             'user': user,
             'audio_source': audio_source
         }
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job( \
                 'set_noise_profile', payload, files)
@@ -238,7 +238,7 @@ class RappCloud:
     #
     def qr_detection(self, filepath):
         payload = {}
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job( \
                 'qr_detection', payload, files)
@@ -255,7 +255,7 @@ class RappCloud:
     #
     def human_detection(self, filepath):
         payload = {}
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job( \
                 'human_detection', payload, files)
@@ -271,9 +271,9 @@ class RappCloud:
     #
     def face_detection(self, filepath, fast = False):
         payload = {
-            'fast': bool(fast)
+            'fast': fast
         }
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job( \
                 'face_detection', payload, files)
@@ -544,11 +544,11 @@ class RappCloud:
             'passwd': passwd,
             'server': server,
             'port': port,
-            'recipients': json.dumps(recipients),
+            'recipients': recipients,
             'body': body,
             'subject': subject
         }
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job( \
                 'email_send', payload, files)
@@ -640,7 +640,7 @@ class RappCloud:
 
     def object_recognition(self, filepath):
         payload = {}
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job( \
                 'object_recognition', payload, files)
@@ -653,7 +653,7 @@ class RappCloud:
     ##
     def hazard_detection_light_check(self, filepath):
         payload = {}
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job('hazard_detection_light_check', payload, files)
 
@@ -666,7 +666,7 @@ class RappCloud:
     ##
     def hazard_detection_door_check(self, filepath):
         payload = {}
-        files = [{'path': filepath, 'field_name': 'file_uri'}]
+        files = [{'path': filepath, 'field_name': 'file'}]
 
         returnData = self.serviceController.run_job('hazard_detection_door_check', payload, files)
 
