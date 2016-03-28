@@ -22,7 +22,20 @@ The below table presents the up-to-date available RAPP Platform Service calls, t
 | ontology superclasses of          | ✓        |  ✓           | ✓        |
 | ontology is subsuperclass of      | ✓        |  ✓           | ✓        |
 | cognitive test chooser            | ✗        |  ✗           | ✓        |
+| cognitive get history             | ✗        |  ✗           | ✓        |
+| cognitive get scores              | ✗        |  ✗           | ✓        |
 | record cognitive test performance | ✗        |  ✗           | ✓        |
+| send email                        | ✗        |  ✗           | ✓        |
+| fetch received emails             | ✗        |  ✗           | ✓        |
+| news stories                      | ✗        |  ✗           | ✓        |
+| geolocation                       | ✗        |  ✗           | ✓        |
+| weather report current            | ✗        |  ✗           | ✓        |
+| weather report forecast           | ✗        |  ✗           | ✓        |
+| object recognition                | ✗        |  ✗           | ✓        |
+| hazard detection light-check      | ✗        |  ✗           | ✓        |
+| hazard detection door-check       | ✗        |  ✗           | ✓        |
+| path planning upload-map          | ✗        |  ✗           | ✓        |
+| path planning plan-path-2d        | ✗        |  ✗           | ✓        |
 
 // TODO: RAPP Robot API
 
