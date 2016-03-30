@@ -55,19 +55,15 @@ class ServiceControllerSync(ServiceControllerBase):
     self.connection_['ipaddr'] = connect['ipaddr']
     self.connection_['port'] = connect['port']
     self.connection_['protocol'] = connect['protocol']
-    self.token_ = "1234"
+    self.token_ = self.__load_token()
     self.persistentConn_ = persistent_connection
     if self.persistentConn_:
-        # Initialize the Session object to be used for the http
-        #  persistent connection
         self.__http_persistent_connection()
 
 
   ## Performs Platform's HOP Web Service request.
   #
-  #   @param basicAuth Basic http authentication credentials
-  #       {'username': '', 'password': ''}
-  #   @param url Post request destination Url.
+  #   @param svcUrlName Post request destination Url.
   #   @param payload data payload of the post request.
   #   @param files multipart post file field.
   #
@@ -84,9 +80,9 @@ class ServiceControllerSync(ServiceControllerBase):
 
 
   ##
-  #  @brief Create instance Session Object. The Session object is stored
-  #   as a member variable. Used to perform http persistent connections
-  #   connection: 'heep-alive'
+  #  @brief Create a session object for this class.
+  #   Used to perform http persistent connections
+  #     connection: 'heep-alive'
   ##
   def __http_persistent_connection(self):
     self.session_ = requests.Session()
@@ -144,6 +140,12 @@ class ServiceControllerSync(ServiceControllerBase):
     return resp
 
 
+  ##
+  # @brief Perform a post request. Acquires a new session.
+  # @param urlpath The url to send POST request.
+  # @param data Payload data to send.
+  # @param files Files to send.
+  #
   def __post_session_once(self, urlpath, data, files):
     with requests.Session() as session:
       self.__mount_adapters(self.session_)
@@ -151,10 +153,20 @@ class ServiceControllerSync(ServiceControllerBase):
     return resp
 
 
+  ##
+  # @brief Post Request using active session - persistent connection.
+  # @param urlpath The url to send POST request.
+  # @param data Payload data to send.
+  # @param files Files to send.
+  #
   def __post_persistent(self, urlpath, data, files):
     return self.post_request(self.session_, urlpath, data, files)
 
 
+  ##
+  # @brief Mount http and https Transport Adapters on given session object.
+  # @param session Session object to mount Transport Adapters.
+  #
   def __mount_adapters(self, session):
     session.mount("http://", HTTPAdapter())
     session.mount("https://", SSLAdapter())
@@ -163,7 +175,7 @@ class ServiceControllerSync(ServiceControllerBase):
   #  @brief Load Platform application token by path.
   #  @TODO
   ##
-  def __load_token(self, tokenpath):
+  def __load_token(self):
     pass
 
 
@@ -171,7 +183,7 @@ class ServiceControllerSync(ServiceControllerBase):
   #  @brief handles exceptions and return an error message that complies to the
   #   Exception caught.
   #
-  #  @param exc Exception
+  #  @param exc Exception of any type
   ##
   def handle_exception(self, exc):
     errorMsg = ''
