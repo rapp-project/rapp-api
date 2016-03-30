@@ -55,7 +55,7 @@ class ServiceControllerSync(ServiceControllerBase):
     self.connection_['ipaddr'] = connect['ipaddr']
     self.connection_['port'] = connect['port']
     self.connection_['protocol'] = connect['protocol']
-    self.token_ = token
+    self.token_ = "1234"
     self.persistentConn_ = persistent_connection
     if self.persistentConn_:
         # Initialize the Session object to be used for the http
@@ -121,8 +121,10 @@ class ServiceControllerSync(ServiceControllerBase):
     try:
         resp = session.post(url=urlpath, data=payload, files=_files, \
           timeout=self.timeout_, verify=False, auth=RAPPAuth(self.token_))
+        # Raise Exception for response status code.
+        resp.raise_for_status()
         header = resp.headers
-    except RequestException as e:
+    except Exception as e:
       errorMsg = self.handle_exception(e)
       resp = {
           'error': errorMsg
@@ -175,6 +177,9 @@ class ServiceControllerSync(ServiceControllerBase):
     errorMsg = ''
     if type(exc) is ConnectionError:
       errorMsg = "Connection Error"
+    elif "401" in str(exc):
+      """ Unauthorized 401 HTTP Error """
+      errorMsg = str(exc)
     elif type(exc) is HTTPError:
       errorMsg = "An HTTP error occured"
     elif type(exc) is ConnectTimeout:
