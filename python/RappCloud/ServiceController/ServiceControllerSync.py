@@ -47,15 +47,10 @@ from Adapters import TLSAdapter as SSLAdapter
 #
 class ServiceControllerSync(ServiceControllerBase):
 
-  def __init__(self, connect, timeout=None, token="", \
-          persistent_connection=True):
+  def __init__(self, connect=None, timeout=None, persistent_connection=True):
     self.timeout_ = timeout
     super(ServiceControllerSync, self).__init__()
 
-    self.connection_['ipaddr'] = connect['ipaddr']
-    self.connection_['port'] = connect['port']
-    self.connection_['protocol'] = connect['protocol']
-    self.token_ = self.__load_token()
     self.persistentConn_ = persistent_connection
     if self.persistentConn_:
         self.__http_persistent_connection()
@@ -71,6 +66,8 @@ class ServiceControllerSync(ServiceControllerBase):
   #
   def run_job(self, svcUrlName, payload, files):
     url = self._svc_url(svcUrlName)
+
+    appToken = self.load_app_token(svcUrlName)
 
     if self.persistentConn_:
         resp = self.__post_persistent(url, payload, files)
@@ -116,7 +113,7 @@ class ServiceControllerSync(ServiceControllerBase):
     # payload = data
     try:
         resp = session.post(url=urlpath, data=payload, files=_files, \
-          timeout=self.timeout_, verify=False, auth=RAPPAuth(self.token_))
+          timeout=self.timeout_, verify=False, auth=RAPPAuth(self.appToken_))
         # Raise Exception for response status code.
         resp.raise_for_status()
         header = resp.headers
@@ -171,13 +168,6 @@ class ServiceControllerSync(ServiceControllerBase):
     session.mount("http://", HTTPAdapter())
     session.mount("https://", SSLAdapter())
 
-  ##
-  #  @brief Load Platform application token by path.
-  #  @TODO
-  ##
-  def __load_token(self):
-    pass
-
 
   ##
   #  @brief handles exceptions and return an error message that complies to the
@@ -186,6 +176,7 @@ class ServiceControllerSync(ServiceControllerBase):
   #  @param exc Exception of any type
   ##
   def handle_exception(self, exc):
+    print exc
     errorMsg = ''
     if type(exc) is ConnectionError:
       errorMsg = "Connection Error"

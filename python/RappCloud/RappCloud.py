@@ -31,7 +31,6 @@ import os
 import sys
 import yaml
 import base64
-from ConfigParser import SafeConfigParser
 
 from ServiceController import ServiceControllerSync
 from RandStrGen import RandStrGen
@@ -45,73 +44,13 @@ __path__ = os.path.dirname(__file__)
 #
 #  Rapp Platform API class. API calls for Platform HOP Web Services.
 #
-class RappCloud:
+class RappCloud(object):
 
     ##  Default constructor.
     def __init__(self):
-        # --- Load Rapp Platform parameters --- #
-        self.cfgFileDir_ = os.path.join(__path__, 'config')
-        self.cfgParser_ = SafeConfigParser()
-        self.platform_params_ = None
-
-        self.cloudParams_ = {
-            'ipaddr': '',
-            'port': '',
-            'protocol': ''
-        };
-
-        self.services_ = []
-        self.__parse_platform_cfg()
         self.__randStrSize = 5
-        self.serviceController = ServiceControllerSync(self.cloudParams_)
+        self.serviceController = ServiceControllerSync()
 
-
-    ## Parse and load Rapp Platform parameters.
-    #
-    #  @param self The object pointer.
-    #
-    def __parse_platform_cfg(self):
-        cfgFilePath = os.path.join(self.cfgFileDir_, 'platform.cfg')
-        section = 'RAPP Platform'
-        ## Catch exceptions on loading configuration file ##
-        ## TODO Enhance Exception handling
-        try:
-            self.cfgParser_.read(cfgFilePath)
-        except Exception as e:
-            print "Could not load RAPP Platform parameters from .cfg file."
-            print e
-            sys.exit(1)
-        if not self.cfgParser_.has_section(section):
-            print "\033[0mCfg file {%s} is missing section [%s]\033[0m" \
-                % (cfgFilePath, section)
-            sys.exit(1)
-
-        if self.cfgParser_.has_option(section, 'use'):
-            useSection = self.cfgParser_.get(section, 'use')
-        else:
-            print "Missing option under [RAPP Platform] section" + \
-                " in cfg file {%s}" % cfgFilePath
-            sys.exit(1)
-
-        if not self.cfgParser_.has_section(useSection):
-            print "Given value for option <use> in [RAPP Platform] Section" + \
-                " does not correspond to a defined Section in cfg file"
-            sys.exit(1)
-
-        if self.cfgParser_.has_option(useSection, 'ipv4_addr') and \
-                self.cfgParser_.has_option(useSection, 'port'):
-            self.cloudParams_['ipaddr'] = self.cfgParser_.get(useSection, 'ipv4_addr')
-            self.cloudParams_['port'] = self.cfgParser_.get(useSection, 'port')
-        else:
-            print "Missing options {ipv4_addr} and {port} in cfg file [%s]" \
-                % cfgFilePath
-            sys.exit(1)
-        if self.cfgParser_.has_option(useSection, 'protocol'):
-            self.cloudParams_['protocol'] = self.cfgParser_.get(useSection, 'protocol')
-        else:
-            print "Missing {protocol} option in platform cfg file." + \
-                    "Falling back to default {http}"
-            self.cloudParams_['protocol'] = 'http'
 
 
     ## Append a random string as a postFix to the input filePath.
@@ -127,16 +66,6 @@ class RappCloud:
         splStr = splStr[len(splStr) - 1].split('.')
         newName = splStr[0] + '-' + randStr + '.' + splStr[1]
         return newName
-
-
-    ## Returns a list with the available RAPP Platform services
-    #
-    #  @param self The object pointer
-    #
-    #  @return The Platform Services supported by the Rapp-API
-    #
-    def get_platform_services(self):
-        return self.services_
 
 
     ## API call for Speech-Detection-Sphinx4 RAPP Platform front-end service.
@@ -481,7 +410,6 @@ class RappCloud:
     def cognitive_get_scores(self, username, upToTime, testType):
         files = []
         payload = {
-            'user': username,
             'up_to_time': upToTime,
             'test_type': testType
         }
@@ -515,7 +443,6 @@ class RappCloud:
     def cognitive_get_history(self, username, fromTime, toTime, testType):
         files = []
         payload = {
-            'user': username,
             'from_time': fromTime,
             'to_time': toTime,
             'test_type': testType
