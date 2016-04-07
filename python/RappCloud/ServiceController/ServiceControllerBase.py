@@ -89,9 +89,7 @@ class ServiceControllerBase(object):
   #
   #  {httpFieldName: {filename: '', file descriptor: }}
   #
-  def _make_payload_dic(self, payload, httpField='' ):
-    if httpField == '':
-      httpField = 'json'
+  def _make_payload_dic(self, payload, httpField='json' ):
     dic = {httpField: json.dumps(payload)}
     return dic
 
@@ -127,7 +125,7 @@ class ServiceControllerBase(object):
         path.join(authParams['token_store_dir'], authParams['app_token']))
 
     with open(appTokenPath, 'r') as f:
-      self.appToken_ = f.read()
+      self.appToken_ = str(f.read()).replace('\n', '')
 
   ##
   #

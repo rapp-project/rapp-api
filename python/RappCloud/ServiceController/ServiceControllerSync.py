@@ -67,7 +67,7 @@ class ServiceControllerSync(ServiceControllerBase):
   def run_job(self, svcUrlName, payload, files):
     url = self._svc_url(svcUrlName)
 
-    appToken = self.load_app_token(svcUrlName)
+    self.load_app_token(svcUrlName)
 
     if self.persistentConn_:
         resp = self.__post_persistent(url, payload, files)
@@ -109,11 +109,9 @@ class ServiceControllerSync(ServiceControllerBase):
       else:
         _files.append(fTuble)
 
-    # print payload
-    # payload = data
     try:
         resp = session.post(url=urlpath, data=payload, files=_files, \
-          timeout=self.timeout_, verify=False, auth=RAPPAuth(self.appToken_))
+          timeout=self.timeout_, verify=False, auth=RAPPAuth("rapp_token"))
         # Raise Exception for response status code.
         resp.raise_for_status()
         header = resp.headers
