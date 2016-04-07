@@ -81,20 +81,18 @@ class RappCloud(object):
     #  @param grammar Grammar to be used.
     #  @param file_uri Path to the audio/speech file to be given as input
     #    to the speech_detection_sphinx4 Platform Service.
-    #  @param user User's name, a.k.a username.
     #
     #  @return Rapp Platform Service response object.
     #
     def speech_detection_sphinx4(self, language, audio_source, words, \
-                                 sentences, grammar, filepath, user):
+                                 sentences, grammar, filepath):
         # -- Craft the data payload for the post request
         payload = {
             'language': language,
             'audio_source': audio_source,
             'words': words,
             'sentences': sentences,
-            'grammar': grammar,
-            'user': user
+            'grammar': grammar
         }
 
         files = [{'path': filepath, 'field_name': 'file'}]
@@ -114,15 +112,13 @@ class RappCloud(object):
     #    audio source data. e.g "nao_wav_1_ch".
     #  @param file_uri Path to the audio/speech file to be given as input
     #    to the speech_detection_google Platform Service.
-    #  @param user User's name, a.k.a username.
     #
     #  @return Rapp Platform Service response object.
     #
-    def speech_detection_google(self, filepath, audio_source, user, language):
+    def speech_detection_google(self, filepath, audio_source, language):
         # -- Craft the data payload for the post request
         payload = {
             'audio_source': audio_source,
-            'user': user,
             'language': language
         }
 
@@ -140,14 +136,12 @@ class RappCloud(object):
     #    audio source data. e.g "nao_wav_1_ch".
     #  @param file_uri Path to the audio/speech file to be given as input
     #    to the speech_detection_google Platform Service.
-    #  @param user User's name, a.k.a username.
     #
     #  @return Rapp Platform Service response object.
     #
-    def set_noise_profile(self, filepath, audio_source, user):
+    def set_noise_profile(self, filepath, audio_source):
         # -- Craft the data payload for the post request
         payload = {
-            'user': user,
             'audio_source': audio_source
         }
         files = [{'path': filepath, 'field_name': 'file'}]
@@ -359,14 +353,12 @@ class RappCloud(object):
     #  @param self The object pointer.
     #  @param testType Cognitive Test Type. ArithmeticCts, AwarenessCts,
     #    ReasoningCts.
-    #  @param user User's name, a.k.a username.
     #
     #  @return Rapp Platform Service API call response object.
     #
-    def cognitive_test_chooser(self, user, testType):
+    def cognitive_test_chooser(self, testType):
         files = []
         payload = {
-            'user': user,
             'test_type': testType
         }
 
@@ -379,17 +371,15 @@ class RappCloud(object):
     #    front-end service
     #
     #  @param self The object pointer.
-    #  @param user User's name, a.k.a username.
     #  @param test Test full name as obtained from a call to
     #    cognitive_test_chooser Platform service.
     #  @param score User's score for given test in range [0-100].
     #
     #  @return Rapp Platform Service API call response object.
     #
-    def record_cognitive_test_performance(self, user, test, score):
+    def record_cognitive_test_performance(self, test, score):
         files = []
         payload = {
-            'user': user,
             'test_instance': test,
             'score': score
         }
@@ -402,12 +392,11 @@ class RappCloud(object):
     #    front-end service
     #
     #  @param self The object pointer.
-    #  @param username User's name, a.k.a username.
     #  @param upToTime the timestamp up to which scores will be calculated
     #
     #  @return Rapp Platform Service API call response object.
     #
-    def cognitive_get_scores(self, username, upToTime, testType):
+    def cognitive_get_scores(self, upToTime, testType):
         files = []
         payload = {
             'up_to_time': upToTime,
@@ -419,11 +408,9 @@ class RappCloud(object):
         return returnData
 
 
-    def user_personal_info(self, user):
+    def user_personal_info(self):
         files = {}
-        payload = {
-            'user': user
-        }
+        payload = {}
 
         returnData = self.serviceController.run_job( \
                 'user_personal_info', payload, files)
@@ -435,12 +422,11 @@ class RappCloud(object):
     #    front-end service
     #
     #  @param self The object pointer.
-    #  @param username User's name, a.k.a username.
     #  @param upToTime the timestamp up to which scores will be calculated
     #
     #  @return Rapp Platform Service API call response object.
     #
-    def cognitive_get_history(self, username, fromTime, toTime, testType):
+    def cognitive_get_history(self, fromTime, toTime, testType):
         files = []
         payload = {
             'from_time': fromTime,
@@ -575,35 +561,35 @@ class RappCloud(object):
 
 
     ##
-    #   @brief Calls hazard_detection_light_check() RAPP Platform front-end service.
+    #   @brief Calls hazard_detection_light_check() RAPP Platform service.
     #   @return Return answer from RAPP Platform.
     ##
     def hazard_detection_light_check(self, filepath):
         payload = {}
         files = [{'path': filepath, 'field_name': 'file'}]
 
-        returnData = self.serviceController.run_job('hazard_detection_light_check', payload, files)
+        returnData = self.serviceController.run_job( \
+            'hazard_detection_light_check', payload, files)
 
         return returnData
-    #============================================================================
+
 
     ##
-    #   @brief Calls hazard_detection_door_check() RAPP Platform front-end service.
+    #   @brief Calls hazard_detection_door_check() RAPP Platform  service.
     #   @return Return answer from RAPP Platform.
     ##
     def hazard_detection_door_check(self, filepath):
         payload = {}
         files = [{'path': filepath, 'field_name': 'file'}]
 
-        returnData = self.serviceController.run_job('hazard_detection_door_check', payload, files)
+        returnData = self.serviceController.run_job( \
+            'hazard_detection_door_check', payload, files)
 
         return returnData
-    #============================================================================
 
 
-    def path_planning_upload_map(self, pngFile, yamlFile, user, map_name):
+    def path_planning_upload_map(self, pngFile, yamlFile, map_name):
         payload = {
-          'user': user,
           'map_name': map_name
         }
         files = [
@@ -616,10 +602,9 @@ class RappCloud(object):
         return response
 
 
-    def path_planning_plan_path_2d(self, user, map_name, robot_type, \
+    def path_planning_plan_path_2d(self, map_name, robot_type, \
             algorithm, start, goal):
         payload = {
-          'user': user,
           'map_name': map_name,
           'robot_type': robot_type,
           'algorithm': algorithm,
