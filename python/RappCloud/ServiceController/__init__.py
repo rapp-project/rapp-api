@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-## @file RappCloud/CloudInterface/__init__.py
+## @file RappCloud/ServiceController/__init__.py
 #
 
 
