@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-# Copyright 2015 RAPP
+# Copyright 2016 RAPP
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
+
 from abc import abstractmethod
 
 from RappCloud.ServiceController import ServiceControllerSync
@@ -34,46 +35,53 @@ from RappCloud.Objects import (
         )
 
 
+##
+#  @brief Base Service Class.
+#
 class Service(object):
-    def __init__(self, **kwargs):
-        self._controller = ServiceControllerSync()
-        self._svcName = ''
-        self._reqPayload = {}
-        self._reqFiles = []
-        self._cloudResp = CloudResponse({})
-        self._cloudReq = CloudRequest()
-
-        for key, value in kwargs.iteritems():
-            # If object has attribute set value.
-            if hasattr(self, key):
-                setattr(self, key, value)
+    def __init__(self, urlname=''):
+        self._controller = ServiceControllerSync(urlname=urlname)
+        self.__svcName = urlname
+        self.__urlpath = self._controller.get_svc_urlpath()
+        self.__cloudResp = CloudResponse({})
+        self.__cloudReq = CloudRequest()
 
 
-    def get_response(self):
-        return self._cloudResp
+    ##
+    #  @brief Return Cloud Response object
+    #
+    def response(self):
+        return self.__cloudResp
 
 
-    def get_request(self):
-        return self._cloudReq
+    ##
+    #  @brief Return Cloud Response object
+    #
+    def request(self):
+        return self.__cloudReq
 
-
-    def set_service_name(self, name):
-        self._svcName = name
 
 
     ##
     #  @brief Call Cloud Service.
     #
     def call(self):
-        self._make_payload()
-        self._make_files()
+        self.__make_request_obj()
         cloudResponse = self._controller.run_job( \
-                self._svcName,
-                self._reqPayload,
-                self._reqFiles)
-        print cloudResponse
-        self._cloudResp = CloudResponse(cloudResponse)
-        return self._cloudResp
+                self.__svcName,
+                self.__cloudReq)
+
+        self.__cloudResp = CloudResponse(cloudResponse)
+        return self.__cloudResp
+
+
+    ##
+    #  @brief Create/Make Cloud Request Object.
+    #
+    def __make_request_obj(self):
+        _payload = self._make_payload()
+        _files = self._make_files()
+        self.__cloudReq = CloudRequest(payload=_payload, files=_files)
 
 
     @abstractmethod
