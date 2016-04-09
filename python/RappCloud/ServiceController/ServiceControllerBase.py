@@ -26,9 +26,7 @@
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
-import requests
-# from requests.auth import HTTPBasicAuth  # Http basic authentication
-from requests.exceptions import *  # Requests Exceptions
+
 import json
 from os import path
 import sys
@@ -43,18 +41,22 @@ class ServiceControllerBase(object):
   ##
   #  @brief Object constructor
   #
-  def __init__(self, connection=None):
-    self.cfgDir_ = path.join(__path__, '../config')
-    self.connection_ = {
+  def __init__(self, connection=None, urlname=''):
+    self._urlname = urlname
+
+    self.__cfgDir = path.join(__path__, '../config')
+    self._connection = {
       "protocol": "",
       "ipaddr": "",
       "port": ""
     }
 
     if connection is not None:
-      self.connection_ = connection
+      self._connection = connection
     else:
       self.__parse_platform_cfg()
+
+    self._urlpath = self._svc_url(urlname)
 
 
   ##
@@ -109,8 +111,12 @@ class ServiceControllerBase(object):
   #  Craft patform service full url path.
   #
   def _svc_url(self, svcUrlName):
-    return self.connection_['protocol'] + '://' + self.connection_['ipaddr'] + \
-        ':' + self.connection_['port'] + '/hop/' + svcUrlName
+    return self._connection['protocol'] + '://' + self._connection['ipaddr'] + \
+        ':' + self._connection['port'] + '/hop/' + svcUrlName
+
+
+  def get_svc_urlpath(self):
+      return self._urlpath
 
   ##
   #  @brief Load Platform application token by path.
@@ -120,12 +126,13 @@ class ServiceControllerBase(object):
   def load_app_token(self, app=""):
     ## TODO Load different tokens per application request.
     self.appToken_ = ''
-    authParams = self.__read_json_file(path.join(self.cfgDir_, 'auth.json'))
+    authParams = self.__read_json_file(path.join(self.__cfgDir, 'auth.json'))
     appTokenPath = path.expanduser(
         path.join(authParams['token_store_dir'], authParams['app_token']))
 
     with open(appTokenPath, 'r') as f:
       self.appToken_ = str(f.read()).replace('\n', '')
+
 
   ##
   #
@@ -135,13 +142,14 @@ class ServiceControllerBase(object):
       data = json.load(jsonData)
       return data
 
+
   ##
   #  @brief Parse and load Rapp Platform parameters.
   #
   #  @param self The object pointer.
   #
   def __parse_platform_cfg(self):
-    cfgFilePath = path.join(self.cfgDir_, 'platform.cfg')
+    cfgFilePath = path.join(self.__cfgDir, 'platform.cfg')
     section = 'RAPP Platform'
     cfgParser = SafeConfigParser()
 
@@ -170,17 +178,17 @@ class ServiceControllerBase(object):
 
     if cfgParser.has_option(useSection, 'ipv4_addr') and \
         cfgParser.has_option(useSection, 'port'):
-      self.connection_['ipaddr'] = cfgParser.get(useSection, 'ipv4_addr')
-      self.connection_['port'] = cfgParser.get(useSection, 'port')
+      self._connection['ipaddr'] = cfgParser.get(useSection, 'ipv4_addr')
+      self._connection['port'] = cfgParser.get(useSection, 'port')
     else:
       print "Missing options {ipv4_addr} and {port} in cfg file [%s]" \
           % cfgFilePath
       sys.exit(1)
     if cfgParser.has_option(useSection, 'protocol'):
-      self.connection_['protocol'] = cfgParser.get(useSection, 'protocol')
+      self._connection['protocol'] = cfgParser.get(useSection, 'protocol')
     else:
       print "Missing {protocol} option in platform cfg file." + \
           "Falling back to default {http}"
-      self.connection_['protocol'] = 'http'
+      self._connection['protocol'] = 'http'
 
 

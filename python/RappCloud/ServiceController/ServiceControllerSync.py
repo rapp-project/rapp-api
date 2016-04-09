@@ -46,10 +46,13 @@ from Adapters import TLSAdapter as SSLAdapter
 #  Static class.
 #
 class ServiceControllerSync(ServiceControllerBase):
-
-  def __init__(self, connect=None, timeout=None, persistent_connection=True):
-    self.timeout_ = timeout
-    super(ServiceControllerSync, self).__init__()
+  ##
+  #  @brief Object constructor
+  #
+  def __init__(self, connect=None, timeout=None, persistent_connection=True, \
+      urlname=''):
+    self._timeout = timeout
+    super(ServiceControllerSync, self).__init__(urlname=urlname)
 
     self.persistentConn_ = persistent_connection
     if self.persistentConn_:
@@ -64,15 +67,24 @@ class ServiceControllerSync(ServiceControllerBase):
   #
   #   @return Rapp Platform Service response object.
   #
-  def run_job(self, svcUrlName, payload, files):
-    url = self._svc_url(svcUrlName)
+  def run_job(self, svcUrlName, cloudReq):
+    payload, files  = cloudReq.unpack()
+    # Serialize file objects to dictionaries
+    _files = []
+    for f in files:
+        _files.append(f.serialize())
+    ########################################
 
+    # Serialize payload object to dictionary
+    _payload = payload.serialize()
+
+    # Load application token
     self.load_app_token(svcUrlName)
 
     if self.persistentConn_:
-        resp = self.__post_persistent(url, payload, files)
+        resp = self.__post_persistent(_payload, _files)
     else:
-        resp = self.__post_session_once(url, payload, files)
+        resp = self.__post_session_once(_payload, _files)
     return resp
 
 
@@ -98,7 +110,7 @@ class ServiceControllerSync(ServiceControllerBase):
   #  @param data The data to send. Literal.
   #  @param files Files to send.
   #
-  def post_request(self, session, urlpath, data={}, files=[]):
+  def post_request(self, session, data={}, files=[]):
     payload = self._make_payload_dic(data)
     _files = []
     for f in files:
@@ -110,8 +122,8 @@ class ServiceControllerSync(ServiceControllerBase):
         _files.append(fTuble)
 
     try:
-        resp = session.post(url=urlpath, data=payload, files=_files, \
-          timeout=self.timeout_, verify=False, auth=RAPPAuth("rapp_token"))
+        resp = session.post(url=self._urlpath, data=payload, files=_files, \
+          timeout=self._timeout, verify=False, auth=RAPPAuth("rapp_token"))
         # Raise Exception for response status code.
         resp.raise_for_status()
         header = resp.headers
@@ -141,10 +153,10 @@ class ServiceControllerSync(ServiceControllerBase):
   # @param data Payload data to send.
   # @param files Files to send.
   #
-  def __post_session_once(self, urlpath, data, files):
+  def __post_session_once(self, data, files):
     with requests.Session() as session:
       self.__mount_adapters(self.session_)
-      resp = self.post_request(session, urlpath, data, files)
+      resp = self.post_request(session, data, files)
     return resp
 
 
@@ -154,8 +166,8 @@ class ServiceControllerSync(ServiceControllerBase):
   # @param data Payload data to send.
   # @param files Files to send.
   #
-  def __post_persistent(self, urlpath, data, files):
-    return self.post_request(self.session_, urlpath, data, files)
+  def __post_persistent(self, data, files):
+    return self.post_request(self.session_, data, files)
 
 
   ##
