@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-# Copyright 2015 RAPP
+# Copyright 2016 RAPP
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/Objects/File.py
 #
 #  @copyright Rapp Projecty EU 2015
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
@@ -28,14 +28,22 @@
 
 class File(object):
     def __init__(self, path="", httpField=""):
-        self.path = path
+        self.__path = path
         if httpField is not "":
-            self.httpField = httpField
+            self.__httpField = httpField
         else:
-            self.httpField = "file"
+            self.__httpField = "file"
+
+
+    def set_path(self, path):
+        self.__path = path
+
+
+    def set_httpfield(self, fieldname):
+        self.__httpField = fieldname
 
 
     def serialize(self):
-        return {'path': self.path, 'field_name': self.httpField}
+        return {'path': self.__path, 'field_name': self.__httpField}
 
 

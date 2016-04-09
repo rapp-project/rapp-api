@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-# Copyright 2015 RAPP
+# Copyright 2016 RAPP
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,24 +19,24 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/Objects/Payload.py
 #
 #  @copyright Rapp Projecty EU 2015
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
 
-class CloudRequest(object):
-    def __init__(self, **args):
-        for key, value in args.iteritems():
+class Payload(object):
+    def __init__(self, **kwargs):
+        for key, value in kwargs.iteritems():
             setattr(self, key, value)
 
 
-
-class CloudResponse(object):
-    def __init__(self, respDic):
-        for key, value in respDic.iteritems():
+    def append(self, **kwargs):
+        for key, value in kwargs.iteritems():
             setattr(self, key, value)
 
 
+    def serialize(self):
+        return self.__dict__
 
