@@ -111,18 +111,22 @@ class ServiceControllerSync(ServiceControllerBase):
   #  @param files Files to send.
   #
   def post_request(self, session, data={}, files=[]):
-    payload = self._make_payload_dic(data)
+    _payload = self._make_payload_dic(data)
     _files = []
     for f in files:
       try:
         fTuble = self._make_file_tuple(f['path'], f['field_name'])
       except Exception as e:
-        print e
+        # Maybe raise exception here to allow external handle
+        resp = {
+          'error': str(e)
+        }
+        return resp
       else:
         _files.append(fTuble)
 
     try:
-        resp = session.post(url=self._urlpath, data=payload, files=_files, \
+        resp = session.post(url=self._urlpath, data=_payload, files=_files, \
           timeout=self._timeout, verify=False, auth=RAPPAuth("rapp_token"))
         # Raise Exception for response status code.
         resp.raise_for_status()
