@@ -38,16 +38,18 @@ from RappCloud.Objects import (
 #  @param fast
 #  @param image
 #
-class FaceDetection(Service):
+class OntologyIsSubsuperclass(Service):
     def __init__(self, *args, **kwargs):
         # Cloud Service request arguments
-        self.fast = False
-        self.image = ''
+        self.parent_class = ''
+        self.child_class = ''
+        self.recursive = False
         ###############################
 
-        super(FaceDetection, self).__init__(
-            svcname='face_detection',
-            **kwargs)
+        super(OntologyIsSubsuperclass, self).__init__(
+            svcname='ontology_is_subsuperclass_of',
+            **kwargs
+            )
 
 
     ##
@@ -55,7 +57,11 @@ class FaceDetection(Service):
     #
     def _make_payload(self):
         # Create and return payload object
-        return Payload(fast=self.fast)
+        return Payload(
+            parent_class=self.parent_class,
+            child_class=self.child_class,
+            recursive=self.recursive
+            )
 
 
     ##
@@ -63,5 +69,4 @@ class FaceDetection(Service):
     #
     def _make_files(self):
         # Create and return array of file objects
-        return [File(self.image, 'file')]
-
+        return []

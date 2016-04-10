@@ -38,16 +38,21 @@ from RappCloud.Objects import (
 #  @param fast
 #  @param image
 #
-class FaceDetection(Service):
+class SpeechDetectionSphinx4(Service):
     def __init__(self, *args, **kwargs):
         # Cloud Service request arguments
-        self.fast = False
-        self.image = ''
+        self.language = ''
+        self.audio_source = ''
+        self.words = []
+        self.sentences = []
+        self.grammar = []
+        self.audiofile = ''
         ###############################
 
-        super(FaceDetection, self).__init__(
-            svcname='face_detection',
-            **kwargs)
+        super(SpeechDetectionSphinx4, self).__init__(
+            svcname='speech_detection_sphinx4',
+            **kwargs
+            )
 
 
     ##
@@ -55,7 +60,13 @@ class FaceDetection(Service):
     #
     def _make_payload(self):
         # Create and return payload object
-        return Payload(fast=self.fast)
+        return Payload(
+            language=self.language,
+            audio_source = self.audio_source,
+            words=self.words,
+            sentences=self.sentences,
+            grammar=self.grammar
+            )
 
 
     ##
@@ -63,5 +74,4 @@ class FaceDetection(Service):
     #
     def _make_files(self):
         # Create and return array of file objects
-        return [File(self.image, 'file')]
-
+        return [File(self.audiofile, 'file')]

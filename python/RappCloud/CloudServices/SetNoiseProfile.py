@@ -38,16 +38,17 @@ from RappCloud.Objects import (
 #  @param fast
 #  @param image
 #
-class FaceDetection(Service):
+class SetNoiseProfile(Service):
     def __init__(self, *args, **kwargs):
         # Cloud Service request arguments
-        self.fast = False
-        self.image = ''
+        self.audio_source = ''
+        self.audiofile = ''
         ###############################
 
-        super(FaceDetection, self).__init__(
-            svcname='face_detection',
-            **kwargs)
+        super(SetNoiseProfile, self).__init__(
+            svcname='set_noise_profile',
+            **kwargs
+            )
 
 
     ##
@@ -55,7 +56,9 @@ class FaceDetection(Service):
     #
     def _make_payload(self):
         # Create and return payload object
-        return Payload(fast=self.fast)
+        return Payload(
+            audio_source = self.audio_source,
+            )
 
 
     ##
@@ -63,5 +66,4 @@ class FaceDetection(Service):
     #
     def _make_files(self):
         # Create and return array of file objects
-        return [File(self.image, 'file')]
-
+        return [File(self.audiofile, 'file')]

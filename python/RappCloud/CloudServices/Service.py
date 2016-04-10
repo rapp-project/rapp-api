@@ -25,9 +25,6 @@
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
-
-from abc import abstractmethod
-
 from RappCloud.ServiceController import ServiceControllerSync
 from RappCloud.Objects import (
         CloudResponse,
@@ -39,7 +36,11 @@ from RappCloud.Objects import (
 #  @brief Base Service Class.
 #
 class Service(object):
-    def __init__(self, svcname=''):
+    def __init__(self, svcname='', **kwargs):
+        for key, value in kwargs.iteritems():
+            if hasattr(self, key):
+                setattr(self, key, value)
+
         self.svcname = svcname
         self.urlpath = ''
         # Create service controller object. Pass the service instance
