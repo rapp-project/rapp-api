@@ -39,12 +39,12 @@ from RappCloud.Objects import (
 #  @brief Base Service Class.
 #
 class Service(object):
-    def __init__(self, urlname=''):
-        self._controller = ServiceControllerSync(urlname=urlname)
-        self.__svcName = urlname
-        self.__urlpath = self._controller.get_svc_urlpath()
-        self.__cloudResp = CloudResponse({})
-        self.__cloudReq = CloudRequest()
+    def __init__(self, svcname=''):
+        self.svcname = svcname
+        self.urlpath = ''
+        # Create service controller object. Pass the service instance
+        # for the service controller to hold.
+        self._controller = ServiceControllerSync(self)
 
 
     ##
@@ -61,16 +61,12 @@ class Service(object):
         return self.__cloudReq
 
 
-
     ##
     #  @brief Call Cloud Service.
     #
     def call(self):
-        self.__make_request_obj()
-        cloudResponse = self._controller.run_job( \
-                self.__svcName,
-                self.__cloudReq)
-
+        self.make_request_obj()
+        cloudResponse = self._controller.run_job()
         self.__cloudResp = CloudResponse(cloudResponse)
         return self.__cloudResp
 
@@ -78,19 +74,17 @@ class Service(object):
     ##
     #  @brief Create/Make Cloud Request Object.
     #
-    def __make_request_obj(self):
+    def make_request_obj(self):
         _payload = self._make_payload()
         _files = self._make_files()
         self.__cloudReq = CloudRequest(payload=_payload, files=_files)
 
 
-    @abstractmethod
     def _make_payload(self):
-        raise NotImplementedError()
+        return Payload()
 
 
-    @abstractmethod
     def _make_files(self):
-        raise NotImplementedError()
+        return []
 
 

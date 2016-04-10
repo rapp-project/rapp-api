@@ -45,7 +45,7 @@ class FaceDetection(Service):
         self.image = image
         ###############################
 
-        super(FaceDetection, self).__init__('face_detection')
+        super(FaceDetection, self).__init__(svcname='face_detection')
 
 
     ##
@@ -63,10 +63,3 @@ class FaceDetection(Service):
         # Create and return array of file objects
         return [File(self.image, 'file')]
 
-
-
-# TEST!! Move to IntegrationTests
-if __name__ == "__main__":
- face = FaceDetection(fast=False, image="/home/klpanagi/rapp_platform/rapp-platform-catkin-ws/src/rapp-platform/rapp_testing_tools/test_data/face_samples/etsardou_medium.jpg")
- resp = face.call()
- print resp.faces
