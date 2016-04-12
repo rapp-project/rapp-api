@@ -67,7 +67,7 @@ class ServiceControllerSync(ServiceControllerBase):
     #
     def run_job(self):
         # Unpack payload and file objects from cloud service object
-        payload, files  = self._service.request().unpack()
+        payload, files  = self._service.req.unpack()
 
         # Serialize file objects to dictionaries
         _files = []
