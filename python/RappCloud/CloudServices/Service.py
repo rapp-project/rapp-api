@@ -49,24 +49,55 @@ class Service(object):
 
 
     ##
-    #  @brief Return Cloud Response object
-    #
-    def response(self):
+    #  @brief Service request object getter
+    @property
+    def req(self):
+        # request property
+        return self.__cloudReq
+
+
+    ##
+    #  @brief Service request object setter
+    @req.setter
+    def req(self, val):
+        self.__cloudReq = val
+
+
+    ##
+    #  @brief Service request object deleter
+    @req.deleter
+    def req(self):
+        del self.__cloudReq
+
+
+    ##
+    #  @brief Service response object getter
+    @property
+    def resp(self):
+        # response property
         return self.__cloudResp
 
 
     ##
-    #  @brief Return Cloud Response object
-    #
-    def request(self):
-        return self.__cloudReq
+    #  @brief Service response object setter
+    @resp.setter
+    def resp(self, val):
+        self.__cloudResp = val
+
+
+    ##
+    #  @brief Service response object deleter
+    @resp.deleter
+    def resp(self):
+        del self.__cloudResp
+
 
 
     ##
     #  @brief Call Cloud Service.
     #
     def call(self):
-        self.make_request_obj()
+        self._make_request_obj()
         cloudResponse = self._controller.run_job()
         self.__cloudResp = CloudResponse(cloudResponse)
         return self.__cloudResp
@@ -75,7 +106,7 @@ class Service(object):
     ##
     #  @brief Create/Make Cloud Request Object.
     #
-    def make_request_obj(self):
+    def _make_request_obj(self):
         _payload = self._make_payload()
         _files = self._make_files()
         self.__cloudReq = CloudRequest(payload=_payload, files=_files)
