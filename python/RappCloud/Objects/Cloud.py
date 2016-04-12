@@ -50,6 +50,7 @@ class CloudRequest(object):
     #  @brief Return the payload attached to the request object
     #  @returns RappCloud.Objects.Payload
     #
+    @property
     def payload(self):
         return self.__payload
 
@@ -58,6 +59,7 @@ class CloudRequest(object):
     #  @brief Return the files attached to the request object
     #  @returns Array of RappCloud.Objects.File objects
     #
+    @property
     def files(self):
         return self.__files
 
