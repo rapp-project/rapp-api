@@ -11,3 +11,4 @@ from SetNoiseProfile import SetNoiseProfile
 from OntologySubclassesof import OntologySubclassesof
 from OntologySuperclassesof import OntologySuperclassesof
 from OntologyIsSubsuperclass import OntologyIsSubsuperclass
+from TextToSpeech import TextToSpeech

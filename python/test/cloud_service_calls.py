@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 
 import unittest
 import time
@@ -91,8 +93,16 @@ class TestServiceCalls(unittest.TestCase):
         ontologyQ.child_class = 'Oven'
         ontologyQ.recursive = True
         resp = ontologyQ.call()
-        print resp.serialize()
         self.assertEqual(resp.error, '')
+
+
+    def test_text_to_speech(self):
+        from RappCloud import TextToSpeech
+        tts = TextToSpeech(language='el', text='Καλησπέρα είμαι πουτανάκι')
+        tts.call()
+        tts.store_audio('~/tmp/test.wav')
+        self.assertEqual(tts.resp.error, '')
+
 
 
 
