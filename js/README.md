@@ -1,9 +1,11 @@
+# JS RAPP API
+
 ## Synopsis
 
 Containes RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.
 
 
-### Dependencies
+## Dependencies
 
 To use this JS API you need nodejs and npm.
 You can run the global_deps_install_script.sh located in the root folder to install them along with grunt-cli and mocha which are the global dependencies the API needs for task management and testing.
@@ -19,7 +21,7 @@ or
 $ make deps
 ```
 
-### Installation
+## Installation
 
 To install the API globally, given that you have installed all the dependencies as explained in the previous step, you must type:
 
@@ -46,7 +48,7 @@ RAPPCloud.qrDetector = require('qrDetector');
 You can run all the examples as executables, eg. ./face_detect.js
 
 
-###  Configurations
+##  Configurations
 
 On default the RAPP API connects on the RAPP Platform installed **LOCALLY**.
 TODO: Provide the configuration parameters to connect the API to:
@@ -55,7 +57,7 @@ TODO: Provide the configuration parameters to connect the API to:
 - The RAPP Platform Development Server.
 
 
-### How to use the RappCloud services
+## How to use the RappCloud services
 
 The examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
 
