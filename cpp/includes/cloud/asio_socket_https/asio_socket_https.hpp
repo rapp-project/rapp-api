@@ -20,8 +20,8 @@ public:
      * \param token: authentication token
      * \param user: rapp.cloud username
 	 */
-	asio_socket_https(const std::string token, const std::string user)
-  	: ctx_(boost::asio::ssl::context::tlsv12_client), token_(token), user_(user)
+	asio_socket_https(const std::string token)
+  	: ctx_(boost::asio::ssl::context::tlsv12_client), token_(token)
 	{}
 
 	/**
@@ -42,10 +42,10 @@ public:
 		}
 		// disable ssl v2 and ssl v3 (allow only tls)
 		ctx_.set_options(boost::asio::ssl::context::default_workarounds
-        				| boost::asio::ssl::context::no_sslv2
-        				| boost::asio::ssl::context::no_sslv3
-						| boost::asio::ssl::context::no_tlsv1
-        				| boost::asio::ssl::context::single_dh_use);
+        				|boost::asio::ssl::context::no_sslv2
+        				|boost::asio::ssl::context::no_sslv3
+						|boost::asio::ssl::context::no_tlsv1
+        				|boost::asio::ssl::context::single_dh_use);
 		//ctx_.load_verify_file("ca.pem");
 		// resolve iterator
 		boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
@@ -66,9 +66,11 @@ public:
 	/// \brief verify TLS certificate - WARNING: is this proper verification?
 	bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx)
   	{
+		/*
     	char subject_name[256];
     	X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
     	X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
+		*/
     	return preverified;
   	}
 
@@ -168,8 +170,6 @@ private:
     boost::asio::streambuf response_;
 	/// user authentication token
 	const std::string token_;
-	/// user-name
-	const std::string user_;
 };
 }
 }

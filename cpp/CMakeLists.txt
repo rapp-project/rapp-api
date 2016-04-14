@@ -40,7 +40,7 @@ find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework prog
 
 # Find libcrypt / libssl
 find_package(OpenSSL REQUIRED)
-if( OPENSSL_FOUND )
+if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIRS})
     message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
 else()

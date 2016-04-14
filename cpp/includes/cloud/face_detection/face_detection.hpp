@@ -24,9 +24,9 @@ public:
                     const std::shared_ptr<rapp::object::picture> image,
                     bool fast,
                     std::function<void(std::vector<rapp::object::face>)> callback,
-					std::pair<std::string, std::string> auth
+					const std::string token
                   )
-    : asio_service_http(std::get<0>(auth), std::get<1>(auth)), delegate_(callback)
+    : asio_service_http(token), delegate_(callback)
     {
         assert(image);
         // Create a new random boundary

@@ -21,8 +21,8 @@ public:
 	 * \param token is the rapp.cloud authentication token
 	 * \param user is the rapp.cloud username
 	 */
-	asio_service_http(const std::string token, const std::string user)
-	: token_(token), user_(user){}
+	asio_service_http(const std::string token)
+	: token_(token){}
 
     /** 
      * schedule this client as a job for execution using
@@ -235,8 +235,6 @@ protected:
     boost::asio::streambuf response_;
 	/// user authentication token
 	const std::string token_;
-	/// user-name
-	const std::string user_;
 };
 }
 }

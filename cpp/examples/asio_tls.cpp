@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
         // service controler
         rapp::cloud::service_controller ctrl("localhost","8081");
 		// run an asio https
-		auto test = std::make_shared<rapp::cloud::asio_socket_https>("alex", "my_token");
+		auto test = std::make_shared<rapp::cloud::asio_socket_https>("my_token");
 		if (test) {
 			ctrl.run_job(test);
 		}
