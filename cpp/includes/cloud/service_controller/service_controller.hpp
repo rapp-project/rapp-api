@@ -2,7 +2,7 @@
 #define RAPP_SERVICE_CONTROLLER
 #include "includes.ihh"
 namespace rapp {
-namespace services {
+namespace cloud {
 /**
  * \class service_controller
  * \brief Main class that controllers RAPP Services
@@ -20,10 +20,16 @@ namespace services {
 class service_controller
 {
 public:
+
+	/// no empty constructor
+	service_controller() = delete;
+
     /**
      * default constructor
+	 * \param @address is the rapp platform IP
+	 * \param @port is the rapp platform port
      */
-    service_controller();
+    service_controller(const std::string address,  const std::string port);
 
     /// The Service Queue
     boost::asio::io_service & queue();
@@ -45,6 +51,10 @@ public:
     void run_jobs(std::vector<std::shared_ptr<asio_socket>> jobs);
 
 private:
+	/// auth token
+	const std::string token_;
+	/// username
+	const std::string user_;
     /// IO service
     boost::asio::io_service io_service_;
     /// Endpoint Resolver

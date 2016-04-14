@@ -2,7 +2,7 @@
 #define RAPP_ASIO_SOCKET_
 #include "includes.ihh"
 namespace rapp {
-namespace services {
+namespace cloud {
 /**
  * \brief Abstract Base ASIO Socket class
  * Use for passing around to the service controller, various types of cloud handlers.

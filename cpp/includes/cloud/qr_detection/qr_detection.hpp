@@ -10,7 +10,7 @@ namespace cloud {
  * \date January 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class qr_detection : public rapp::services::asio_service_http
+class qr_detection : public asio_service_http
 {
 public:
     /**
@@ -21,9 +21,10 @@ public:
     */
     qr_detection(
                   const std::shared_ptr<rapp::object::picture> image,
-                  std::function<void(std::vector<rapp::object::qr_code>)> callback
+                  std::function<void(std::vector<rapp::object::qr_code>)> callback,
+				  std::pair<std::string, std::string> auth
                 )
-    : rapp::services::asio_service_http (), delegate__(callback)
+    : asio_service_http(std::get<0>(auth), std::get<1>(auth)), delegate__(callback)
     {
         assert(image);
         // Create a new random boundary

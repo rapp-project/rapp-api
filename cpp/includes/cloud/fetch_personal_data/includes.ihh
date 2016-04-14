@@ -1,8 +1,7 @@
 #include <functional>
 #include <memory>
 
-#include "../../service/asio_service_http/asio_service_http.hpp"
-//#include "../../service/globals/globals.hpp"
+#include "../service/asio_service_http/asio_service_http.hpp"
 
 #include <boost/lexical_cast.hpp>
 

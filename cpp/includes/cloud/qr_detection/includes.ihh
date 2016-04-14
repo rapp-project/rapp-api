@@ -9,6 +9,6 @@
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
-#include "../../service/asio_service_http/asio_service_http.hpp"
+#include "../asio_service_http/asio_service_http.hpp"
 #include "../../objects/qr_code/qr_code.hpp"
 #include "../../objects/picture/picture.hpp"

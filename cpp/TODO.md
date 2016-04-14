@@ -1,7 +1,8 @@
 [TODO changes for 0.6.0]
-
-* write `examples/cognitive_test_chooser`
-* write `examples/record_cognitive_test_performance`
-* write `cloud/available_services`
-* Refactor all `tests/*` and maybe extend other classes.
-* the file `service/globals/globals.hpp` should be removed.
+1. Refactor all cloud services to use JSON
+2. Add TLS: asio_socket_https
+3. add `examples/cognitive_test_chooser`
+4. add `examples/record_cognitive_test_performance`
+5. add `cloud/available_services`
+6. add new unit tests
+7. deprecate `service/globals/globals.hpp` should be removed. 

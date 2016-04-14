@@ -1,4 +1,4 @@
-#include "../includes/service/service_controller/service_controller.hpp"
+#include "../includes/cloud/service_controller/service_controller.hpp"
 #include "../includes/cloud/speech_detection_sphinx4/speech_detection_sphinx4.hpp"
 #include "../includes/objects/audio/audio.hpp"
 #include <boost/program_options.hpp>

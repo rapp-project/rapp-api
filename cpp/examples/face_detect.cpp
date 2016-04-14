@@ -1,4 +1,4 @@
-#include "../includes/service/service_controller/service_controller.hpp"
+#include "../includes/cloud/service_controller/service_controller.hpp"
 #include "../includes/cloud/face_detection/face_detection.hpp"
 #include "../includes/objects/picture/picture.hpp"
 ///

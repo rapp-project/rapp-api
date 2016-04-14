@@ -10,9 +10,10 @@ namespace cloud {
  * \date January 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face_detection : public rapp::services::asio_service_http
+class face_detection : public asio_service_http
 {
 public:
+
     /**
      * \brief Constructor
      * \param image is the input image \see rapp::object::picture
@@ -22,9 +23,10 @@ public:
     face_detection(
                     const std::shared_ptr<rapp::object::picture> image,
                     bool fast,
-                    std::function<void(std::vector<rapp::object::face>)> callback
+                    std::function<void(std::vector<rapp::object::face>)> callback,
+					std::pair<std::string, std::string> auth
                   )
-    : rapp::services::asio_service_http (), delegate_(callback)
+    : asio_service_http(std::get<0>(auth), std::get<1>(auth)), delegate_(callback)
     {
         assert(image);
         // Create a new random boundary

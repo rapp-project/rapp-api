@@ -7,4 +7,3 @@
 #include <boost/asio.hpp>
 
 #include "../asio_socket/asio_socket.hpp"
-#include "../globals/globals.hpp"

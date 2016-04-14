@@ -8,6 +8,8 @@ BOOST_AUTO_TEST_SUITE(cloud_test)
 
 BOOST_AUTO_TEST_CASE(constructors_test)
 {
+	std::pair<std::string, std::string> auth = std::make_pair("rapp","test_token");
+
     // Create a Face Detector
     // use lena.jpg
     auto pic = std::make_shared<rapp::object::picture>("lena.jpg");
@@ -16,7 +18,7 @@ BOOST_AUTO_TEST_CASE(constructors_test)
     // Empty callback
     auto f_cb = [&](std::vector<rapp::object::face>){};
     // Construct
-    auto fDetect = std::make_shared<rapp::cloud::face_detection>(pic, false, f_cb);
+    auto fDetect = std::make_shared<rapp::cloud::face_detection>(pic, false, f_cb, auth);
     BOOST_CHECK(fDetect != nullptr);
     
     // Create a Qr Detector
@@ -24,7 +26,7 @@ BOOST_AUTO_TEST_CASE(constructors_test)
     auto qr = std::make_shared<rapp::object::picture>("qrcode.png");
     BOOST_CHECK(qr != nullptr);
     auto q_cb = [&](std::vector<rapp::object::qr_code> codes){};
-    auto qrDetect = std::make_shared<rapp::cloud::qr_detection>(qr, q_cb);
+    auto qrDetect = std::make_shared<rapp::cloud::qr_detection>(qr, q_cb, auth);
 
 
     // TODO, all other handlers need be tested here

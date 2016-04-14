@@ -10,7 +10,7 @@ namespace cloud {
  * \date January 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_test_choser : public rapp::services::asio_service_http
+class cognitive_test_choser : public asio_service_http
 {
 public:
 	/**
@@ -21,9 +21,10 @@ public:
 	cognitive_test_choser(
 							const std::string user,
 							const std::string test_type,
-							std::function<void(std::string)> callback
+							std::function<void(std::string)> callback,
+							std::pair<std::string, std::string> auth
 						 )
-	: rapp::services::asio_service_http (), delegate_(callback)
+	: asio_service_http(std::get<0>(auth), std::get<1>(auth)), delegate_(callback)
 	{
 		std::string boundary = random_boundary();
 		post_  = "--" + boundary + "\r\n";

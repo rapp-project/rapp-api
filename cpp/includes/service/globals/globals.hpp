@@ -13,8 +13,6 @@ namespace cloud {
 constexpr char address[] = "localhost";
 /// api.rapp.cloud - HOP server port
 constexpr char port[] = "9001";    
-/// base64 encoded authentication token - TODO DEPRECATE
-constexpr char auth_token[] = "cmFwcGRldjpyYXBwZGV2";
 }
 namespace types {
 typedef char byte;

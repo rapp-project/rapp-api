@@ -9,6 +9,7 @@
 #       -DCMAKE_BUILD_TYPE=Debug    (Optional: enable debug symbols)
 #       -DSTATIC_LIBSTD=ON          (Optional: compile statically against libstdc++)
 #       -DOPEN_NAO=ON               (Optional: compiling on OpenNAO requires additional CXX flags)
+#		-DCMAKE_INSTALL_PREFIX=/usr	(Optional: specify the install directory)  
 #
 # After succesfull compilation, run as su/sudo: `make install`
 # 
@@ -27,20 +28,36 @@ set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 include_directories(SYSTEM ${INCLUDE_HEADERS})
 set (INCLUDES ${INCLUDES} includes)
 add_subdirectory(${INCLUDES})
+
 # Library-only Executables -
-set (SOURCES ${SOURCES} ${INCLUDES}/service/service_controller/service_controller.cpp)
+set (SOURCES ${SOURCES} ${INCLUDES}/cloud/service_controller/service_controller.cpp)
+
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
+
 # Find Boost
 find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options REQUIRED)
+
+# Find libcrypt / libssl
+find_package(OpenSSL REQUIRED)
+if( OPENSSL_FOUND )
+    include_directories(${OPENSSL_INCLUDE_DIRS})
+    message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
+else()
+    # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
+endif()
+
 # Set library sources
 add_library(lrapp OBJECT ${SOURCES})
+
 # Static Library - only if asked
 if (${RAPP_STATIC})
     message(STATUS "Building static library")
     add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
-    target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_LIBRARIES})
+    target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static)
+
+	# TODO: check if param for install location has been passed
     install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION /usr/local/lib/)
     install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static.a librapp.a 
 WORKING_DIRECTORY /usr/local/lib)")
@@ -49,16 +66,22 @@ endif()
 if ((${RAPP_SHARED}) OR (NOT (${RAPP_STATIC})))
     message(STATUS "Building shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
     add_library(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
-    target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_LIBRARIES})
+    target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+	# TODO: Check if param for install location has been passed
     install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION /usr/local/lib/)
     install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.so librapp.so 
 WORKING_DIRECTORY /usr/local/lib)")
 endif()
+
+# TODO: check params for intall location of headers
+
 # Header install dir
 install (DIRECTORY ${INCLUDES}/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
 # Install Global header
 install (FILES ${PROJECT_NAME} DESTINATION /usr/local/include/${PROJECT_NAME}) #copy global include header
+
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
     add_executable(face_detect  ${EXAMPLES}/face_detect.cpp)
@@ -67,16 +90,21 @@ if (${BUILD_EXAMPLES})
     add_executable(ontology     ${EXAMPLES}/ontology_example.cpp)
     add_executable(set_denoise  ${EXAMPLES}/set_denoise_example.cpp)
     add_executable(picture      ${EXAMPLES}/picture_example.cpp)
-    target_link_libraries(face_detect ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
-    target_link_libraries(qr_detect   ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
+    add_executable(asio_tls     ${EXAMPLES}/asio_tls.cpp)
+
+    target_link_libraries(face_detect  ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
+    target_link_libraries(qr_detect    ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
     target_link_libraries(speech_recog ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
-    target_link_libraries(ontology    ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
-    target_link_libraries(set_denoise ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
+    target_link_libraries(ontology     ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
+    target_link_libraries(set_denoise  ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
+	target_link_libraries(asio_tls	   ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES} ${LIBOBJ})
     message(STATUS "Building examples, they will be placed in the `build` directory")
 else()
     message(STATUS "Not Building examples - enable with `-DBUILD_EXAMPLES=ON`")
 endif()
-# make test
+
+
+# build tests
 if (${BUILD_TESTS})
     set (TESTS ${TESTS} tests)
     enable_testing ()
@@ -102,7 +130,7 @@ else()
 endif()
 ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK) 
 set(CMAKE_COLOR_MAKEFILE on)
-set(CMAKE_VERBOSE_MAKEFILE off)
+set(CMAKE_VERBOSE_MAKEFILE on)
 # Get from arguments if Debug is requested
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_BUILD_TYPE Debug)
@@ -136,6 +164,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(BUILD_SHARED_LIBS OFF)
     message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
     message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
+# OSX ?!
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     # using Clang
     message (STATUS "Clang/OSX" )
@@ -158,3 +187,5 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message (FATAL_ERROR "unsupported compiler")
 endif()
+
+# TODO: install location
