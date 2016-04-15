@@ -10,16 +10,20 @@ int main(int argc, char* argv[])
     {
         std::cout << "scan for QR: " << argv[1] << std::endl;
         std::string file = argv[1];
-        rapp::services::service_controller ctrl;
+		std::string token = "my_token";
+
+        rapp::cloud::service_controller ctrl;
+
         if(auto pic = std::make_shared<rapp::object::picture>(file))
         {
             auto callback = [&](std::vector<rapp::object::qr_code> codes)
                             {
-                                std::cout << "found " << codes.size() << " QR codes" << std::endl;
+                                std::cout << "found " << codes.size() 
+										  << " QR codes" << std::endl;
                                 for (const auto code : codes)
                                     std::cout << code.label() << std::endl;
                             };
-            auto fdetect = std::make_shared<rapp::cloud::qr_detection>(pic, callback);
+            auto fdetect = std::make_shared<rapp::cloud::qr_detection>(pic, callback, token);
             ctrl.run_job(fdetect);
             return 0;
         }

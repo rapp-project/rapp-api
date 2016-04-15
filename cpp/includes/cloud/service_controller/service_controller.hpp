@@ -3,6 +3,11 @@
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
+/// api.rapp.cloud - 
+constexpr char address[] = "localhost";
+/// api.rapp.cloud - HOP server port
+constexpr char port[] = "9001";    
+
 /**
  * \class service_controller
  * \brief Main class that controllers RAPP Services
@@ -22,14 +27,7 @@ class service_controller
 public:
 
 	/// no empty constructor
-	service_controller() = delete;
-
-    /**
-     * default constructor
-	 * \param @address is the rapp platform IP
-	 * \param @port is the rapp platform port
-     */
-    service_controller(const std::string address,  const std::string port);
+	service_controller();
 
     /// The Service Queue
     boost::asio::io_service & queue();

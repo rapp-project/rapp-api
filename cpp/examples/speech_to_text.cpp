@@ -65,60 +65,52 @@ int main(int argc, char* argv[])
         po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
         po::notify(vm);
 
+		std::string token = "my_token";
         int checks = 0;
         std::string audio_file, audio_source, lang, user, jsgf = "";
         std::vector<std::string> words = {}, sentences = {};
 
-        if (vm.count("help"))
-        {
+        if (vm.count("help")) {
             std::cout << "Usage: options_description [options]\n";
             std::cout << desc;
             return 0;
         }
-        if (vm.count("audio"))
-        {
+        if (vm.count("audio")) {
             std::cout << "audio: " << vm["audio"].as<std::string>() << "\n";
             checks++;
             audio_file = vm["audio"].as<std::string>();
         }
-        if (vm.count("audio-source"))
-        {
+        if (vm.count("audio-source")) {
             std::cout << "audio-source: " << vm["audio-source"].as<std::string>() << "\n";
             checks++;
             audio_source = vm["audio-source"].as<std::string>();
         }
-        if (vm.count("lang"))
-        {
+        if (vm.count("lang")) {
             std::cout << "lang: " << vm["lang"].as<std::string>() << "\n";
             checks++;
             lang = vm["lang"].as<std::string>();
         }
-        if (vm.count("user"))
-        {
+        if (vm.count("user")) {
             std::cout << "user: " << vm["user"].as<std::string>() << "\n";
             checks++;
             user = vm["user"].as<std::string>();
         }
-        if (vm.count("words"))
-        {
+        if (vm.count("words")) {
             std::cout << "words: " << vm["words"].as<std::vector<std::string>>() << "\n";
             words =  vm["words"].as<std::vector<std::string>>();
         }
-        if (vm.count("sentences"))
-        {
+        if (vm.count("sentences")) {
             std::cout << "sentences: " << vm["sentences"].as<std::vector<std::string>>() << "\n";
             sentences = vm["sentences"].as<std::vector<std::string>>();
         }
-        if (vm.count("jsgf"))
-        {
+        if (vm.count("jsgf")) {
             std::cout << "JSGF: " << vm["jsgf"].as<std::string>() << "\n";  
             jsgf =  vm["jsgf"].as<std::string>();
         }
 
         // we have the required params set
-        if (checks == 4)
-        {
-            rapp::services::service_controller ctrl;
+        if (checks == 4) {
+            rapp::cloud::service_controller ctrl;
             std::shared_ptr<rapp::object::audio> audio;
             std::vector<std::string> gram;
 
@@ -137,8 +129,7 @@ int main(int argc, char* argv[])
             if (!jsgf.empty())
                 gram.push_back(load_jsgf(jsgf));
 
-            if (audio)
-            {
+            if (audio) {
                 auto callback = [&](std::vector<std::string> words)
                                 {
                                     for (const auto & str : words)
@@ -151,27 +142,22 @@ int main(int argc, char* argv[])
                                                                                             gram,         // grammar
                                                                                             words,        // words
                                                                                             sentences,    // sentences
-                                                                                            callback);
+                                                                                            callback,
+																							token);
                 ctrl.run_job(sphinx4_call);
             }
         }
-        else
-        {
+        else {
             std::cerr << "missing required arguments -- please see \"--help\"\n";
         }
     }
-    catch(std::exception & e)
-    {
+    catch(std::exception & e) {
         std::cerr << "error: " << e.what() << "\n";
         return 1;
     }
-    catch(...) 
-    {
+    catch(...) {
         std::cerr << "Exception of unknown type!\n";
     }
-
-    /*
-    */
 
     return 0;
 }

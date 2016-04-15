@@ -10,7 +10,7 @@ namespace cloud {
  * \date 19-September-2015
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speech_detection_sphinx4 : public rapp::services::asio_service_http
+class speech_detection_sphinx4 : public asio_service_http
 {
 public:
     /**
@@ -32,9 +32,10 @@ public:
 							  const std::vector<std::string> grammar,
 							  const std::vector<std::string> words,
 							  const std::vector<std::string> sentences,
-							  std::function<void(std::vector<std::string> words)> callback
+							  std::function<void(std::vector<std::string> words)> callback,
+							  std::string token
 						    )
-	: rapp::services::asio_service_http (), delegate_(callback)
+	: asio_service_http(token), delegate_(callback)
     {
         assert(file);
         // Create a new random boundary

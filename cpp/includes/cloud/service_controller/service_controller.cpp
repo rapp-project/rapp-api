@@ -4,7 +4,7 @@ namespace rapp
 namespace cloud 
 {
 
-service_controller::service_controller(const std::string address, const std::string port)
+service_controller::service_controller()
 : io_service_(), query_(address, port), resolver_(io_service_)
 {}
 

@@ -20,8 +20,9 @@ int main(int argc, char ** argv)
         std::string type = argv[2];
         std::cout << "denoise user: " << argv[3] << std::endl;
         std::string user = argv[3];
+		std::string token = "my_token";
 
-        rapp::services::service_controller ctrl;
+        rapp::cloud::service_controller ctrl;
         std::shared_ptr<rapp::object::audio> audio;
 
         if (type == "microphone_wav")
@@ -35,9 +36,8 @@ int main(int argc, char ** argv)
         else
             throw std::runtime_error("uknown audio source");
 
-        if (audio)
-        {
-            ctrl.run_job(std::make_shared<rapp::cloud::set_denoise_profile>(audio, user));
+        if (audio) {
+            ctrl.run_job(std::make_shared<rapp::cloud::set_denoise_profile>(audio, user, token));
         }
     }
     else

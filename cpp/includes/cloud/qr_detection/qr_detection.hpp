@@ -22,9 +22,9 @@ public:
     qr_detection(
                   const std::shared_ptr<rapp::object::picture> image,
                   std::function<void(std::vector<rapp::object::qr_code>)> callback,
-				  std::pair<std::string, std::string> auth
+				  std::string token
                 )
-    : asio_service_http(std::get<0>(auth), std::get<1>(auth)), delegate__(callback)
+    : asio_service_http(token), delegate__(callback)
     {
         assert(image);
         // Create a new random boundary

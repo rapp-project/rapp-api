@@ -71,6 +71,7 @@ public:
     }
 
 private:
+	typedef char byte;
 
     // Delete empty constructor    
     picture() = delete;

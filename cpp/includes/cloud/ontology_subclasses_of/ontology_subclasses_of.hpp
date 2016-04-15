@@ -10,7 +10,7 @@ namespace cloud {
  * \date January 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_subclasses_of : public rapp::services::asio_service_http
+class ontology_subclasses_of : public rapp::cloud::asio_service_http
 {
 public:
     /**
@@ -20,9 +20,10 @@ public:
      */
     ontology_subclasses_of(
                             std::string query,
-                            std::function<void(std::vector<std::string>)> callback
+                            std::function<void(std::vector<std::string>)> callback,
+							std::string token
                           )
-    : rapp::services::asio_service_http(), delegate__(callback)
+    : asio_service_http(token), delegate__(callback)
     {
         post_ = "query="+escape_string(query);
         header_ = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";

@@ -10,7 +10,7 @@ namespace cloud {
  * \date 20-September-2015
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class set_denoise_profile : public rapp::services::asio_service_http
+class set_denoise_profile : public asio_service_http
 {
 public:
     /**
@@ -23,9 +23,10 @@ public:
      */
     set_denoise_profile(
 						 const std::shared_ptr<rapp::object::audio> file,
-                         const std::string user
+                         const std::string user,
+						 const std::string token
 					   )
-    : rapp::services::asio_service_http ()
+    : asio_service_http(token)
     {
         assert(file);
         // Create a new random boundary

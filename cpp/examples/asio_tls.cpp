@@ -1,9 +1,11 @@
 #include "../includes/cloud/service_controller/service_controller.hpp"
 #include "../includes/cloud/asio_socket_https/asio_socket_https.hpp"
 ///
+/// TODO: test under linux only
 ///
 int main(int argc, char* argv[])
 {
+	/*
     if (argc == 2)
     {
         // service controler
@@ -15,4 +17,5 @@ int main(int argc, char* argv[])
 		}
         return 0;
     }
+	*/
 }
