@@ -5,15 +5,12 @@
 ///
 int main(int argc, char* argv[])
 {
-    if (argc == 2)
-    {
-        // service controler
-        rapp::cloud::service_controller ctrl;
-		// run an asio https
-		auto test = std::make_shared<rapp::cloud::asio_socket_https>("my_token");
-		if (test) {
-			ctrl.run_job(test);
-		}
-        return 0;
+    // service controler
+    rapp::cloud::service_controller ctrl;
+    // run an asio https
+    auto test = std::make_shared<rapp::cloud::asio_socket_https>("my_token");
+    if (test) {
+        ctrl.run_job(test);
     }
+    return 0;
 }

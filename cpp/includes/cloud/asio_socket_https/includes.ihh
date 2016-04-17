@@ -5,6 +5,7 @@
 #include <boost/asio/ssl.hpp>
 
 #include <boost/asio.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "../asio_socket/asio_socket.hpp"
 #include "../asio_helper/asio_helper.hpp"

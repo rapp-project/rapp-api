@@ -104,7 +104,7 @@ private:
                                                      std::get<2>( down_right ) ) );
             }
         }
-        catch ( boost::property_tree::json_parser::json_parser_error & je )
+        catch (boost::property_tree::json_parser::json_parser_error & je)
         {
             std::cerr << "face_detection::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;

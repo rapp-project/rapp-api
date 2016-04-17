@@ -37,6 +37,11 @@ find_package(Threads REQUIRED)
 
 # Find Boost
 find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options REQUIRED)
+if (Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIR})
+    message(STATUS "Using Boost ${Boost_VERSION}")
+    message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
+endif()
 
 # Find libcrypt / libssl
 find_package(OpenSSL REQUIRED)
@@ -44,8 +49,6 @@ if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
     message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
 	message(STATUS "OpenSSL Headers: ${OPENSSL_INCLUDE_DIR}")
-else()
-    # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
 endif()
 
 # Set library sources
@@ -92,7 +95,6 @@ if (${BUILD_EXAMPLES})
     add_executable(set_denoise  ${EXAMPLES}/set_denoise_example.cpp)
     add_executable(picture      ${EXAMPLES}/picture_example.cpp)
     add_executable(asio_tls     ${EXAMPLES}/asio_tls.cpp)
-
     target_link_libraries(face_detect  ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(qr_detect    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(speech_recog ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
