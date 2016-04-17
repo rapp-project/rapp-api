@@ -1,11 +1,14 @@
 ## Synopsis
 
-The Rapp Platform Python API, used for interfering wth the RAPP Platform Services.
+The python implementation of the rapp-platform-api.
 
+By default the api creates and holds a session for each Service instance (that is used until the service instance has been deleted or the Platfrom terminates it),
+enabling this way, persistent connections to the Platfrorm.
 
 ## Dependencies
 
-This package has no external third-party dependencies! 
+TLSv1.2 requires either python-2.7.9+ or pyopenssl.
+If pyopenssl is installed on the system it is used to apply proper tlsv1.2 adapter.
 
 
 ## Installation
@@ -14,7 +17,6 @@ You can install the Python Rapp API package either in global system scope or und
 
 We recommend installing the package on development mode. This way, editing the source code the changes will be available directly without having to reinstall every time that you make minor changes.
 
-Simply execute, under this directory:
 
 ```shell
 python setup.py develop --user
@@ -22,9 +24,26 @@ python setup.py develop --user
 
 
 ##  Configure 
-Current implementation uses predefined user account credentials in order get access to
-the RAPP Platform Web Services.
-You can define your own account information into the [config/auth.cfg](https://github.com/rapp-project/rapp-api/blob/python/python/RappCloud/config/auth.cfg) configuration file.
+
+### Authentication/Tokens
+The RAPP Platform uses token-based authentication mechanisms to authenticate user's use it's resources.
+User's receive a token on registration to the RAPP Platform.
+
+For more information on how to register to the RAPP-Platform, look at [todo-reference-here](#)
+
+Tokens are stored under:
+
+```shell
+${HOME}/.config/rapp_platform/tokens
+```
+
+Place the, received from the RAPP Platform, under the aforementioned directory (the file has to be named to **app**):
+
+```shell
+${HOME}/.config/rapp_platform/tokens/app
+```
+
+### Platform deployment/development
 
 On default the RAPP API connects to the RAPP Platform Deployment Server. You can change that into the [config/platform.cfg](https://github.com/rapp-project/rapp-api/blob/python/python/RappCloud/config/platform.cfg)
 configuration file. This file already includes configuration parameters used to connect to:
@@ -34,21 +53,23 @@ configuration file. This file already includes configuration parameters used to 
 - The RAPP Platform installed **LOCALLY**.
 
 
-## Import the Rapp API into your code
+## How to use the RAPP Platform Services though the API.
 
 ```python
 
-from RappCloud import RappCloud
+from RappCloud import FaceDetection
+
+faceDetector = FaceDetection(image='<path_to_image_file>', fast=True) # Instantiate a new FaceDetection service.
+response = faceDetector.call() # Call the Platform's service
+print response.faces # Print detected faces
+print response.serialize() # Print the whole Platform's response object
 
 ...
+faceDetector.fast = False # Set an attribute
+response = faceDetector.call() # Call
 
-rappCloud = RappCloud()
 
 ```
-
-Multible tests showing the usage of the RappCloud API can be found under the rapp-platform repository:
-
- [rapp_testing_tools](https://github.com/rapp-project/rapp-platform/tree/master/rapp_testing_tools)
 
 
 ## Directories
@@ -59,10 +80,13 @@ Multible tests showing the usage of the RappCloud API can be found under the rap
 
 
 ## Tests
+Functional/Unit are stored under the **tests** directory.
+(**Under Development**)
 
-The Test-Engine and individual written tests, using this engine, are located under the rapp-platform repository:
 
- [rapp_testing_tools](https://github.com/rapp-project/rapp-platform/tree/master/rapp_testing_tools)
+RAPP Platform's integration tests, use the python rapp-platform-api. Those are located under the rapp-platform repository:
+
+ [rapp_testing_tools](https://github.com/rapp-project/rapp-platform/tree/devel/rapp_testing_tools)
 
 
 ## Documentation
