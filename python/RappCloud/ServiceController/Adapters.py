@@ -18,9 +18,15 @@
 
 # Authors: Konstantinos Panayiotou, Manos Tsardoulias
 # contact: klpanagi@gmail.com, etsardou@iti.gr
+
+
+import sys
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
+
+__pyVersion = sys.version_info[:3]
+print __pyVersion
 
 """
 @brief Custom ssl connection protocol namespace
@@ -34,36 +40,68 @@ class SSLDef:
     SSLv2_3 = None
 
 
-try:
-    from OpenSSL import SSL
-    """ Tell urllib3 to switch the ssl backend to PyOpenSSL """
-    import urllib3.contrib.pyopenssl
-    urllib3.contrib.pyopenssl.inject_into_urllib3()
+if sys.version_info[:3] >= (2, 7, 9):
+    """ 
+    ssl module in Python 2.7.9 or later supports TLS versions 1.1 and 1.2
     """
-      Disable Insecure Request Warning caused due to
-       missing https cert verification
-    """
-    requests.packages.urllib3.disable_warnings()
-
-    SSLDef.TLSv1 = SSL.TLSv1_METHOD
-    SSLDef.TLSv1_1 = SSL.TLSv1_1_METHOD
-    SSLDef.TLSv1_2 = SSL.TLSv1_2_METHOD
-    SSLDef.SSLv2 = SSL.SSLv2_METHOD
-    SSLDef.SSLv3 = SSL.SSLv3_METHOD
-    SSLDef.SSLv2_3 = SSL.SSLv23_METHOD
-
-    print "\n--> Using pyopenssl instead of python's ssl library"
-
-except ImportError as e:
     import ssl  # Python 2.7 ssl library
-    print str(e)
-    print "\n--> Falling back to python's ssl library"
+    print "\n--> Using python's ssl module with support to TLS v1_1 and 1_2"
     SSLDef.TLSv1 = ssl.PROTOCOL_TLSv1
-    SSLDef.TLSv1_1 = ssl.PROTOCOL_TLSv1
-    SSLDef.TLSv1_2 = ssl.PROTOCOL_TLSv1
+    SSLDef.TLSv1_1 = ssl.PROTOCOL_TLSv1_1
+    SSLDef.TLSv1_2 = ssl.PROTOCOL_TLSv1_2
     SSLDef.SSLv2 = ssl.PROTOCOL_SSLv2
     SSLDef.SSLv3 = ssl.PROTOCOL_SSLv3
     SSLDef.SSLv2_3 = ssl.PROTOCOL_SSLv23
+else:
+    """ Else import pyopenssl and load tls1_1 and tls_1_2 if available.
+    Need to build pyOpenSSL on top of OpenSSL 1.0.1 to
+    get TLSv1.1 and 1.2 support
+    """
+    try:
+        from OpenSSL import SSL
+        """ Tell urllib3 to switch the ssl backend to PyOpenSSL """
+        import urllib3.contrib.pyopenssl
+        urllib3.contrib.pyopenssl.inject_into_urllib3()
+        """
+          Disable Insecure Request Warning caused due to
+           missing https cert verification
+        """
+        requests.packages.urllib3.disable_warnings()
+
+        SSLDef.TLSv1 = SSL.TLSv1_METHOD
+        SSLDef.TLSv1_1 = SSL.TLSv1_1_METHOD
+        SSLDef.TLSv1_2 = SSL.TLSv1_2_METHOD
+        SSLDef.SSLv2 = SSL.SSLv2_METHOD
+        SSLDef.SSLv3 = SSL.SSLv3_METHOD
+        SSLDef.SSLv2_3 = SSL.SSLv23_METHOD
+
+        print "\n--> Using pyopenssl module instead of python's ssl library" + \
+            " with support to tlsv1_2"
+
+    except ImportError as e:
+        import ssl  # Python 2.7 ssl library
+        print str(e)
+        print "\n--> Falling back to python's ssl library without tlsv1_2 support"
+        SSLDef.TLSv1 = ssl.PROTOCOL_TLSv1
+        SSLDef.TLSv1_1 = ssl.PROTOCOL_TLSv1
+        SSLDef.TLSv1_2 = ssl.PROTOCOL_TLSv1
+        SSLDef.SSLv2 = ssl.PROTOCOL_SSLv2
+        SSLDef.SSLv3 = ssl.PROTOCOL_SSLv3
+        SSLDef.SSLv2_3 = ssl.PROTOCOL_SSLv23
+
+
+    except AttributeError as e:
+        print "--> pyOpenSSL does not allow support for tls1_1 and tls1_2." + \
+            " PyOpenSSL needs to be build against openssl-1.0.1 to get " + \
+            " TLSv1.1 and 1.2 support"
+        print "--> Falling back to TLSv1"
+
+        SSLDef.TLSv1 = SSL.TLSv1_METHOD
+        SSLDef.TLSv1_1 = SSL.TLSv1_METHOD
+        SSLDef.TLSv1_2 = SSL.TLSv1_METHOD
+        SSLDef.SSLv2 = SSL.SSLv2_METHOD
+        SSLDef.SSLv3 = SSL.SSLv3_METHOD
+        SSLDef.SSLv2_3 = SSL.SSLv23_METHOD
 
 
 
