@@ -36,6 +36,24 @@ class SSLDef:
 
 try:
     from OpenSSL import SSL
+    """ Tell urllib3 to switch the ssl backend to PyOpenSSL """
+    import urllib3.contrib.pyopenssl
+    urllib3.contrib.pyopenssl.inject_into_urllib3()
+    """
+      Disable Insecure Request Warning caused due to
+       missing https cert verification
+    """
+    requests.packages.urllib3.disable_warnings()
+
+    SSLDef.TLSv1 = SSL.TLSv1_METHOD
+    SSLDef.TLSv1_1 = SSL.TLSv1_1_METHOD
+    SSLDef.TLSv1_2 = SSL.TLSv1_2_METHOD
+    SSLDef.SSLv2 = SSL.SSLv2_METHOD
+    SSLDef.SSLv3 = SSL.SSLv3_METHOD
+    SSLDef.SSLv2_3 = SSL.SSLv23_METHOD
+
+    print "\n--> Using pyopenssl instead of python's ssl library"
+
 except ImportError as e:
     import ssl  # Python 2.7 ssl library
     print str(e)
@@ -46,27 +64,6 @@ except ImportError as e:
     SSLDef.SSLv2 = ssl.PROTOCOL_SSLv2
     SSLDef.SSLv3 = ssl.PROTOCOL_SSLv3
     SSLDef.SSLv2_3 = ssl.PROTOCOL_SSLv23
-
-else:
-    """ Tell urllib3 to switch the ssl backend to PyOpenSSL """
-    try:
-        import urllib3.contrib.pyopenssl
-        urllib3.contrib.pyopenssl.inject_into_urllib3()
-        """
-          Disable Insecure Request Warning caused due to
-           missing https cert verification
-        """
-        requests.packages.urllib3.disable_warnings()
-    except Exception as e:
-        print str(e)
-
-    print "\n--> Using pyopenssl instead of python's ssl library"
-    SSLDef.TLSv1 = SSL.TLSv1_METHOD
-    SSLDef.TLSv1_1 = SSL.TLSv1_1_METHOD
-    SSLDef.TLSv1_2 = SSL.TLSv1_2_METHOD
-    SSLDef.SSLv2 = SSL.SSLv2_METHOD
-    SSLDef.SSLv3 = SSL.SSLv3_METHOD
-    SSLDef.SSLv2_3 = SSL.SSLv23_METHOD
 
 
 
