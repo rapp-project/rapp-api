@@ -9,8 +9,6 @@ namespace cloud {
  * \version 6
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- * \see http://www.jmarshall.com/easy/http/#postmethod for HTTP Protocol details
- * \warning this class does not support SSL/TLS sockets
  */
 class asio_service_http : public asio_socket, protected asio_helper
 {
@@ -19,7 +17,6 @@ public:
 	/**
 	 * Construct the asio http service
 	 * \param token is the rapp.cloud authentication token
-	 * \param user is the rapp.cloud username
 	 */
 	asio_service_http(const std::string token)
 	: token_(token){}
@@ -50,21 +47,6 @@ public:
     }
     
 protected:  
-
-    /// Hidden empty constructor never to be used
-	//asio_service_http() = delete;
-    
-    /// Handle an Error \param error is the raised error from the client
-    void error_handler(const boost::system::error_code & error)
-    {
-        std::cerr << "asio_service_http error: " << error.message() << std::endl;
-    }
-
-    /// Handle Invalid Query - e.g.: response which states our query was invalid 
-    void invalid_request(const std::string message)
-    {
-        std::cerr << "asio_service_http invalid request: " <<  message << std::endl;
-    }
     
     /** 
      * \brief Callback for Handling Address Resolution
@@ -74,20 +56,7 @@ protected:
     void handle_resolve( 
                          const boost::system::error_code & err,
                          boost::asio::ip::tcp::resolver::iterator endpoint_iterator
-                       )
-    {
-        assert(socket);
-        if (!err){
-            auto endpoint = * endpoint_iterator;
-            socket_->async_connect(endpoint,
-                                   boost::bind(&asio_service_http::handle_connect,
-                                               this,
-                                               boost::asio::placeholders::error, 
-                                               ++endpoint_iterator));
-        }
-        else 
-            error_handler(err);
-    }
+                       );
 
     /**
      * Callback for Handling Connection Events
@@ -97,129 +66,19 @@ protected:
     void handle_connect( 
                           const boost::system::error_code & err,
                           boost::asio::ip::tcp::resolver::iterator endpoint_iterator
-                       )
-    {
-        assert(socket_);
-        if (!err) {
-            boost::asio::async_write(*socket_.get(),
-                                     request_,
-                                     boost::bind(&asio_service_http::handle_write_request, 
-                                                 this,
-                                                 boost::asio::placeholders::error));
-        }
-        else if (endpoint_iterator != boost::asio::ip::tcp::resolver::iterator()) {
-            socket_->close();   
-            auto endpoint = *endpoint_iterator;
-            socket_->async_connect(endpoint,
-                                   boost::bind(&asio_service_http::handle_connect, 
-                                               this,
-                                               boost::asio::placeholders::error, 
-                                               ++endpoint_iterator));
-        }
-        else error_handler(err);
-    }
+                       );
 
     /// Callback for handling request and waiting for response \param err is a possible error
-    void handle_write_request(const boost::system::error_code & err)
-    {
-        assert(socket_);
-        if (!err) {
-            // Read the response status line - Callback handler is ::handle_read_status_line
-            boost::asio::async_read_until(*socket_.get(),
-                                          response_, 
-                                          "\r\n",
-                                          boost::bind(&asio_service_http::handle_read_status_line, 
-                                                      this,
-                                                      boost::asio::placeholders::error));
-        }
-        else 
-            error_handler(err);
-    }
+    void handle_write_request(const boost::system::error_code & err);
     
     /// Callback for handling HTTP Header Response Data \param err is a possible error message
-    void handle_read_status_line(const boost::system::error_code & err)
-    {
-        assert(socket_);
-        if (!err) {
-            // Check that HTTP Header Response is OK.
-            std::istream response_stream(&response_);
-            std::string http_version;
-            response_stream >> http_version;
-            unsigned int status_code;
-            response_stream >> status_code;
-            std::string status_message;
-            std::getline( response_stream, status_message );
-            if (!response_stream || http_version.substr(0, 5) != "HTTP/") {
-                invalid_request("http Invalid response");
-                return;
-            }
-            if (status_code != 200) {
-                invalid_request(std::to_string(status_code));
-                return;
-            }
-            // Read the response headers, which are terminated by a blank line. 
-			// This is HTTP Protocol 1.0 & 1.1
-            boost::asio::async_read_until(*socket_.get(),
-                                          response_, 
-                                          "\r\n\r\n",
-                                          boost::bind(&asio_service_http::handle_read_headers, 
-                                                      this,
-                                                      boost::asio::placeholders::error));
-        }
-        else 
-            error_handler(err);
-    }
+    void handle_read_status_line(const boost::system::error_code & err);
 
     /// Callback for Handling Headers \param err is a possible error message
-    void handle_read_headers(const boost::system::error_code & err)
-    {
-        assert(socket_);
-        if (!err) {
-            // Start reading Content data until EOF (see handle_read_content)
-            boost::asio::async_read_until(*socket_.get(),
-                                          response_,
-                                          "\r\n\r\n",
-                                          boost::bind(&asio_service_http::handle_read_content,
-                                                      this,
-                                                      boost::asio::placeholders::error));
-        }
-        else {
-			error_handler(err);
-		}
-    }
+    void handle_read_headers(const boost::system::error_code & err);
     
     /// Callback for Handling Actual Data Contents \param err is a possible error message
-    void handle_read_content(const boost::system::error_code & err)
-    {
-        assert(socket_);
-        if (!err) {
-            // Continue reading remaining data until EOF - It reccursively calls its self
-            boost::asio::async_read(*socket_.get(),
-                                    response_,
-                                    boost::asio::transfer_at_least(1),
-                                    boost::bind(&asio_service_http::handle_read_content, 
-                                                this,
-                                                boost::asio::placeholders::error ) );
-
-            // Parse HTTP Content.
-            std::string json((std::istreambuf_iterator<char>(&response_)), 
-                              std::istreambuf_iterator<char>());
-
-            // find the "\r\n\r\n" double return
-            std::size_t i = json.find("\r\n\r\n");
-            if (i != std::string::npos)
-                json = json.substr(i+4, std::string::npos);
-            else
-                throw std::runtime_error("no double return after header");
-            // Now call the callback
-            assert(callback_);
-            callback_(json);
-        }
-        else if (err != boost::asio::error::eof) {
-            error_handler(err);
-		}
-    }
-    
+    void handle_read_content(const boost::system::error_code & err, std::size_t bytes);
 
     /// Header that will be used
     std::string header_;
@@ -235,6 +94,14 @@ protected:
     boost::asio::streambuf response_;
 	/// user authentication token
 	const std::string token_;
+    /// Content-Length once flag
+    std::once_flag cflag_;
+    /// Content-Length
+    std::size_t content_length_ = 0;
+    /// Bytes Transferred
+    std::size_t bytes_transferred_ = 0;
+    /// JSON reply
+    std::string json_;
 };
 }
 }

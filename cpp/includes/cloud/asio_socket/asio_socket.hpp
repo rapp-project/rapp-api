@@ -26,6 +26,11 @@ public:
                              boost::asio::ip::tcp::resolver & ,
                              boost::asio::io_service &
                          ) = 0;
+
+
+protected:
+
+    // TODO: add common members here
 };
 }
 }

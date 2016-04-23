@@ -12,9 +12,75 @@ namespace cloud {
  */
 class asio_helper
 {
-public:
+protected:
 
-	/// Create a random boundary for the multipart/form in HTTP
+    /// Handle an Error \param error is the raised error from the client
+    void error_handler(const boost::system::error_code & error)
+    {
+        std::cerr << "error: " << error.message() << std::endl;
+    }
+
+    /// Handle Invalid Query - e.g.: response which states our query was invalid 
+    void invalid_request(const std::string message)
+    {
+        std::cerr << "invalid request: " <<  message << std::endl;
+    }
+
+    /// \brief get the content leangth from
+    /// \param header
+    void content_length(std::string response, std::size_t & length)
+    {
+        static const boost::regex reg("Content-Length:\\s[-0-9]+", 
+                                      boost::regex::icase);
+        boost::match_results<std::string::const_iterator> results;
+        // search for matching regex
+        if (boost::regex_search(response, results, reg)) {
+            if (results.size() > 0) {
+                std::string key = results[0];
+                key.erase(std::remove(key.begin(), 
+                                      key.end(), '\n'), 
+                                      key.end());
+                // find the `: `
+                std::string hay = ": ";
+                std::size_t i = key.find(hay);
+                if (i != std::string::npos) {
+                    length = boost::lexical_cast<std::size_t>(
+                                        key.substr(i+hay.size(), std::string::npos));
+                }
+                else {
+                    std::cerr << "malformed `Content-Lengtht` delimiter" << std::endl;
+                }
+            }
+        }
+    }
+
+    bool has_content_length(std::string response)
+    {
+        static const boost::regex reg("Content-Length:\\s[-0-9]+", 
+                                      boost::regex::icase);
+        boost::match_results<std::string::const_iterator> results;
+        // search for matching regex
+        if (boost::regex_search(response, results, reg)) {
+            return (results.size() > 0 ? true : false);
+        }
+        else {
+            return false;
+        }
+    }
+
+    std::string strip_header(std::string response)
+    {
+        // find the "\r\n\r\n" double return after the header
+        std::size_t i = response.find("\r\n\r\n");
+        if (i != std::string::npos) {
+            return response.substr(i+4, std::string::npos);
+        }
+        else {
+            throw std::runtime_error("no double return after header");
+        }
+    }
+
+	/// \brief Create a random boundary for the multipart/form in HTTP
     std::string random_boundary() const
     {
         std::string chars("abcdefghijklmnopqrstuvwxyz"
@@ -30,7 +96,8 @@ public:
         return uid;
     }
 
-    // escape JSON strings when sending them over the socket
+    /// \brief escape JSON strings when sending them over the socket
+    /// \param str will be escaped and returned
     std::string escape_string(const std::string & str) 
     {
         std::ostringstream ss;
@@ -50,7 +117,8 @@ public:
         return ss.str();
     } 
 
-	// decode base64
+	/// \brief decode base64
+    /// \param val must be encoded using base64
     std::string decode64(const std::string &val)
     {
         using namespace boost::archive::iterators;
@@ -60,7 +128,9 @@ public:
 																[](char c) {return c == '\0';});
     }
 
-	// encode base64
+	/// \brief encode base64
+    /// \param val must be plain-text string
+    /// \return a base64 encoded string
     std::string encode64(const std::string &val)
     {
         using namespace boost::archive::iterators;

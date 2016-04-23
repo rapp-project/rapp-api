@@ -16,11 +16,16 @@ public:
     /// Construct from a file on disk
     audio(const std::string filepath)
     {
-        std::ifstream bytestream(filepath, std::ios::in | std::ios::binary | std::ios::ate);
-        if (!bytestream.is_open())
+        std::ifstream bytestream(filepath, 
+                                 std::ios::in | 
+                                 std::ios::binary | 
+                                 std::ios::ate);
+        if (!bytestream.is_open()) {
             throw std::runtime_error("could not open bytestream for "+filepath);
-        else
+        }
+        else {
             read_bytes(bytestream);
+        }
     }
 
     /// \brief Construct using an open file stream
@@ -155,6 +160,10 @@ public:
 
     microphone_wav(std::ifstream & bytestream)
     : audio (bytestream){}
+
+    microphone_wav(std::vector<rapp::types::byte> bytearray)
+    : audio(bytearray)
+    {}
 
     std::string audio_source() const
     { return "headset";}

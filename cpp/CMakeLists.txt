@@ -30,13 +30,14 @@ set (INCLUDES ${INCLUDES} includes)
 add_subdirectory(${INCLUDES})
 
 # Library-only Executables -
-set (SOURCES ${SOURCES} ${INCLUDES}/cloud/service_controller/service_controller.cpp)
+set (SOURCES ${SOURCES} ${INCLUDES}/cloud/service_controller/service_controller.cpp
+                        ${INCLUDES}/cloud/asio_service_http/asio_service_http.cpp)
 
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
 
 # Find Boost
-find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options REQUIRED)
+find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex REQUIRED)
 if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
     message(STATUS "Using Boost ${Boost_VERSION}")
@@ -88,19 +89,22 @@ install (FILES ${PROJECT_NAME} DESTINATION /usr/local/include/${PROJECT_NAME}) #
 
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
-    add_executable(face_detect  ${EXAMPLES}/face_detect.cpp)
-    add_executable(qr_detect    ${EXAMPLES}/qr_detect.cpp)
-    add_executable(speech_recog ${EXAMPLES}/speech_to_text.cpp)
-    add_executable(ontology     ${EXAMPLES}/ontology_example.cpp)
-    add_executable(set_denoise  ${EXAMPLES}/set_denoise_example.cpp)
-    add_executable(picture      ${EXAMPLES}/picture_example.cpp)
-    add_executable(asio_tls     ${EXAMPLES}/asio_tls.cpp)
-    target_link_libraries(face_detect  ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-    target_link_libraries(qr_detect    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-    target_link_libraries(speech_recog ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-    target_link_libraries(ontology     ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-    target_link_libraries(set_denoise  ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-	target_link_libraries(asio_tls	   ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    add_executable(face_detect      ${EXAMPLES}/face_detect.cpp)
+    add_executable(qr_detect        ${EXAMPLES}/qr_detect.cpp)
+    add_executable(speech_recog     ${EXAMPLES}/speech_to_text.cpp)
+    add_executable(ontology         ${EXAMPLES}/ontology_example.cpp)
+    add_executable(set_denoise      ${EXAMPLES}/set_denoise_example.cpp)
+    add_executable(picture          ${EXAMPLES}/picture_example.cpp)
+    add_executable(asio_tls         ${EXAMPLES}/asio_tls.cpp)
+    add_executable(text_to_speech   ${EXAMPLES}/text_to_speech.cpp)
+
+    target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    target_link_libraries(speech_recog      ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    target_link_libraries(ontology          ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    target_link_libraries(set_denoise       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+	target_link_libraries(asio_tls	        ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    target_link_libraries(text_to_speech    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     message(STATUS "Building examples, they will be placed in the `build` directory")
 else()
     message(STATUS "Not Building examples - enable with `-DBUILD_EXAMPLES=ON`")
@@ -144,6 +148,7 @@ else()
     set(CMAKE_BUILD_TYPE Release)
     message(STATUS "Building: ${CMAKE_BUILD_TYPE} - add `-DCMAKE_BUILD_TYPE=Debug` to switch to `Debug`")
 endif()
+
 # Linux should be the default OS/Platform for RAPP::API
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # using GCC/Linux
@@ -169,7 +174,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     set(BUILD_SHARED_LIBS OFF)
     message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
     message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
-# OSX ?!
+
+# OSX platform
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     # using Clang
     message (STATUS "Clang/OSX" )
@@ -185,12 +191,12 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
         set(BUILD_SHARED_LIBS OFF)
         message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
+
 # Intel Compiler May run on Linux - Maybe we should support it
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     message (FATAL_ERROR "unsupported compiler")
+
 # We cannot support Microsoft Visual Studio - We cannot support Win32 platforms
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message (FATAL_ERROR "unsupported compiler")
 endif()
-
-# TODO: install location

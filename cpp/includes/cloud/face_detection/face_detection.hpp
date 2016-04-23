@@ -114,7 +114,7 @@ private:
     }    
      
     /// The callback called upon completion of receiving the detected faces
-    std::function< void ( std::vector< rapp::object::face > ) > delegate_;
+    std::function<void(std::vector<rapp::object::face>)> delegate_;
 };
 }
 }
