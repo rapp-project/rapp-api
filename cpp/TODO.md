@@ -1,8 +1,14 @@
 [TODO changes for 0.6.0]
 
-0. Move all asio_handling methods to a common base class (asio_socket?)
+# Updates
 1. Refactor all cloud services to use JSON
-3. add `examples/cognitive_test_chooser`
-4. add `examples/record_cognitive_test_performance`
-5. add `cloud/available_services`
-6. add new unit tests
+2. Add `CMAKE_INSTALL_PREFIX` into CMakeLists.txt or set to a default.
+3. Add a Timer/Time-out to all asio classes!
+4. add `cloud/available_services`
+
+# Examples
+1. add `examples/cognitive_test_chooser`
+2. add `examples/record_cognitive_test_performance`
+
+# Tests
+1. add new unit tests (for new cloud classes)

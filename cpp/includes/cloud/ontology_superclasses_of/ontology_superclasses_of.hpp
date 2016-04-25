@@ -25,12 +25,12 @@ public:
                             )
     : asio_service_http(token), delegate__(callback)
     {
-        post_ = "query="+escape_string(query);
+        boost::property_tree::ptree tree;
+        tree.put("query", query);
+        std::stringstream ss;
+        boost::property_tree::write_json(ss, tree, false);
+        post_ = ss.str();
         header_ = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
-        header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
-        header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>( post_.length() ) + "\r\n";
-        header_ += "Connection: close\r\n\r\n";
         callback_ = std::bind(&ontology_superclasses_of::handle_reply, this, std::placeholders::_1);
      }
       

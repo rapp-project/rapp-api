@@ -144,7 +144,6 @@ void asio_service_http::handle_read_content(const boost::system::error_code & er
                 std::string tmp = buffer;
                 buffer = strip_header(tmp);
             }
-            // TODO: throw for now, later we'll simply stderr a message
             else {
                 throw std::runtime_error("no `Content-Length` in header response");
             }
@@ -153,7 +152,7 @@ void asio_service_http::handle_read_content(const boost::system::error_code & er
         if (!buffer.empty()) {
             json_ += buffer;
             bytes_transferred_ += buffer.size();
-            if (bytes_transferred_ == content_length_){
+            if (bytes_transferred_ >= content_length_){
                 assert(callback_);
                 callback_(json_);
             }

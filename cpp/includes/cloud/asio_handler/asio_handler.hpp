@@ -1,18 +1,24 @@
-#ifndef RAPP_ASIO_HELPER
-#define RAPP_ASIO_HELPER
+#ifndef RAPP_ASIO_HANDLER
+#define RAPP_ASIO_HANDLER
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
 /**
- * \class asio_helper
+ * \class asio_handler
  * \version 1
  * \date April 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
- * \brief helper functions for asio services
+ * \brief base class for asio handling, including helper methods
+ *        and most protected members (not including the actual sockets)
  */
-class asio_helper
+class asio_handler
 {
-protected:
+public:
+
+    /// ctor
+    asio_handler(const std::string token)
+    : token_(token)
+    {}
 
     /// Handle an Error \param error is the raised error from the client
     void error_handler(const boost::system::error_code & error)
@@ -138,6 +144,31 @@ protected:
         auto tmp = std::string(It(std::begin(val)), It(std::end(val)));
         return tmp.append((3 - val.size() % 3) % 3, '=');
     }
+
+protected:
+
+    /// Header that will be used
+    std::string header_;
+    /// Actual post Data
+    std::string post_;
+    /// Callback Handler - use with std::bind or boost variant
+    std::function<void(std::string)> callback_;
+    /// Actual Socket
+    std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
+    /// Request Container
+    boost::asio::streambuf request_;
+    /// Response Container
+    boost::asio::streambuf response_;
+    /// Content-Length once flag
+    std::once_flag cflag_;
+    /// Content-Length
+    std::size_t content_length_ = 0;
+    /// Bytes Transferred
+    std::size_t bytes_transferred_ = 0;
+    /// JSON reply
+    std::string json_;
+    /// user authentication token
+	const std::string token_;
 };
 }
 }

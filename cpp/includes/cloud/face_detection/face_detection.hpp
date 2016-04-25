@@ -6,8 +6,8 @@ namespace cloud {
 /**
  * \class face_detection
  * \brief Asynchronous Service which will request the cloud to detect faces
- * \version 7
- * \date January 2016
+ * \version 0.6.0
+ * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class face_detection : public asio_service_http
@@ -29,32 +29,35 @@ public:
     : asio_service_http(token), delegate_(callback)
     {
         assert(image);
-        // Create a new random boundary
         std::string boundary = random_boundary();
-        // Create a random file name + extension
         std::string fname = random_boundary()+"."+image->type();
+
+        boost::property_tree::ptree tree;
+        tree.put("fast", boost::lexical_cast<std::string>(fast));
+        tree.put("filename", fname);
+        tree.put("image_type", image->type());
+        std::stringstream ss;
+        boost::property_tree::write_json(ss, tree, false);
+
 		// set the `fast` param
-        post_  = "--"+boundary+"\r\n";
-        post_ += "Content-Disposition: form-data; name=\"fast\"\r\n\r\n";
-        post_ += (fast ? std::string("1") : std::string("0")) + "\r\n";
-        // Create the Multi-form POST field
-        post_ += "--"+boundary+"\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n";
-        post_ += "Content-Type: image/"+image->type()+"\r\n";
-        post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+               + ss.str() + "\r\n";
+
+        // Create the Multi-form POST field - TODO: remove name & leave filename?
+        post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file_uri\"\r\n"
+              + "Content-Transfer-Encoding: binary\r\n\r\n";
+        
         // Append binary data
         auto imagebytes = image->bytearray();
-        post_.insert( post_.end(), imagebytes.begin(), imagebytes.end() );
-        post_ += "\r\n";
-        post_ += "--" + boundary + "--";
-        // Count Data size
-        auto size = post_.size() * sizeof( std::string::value_type );
+        post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
+        post_ += "\r\n--" + boundary + "--";
+
         // Form the Header
-        header_ =  "POST /hop/face_detection HTTP/1.1\r\n";
-        header_ += "Host: "+std::string(rapp::cloud::address)+"\r\n";
-        header_ += "Connection: close\r\n";
-        header_ += "Content-Length: "+boost::lexical_cast<std::string>(size)+"\r\n";
-        header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
+        header_ = "POST /hop/face_detection HTTP/1.1\r\n";
+                + "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+
         // bind the base class callback, to our handle_reply
         callback_ = std::bind(&face_detection::handle_reply, this, std::placeholders::_1);
     }

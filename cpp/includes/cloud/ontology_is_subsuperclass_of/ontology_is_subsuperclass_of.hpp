@@ -26,14 +26,14 @@ public:
                                 )
     : rapp::services::asio_service_http(), delegate__(callback)
     {
-        post_ = "parent_class=" + escape_string(parent) + "&child_class=" 
-				+ escape_string(child) + "&recursive=" 
-				+ ( recursive == true ? "true" : "false" );
+        boost::property_tree::ptree tree;
+        tree.put("parent", parent);
+        tree.put("child", child);
+        tree.put("recursive", boost::lexical_cast<std::string>(recursive));
+        std::stringstream ss;
+        boost::property_tree::write_json(ss, tree, false);
+        post_ = ss.str();
         header_ = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
-        header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n";
-        header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>(post_.length()) + "\r\n";
-        header_ += "Connection: close\r\n\r\n";
         callback_ = std::bind(&ontology_is_subsuperclass_of::handle_reply, this, std::placeholders::_1);
      }
       

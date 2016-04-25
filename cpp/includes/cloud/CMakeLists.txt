@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
+add_subdirectory(asio_handler)
 add_subdirectory(asio_service_http)
 add_subdirectory(asio_socket)
+add_subdirectory(asio_socket_https)
 add_subdirectory(available_services)
 add_subdirectory(cognitive_test_chooser)
 add_subdirectory(face_detection)

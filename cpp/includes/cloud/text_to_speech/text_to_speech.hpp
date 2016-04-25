@@ -6,8 +6,8 @@ namespace cloud {
 /**
  * \class text_to_speech
  * \brief Asynchronous Service will obtain speech audio from text
- * \version 1
- * \date January 2016
+ * \version 0.6.0
+ * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class text_to_speech : public asio_service_http
@@ -30,18 +30,13 @@ public:
 				  )
 	: asio_service_http(token), delegate_(callback)
 	{
-		std::string boundary = random_boundary();
-        post_  = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"language\"\r\n\r\n";
-        post_ += language + "\r\n";
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"text\"\r\n\r\n";
-        post_ += escape_string(text) + "\r\n";
+        boost::property_tree::ptree tree;
+        tree.put("text", text);
+        tree.put("language", language);
+        std::stringstream ss;
+        boost::property_tree::write_json(ss, tree, false);
+        post_ = ss.str();
         header_ = "POST /hop/text_to_speech HTTP/1.1\r\n";
-        header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n";
-        header_ += "Content-Type: application/x-www-form-urlencoded\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>(post_.length()) + "\r\n";
-        header_ += "Connection: close\r\n\r\n";
         callback_ = std::bind(&text_to_speech::handle_reply, this, std::placeholders::_1);
 	}
 
@@ -49,7 +44,6 @@ private:
     
     void handle_reply(std::string json)
     {
-        std::cout << json << std::endl;
         std::stringstream ss(json);
         std::vector<rapp::types::byte> bytearray;
         try
@@ -66,8 +60,6 @@ private:
             }
             /*
             // TODO: this doesn't exist anymore!
-            // note: we're ignoring other JSON fields
-            // capture cloud errors
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
                 if (!value.empty())
@@ -81,6 +73,7 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
+        // create wav file and move it to the delegate
         auto wav = std::unique_ptr<rapp::object::microphone_wav>(
                                             new rapp::object::microphone_wav(bytearray));
         delegate_(std::move(wav));

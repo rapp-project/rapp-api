@@ -6,11 +6,11 @@ namespace cloud {
 /**
  * \class asio_service_http
  * \brief base class for asynchronous http websockets used for connecting to cloud services
- * \version 6
+ * \version 0.6.0
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class asio_service_http : public asio_socket, protected asio_helper
+class asio_service_http : public asio_socket, protected asio_handler
 {
 public:
 
@@ -19,7 +19,8 @@ public:
 	 * \param token is the rapp.cloud authentication token
 	 */
 	asio_service_http(const std::string token)
-	: token_(token){}
+	: asio_handler(token)
+    {}
 
     /** 
      * schedule this client as a job for execution using
@@ -33,6 +34,13 @@ public:
 				  boost::asio::io_service & io_service
                  )
     {
+        auto content_length = post_.size() * sizeof(std::string::value_type);
+        header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n"
+                + "Accept-Token: " + token_ + "\r\n"
+                + "Connection: close\r\n"
+                + "Content-Length: " + boost::lexical_cast<std::string>(content_length)
+                + "\r\n\r\n";
+
         if (!socket_){
             socket_ = std::unique_ptr<boost::asio::ip::tcp::socket>(
 									  new boost::asio::ip::tcp::socket(io_service));
@@ -46,7 +54,7 @@ public:
                                            boost::asio::placeholders::iterator));
     }
     
-protected:  
+protected:
     
     /** 
      * \brief Callback for Handling Address Resolution
@@ -80,28 +88,9 @@ protected:
     /// Callback for Handling Actual Data Contents \param err is a possible error message
     void handle_read_content(const boost::system::error_code & err, std::size_t bytes);
 
-    /// Header that will be used
-    std::string header_;
-    /// Actual post Data
-    std::string post_;
-    /// Callback Handler - use with std::bind or boost variant
-    std::function<void(std::string)> callback_;
-    /// Actual Socket
+
+    /// TCP Socket
     std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
-    /// Request Container
-    boost::asio::streambuf request_;
-    /// Response Container
-    boost::asio::streambuf response_;
-	/// user authentication token
-	const std::string token_;
-    /// Content-Length once flag
-    std::once_flag cflag_;
-    /// Content-Length
-    std::size_t content_length_ = 0;
-    /// Bytes Transferred
-    std::size_t bytes_transferred_ = 0;
-    /// JSON reply
-    std::string json_;
 };
 }
 }

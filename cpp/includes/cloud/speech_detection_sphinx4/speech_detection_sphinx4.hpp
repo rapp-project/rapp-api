@@ -41,57 +41,49 @@ public:
         // Create a new random boundary
         std::string boundary = random_boundary();
         std::string fname =  random_boundary() + file->extension(); 
-        // Boundary start and 1st POST
-        post_  = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"language\"\r\n\r\n";
-        post_ += language + "\r\n";
-        // User
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"user\"\r\n\r\n";
-        post_ += user + "\r\n";
-        // Audio Source (Audio Type)
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
-        post_ += file->audio_source() + "\r\n";
-        // Grammar[]
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"grammar\"\r\n\r\n";
-        post_ += "[ ";
-        for (const auto gram : grammar ) post_ += "\"" + gram + "\",";
-        post_.pop_back();
-        post_ += "]\r\n";
-        // Words[]
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"words\"\r\n\r\n";
-        post_ += "[ ";
-        for (const auto word : words) post_ += "\"" + escape_string(word) + "\",";
-        post_.pop_back();
-        post_ += "]\r\n";
-        // Sentences[]
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"sentences\"\r\n\r\n";
-        post_ += "[ ";
-        for (const auto sent : sentences) post_ += "\"" + escape_string(sent) + "\",";
-        post_.pop_back();
-        post_ += "]\r\n";
-        // file_uri
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\"" + fname + "\"\r\n";
-        post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
-        // Append binary data
+
+        boost::property_tree::ptree tree;
+        tree.put("language", language);
+        tree.put("user", user);
+        tree.put("filename", fname);
+        tree.put("audio_source", file->audio_source());
+
+        boost::property_tree::ptree grammar_array;
+        for (const auto gram : grammar) {
+            boost::property_tree::ptree child;
+            child.put("", gram);
+            grammar_array.push_back(std::make_pair("", child));
+        }
+        tree.add_child("grammar", grammar_array);
+
+        boost::property_tree::ptree words_array;
+        for (const auto word : words) {
+            boost::property_tree::ptree child;
+            child.put("", word);
+            words_array.push_back(std::make_pair("", child));
+        }
+        tree.add_child("words", words_array);
+
+        boost::property_tree::ptree sentence_array;
+        for (const auto sents : sentences) {
+            boost::property_tree::ptree child;
+            child.put("", sents);
+            sentence_array.push_back(std::make_pair("", child));
+        }
+        tree.add_child("sentences", sentence_array);
+        
+        std::stringstream ss;
+        boost::property_tree::write_json(ss, tree, false);
+
+        post_ += "--" + boundary + "\r\n"
+            + "Content-Disposition: form-data; name=\"file_uri\"\r\n"
+            + "Content-Transfer-Encoding: binary\r\n\r\n";
         auto bytes = file->bytearray();
         post_.insert( post_.end(), bytes.begin(), bytes.end() );
-        post_ += "\r\n";
-        post_ += "--" + boundary + "--";
-        // Count Data size
-        auto size = post_.size() * sizeof( std::string::value_type );
-        // Form the Header
+        post_ += "\r\n--" + boundary + "--";
+
         header_ =  "POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n";
-        header_ += "Host: " + std::string( rapp::cloud::address ) + "\r\n";
-        header_ += "Connection: close\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>( size ) + "\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
-        // bind the base class callback, to our handle_reply
         callback_ = std::bind(&speech_detection_sphinx4::handle_reply, this, std::placeholders::_1);
     }
 

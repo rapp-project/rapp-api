@@ -10,9 +10,11 @@ namespace cloud {
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * \brief wrapper for SSL/TLS secure HTTP communication
  */
-class asio_socket_https : public asio_socket, protected asio_helper
+class asio_socket_https : public asio_socket, public asio_handler
 {
 public:
+
+    /// boost tls wraps around a tcp socket
 	typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> boost_tls_socket;
 
 	/**
@@ -21,21 +23,11 @@ public:
      * \param user: rapp.cloud username
 	 */
 	asio_socket_https(const std::string token)
-  	: ctx_(boost::asio::ssl::context::tlsv12_client), token_(token)
+  	: asio_handler(token),
+      ctx_(boost::asio::ssl::context::tlsv12_client)
 	{
-        // MOVE all header manipulation here in base class
+        // TODO: using this only for TEST
         header_ =  "POST / HTTP/1.1\r\n";
-        header_ += "Host: "+std::string(rapp::cloud::address)+"\r\n";
-        header_ += "Accept-Token: "+token+"\r\n";
-        header_ += "Connection: close\r\n";
-
-        // TODO inheriting classes must set either Content-Length, or Chunked.
-        auto size = post_.size() * sizeof(std::string::value_type);
-        header_ += "Content-Length: "+boost::lexical_cast<std::string>(size)+"\r\n";
-
-        // TODO: inheriting classes must set either 'application/json'
-        //       or multipart/form-data 
-        header_ += "Content-Type: application/json\r\n";
     }
 
 	/**
@@ -50,10 +42,18 @@ public:
 				  boost::asio::io_service & io_service
 				 )
 	{
+        auto content_length = post_.size() * sizeof(std::string::value_type);
+        header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n"
+                + "Accept-Token: " + token_ + "\r\n"
+                + "Connection: close\r\n"
+                + "Content-Length: " + boost::lexical_cast<std::string>(content_length) 
+                + "\r\n\r\n";
+
 		if (!tls_socket_) {
 			tls_socket_ = std::unique_ptr<boost_tls_socket>(
 										  new boost_tls_socket(io_service, ctx_));
 		}
+        assert(tls_socket_);
 		// disable ssl v2 and ssl v3 (allow only tls)
 		ctx_.set_options(boost::asio::ssl::context::default_workarounds
         				|boost::asio::ssl::context::no_sslv2
@@ -64,11 +64,8 @@ public:
         // if using a self-signed certificate the only way to pass verification
         // is to "install" it locally and use it for comparison
         ctx_.load_verify_file("ca.pem");
-
 		// resolve iterator
 		boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-		assert(tls_socket_);
-
 		// set TLS verify mode
     	tls_socket_->set_verify_mode(boost::asio::ssl::verify_peer 
                                     |boost::asio::ssl::verify_fail_if_no_peer_cert);
@@ -102,10 +99,6 @@ protected:
     	char subject_name[256];
     	X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
     	X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
-        /*
-        std::cout << "Verifying: " << subject_name << "\n"
-                     "Verified: " << preverified << std::endl;
-        */
     	return preverified;
   	}
 
@@ -231,21 +224,7 @@ protected:
             std::string json((std::istreambuf_iterator<char>(&response_)), 
                               std::istreambuf_iterator<char>());
 
-            /*
-            // find the "\r\n\r\n" double return
-            std::size_t i = json.find("\r\n\r\n");
-            if (i != std::string::npos) {
-                json = json.substr(i+4, std::string::npos);
-            }
-            else {
-                std::cerr << "no double return carriage after header" << std::endl;
-                return;
-            }
-            // Now call the callback
-            assert(callback_);
-            callback_(json);
-            */
-            std::cout << json << std::endl;
+            // TODO: see asio_service_http
         }
         else if (err != boost::asio::error::eof) {
             error_handler(err);
@@ -253,22 +232,10 @@ protected:
     }
 
 private:
-	/// Header that will be used
-    std::string header_;
-    /// Actual post Data
-    std::string post_;
-    /// Callback Handler - use with std::bind or boost variant
-    std::function<void(std::string)> callback_;
-	/// ssl socket stream
-  	std::unique_ptr<boost_tls_socket> tls_socket_;
+    /// tls/ssl socket wrapper
+    std::unique_ptr<boost_tls_socket> tls_socket_;
 	/// tls context
 	boost::asio::ssl::context ctx_;
-	/// Request Container
-    boost::asio::streambuf request_;
-    /// Response Container
-    boost::asio::streambuf response_;
-	/// user authentication token
-	const std::string token_;
 };
 }
 }

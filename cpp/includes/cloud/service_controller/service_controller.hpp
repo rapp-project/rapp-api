@@ -3,11 +3,6 @@
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
-/// api.rapp.cloud - 
-constexpr char address[] = "localhost";
-/// api.rapp.cloud - HOP server port
-constexpr char port[] = "9001";    
-
 /**
  * \class service_controller
  * \brief Main class that controllers RAPP Services

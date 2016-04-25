@@ -24,41 +24,37 @@ public:
     set_denoise_profile(
 						 const std::shared_ptr<rapp::object::audio> file,
                          const std::string user,
-						 const std::string token
+                         const std::string token
 					   )
     : asio_service_http(token)
     {
         assert(file);
-        // Create a new random boundary
+
         std::string boundary = random_boundary();
-        // Random audio file name (NOTE: Assume WAV File)
         std::string fname = random_boundary();
-        // User parameter        
-        post_  = "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"user\"\r\n\r\n";
-        post_ += user + "\r\n";
-        // Create the name for the audio file
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"audio_source\"\r\n\r\n";
-        post_ += file->audio_source() + "\r\n";
-        // Create the Multi-form POST field for the actualAUDIO/WAV data
-        post_ += "--" + boundary + "\r\n";
-        post_ += "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+".audio\"\r\n";
-        post_ += "Content-Transfer-Encoding: binary\r\n\r\n";
-        // Append binary data
+
+        boost::property_tree::ptree tree;
+        tree.put("user", user);
+        tree.put("audio_source", file->audio_source());
+        tree.put("filename", fname + "." + file->extension());
+        std::stringstream ss;
+        boost::property_tree::write_json(ss, tree, false);
+
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+               + ss.str() + "\r\n";
+
+        post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file_uri\";\r\n"
+              + "Content-Transfer-Encoding: binary\r\n\r\n";
+
         auto bytes = file->bytearray();
         post_.insert(post_.end(), bytes.begin(), bytes.end());
-        post_ += "\r\n";
-        post_ += "--" + boundary + "--";
-        // Count Data size
-        auto size = post_.size() * sizeof(std::string::value_type);
-        // Form the Header
-        header_ =  "POST /hop/set_denoise_profile HTTP/1.1\r\n";
-        header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n";
-        header_ += "Connection: close\r\n";
-        header_ += "Content-Length: " + boost::lexical_cast<std::string>(size) + "\r\n";
+        post_ += "\r\n--" + boundary + "--";
+
+        header_ = "POST /hop/set_denoise_profile HTTP/1.1\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
-        // bind the base class callback, to our handle_reply
+
         callback_ = std::bind(&set_denoise_profile::handle_reply, this, std::placeholders::_1);
     }
 
