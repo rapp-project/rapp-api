@@ -9,7 +9,7 @@
 #       -DCMAKE_BUILD_TYPE=Debug    (Optional: enable debug symbols)
 #       -DSTATIC_LIBSTD=ON          (Optional: compile statically against libstdc++)
 #       -DOPEN_NAO=ON               (Optional: compiling on OpenNAO requires additional CXX flags)
-#		-DCMAKE_INSTALL_PREFIX=/usr	(Optional: specify the install directory)  
+#		-DCMAKE_INSTALL_PREFIX=/usr	(Optional: specify the library install directory
 #
 # After succesfull compilation, run as su/sudo: `make install`
 # 
@@ -28,6 +28,7 @@ set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 include_directories(SYSTEM ${INCLUDE_HEADERS})
 set (INCLUDES ${INCLUDES} includes)
 add_subdirectory(${INCLUDES})
+set(CMAKE_MACOSX_RPATH 1)
 
 # Library-only Executables -
 set (SOURCES ${SOURCES} ${INCLUDES}/cloud/service_controller/service_controller.cpp
@@ -40,7 +41,7 @@ find_package(Threads REQUIRED)
 find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex REQUIRED)
 if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
-    message(STATUS "Using Boost ${Boost_VERSION}")
+    message(STATUS "Using Boost Version: ${Boost_VERSION}")
     message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 endif()
 
@@ -48,44 +49,51 @@ endif()
 find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
-    message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
+    message(STATUS "Using OpenSSL Version: ${OPENSSL_VERSION}")
 	message(STATUS "OpenSSL Headers: ${OPENSSL_INCLUDE_DIR}")
 endif()
 
 # Set library sources
 add_library(lrapp OBJECT ${SOURCES})
 
+# user has set install location
+if (CMAKE_INSTALL_PREFIX)
+	message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}`")
+# user did not set it - revert to "/usr/local"
+else()
+	set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} "/usr/local/")
+    message(STATUS "Installing library in `${CMAKE_INSTALL_PREFIX}`")
+endif()	
+
 # Static Library - only if asked
 if (${RAPP_STATIC})
-    message(STATUS "Building static library")
+	message(STATUS "Building Static library")
     add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static)
-
-	# TODO: check if param for install location has been passed
-    install (TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION /usr/local/lib/)
-    install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static.a librapp.a 
-WORKING_DIRECTORY /usr/local/lib)")
+	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+	install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static.a librapp.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
 endif()
+
 # Shared Library - By default or if asked
 if ((${RAPP_SHARED}) OR (NOT (${RAPP_STATIC})))
-    message(STATUS "Building shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
+	message(STATUS "Building Shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
     add_library(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-
-	# TODO: Check if param for install location has been passed
-    install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION /usr/local/lib/)
-    install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.so librapp.so 
-WORKING_DIRECTORY /usr/local/lib)")
+	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+	install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.so librapp.so WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
 endif()
 
-# TODO: check params for intall location of headers
+if (CMAKE_INSTALL_PREFIX)
+	message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include`")
+endif()
 
 # Header install dir
-install (DIRECTORY ${INCLUDES}/ DESTINATION /usr/local/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+install (DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+
 # Install Global header
-install (FILES ${PROJECT_NAME} DESTINATION /usr/local/include/${PROJECT_NAME}) #copy global include header
+install (FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}) #copy global include header
 
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
@@ -105,19 +113,18 @@ if (${BUILD_EXAMPLES})
     target_link_libraries(set_denoise       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	target_link_libraries(asio_tls	        ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(text_to_speech    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-    message(STATUS "Building examples, they will be placed in the `build` directory")
+    message(STATUS "Building examples, they will be placed in `${CMAKE_CURRENT_BINARY_DIR}`")
 else()
     message(STATUS "Not Building examples - enable with `-DBUILD_EXAMPLES=ON`")
 endif()
-
 
 # build tests
 if (${BUILD_TESTS})
     set (TESTS ${TESTS} tests)
     enable_testing ()
-    add_executable(object_test          ${TESTS}/object_test.cpp)
-    add_executable(cloud_test           ${TESTS}/cloud_test.cpp)
-    add_executable(service_test         ${TESTS}/service_test.cpp)
+    add_executable(object_test           ${TESTS}/object_test.cpp)
+    add_executable(cloud_test            ${TESTS}/cloud_test.cpp)
+    add_executable(service_test          ${TESTS}/service_test.cpp)
     add_test(unit_object_test            object_test) 
     add_test(unit_cloud_test             cloud_test) 
     add_test(unit_service_test           service_test)
@@ -131,7 +138,7 @@ if (${BUILD_TESTS})
                                          ${Boost_SYSTEM_LIBRARY}
                                          ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    message(STATUS "Building tests, they will be placed in the `build` directory")
+    message(STATUS "Building tests, they will be placed in the `${CMAKE_CURRENT_BINARY_DIR}`")
 else()
     message(STATUS "Not Building tests - enable with `-DBUILD_TESTS=ON`")
 endif()
