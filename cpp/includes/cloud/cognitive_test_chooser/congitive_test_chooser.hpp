@@ -21,20 +21,18 @@ public:
 	cognitive_test_choser(
 							const std::string user,
 							const std::string test_type,
-							std::function<void(std::string)> callback
+							std::function<void(std::string)> callback,
+                            const std::string token
 						 )
-	: asio_service_http(std::get<0>(auth), std::get<1>(auth)), delegate_(callback)
+	: asio_service_http(token), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
-        tree.put("user", user);
         tree.put("test_type", test_type);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-
         header_ = "POST /hop/cognitive_test_choser HTTP/1.1\r\n"
-                + "Content-Type: application/json\r\n";
-
+                + "Content-Type: application/x-www-form-urlencoded\r\n";
         callback_ = std::bind(&cognitive_test_choser::handle_reply, this, std::placeholders::_1);
 	}
 

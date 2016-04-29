@@ -1,20 +1,20 @@
-#ifndef RAPP_OBJECT_FACE
-#define RAPP_OBJECT_FACE
+#ifndef RAPP_OBJECT_HUMAN
+#define RAPP_OBJECT_HUMAN
 #include "includes.ihh"
 namespace rapp {
 namespace object {
 /**
- * \class face
- * \brief describes a face coordinate (cartesian)
+ * \class human
+ * \brief describes human coordinates
  * \version 0.6.0
- * \date April 2016
+ * \date April-2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face
+class human
 {
 public:
-    /// \brief Consruct using face coordinates (a rectangle)
-    face( 
+    /// \brief Consruct using coordinates (a rectangle)
+    human( 
           float top_left_x,
           float top_left_y,
           float bottom_right_x,
@@ -27,13 +27,13 @@ public:
     {}
    
     /// Allow empty consructor
-    face() = default;
+    human() = default;
     
     /// Copy constructor
-    face(const face &) = default;
+    human(const human &) = default;
     
     /// Equality operator
-    bool operator==(const face & rhs) const
+    bool operator==(const human & rhs) const
     {
         return ( this->top_left_x__ == rhs.top_left_x__ &&
                  this->top_left_y__ == rhs.top_left_y__ &&

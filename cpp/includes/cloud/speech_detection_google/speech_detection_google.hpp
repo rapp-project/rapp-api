@@ -25,7 +25,8 @@ public:
 							  const std::shared_ptr<rapp::object::audio> file,
 							  const std::string language,
 							  const std::string user,
-							  std::function<void(std::vector<std::string> words)> callback
+							  std::function<void(std::vector<std::string>,
+                                                 std::vector<std::string>)> callback
 						   )
 	: rapp::services::asio_service_http (), delegate_(callback)
     {
@@ -68,7 +69,7 @@ private:
 			for (auto child : tree.get_child("alternatives")) {
 				alternatives.push_back(child.second.get_value<std::string>());
 			}
-            // Check for error response from api.rapp.cloud
+            // Check for error response from platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
                 if (!value.empty()) {
@@ -76,17 +77,16 @@ private:
 				}
             }
         }
-        catch(boost::property_tree::json_parser::json_parser_error & je)
-        {
+        catch (boost::property_tree::json_parser::json_parser_error & je) {
             std::cerr << "speech_detection_google::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        delegate_(words);
+        delegate_(words, alternatives);
     }
 
-    /// The callback called upon completion of receiving the detected words
-    std::function<void(std::vector<std::string> words)> delegate_;
+    /// The callback called upon completion of receiving the detected words and alternatives
+    std::function<void(std::vector<std::string>, std::vector<std::string>)> delegate_;
 };
 }
 }

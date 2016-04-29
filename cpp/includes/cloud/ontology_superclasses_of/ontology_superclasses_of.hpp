@@ -5,18 +5,19 @@ namespace rapp {
 namespace cloud {
 /**
  * \class ontology_superclasses_of
- * \brief async call to obtain superclasses of query
- * \version 3
- * \date January 2016
+ * \brief get ontology super-classes of query
+ * \version 0.6.0
+ * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class ontology_superclasses_of : public asio_service_http
 {
 public:
     /**
-     * \brief Constructor for this handler
+     * \brief constructor for this handler
      * \param query is the entity for which we will try to acquire its Super-Ordinates
      * \param callback is the functor that will receive the classes discovered
+     * \param token is user authentication token
      */
     ontology_superclasses_of(
                               const std::string query,
@@ -40,23 +41,22 @@ private:
     {
         std::vector<std::string> classes;
         std::stringstream ss(json);
-        try
-        {
+        try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
-            // JSON reply is: { results: [], trace: [], error: '' }
-            for (auto child : tree.get_child("results"))
+            // JSON reply is: { results: [], error: '' }
+            for (auto child : tree.get_child("results")) {
                 classes.push_back(child.second.get_value<std::string>());
-            // Check for Errors returned by the api.rapp.cloud
-            for (auto child : tree.get_child("error"))
-            {
+            }
+            // Check for Errors returned by the platform
+            for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
-                if (!value.empty())
+                if (!value.empty()) {
                     std::cerr << "ontology_superclasses_of JSON error: " << value << std::endl;
+                }
             }
         }
-        catch( boost::property_tree::json_parser::json_parser_error & je )
-        {
+        catch (boost::property_tree::json_parser::json_parser_error & je) {
             std::cerr << "ontology_superclasses_of::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;

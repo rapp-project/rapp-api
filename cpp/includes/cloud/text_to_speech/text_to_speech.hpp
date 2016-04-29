@@ -13,7 +13,6 @@ namespace cloud {
 class text_to_speech : public asio_service_http
 {
 public:
-
     typedef rapp::object::microphone_wav wav_file;
 
 	/**
@@ -46,8 +45,7 @@ private:
     {
         std::stringstream ss(json);
         std::vector<rapp::types::byte> bytearray;
-        try
-        {
+        try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
 
@@ -58,17 +56,14 @@ private:
                 std::string decoded = decode64(result);
                 std::copy(decoded.begin(), decoded.end(), std::back_inserter(bytearray));
             }
-            /*
-            // TODO: this doesn't exist anymore!
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
-                if (!value.empty())
+                if (!value.empty()) {
                     std::cerr << "text_to_speech JSON error: " << value << std::endl;
+                }
             }
-            */
 	    }
-        catch(boost::property_tree::json_parser::json_parser_error & je)
-        {
+        catch (boost::property_tree::json_parser::json_parser_error & je) {
             std::cerr << "text_to_speech::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
