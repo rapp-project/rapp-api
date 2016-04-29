@@ -29,52 +29,50 @@ public:
         assert(image);
         std::string boundary = random_boundary();
         std::string fname = random_boundary()+"."+image->type();
-
         post_ += "--"+boundary+"\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\"; ""filename=\""+fname+"\"\r\n"
+              + "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n"
               + "Content-Type: image/"+image->type()+"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
-
         // Append binary data
         auto imagebytes = image->bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
         post_ += "\r\n";
         post_ += "--"+boundary+"--";
-
         header_ =  "POST /hop/qr_detection HTTP/1.1\r\n";
         header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
         callback_ = std::bind(&qr_detection::handle_reply, this, std::placeholders::_1);   
     }
 
 private:
-
+	/**
+	 * \brief handle the rapp-platform JSON reply
+	 */
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
         std::vector<rapp::object::qr_code> qrCodes;
-        try
-        {
+        try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
-            for (auto child : tree.get_child("qr_centers"))
-            {
+            for (auto child : tree.get_child("qr_centers")) {
                 std::tuple<float,float,std::string> qrcode;
-                for (auto iter = child.second.begin(); iter != child.second.end(); ++iter)
-                {
-                    if ( iter->first == "x" )
+                for (auto iter = child.second.begin(); iter != child.second.end(); ++iter) {
+                    if (iter->first == "x") {
                         std::get<0>(qrcode) = iter->second.get_value<float>();
-                    else if ( iter->first == "y" )
+					}
+                    else if (iter->first == "y") {
                         std::get<1>(qrcode) = iter->second.get_value<float>();
-                    else if ( iter->first == "message" )
+					}
+                    else if (iter->first == "message") {
                         std::get<2>(qrcode) = iter->second.get_value<std::string>();
+					}
                 }
                 qrCodes.push_back(rapp::object::qr_code(std::get<0>(qrcode),
                                                         std::get<1>(qrcode),
                                                         std::get<2>(qrcode)));
             }
         }
-        catch( boost::property_tree::json_parser::json_parser_error & je )
-        {
+        catch(boost::property_tree::json_parser::json_parser_error & je) {
 			std::cerr << "qrDetector::handle_reply Error parsing: " << 
 				je.filename()  << " on line: " << je.line() << std::endl;
 			std::cerr << je.message() << std::endl;
