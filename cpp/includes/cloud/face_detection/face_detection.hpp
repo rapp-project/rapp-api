@@ -22,8 +22,8 @@ public:
     face_detection(
                     const std::shared_ptr<rapp::object::picture> image,
                     bool fast,
-                    std::function<void(std::vector<rapp::object::face>)> callback,
-					const std::string token
+					const std::string token,
+                    std::function<void(std::vector<rapp::object::face>)> callback
                   )
     : asio_service_http(token), delegate_(callback)
     {
@@ -41,7 +41,7 @@ public:
                + ss.str() + "\r\n";
         // Create the Multi-form POST field 
         post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\"; filename\""++fname"\"\r\n"
+              + "Content-Disposition: form-data; name=\"file_uri\"; filename\"" + fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
         // Append binary data
         auto imagebytes = image->bytearray();

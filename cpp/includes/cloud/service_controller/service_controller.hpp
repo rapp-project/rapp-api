@@ -24,14 +24,11 @@ public:
 	/// no empty constructor
 	service_controller();
 
-    /// The Service Queue
-    boost::asio::io_service & queue();
-
     /**
      * \brief Run one service job
      * \param client is the actual object pointer that will be executed in a single operation
      * \note upon completion, the object's handler will be invoked
-     * \note this method will block, until job is finished
+     * \note upon completion - scheduler is reset
      */
     void run_job(const std::shared_ptr<asio_socket> job);
 
@@ -48,16 +45,8 @@ private:
 	const std::string token_;
 	/// username
 	const std::string user_;
-    /// IO service
-    boost::asio::io_service io_service_;
     /// Endpoint Resolver
     boost::asio::ip::tcp::resolver::query query_;
-    /// Resolution for TCP
-    boost::asio::ip::tcp::resolver resolver_;
-    /// Work queue
-    std::shared_ptr<boost::asio::io_service::work> work_;
-    /// Service Mutex
-    std::mutex mutex_;
 };
 }
 }

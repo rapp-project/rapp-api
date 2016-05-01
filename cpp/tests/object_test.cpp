@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_CASE(constructors_test)
     BOOST_CHECK(f_ptr != nullptr);
 
     // Contruct with coordinates
-    rapp::object::face f_valid( 0.5f,0.3f,0.1f,0.6f,0.8f,0.9f);
+    rapp::object::face f_valid( 0.5f,0.3f,0.6f,0.8f);
 
     // Copy Constructor
     rapp::object::face f_copy(f_valid);

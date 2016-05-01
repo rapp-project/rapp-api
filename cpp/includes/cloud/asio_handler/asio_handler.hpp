@@ -5,11 +5,11 @@ namespace rapp {
 namespace cloud {
 /**
  * \class asio_handler
- * \version 1
+ * \version 0.6.0
  * \date April 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * \brief base class for asio handling, including helper methods
- *        and most protected members (not including the actual sockets)
+ *        and most protected members
  */
 class asio_handler
 {

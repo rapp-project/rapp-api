@@ -13,7 +13,6 @@ namespace cloud {
 class asio_service_http : public asio_socket, protected asio_handler
 {
 public:
-
 	/**
 	 * Construct the asio http service
 	 * \param token is the rapp.cloud authentication token
@@ -29,9 +28,9 @@ public:
      * \param io_service is the queue on which jobs are scheduled
      */
     void schedule( 
-				  boost::asio::ip::tcp::resolver::query & query,
-				  boost::asio::ip::tcp::resolver & resolver,
-				  boost::asio::io_service & io_service
+				   boost::asio::ip::tcp::resolver::query & query,
+				   boost::asio::ip::tcp::resolver & resolver,
+				   boost::asio::io_service & io_service
                  )
     {
         auto content_length = post_.size() * sizeof(std::string::value_type);
@@ -55,7 +54,6 @@ public:
     }
     
 protected:
-    
     /** 
      * \brief Callback for Handling Address Resolution
      * \param err is a possible error
@@ -89,7 +87,7 @@ protected:
     void handle_read_content(const boost::system::error_code & err, std::size_t bytes);
 
 
-    /// TCP Socket
+    /// TCP Socket (plain-text)
     std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
 };
 }

@@ -21,8 +21,8 @@ public:
     */
     qr_detection(
                   const std::shared_ptr<rapp::object::picture> image,
-                  std::function<void(std::vector<rapp::object::qr_code>)> callback,
-				  std::string token
+				  const std::string token,
+                  std::function<void(std::vector<rapp::object::qr_code>)> callback
                 )
     : asio_service_http(token), delegate__(callback)
     {

@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
                                 for (const auto code : codes)
                                     std::cout << code.label() << std::endl;
                             };
-            auto fdetect = std::make_shared<rapp::cloud::qr_detection>(pic, callback, token);
+            auto fdetect = std::make_shared<rapp::cloud::qr_detection>(pic, token, callback);
             ctrl.run_job(fdetect);
             return 0;
         }

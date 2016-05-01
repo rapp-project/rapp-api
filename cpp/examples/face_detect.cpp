@@ -21,9 +21,11 @@ int main(int argc, char* argv[])
         {
             auto callback = [&](std::vector<rapp::object::face> faces)
                             {std::cout << "found " << faces.size() << " faces!" << std::endl;};
-            auto fdetect = std::make_shared<rapp::cloud::face_detection>(pic, false, callback, token);
-            if (fdetect)
+
+            auto fdetect = std::make_shared<rapp::cloud::face_detection>(pic, false, token, callback);
+            if (fdetect) {
                 ctrl.run_job(fdetect);
+            }
         }
         else
             std::cerr << "Error loading image: " << argv[1] << std::endl;

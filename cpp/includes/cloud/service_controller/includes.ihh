@@ -5,5 +5,7 @@
 #include <mutex>
 
 #include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "../asio_socket/asio_socket.hpp"
+#include "../asio_service_http/asio_service_http.hpp"

@@ -5,7 +5,7 @@ namespace rapp {
 namespace cloud {
 /**
  * \class asio_socket_https
- * \version 1
+ * \version 0.6.0
  * \date April 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * \brief wrapper for SSL/TLS secure HTTP communication
@@ -13,7 +13,6 @@ namespace cloud {
 class asio_socket_https : public asio_socket, public asio_handler
 {
 public:
-
     /// boost tls wraps around a tcp socket
 	typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> boost_tls_socket;
 
@@ -23,8 +22,7 @@ public:
      * \param user: rapp.cloud username
 	 */
 	asio_socket_https(const std::string token)
-  	: asio_handler(token),
-      ctx_(boost::asio::ssl::context::tlsv12_client)
+  	: asio_handler(token), ctx_(boost::asio::ssl::context::tlsv12_client)
 	{
         // TODO: using this only for TEST
         header_ =  "POST / HTTP/1.1\r\n";
@@ -37,9 +35,9 @@ public:
      * \param io_service is the queue on which jobs are scheduled
 	 */
 	void schedule(
-				  boost::asio::ip::tcp::resolver::query & query,
-				  boost::asio::ip::tcp::resolver & resolver,
-				  boost::asio::io_service & io_service
+				   boost::asio::ip::tcp::resolver::query & query,
+				   boost::asio::ip::tcp::resolver & resolver,
+				   boost::asio::io_service & io_service
 				 )
 	{
         auto content_length = post_.size() * sizeof(std::string::value_type);
@@ -81,17 +79,6 @@ public:
 	}
 
 protected:
-
-    void error_handler(const boost::system::error_code & error)
-    {
-        std::cerr << "asio_service_http error: " << error.message() << std::endl;
-    }
-
-    /// Handle Invalid Query - e.g.: response which states our query was invalid 
-    void invalid_request(const std::string message)
-    {
-        std::cerr << "asio_service_http invalid request: " <<  message << std::endl;
-    }
 
 	/// \brief verify TLS certificate - WARNING: is this proper verification?
 	bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx)

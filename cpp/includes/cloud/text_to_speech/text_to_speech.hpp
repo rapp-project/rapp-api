@@ -5,7 +5,7 @@ namespace rapp {
 namespace cloud {
 /**
  * \class text_to_speech
- * \brief Asynchronous Service will obtain speech audio from text
+ * \brief request speech audio from text
  * \version 0.6.0
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
@@ -14,7 +14,6 @@ class text_to_speech : public asio_service_http
 {
 public:
     typedef rapp::object::microphone_wav wav_file;
-
 	/**
 	 * \brief construct handler which will request speech audio from text
 	 * \param text is the text to be converted to audio
@@ -40,7 +39,9 @@ public:
 	}
 
 private:
-    
+    /**
+     * \brief handle platform's JSON reply
+     */
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
@@ -74,7 +75,7 @@ private:
         delegate_(std::move(wav));
     }
 
-    /// The callback called upon completion of receiving the detected words
+    /// 
     std::function<void(std::unique_ptr<wav_file> wav)> delegate_;
 };
 }
