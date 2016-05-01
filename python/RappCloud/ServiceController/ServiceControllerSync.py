@@ -129,7 +129,7 @@ class ServiceControllerSync(ServiceControllerBase):
                 files=_files,
                 timeout=self._timeout,
                 verify=False,
-                auth=RAPPAuth("rapp_token")
+                auth=RAPPAuth()
                 )
             # Raise Exception for response status code.
             resp.raise_for_status()

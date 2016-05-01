@@ -45,7 +45,6 @@ class ServiceControllerBase(object):
         # Hold the Cloud Service Object
         self._service = service
         self._timeout = timeout
-        self.appToken_ = ''
 
         self.__cfgDir = path.join(__path__, '../config')
         self._connection = {
@@ -61,8 +60,6 @@ class ServiceControllerBase(object):
 
         # Assign urlpath value to the Cloud Service object
         self._service.urlpath = self._svc_url(self._service.svcname)
-        # Load application token
-        self.load_app_token(self._service.svcname)
 
 
     ##
@@ -119,32 +116,6 @@ class ServiceControllerBase(object):
     def _svc_url(self, svcUrlName):
         return self._connection['protocol'] + '://' + self._connection['ipaddr'] + \
               ':' + self._connection['port'] + '/hop/' + svcUrlName
-
-
-    ##
-    #  @brief Load Platform application token by path.
-    #  Currently, only one application token exists, giving access to all
-    #  RAPP Platform Services!!
-    #
-    def load_app_token(self, app=""):
-        ## TODO Load different tokens per application request.
-        authParams = self.__read_json_file(
-                path.join(self.__cfgDir, 'auth.json'))
-        appTokenPath = path.expanduser(
-                path.join(authParams['token_store_dir'],
-                    authParams['app_token']))
-
-        with open(appTokenPath, 'r') as f:
-            self.appToken_ = str(f.read()).replace('\n', '')
-
-
-    ##
-    #
-    #
-    def __read_json_file(self, filepath):
-        with open(filepath) as jsonData:
-            data = json.load(jsonData)
-        return data
 
 
     ##

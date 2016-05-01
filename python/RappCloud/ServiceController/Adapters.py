@@ -25,13 +25,13 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 
-__pyVersion = sys.version_info[:3]
-print __pyVersion
 
-"""
-@brief Custom ssl connection protocol namespace
-"""
+
 class SSLDef:
+    """ SSL/TLS Definitions namespace
+    
+    SSL/TLS protocol versions definitions
+    """
     TLSv1 = None
     TLSv1_1 = None
     TLSv1_2 = None
@@ -105,8 +105,8 @@ else:
 
 
 
-# @brief An HTTPS Transport Adapter that uses SSL3 version.'''
 class SSLAdapter(HTTPAdapter):
+    """ SSL Default transport Adapter """
     def __init__(self, ssl_version=None, **kwargs):
         self.ssl_version = ssl_version
         super(SSLAdapter, self).__init__(**kwargs)
@@ -120,40 +120,47 @@ class SSLAdapter(HTTPAdapter):
 
 
 class TLSAdapter(SSLAdapter):
+    """ TLS Default transport Adapter """
     def __init__(self, **kwargs):
         super(TLSAdapter, self).__init__(ssl_version=None,
                                          **kwargs)
 
 
 class TLS1Adapter(SSLAdapter):
+    """ TLSv1 Default transport Adapter """
     def __init__(self, **kwargs):
         super(TLS1Adapter, self).__init__(ssl_version=SSLDef.TLSv1,
                                           **kwargs)
 
 
 class TLS11Adapter(SSLAdapter):
+    """ TLSv1.1 Default transport Adapter """
     def __init__(self, **kwargs):
         super(TLS11Adapter, self).__init__(ssl_version=SSLDef.TLSv1_1,
                                            **kwargs)
 
 
 class TLS12Adapter(SSLAdapter):
+    """ TLSv1.2 Default transport Adapter """
     def __init__(self, **kwargs):
         super(TLS12Adapter, self).__init__(ssl_version=SSLDef.TLSv1_2,
                                            **kwargs)
 
 
 class SSL2Adapter(SSLAdapter):
+    """ SSLv2 Default transport Adapter """
     def __init__(self, **kwargs):
         super(SSL2Adapter, self).__init__(ssl_version=SSLDef.SSLv2,
                                           **kwargs)
 
 class SSL3Adapter(SSLAdapter):
+    """ SSLv3 Default transport Adapter """
     def __init__(self, **kwargs):
         super(SSL3Adapter, self).__init__(ssl_version=SSLDef.SSLv3,
                                           **kwargs)
 
 class SSL23Adapter(SSLAdapter):
+    """ SSLv2_3 Default transport Adapter """
     def __init__(self, **kwargs):
         super(SSL23Adapter, self).__init__(ssl_version=SSLDef.SSLv2_3,
                                            **kwargs)
