@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/EmailSend.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,49 +33,63 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class EmailSend(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.email = ''
-        self.password = ''
-        self.server = ''
-        self.port = ''
-        self.recipients = []
-        self.body = ''
-        self.subject = ''
-        self.attach_file = ''
-        ###############################
+  """ EmailSend Cloud Service class """
 
-        super(EmailSend, self).__init__(
-            svcname='email_send',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref email
+      - @ref password
+      - @ref server
+      - @ref port
+      - @ref recipients
+      - @ref body
+      - @ref subject
+      - @ref attach_file
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## The user's email username
+    self.email = ''
+    ## The user's email password
+    self.password = ''
+    ## The email server's smtp address, i.e. 'smtp.gmail.com'
+    self.server = ''
+    ## The email server imap port. Leave empty to use default value.
+    self.port = ''
+    ## Email addresses of the recipients
+    self.recipients = []
+    ## The email body string
+    self.body = ''
+    ## The email subject string
+    self.subject = ''
+    ## Attachment file path. Can be a .zip file that will be decompressed on the server.
+    self.attach_file = ''
+    # -------------------------------------------------------------
+
+    super(EmailSend, self).__init__(
+        svcname='email_send',
+        **kwargs
+        )
 
 
-    ##
-    #  @brief Create payload object of the cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(
-            email=self.email,
-            passwd=self.password,
-            server=self.server,
-            port=self.port,
-            recipients=self.recipients,
-            body=self.body,
-            subject=self.subject
-            )
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(
+        email=self.email,
+        passwd=self.password,
+        server=self.server,
+        port=self.port,
+        recipients=self.recipients,
+        body=self.body,
+        subject=self.subject
+        )
 
 
-    ##
-    #  @brief Create array of file object(s) of the cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return [File(self.attach_file, 'file')]
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return [File(self.attach_file, 'file')]

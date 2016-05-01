@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/PathPlanningUploadMap.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,38 +33,41 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class PathPlanningUploadMap(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.map_name = ''
-        self.png_file = ''
-        self.yaml_file = ''
-        ###############################
+  """ PathPlanningUploadMap Cloud Service class """
 
-        super(PathPlanningUploadMap, self).__init__(
-            svcname='path_planning_upload_map',
-            **kwargs)
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref map_name
+      - @ref png_file
+      - @ref yaml_file
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## The map name.
+    self.map_name = ''
+    ## Path to the map image png file.
+    self.png_file = ''
+    ## Path to the map description yaml file.
+    self.yaml_file = ''
+    # -------------------------------------------------------------
+
+    super(PathPlanningUploadMap, self).__init__(
+        svcname='path_planning_upload_map', **kwargs)
 
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(map_name=self.map_name)
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(map_name=self.map_name)
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return [
-            File(self.png_file, 'png_file'),
-            File(self.yaml_file, 'yaml_file')
-            ]
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return [
+        File(self.png_file, 'png_file'),
+        File(self.yaml_file, 'yaml_file')
+        ]

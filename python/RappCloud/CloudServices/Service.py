@@ -21,7 +21,7 @@
 
 ## @file RappCloud/CloudServices/Service.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -32,81 +32,94 @@ from RappCloud.Objects import (
         )
 
 
-##
-#  @brief Base Service Class.
-#
 class Service(object):
+    """ Service Base class """
+
     def __init__(self, svcname='', **kwargs):
+        """!
+        Constructor
+
+        @param (Optional) svcname The Web Service name.
+        @param **kwargs - Keyword arguments. Apply values to the request attributes.
+        """
         for key, value in kwargs.iteritems():
             if hasattr(self, key):
                 setattr(self, key, value)
 
-        self.svcname = svcname
-        self.urlpath = ''
+        ## Service Name
+        self.__svcname = svcname
+        ## Service Url path.
+        self.__urlpath = ''
         # Create service controller object. Pass the service instance
         # for the service controller to hold.
-        self._controller = ServiceControllerSync(self)
+        ## A Cloud Service holds a ServiceController instance.
+        self.__controller = ServiceControllerSync(self)
 
 
-    ##
-    #  @brief Service request object getter
+    @property
+    def svcname(self):
+        """ Service service name getter """
+        return self.__svcname
+
+
+    @property
+    def url(self):
+        """ Service urlpath getter """
+        return self.__urlpath
+
+
+    @url.setter
+    def url(self, val):
+        """ Service urlpath setter """
+        self.__urlpath = val
+
+
     @property
     def req(self):
-        # request property
+        """ Service request object getter """
         return self.__cloudReq
 
 
-    ##
-    #  @brief Service request object setter
     @req.setter
     def req(self, val):
+        """ Service request object setter """
         self.__cloudReq = val
 
 
-    ##
-    #  @brief Service request object deleter
     @req.deleter
     def req(self):
+        """ Service request object deleter """
         del self.__cloudReq
 
 
-    ##
-    #  @brief Service response object getter
     @property
     def resp(self):
-        # response property
+        """ Service response object getter """
         return self.__cloudResp
 
 
-    ##
-    #  @brief Service response object setter
     @resp.setter
     def resp(self, val):
+        """ Service response object setter """
         self.__cloudResp = val
 
 
-    ##
-    #  @brief Service response object deleter
     @resp.deleter
     def resp(self):
+        """ Service response object deleter """
         del self.__cloudResp
 
 
-
-    ##
-    #  @brief Call Cloud Service.
-    #
     def call(self):
+        """ Call the Platform Service """
         self._make_request_obj()
-        cloudResponse = self._controller.run_job()
-        self.__cloudResp = CloudResponse(cloudResponse)
+        cloudResponseDic = self.__controller.run_job()
+        self.__cloudResp = CloudResponse(cloudResponseDic)
         return self.__cloudResp
 
 
-    ##
-    #  @brief Create/Make Cloud Request Object.
-    #
     def _make_request_obj(self):
+        """ Create/Make Service request object """
         _payload = self._make_payload()
         _files = self._make_files()
         self.__cloudReq = CloudRequest(payload=_payload, files=_files)

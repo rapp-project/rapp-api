@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/EmailFetch.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,49 +33,63 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class EmailFetch(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.email = ''
-        self.password = ''
-        self.server = ''
-        self.port = ''
-        self.date_from = 0
-        self.date_to = 0
-        self.email_status = ''
-        self.num_emails = 0
-        ###############################
+  """ EmailFetch Cloud Service class. """
 
-        super(EmailFetch, self).__init__(
-            svcname='email_fetch',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref email
+      - @ref password
+      - @ref server
+      - @ref port
+      - @ref date_from
+      - @ref date_to
+      - @ref email_status
+      - @ref num_emails
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## User's email username
+    self.email = ''
+    ## User's email password
+    self.password = ''
+    ## The email server's imap address, i.e. 'imap.gmail.com'.
+    self.server = ''
+    ## The email server imap port. leave empty to use default value.
+    self.port = ''
+    ## Emails since date. Unix timestamp.
+    self.date_from = 0
+    ## Emails until date. Unix timestamp.
+    self.date_to = 0
+    ## Define which mails the users requests. Values: ALL, UNSEEN(DEFAULT)
+    self.email_status = ''
+    ## Number of requested emails.
+    self.num_emails = 0
+    # -------------------------------------------------------------
+
+    super(EmailFetch, self).__init__(
+        svcname='email_fetch',
+        **kwargs
+        )
 
 
-    ##
-    #  @brief Create payload object of the cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(
-            email=self.email,
-            passwd=self.password,
-            server=self.server,
-            port=self.port,
-            from_date=self.date_from,
-            to_date=self.date_to,
-            email_status=self.email_status,
-            num_emails=self.num_emails)
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(
+        email=self.email,
+        passwd=self.password,
+        server=self.server,
+        port=self.port,
+        from_date=self.date_from,
+        to_date=self.date_to,
+        email_status=self.email_status,
+        num_emails=self.num_emails)
 
 
-    ##
-    #  @brief Create array of file object(s) of the cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return []

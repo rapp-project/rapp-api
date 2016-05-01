@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/Geolocation.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,34 +33,34 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class Geolocation(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.ipaddr = ''
-        ###############################
+  """ Geolocation Cloud Service class """
 
-        super(Geolocation, self).__init__(
-            svcname='geolocation',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref ipaddr
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## The machine's ipv4 address.
+    self.ipaddr = ''
+    # -------------------------------------------------------------
+
+    super(Geolocation, self).__init__(
+        svcname='geolocation',
+        **kwargs
+        )
 
 
-    ##
-    #  @brief Create payload object of the cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(ipaddr=self.ipaddr)
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(ipaddr=self.ipaddr)
 
 
-    ##
-    #  @brief Create array of file object(s) of the cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return []

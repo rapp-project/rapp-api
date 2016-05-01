@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/OntologySubclassesof.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,34 +33,34 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class OntologySubclassesof(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.query = ''
-        ###############################
+  """ OntologySubclassesof Cloud Service class """
 
-        super(OntologySubclassesof, self).__init__(
-            svcname='ontology_subclasses_of',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref query
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## Query to the ontology database.
+    self.query = ''
+    # -------------------------------------------------------------
+
+    super(OntologySubclassesof, self).__init__(
+        svcname='ontology_subclasses_of',
+        **kwargs
+        )
 
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(query=self.query)
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(query=self.query)
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return []

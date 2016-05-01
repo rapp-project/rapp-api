@@ -19,7 +19,7 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/CognitiveGetScores.py
 #
 #  @copyright Rapp Projecty EU 2015
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
@@ -33,37 +33,41 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class CognitiveGetScores(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.time_to = 0
-        self.test_type = ''
-        ###############################
+  """ CognitiveGetScores Cloud Service class. """
 
-        super(CognitiveGetScores, self).__init__(
-            svcname='cognitive_get_scores',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref time_to
+      - @ref test_type
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## Unix timestamp. Retrieve history up to this time value.
+    self.time_to = 0
+    ## Cognitive Exercise test type. Can be one of:
+    # - 'ArithmeticCts'
+    # - 'AwarenessCts'
+    # - 'ReasoningCts'
+    # - '' for all
+    self.test_type = ''
+    # -------------------------------------------------------------
+
+    super(CognitiveGetScores, self).__init__(
+        svcname='cognitive_get_scores', **kwargs)
 
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(
-            test_type=self.test_type,
-            up_to_time=self.time_to)
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(
+        test_type=self.test_type,
+        up_to_time=self.time_to)
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return []

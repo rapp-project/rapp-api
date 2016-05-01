@@ -19,7 +19,7 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/SetNoiseProfile.py
 #
 #  @copyright Rapp Projecty EU 2015
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
@@ -33,37 +33,37 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class SetNoiseProfile(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.audio_source = ''
-        self.audiofile = ''
-        ###############################
+  """ SetNoiseProfile Cloud Service class """
 
-        super(SetNoiseProfile, self).__init__(
-            svcname='set_noise_profile',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref audio_source
+      - @ref audiofile
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ##  Audio source data format. e.g "nao_wav_1_ch".
+    self.audio_source = ''
+    ## Path to the audio file.
+    self.audiofile = ''
+    # -------------------------------------------------------------
+
+    super(SetNoiseProfile, self).__init__(
+        svcname='set_noise_profile',
+        **kwargs
+        )
 
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(
-            audio_source = self.audio_source,
-            )
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(audio_source = self.audio_source)
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return [File(self.audiofile, 'file')]
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return [File(self.audiofile, 'file')]

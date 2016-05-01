@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/TextToSpeech.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -36,58 +36,68 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class TextToSpeech(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.text = ''
-        self.language = ''
-        ###############################
+  """ TextToSpeech Cloud Service class """
 
-        super(TextToSpeech, self).__init__(
-            svcname='text_to_speech',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
 
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref text
+      - @ref language
+    """
 
-    def get_audio_raw(self):
-        try:
-            b64Data = self.resp.payload
-            rawData = base64.b64decode(b64Data)
-        except TypeError as e:
-            print str(e)
-            return None
-        return rawData
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## Input text to translate to audio data.
+    self.text = ''
+    ## Language to use for recognition
+    self.language = ''
+    # -------------------------------------------------------------
 
-
-    def store_audio(self, destfile):
-        destfile = path.expanduser(destfile)
-        rawData = self.get_audio_raw()
-        try:
-            with open(destfile, 'wb') as f:
-                f.write(rawData)
-        except IOError as e:
-            print str(e)
-            return False
-        return True
+    super(TextToSpeech, self).__init__(
+        svcname='text_to_speech',
+        **kwargs
+        )
 
 
+  def get_audio_raw(self):
+    """! Get audio raw data from response """
+    try:
+      b64Data = self.resp.payload
+      rawData = base64.b64decode(b64Data)
+    except TypeError as e:
+      print str(e)
+      return None
+    return rawData
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(text=self.text, language=self.language)
+
+  def store_audio(self, destfile):
+    """! Store returned audio data to an audio file given by path
+
+    @param destfile - Destination file path.
+    """
+
+    destfile = path.expanduser(destfile)
+    rawData = self.get_audio_raw()
+    try:
+      with open(destfile, 'wb') as f:
+        f.write(rawData)
+    except IOError as e:
+      print str(e)
+      return False
+    return True
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(
+        text=self.text,
+        language=self.language
+        )
+
+
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return []

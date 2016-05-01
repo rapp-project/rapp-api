@@ -19,7 +19,7 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/FaceDetection.py
 #
 #  @copyright Rapp Projecty EU 2015
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
@@ -33,35 +33,38 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class FaceDetection(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.fast = False
-        self.image = ''
-        ###############################
+  """ FaceDetection Cloud Service class """
 
-        super(FaceDetection, self).__init__(
-            svcname='face_detection',
-            **kwargs)
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref fast
+      - @ref image
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## If true, detection will take less time but it will be less accurate.
+    self.fast = False
+    ## Path to the image file.
+    self.image = ''
+    # -------------------------------------------------------------
+
+    super(FaceDetection, self).__init__(
+        svcname='face_detection',
+        **kwargs)
 
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(fast=self.fast)
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(fast=self.fast)
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return [File(self.image, 'file')]
+  def _make_files(self):
+    """ Create array of file object(s) """
+    # Create and return array of file objects
+    return [File(self.image, 'file')]
 

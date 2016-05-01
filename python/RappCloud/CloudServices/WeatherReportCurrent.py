@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/WeatherReportCurrent.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,40 +33,42 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class WeatherReportCurrent(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.city = ''
-        self.weather_reporter = ''
-        self.metric = 0
-        ###############################
+  """ WeatherReportCurrent Cloud Service class """
 
-        super(WeatherReportCurrent, self).__init__(
-            svcname='weather_report_current',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref city
+      - @ref weather_reporter
+      - @ref metric
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## The desired city
+    self.city = ''
+    ## The weather API to use. Defaults to "yweather" .
+    self.weather_reporter = ''
+    ## The return value units.
+    self.metric = 0
+    # -------------------------------------------------------------
+
+    super(WeatherReportCurrent, self).__init__(
+        svcname='weather_report_current', **kwargs)
 
 
-    ##
-    #  @brief Create payload object of the cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(
-            city=self.city,
-            weather_reporter=self.weather_reporter,
-            metric=self.metric
-            )
+  def _make_payload(self):
+    """! Make request payload object """
+    return Payload(
+        city=self.city,
+        weather_reporter=self.weather_reporter,
+        metric=self.metric
+        )
 
 
-    ##
-    #  @brief Create array of file object(s) of the cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_files(self):
+    """! Create array of file object(s) """
+    return []

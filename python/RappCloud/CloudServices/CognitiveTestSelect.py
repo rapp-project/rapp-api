@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/CognitiveTestSelect.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,34 +33,41 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class CognitiveTestSelect(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.test_type = ''
-        ###############################
+  """ CognitiveTestSelect Cloud Service class. """
 
-        super(CognitiveTestSelect, self).__init__(
-            svcname='cognitive_test_chooser',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
 
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref test_type
+    """
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## Cognitive Exercise test type. Can be one of:
+    # - 'ArithmeticCts'
+    # - 'AwarenessCts'
+    # - 'ReasoningCts'
+    # - ''
     #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(test_type=self.test_type)
+    # If left blank, the exercise will be selected based on user's
+    # performance history.
+    self.test_type = ''
+    # -------------------------------------------------------------
+
+    super(CognitiveTestSelect, self).__init__(
+        svcname='cognitive_test_chooser',
+        **kwargs
+        )
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(test_type=self.test_type)
+
+
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return []

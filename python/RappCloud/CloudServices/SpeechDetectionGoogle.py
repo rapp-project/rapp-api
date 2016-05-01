@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/SpeechDetectionGoogle.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,39 +33,41 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class SpeechDetectionGoogle(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.language = 'en'
-        self.audio_source = ''
-        self.audiofile = ''
-        ###############################
+  """ SpeechDetectionGoogle Cloud Service class """
 
-        super(SpeechDetectionGoogle, self).__init__(
-            svcname='speech_detection_google',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref audio_source
+      - @ref audiofile
+      - @ref language
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## Language to use for recognition
+    self.language = 'en'
+    ##  Audio source data format. e.g "nao_wav_1_ch".
+    self.audio_source = ''
+    ## Path to the audio file.
+    self.audiofile = ''
+    # -------------------------------------------------------------
+
+    super(SpeechDetectionGoogle, self).__init__(
+        svcname='speech_detection_google', **kwargs)
 
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(
-            language=self.language,
-            audio_source = self.audio_source,
-            )
+  def _make_payload(self):
+    """! Make request payload object """
+    return Payload(
+        language=self.language,
+        audio_source = self.audio_source,
+        )
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return [File(self.audiofile, 'file')]
+  def _make_files(self):
+    """! Create array of file object(s) """
+    return [File(self.audiofile, 'file')]

@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/OntologyIsSubsuperclass.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,40 +33,44 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class OntologyIsSubsuperclass(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.parent_class = ''
-        self.child_class = ''
-        self.recursive = False
-        ###############################
+  """ OntologyIsSubsuperclass Cloud Service class """
 
-        super(OntologyIsSubsuperclass, self).__init__(
-            svcname='ontology_is_subsuperclass_of',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref parent_class
+      - @ref child_class
+      - @ref recursive
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## The parent class name.
+    self.parent_class = ''
+    ## The child class name.
+    self.child_class = ''
+    ## True if a recursive procedure will be used (true/false).
+    self.recursive = False
+    # -------------------------------------------------------------
+
+    super(OntologyIsSubsuperclass, self).__init__(
+        svcname='ontology_is_subsuperclass_of',
+        **kwargs
+        )
 
 
-    ##
-    #  @brief Create payload object of face_detection cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(
-            parent_class=self.parent_class,
-            child_class=self.child_class,
-            recursive=self.recursive
-            )
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(
+        parent_class=self.parent_class,
+        child_class=self.child_class,
+        recursive=self.recursive
+        )
 
 
-    ##
-    #  @brief Create array of file object(s) of face_detection cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return []

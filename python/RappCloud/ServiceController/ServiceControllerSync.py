@@ -39,10 +39,8 @@ from requests.adapters import HTTPAdapter
 from Adapters import TLS12Adapter as SSLAdapter
 
 
-## @class CloudInterface
+## @class ServiceControllerSync
 #
-#  Cloud Interface class. Service controller for HOP Web Services requests
-#  Static class.
 #
 class ServiceControllerSync(ServiceControllerBase):
     ##
@@ -124,7 +122,7 @@ class ServiceControllerSync(ServiceControllerBase):
 
         try:
             resp = session.post(
-                url=self._service.urlpath,
+                url=self._service.url,
                 data=_payload,
                 files=_files,
                 timeout=self._timeout,

@@ -19,9 +19,9 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/CloudServices/NewsExplore.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
@@ -33,46 +33,56 @@ from RappCloud.Objects import (
     )
 
 
-##
-#  @brief Face-Detection Cloud Service Class.
-#  @param fast
-#  @param image
-#
 class NewsExplore(Service):
-    def __init__(self, *args, **kwargs):
-        # Cloud Service request arguments
-        self.news_engine = ''
-        self.keywords = []
-        self.exclude_titles = []
-        self.region = ''
-        self.topic = ''
-        self.num_news = 0
-        ###############################
+  """ NewsExplore Cloud Service class """
 
-        super(NewsExplore, self).__init__(
-            svcname='news_explore',
-            **kwargs
-            )
+  def __init__(self, **kwargs):
+    """!
+    Constructor
+
+    @param **kwargs - Keyword arguments. Apply values to the request attributes.
+      - @ref news_engine
+      - @ref keywords
+      - @ref exclude_titles
+      - @ref region
+      - @ref topic
+      - @ref num_news
+    """
+
+    # Cloud Service request arguments
+    # -------------------------------------------------------------
+    ## The news search engine to use.
+    self.news_engine = ''
+    ## Desired keywords.
+    self.keywords = []
+    ## Reject list of previously read articles, in order to avoid duplicates.
+    self.exclude_titles = []
+    ## Language/Region.
+    self.region = ''
+    ## Main topics, i.e. sports, politics, etc.
+    self.topic = ''
+    ## Number of news stories.
+    self.num_news = 0
+    # -------------------------------------------------------------
+
+    super(NewsExplore, self).__init__(
+        svcname='news_explore',
+        **kwargs
+        )
 
 
-    ##
-    #  @brief Create payload object of the cloud service
-    #
-    def _make_payload(self):
-        # Create and return payload object
-        return Payload(
-            news_engine=self.news_engine,
-            keywords=self.keywords,
-            exclude_titles=self.exclude_titles,
-            region=self.region,
-            topic=self.topic,
-            num_news=self.num_news
-            )
+  def _make_payload(self):
+    """ Make request payload object """
+    return Payload(
+        news_engine=self.news_engine,
+        keywords=self.keywords,
+        exclude_titles=self.exclude_titles,
+        region=self.region,
+        topic=self.topic,
+        num_news=self.num_news
+        )
 
 
-    ##
-    #  @brief Create array of file object(s) of the cloud service.
-    #
-    def _make_files(self):
-        # Create and return array of file objects
-        return []
+  def _make_files(self):
+    """ Create array of file object(s) """
+    return []
