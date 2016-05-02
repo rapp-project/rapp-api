@@ -2,6 +2,9 @@
 
 ## @file RappCloud/CloudServices/__init__.py
 #
+#  @package CloudServices
+#
+
 
 from FaceDetection import FaceDetection
 from QrDetection import QrDetection

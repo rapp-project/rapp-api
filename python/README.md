@@ -9,6 +9,7 @@ enabling this way, persistent connections to the Platfrorm.
 
 TLSv1.2 requires either python-2.7.9+ or pyopenssl.
 If pyopenssl is installed on the system it is used to apply proper tlsv1.2 adapter.
+Otherwise it falls back to use TLSv1.1 adapter.
 
 
 ## Installation
@@ -55,18 +56,31 @@ configuration file. This file already includes configuration parameters used to 
 
 ## How to use the RAPP Platform Services though the API.
 
+CloudService classes are implemented, for each RAPP Platform Service, under the RappCloud/CloudServices directory.
+CloudService is the RAPP term for an established connection to the Platform Services over the Network.
+Each CloudService class holds a ServiceController instance that is responsible for over network communications
+to the RAPP Platform Services.
+
+
 ```python
 
+# Import the FaceDetection CloudService
 from RappCloud import FaceDetection
 
-faceDetector = FaceDetection(image='<path_to_image_file>', fast=True) # Instantiate a new FaceDetection service.
-response = faceDetector.call() # Call the Platform's service
-print response.faces # Print detected faces
+# Instantiate a new FaceDetection service
+faceDetector = FaceDetection(image='<path_to_image_file>', fast=True)
+# Call the RAPP Platform FaceDetection service
+response = faceDetector.call()
+# Print detected faces. Response properties can be retrieved using the dot notation
+print response.faces
+# Print the wohole response object, serialized to dictionary
 print response.serialize() # Print the whole Platform's response object
 
 ...
-faceDetector.fast = False # Set an attribute
-response = faceDetector.call() # Call
+# Set an attribute
+faceDetector.fast = False
+# Call
+response = faceDetector.call()
 
 
 ```
@@ -75,8 +89,14 @@ response = faceDetector.call() # Call
 ## Directories
 
 - **RappCloud**: The RappCloud python module directory.
-- **RappCloud/CloudInterface**: The CloudInterface package used by the RappCloud class to perform Web .Post Requests.
+- **RappCloud/CloudService**: CloudService implementation classes.
+- **RappCloud/ServiceController**: The ServiceController implementation. Includes Transport Adapters, Authentication and ServiceController implementations.
 - **RappCloud/RandStrGen**: The Random String Generator class used by the RappCloud class to generate random strings.
+
+
+## Examples
+
+Examples can be found under the examples directory.
 
 
 ## Tests
@@ -110,8 +130,6 @@ You can change the default output directory by passing the directory path as an 
 ```shell
 ./gen_doc_python_api.sh <out_dir>
 ```
-
-TODO -- Export html doxygen generated documentation
 
 
 ## Contributors
