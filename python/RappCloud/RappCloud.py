@@ -33,8 +33,7 @@ import yaml
 import base64
 
 from ServiceController import ServiceControllerSync
-from RandStrGen import RandStrGen
-from Utils import Net
+from Utils import Net, RandStrGen
 #import magic
 
 __path__ = os.path.dirname(__file__)
