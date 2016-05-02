@@ -20,7 +20,7 @@
 # contact: klpanagi@gmail.com, etsardou@iti.gr
 
 
-## @file RappCloud/RappCloud.py
+## @file RappCloud.py
 #
 #  @copyright Rapp Projecty EU 2015
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]

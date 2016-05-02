@@ -20,6 +20,15 @@
 # contact: klpanagi@gmail.com, etsardou@iti.gr
 
 
+## @file RappCloud/ServiceController/Adapters.py
+#
+#  @copyright Rapp Projecty EU 2016
+#  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
+#
+
+
+
+
 import sys
 import requests
 from requests.adapters import HTTPAdapter
@@ -29,7 +38,7 @@ from requests.packages.urllib3.poolmanager import PoolManager
 
 class SSLDef:
     """ SSL/TLS Definitions namespace
-    
+
     SSL/TLS protocol versions definitions
     """
     TLSv1 = None
@@ -41,7 +50,7 @@ class SSLDef:
 
 
 if sys.version_info[:3] >= (2, 7, 9):
-    """ 
+    """
     ssl module in Python 2.7.9 or later supports TLS versions 1.1 and 1.2
     """
     import ssl  # Python 2.7 ssl library

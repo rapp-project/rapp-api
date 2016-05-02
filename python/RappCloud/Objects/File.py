@@ -19,31 +19,67 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/Objects/File.py
+## @file Objects/File.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
 
 class File(object):
-    def __init__(self, path="", httpField=""):
-        self.__path = path
-        if httpField is not "":
-            self.__httpField = httpField
-        else:
-            self.__httpField = "file"
+  """ File object class """
+
+  def __init__(self, path="", httpField=""):
+    """! Constructor
+
+    @param string path -The filepath
+    @param string httpField - The post field name.
+    """
+
+    self.__path = path
+    if httpField is not "":
+      self.__postField = httpField
+    else:
+      self.__postField = "file"
 
 
-    def set_path(self, path):
-        self.__path = path
+  @property
+  def path(self):
+    """! file path getter
+
+    @return string - The file path.
+    """
+    return self.__path
 
 
-    def set_httpfield(self, fieldname):
-        self.__httpField = fieldname
+  @path.setter
+  def path(self, path):
+    """! file path setter
+
+    @param path (String) - The file path.
+    """
+    self.__path = path
 
 
-    def serialize(self):
-        return {'path': self.__path, 'field_name': self.__httpField}
+  @property
+  def postField(self):
+    """! Post field name getter
+
+    @return string - The post field name.
+    """
+    return self.__postField
+
+
+  @postField.setter
+  def postfield(self, fieldname):
+    """! Post field name setter
+
+    @param fieldname (String) - The post field name.
+    """
+    self.__postField = fieldname
+
+
+  def serialize(self):
+    return {'path': self.__path, 'field_name': self.__postField}
 
 

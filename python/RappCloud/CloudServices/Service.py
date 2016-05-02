@@ -58,60 +58,60 @@ class Service(object):
 
     @property
     def svcname(self):
-        """ Service service name getter """
+        """! Service service name getter """
         return self.__svcname
 
 
     @property
     def url(self):
-        """ Service urlpath getter """
+        """! Service urlpath getter """
         return self.__urlpath
 
 
     @url.setter
     def url(self, val):
-        """ Service urlpath setter """
+        """! Service urlpath setter """
         self.__urlpath = val
 
 
     @property
     def req(self):
-        """ Service request object getter """
+        """! Service request object getter """
         return self.__cloudReq
 
 
     @req.setter
     def req(self, val):
-        """ Service request object setter """
+        """! Service request object setter """
         self.__cloudReq = val
 
 
     @req.deleter
     def req(self):
-        """ Service request object deleter """
+        """! Service request object deleter """
         del self.__cloudReq
 
 
     @property
     def resp(self):
-        """ Service response object getter """
+        """! Service response object getter """
         return self.__cloudResp
 
 
     @resp.setter
     def resp(self, val):
-        """ Service response object setter """
+        """! Service response object setter """
         self.__cloudResp = val
 
 
     @resp.deleter
     def resp(self):
-        """ Service response object deleter """
+        """! Service response object deleter """
         del self.__cloudResp
 
 
     def call(self):
-        """ Call the Platform Service """
+        """! Call the Platform Service """
         self._make_request_obj()
         cloudResponseDic = self.__controller.run_job()
         self.__cloudResp = CloudResponse(cloudResponseDic)
@@ -119,7 +119,7 @@ class Service(object):
 
 
     def _make_request_obj(self):
-        """ Create/Make Service request object """
+        """! Create/Make Service request object """
         _payload = self._make_payload()
         _files = self._make_files()
         self.__cloudReq = CloudRequest(payload=_payload, files=_files)

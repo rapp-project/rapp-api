@@ -20,7 +20,7 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RAPPAuth/RAPPAuth.py
+## @file ServiceController/RAPPAuth.py
 #
 #  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
@@ -38,7 +38,11 @@ class RAPPAuth(AuthBase):
   """
 
   def __init__(self, token='', svcname=''):
-    """ Default constructor """
+    """! Constructor
+
+    @param string token
+    @param string svcname - The service/application name.
+    """
     # The application tokens storage directory.
     self._tokenStoreDir = path.expanduser('~/.config/rapp_platform/tokens')
 
@@ -49,7 +53,7 @@ class RAPPAuth(AuthBase):
 
 
   def __call__(self, r):
-    """ Append the application token to the HTTP application protocol header.
+    """! Append the application token to the HTTP application protocol header.
 
     Modify the request object. Append token string to the Accept-Token
     field of the request header.
@@ -59,7 +63,7 @@ class RAPPAuth(AuthBase):
 
 
   def __load_token(self, svcname=""):
-    """ Load the RAPP Platform authentication token.
+    """! Load the RAPP Platform authentication token.
 
     Currently only one application token exists, giving access to all the
     RAPP Platform services!!
@@ -69,7 +73,10 @@ class RAPPAuth(AuthBase):
 
 
   def __read_token_from_file(self, filepath):
-    """ Read and token string stored in a file. """
+    """! Read and token string stored in a file.
+
+    @param filepath string - The token file path.
+    """
     with open(filepath, 'r') as tokenF:
       self._token = str(tokenF.read()).replace('\n', '')
 

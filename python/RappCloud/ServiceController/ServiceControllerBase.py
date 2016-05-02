@@ -20,7 +20,7 @@
 # contact: klpanagi@gmail.com, etsardou@iti.gr
 
 
-## @file ServiceController/ServiceControllerSync.py
+## @file ServiceController/ServiceControllerBase.py
 #
 #  @copyright Rapp Projecty EU 2015
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
@@ -34,137 +34,141 @@ from ConfigParser import SafeConfigParser
 
 
 
-__path__ = path.dirname(__file__)
-
-
 class ServiceControllerBase(object):
-    ##
-    #  @brief Object constructor
-    #
-    def __init__(self, service, connection=None, timeout=None):
-        # Hold the Cloud Service Object
-        self._service = service
-        self._timeout = timeout
+  """ Service Controller base class implementation """
 
-        self.__cfgDir = path.join(__path__, '../config')
-        self._connection = {
-            "protocol": "",
-            "ipaddr": "",
-            "port": ""
-        }
+  def __init__(self, service, connection=None, timeout=None):
+    """! Constructor
 
-        if connection is not None:
-            self._connection = connection
-        else:
-            self.__parse_platform_cfg()
+    @param service Service: Service instance
+    @param connection dictionary: Connection information.
+    @param timeout int: Connection Timeout value.
+    """
+    ## Hold the Cloud Service instance.
+    self._service = service
+    ## Connection timeout value
+    self._timeout = timeout
 
-        # Assign urlpath value to the Cloud Service object
-        self._service.url = self._svc_url(self._service.svcname)
+    self.__cfgDir = path.join(path.dirname(__file__), '../config')
+    self._connection = {
+        "protocol": "",
+        "ipaddr": "",
+        "port": ""
+    }
 
+    if connection is not None:
+        self._connection = connection
+    else:
+        self.__parse_platform_cfg()
 
-    ##
-    #  Check if a dic is represented in json string format.
-    #  @param obj dictionary
-    #
-    def is_json(self, obj):
-        try:
-            json.loads(obj)
-        except ValueError:
-            return False
-        return True
+    # Assign urlpath value to the Cloud Service object
+    self._service.url = self._svc_url(self._service.svcname)
 
 
-    ##
-    #  Make file tuples for multipart/form-data http/s requests.
-    #  @param filepath The path to the file.
-    #  @param optional Http field name value.
-    #
-    #  {httpFieldName: {filename: '', file descriptor: }}
-    #
-    def _make_file_tuple(self, filepath, httpField='file' ):
-        filename = self.__basename(filepath)
-        tuple_ = (httpField, (filename, open(filepath, 'rb')))
-        return tuple_
+  def is_json(self, obj):
+    """! Check if it is a json string.
+
+    @param obj string
+    @return - True if is a json. False otherwise.
+    """
+    try:
+      json.loads(obj)
+    except ValueError:
+      return False
+    return True
 
 
-    ##
-    #  @brief Make payload tuple for multipart/form-data http/s requests.
-    #  @param payload Data payload - dictionary.
-    #  @param httpField Optional http field name value.
-    #
-    #  {httpFieldName: {filename: '', file descriptor: }}
-    #
-    def _make_payload_dic(self, payload, httpField='json' ):
-        dic = {httpField: json.dumps(payload)}
-        return dic
+  def _make_file_tuple(self, filepath, httpField='file' ):
+    """! Make file tuples for multipart/form-data http/s requests.
+
+    {httpFieldName: {filename: '', file descriptor: }}
+
+    @param filepath string: The file path.
+    @param httpField string - The post field name.
+    @return Tuple
+    """
+
+    filename = self.__basename(filepath)
+    tuple_ = (httpField, (filename, open(filepath, 'rb')))
+    return tuple_
 
 
-    def run_job(self):
-        raise NotImplementedError()
+  def _make_payload_dic(self, payload, httpField='json' ):
+    """! Make payload tuple for multipart/form-data http/s requests.
+    {httpFieldName: {filename: '', file descriptor: }}
+
+    @param payload Data payload - dictionary.
+    @param httpField Optional http field name value.
+    @return payload json
+    """
+
+    dic = {httpField: json.dumps(payload)}
+    return dic
 
 
-    ##
-    # Return the bassename of input filepath.
-    #
-    def __basename(self, filepath):
-        return path.basename(filepath)
+  def run_job(self):
+    raise NotImplementedError()
 
 
-    ##
-    #  Craft patform service full url path.
-    #
-    def _svc_url(self, svcUrlName):
-        return self._connection['protocol'] + '://' + self._connection['ipaddr'] + \
-              ':' + self._connection['port'] + '/hop/' + svcUrlName
+  def __basename(self, filepath):
+    """! Return the basename of input filepath. """
+    return path.basename(filepath)
 
 
-    ##
-    #  @brief Parse and load Rapp Platform parameters.
-    #
-    #  @param self The object pointer.
-    #
-    def __parse_platform_cfg(self):
-        cfgFilePath = path.join(self.__cfgDir, 'platform.cfg')
-        section = 'RAPP Platform'
-        cfgParser = SafeConfigParser()
+  def _svc_url(self, svcUrlName):
+    """! Craft patform service full url path.
 
-        try:
-            cfgParser.read(cfgFilePath)
-        except Exception as e:
-            print "Could not load RAPP Platform parameters from .cfg file."
-            print e
-            sys.exit(1)
-        if not cfgParser.has_section(section):
-            print "\033[0mCfg file {%s} is missing section [%s]\033[0m" \
-                    % (cfgFilePath, section)
-            sys.exit(1)
+    @param svcUrlName string - The service urlname, i.e 'face_detection'
+    """
 
-        if cfgParser.has_option(section, 'use'):
-            useSection = cfgParser.get(section, 'use')
-        else:
-            print "Missing option under [RAPP Platform] section" + \
-                    " in cfg file {%s}" % cfgFilePath
-            sys.exit(1)
+    return self._connection['protocol'] + '://' + self._connection['ipaddr'] + \
+          ':' + self._connection['port'] + '/hop/' + svcUrlName
 
-        if not cfgParser.has_section(useSection):
-            print "Given value for option <use> in [RAPP Platform] Section" + \
-                    " does not correspond to a defined Section in cfg file"
-            sys.exit(1)
 
-        if cfgParser.has_option(useSection, 'ipv4_addr') and \
-                cfgParser.has_option(useSection, 'port'):
-            self._connection['ipaddr'] = cfgParser.get(useSection, 'ipv4_addr')
-            self._connection['port'] = cfgParser.get(useSection, 'port')
-        else:
-            print "Missing options {ipv4_addr} and {port} in cfg file [%s]" \
-                % cfgFilePath
-            sys.exit(1)
+  def __parse_platform_cfg(self):
+    """! Parse and load Rapp Platform parameters from config file. """
 
-        if cfgParser.has_option(useSection, 'protocol'):
-            self._connection['protocol'] = cfgParser.get(useSection, 'protocol')
-        else:
-            print "Missing {protocol} option in platform cfg file." + \
-                    "Falling back to default {http}"
-            self._connection['protocol'] = 'http'
+    cfgFilePath = path.join(self.__cfgDir, 'platform.cfg')
+    section = 'RAPP Platform'
+    cfgParser = SafeConfigParser()
+
+    try:
+      cfgParser.read(cfgFilePath)
+    except Exception as e:
+      print "Could not load RAPP Platform parameters from .cfg file."
+      print e
+      sys.exit(1)
+    if not cfgParser.has_section(section):
+      print "\033[0mCfg file {%s} is missing section [%s]\033[0m" \
+        % (cfgFilePath, section)
+      sys.exit(1)
+
+    if cfgParser.has_option(section, 'use'):
+      useSection = cfgParser.get(section, 'use')
+    else:
+      print "Missing option under [RAPP Platform] section" + \
+                " in cfg file {%s}" % cfgFilePath
+      sys.exit(1)
+
+    if not cfgParser.has_section(useSection):
+      print "Given value for option <use> in [RAPP Platform] Section" + \
+                " does not correspond to a defined Section in cfg file"
+      sys.exit(1)
+
+    if cfgParser.has_option(useSection, 'ipv4_addr') and \
+            cfgParser.has_option(useSection, 'port'):
+      self._connection['ipaddr'] = cfgParser.get(useSection, 'ipv4_addr')
+      self._connection['port'] = cfgParser.get(useSection, 'port')
+    else:
+      print "Missing options {ipv4_addr} and {port} in cfg file [%s]" \
+          % cfgFilePath
+      sys.exit(1)
+
+    if cfgParser.has_option(useSection, 'protocol'):
+      self._connection['protocol'] = cfgParser.get(useSection, 'protocol')
+    else:
+      print "Missing {protocol} option in platform cfg file." + \
+                "Falling back to default {http}"
+      self._connection['protocol'] = 'http'
 
 

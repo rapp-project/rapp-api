@@ -19,7 +19,7 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/Objects/Cloud.py
+## @file Objects/Cloud.py
 #
 #  @copyright Rapp Projecty EU 2015
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
@@ -33,53 +33,69 @@ from RappCloud.Objects import (
 
 
 class CloudRequest(object):
-    def __init__(self, payload=None, files=[]):
-        if (type(payload).__name__ is not 'Payload') and \
-                (payload is not None):
-            raise TypeError("Argument payload is not of type Payload")
-        for f in files or []:
-            if type(f).__name__ is not 'File':
-                raise TypeError(\
-                    "Value of argument files is not of type File")
-        ## Private to protect overwrite
-        self.__payload = payload
-        self.__files = files
+  """ Cloud Request object class """
+
+  def __init__(self, payload=None, files=[]):
+    """! Constructor
+
+    @param payload Payload - The request payload data.
+    @param files Array - Array of File objects to attach to the request.
+    """
+
+    if (type(payload).__name__ is not 'Payload') and (payload is not None):
+      raise TypeError("Argument payload is not of type Payload")
+    for f in files or []:
+      if type(f).__name__ is not 'File':
+        raise TypeError("Value of argument files is not of type File")
+
+    # Private to protect overwrite
+    self.__payload = payload
+    self.__files = files
 
 
-    ##
-    #  @brief Return the payload attached to the request object
-    #  @returns RappCloud.Objects.Payload
-    #
-    @property
-    def payload(self):
-        return self.__payload
+  @property
+  def payload(self):
+    """! Request Payload getter
+
+    @return Payload: The request payload object.
+    """
+    return self.__payload
 
 
-    ##
-    #  @brief Return the files attached to the request object
-    #  @returns Array of RappCloud.Objects.File objects
-    #
-    @property
-    def files(self):
-        return self.__files
+  @property
+  def files(self):
+    """! Request Files getter
+
+    @return Array: Array of File objects of the request.
+    """
+    return self.__files
 
 
-    ##
-    #  @brief Return payload and files attributes of the request object
-    #
-    def unpack(self):
-        return self.__payload, self.__files
+  def unpack(self):
+    """! Return payload and files objects [payload, files]
+
+    @return Returns Payload and Array of File objects attached
+    to the request.
+    """
+    return self.__payload, self.__files
 
 
 
 class CloudResponse(object):
-    def __init__(self, respDic):
-        for key, value in respDic.iteritems():
-            setattr(self, key, value)
+  """ Cloud Response object class """
+
+  def __init__(self, respDic):
+    """! Constructor
+
+    @param respDic dict: Response key-value pairs.
+    """
+    for key, value in respDic.iteritems():
+      setattr(self, key, value)
 
 
-    ##
-    #  @brief Unpack CloudResponse object to a dict and return.
-    #
-    def serialize(self):
-        return self.__dict__
+  def serialize(self):
+    """! Serialize CloudResponse object to a dict.
+
+    @return dictionary: Serialized response to dictionary.
+    """
+    return self.__dict__

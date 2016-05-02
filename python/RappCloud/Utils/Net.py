@@ -22,20 +22,25 @@
 
 ## @file Utils/Net.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
 import socket
 
 class Net(object):
+  """ Provide Network related static methods """
 
-    ## Hacky method to get the actual public ip.
-    #  Prepare a dummy socket to google.com and see what the socket name is.
-    #
-    @staticmethod
-    def ipaddr_connected():
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('google.com', 0))
-        ipaddr = s.getsockname()[0]
-        return ipaddr
+  ## Hacky method to get the actual public ip.
+  #
+  @staticmethod
+  def ipaddr_connected():
+    """! Prepare a dummy socket to google.com and see what the socket name is.
+
+    @return string - The ipv4 address of the machine.
+    """
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('google.com', 0))
+    ipaddr = s.getsockname()[0]
+    return ipaddr

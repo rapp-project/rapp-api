@@ -19,24 +19,44 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/Objects/Payload.py
+## @file Objects/Payload.py
 #
-#  @copyright Rapp Projecty EU 2015
+#  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
 
 class Payload(object):
-    def __init__(self, **kwargs):
-        for key, value in kwargs.iteritems():
-            setattr(self, key, value)
+  """ Payload object class """
+  def __init__(self, **kwargs):
+    for key, value in kwargs.iteritems():
+      setattr(self, key, value)
 
 
-    def append(self, **kwargs):
-        for key, value in kwargs.iteritems():
-            setattr(self, key, value)
+  def append(self, **kwargs):
+    """! Append key-value pairs to the request payload.
+
+    @param **kwargs - Keyword arguments. Key-Value pairs to append to the
+    payload.
+    """
+    for key, value in kwargs.iteritems():
+      setattr(self, key, value)
 
 
-    def serialize(self):
-        return self.__dict__
+  def remove(self, toDelAttr):
+    """! Remove payload properties
+
+    @param toDelAttr (Array) - Array of Strings for properties to remove from
+    the payload.
+    """
+    for key in kwargs.iteritems():
+      delattr(self, key)
+
+
+  def serialize(self):
+    """! Serialize to Dictionary
+
+    @return dictionary - Request Payload dictionary.
+    """
+    return self.__dict__
 
