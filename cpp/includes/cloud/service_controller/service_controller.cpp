@@ -1,48 +1,34 @@
 #include "service_controller.hpp"
-namespace rapp 
-{
-namespace cloud 
-{
+namespace rapp {
+namespace cloud {
 
 service_controller::service_controller()
-: query_(address, port)
+: query_(address, port), io_(), resol_(io_)
 {}
 
 void service_controller::run_job(const std::shared_ptr<asio_socket> job)
 {
     assert(job);
-    if (!job) {
-        throw std::runtime_error("null param `job`");
-    }
-    boost::asio::io_service io;
-    boost::asio::ip::tcp::resolver resolver(io);
-
-    /*
-    boost::asio::deadline_timer timer(io, boost::posix_time::seconds(3));
-    timer.async_wait(boost::bind(&asio_socket::schedule,
-                                 job,
-                                 boost::ref(query_),
-                                 boost::ref(resolver),
-                                 boost::ref(io),
-                                 boost::placeholders::_1));
-    */
-    job->schedule(query_, resolver, io);
-    io.run();
+    job->schedule(query_, resol_, io_);
+    // will block until this job is complete
+    // then we reset the work queue
+    io_.run();
+    io_.reset();
 }
 
-void service_controller::run_jobs(std::vector<std::shared_ptr<asio_socket>> jobs)
+void service_controller::run_jobs(const std::vector<std::shared_ptr<asio_socket>> & jobs)
 {
-    boost::asio::io_service io;
-    boost::asio::ip::tcp::resolver resolver(io);
-
-    for (const std::shared_ptr<asio_socket> job : jobs) {
+    //boost::asio::io_service io;
+    //boost::asio::ip::tcp::resolver resol(io);
+    for (const std::shared_ptr<asio_socket> & job : jobs) {
         assert(job);
-        if (!job) {
-            throw std::runtime_error("null job in vector `jobs`");
-        }
-        job->schedule(query_, resolver, io);
+        job->schedule(query_, resol_, io_);
     }
-    io.run();
+    // will block until all jobs posted are complete
+    // then we reset the work queue
+    io_.run();
+    io_.reset();
 }
+
 }
 }

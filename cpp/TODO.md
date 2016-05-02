@@ -2,7 +2,11 @@
 
 # API
 
-https://github.com/rapp-project/rapp-platform/tree/web_services_doc/rapp_web_services/services
+1. FIX: do not run multiple boost::asio::io_service objects - use ::poll() instead of ::run()
+2. io_service::run() is blocking!!! using multiple io_services I am defering the async nature of asio!
+3. handle an internal polling queue (?) for all objects.
+
+@see: https://github.com/rapp-project/rapp-platform/tree/web_services_doc/rapp_web_services/services
 
 # Implement new services
 

@@ -38,15 +38,13 @@ public:
      * \note upon completion, the each object's handler will be invoked
      * \warning upon completion, the queue schedule will be reset.
      */
-    void run_jobs(std::vector<std::shared_ptr<asio_socket>> jobs);
+    void run_jobs(const std::vector<std::shared_ptr<asio_socket>> & jobs);
 
 private:
-	/// auth token
-	const std::string token_;
-	/// username
-	const std::string user_;
-    /// Endpoint Resolver
+    /// resolution, query and io service
     boost::asio::ip::tcp::resolver::query query_;
+    boost::asio::io_service io_;
+    boost::asio::ip::tcp::resolver resol_;
 };
 }
 }

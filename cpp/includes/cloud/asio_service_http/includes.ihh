@@ -7,6 +7,7 @@
 #include <mutex>
 
 #include <boost/asio.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 #include "../asio_socket/asio_socket.hpp"
 #include "../asio_handler/asio_handler.hpp"
