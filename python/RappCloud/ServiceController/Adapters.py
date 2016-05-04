@@ -131,29 +131,25 @@ class SSLAdapter(HTTPAdapter):
 class TLSAdapter(SSLAdapter):
     """ TLS Default transport Adapter """
     def __init__(self, **kwargs):
-        super(TLSAdapter, self).__init__(ssl_version=None,
-                                         **kwargs)
+        super(TLSAdapter, self).__init__(ssl_version=None, **kwargs)
 
 
 class TLS1Adapter(SSLAdapter):
     """ TLSv1 Default transport Adapter """
     def __init__(self, **kwargs):
-        super(TLS1Adapter, self).__init__(ssl_version=SSLDef.TLSv1,
-                                          **kwargs)
+        super(TLS1Adapter, self).__init__(ssl_version=SSLDef.TLSv1, **kwargs)
 
 
 class TLS11Adapter(SSLAdapter):
     """ TLSv1.1 Default transport Adapter """
     def __init__(self, **kwargs):
-        super(TLS11Adapter, self).__init__(ssl_version=SSLDef.TLSv1_1,
-                                           **kwargs)
+        super(TLS11Adapter, self).__init__(ssl_version=SSLDef.TLSv1_1, **kwargs)
 
 
 class TLS12Adapter(SSLAdapter):
     """ TLSv1.2 Default transport Adapter """
     def __init__(self, **kwargs):
-        super(TLS12Adapter, self).__init__(ssl_version=SSLDef.TLSv1_2,
-                                           **kwargs)
+        super(TLS12Adapter, self).__init__(ssl_version=None, **kwargs)
 
 
 class SSL2Adapter(SSLAdapter):
