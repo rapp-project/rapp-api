@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
         queue.push_back(fdetect);
     }
     ctrl.run_jobs(queue);
+    ctrl.stop();
 
     return 0;
 }

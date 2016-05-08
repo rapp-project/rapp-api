@@ -32,7 +32,9 @@ set(CMAKE_MACOSX_RPATH 1)
 
 # Library-only Executables -
 set (SOURCES ${SOURCES} ${INCLUDES}/cloud/service_controller/service_controller.cpp
-                        ${INCLUDES}/cloud/asio_service_http/asio_service_http.cpp)
+                        ${INCLUDES}/cloud/asio_service_http/asio_service_http.cpp
+                        ${INCLUDES}/cloud/asio_handler/asio_handler.cpp
+                        ${INCLUDES}/cloud/asio_socket_https/asio_socket_https.cpp)
 
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)

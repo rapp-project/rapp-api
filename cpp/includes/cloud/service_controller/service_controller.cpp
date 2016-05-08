@@ -30,5 +30,10 @@ void service_controller::run_jobs(const std::vector<std::shared_ptr<asio_socket>
     io_.reset();
 }
 
+void service_controller::stop()
+{
+    io_.stop();
+}
+
 }
 }

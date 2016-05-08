@@ -7,8 +7,9 @@ namespace cloud {
  * \class asio_service_http
  * \brief base class for asynchronous http websockets used for connecting to cloud services
  * \version 0.6.0
- * \date April 2016
+ * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * TODO: rename to `asio_socket_http`
  */
 class asio_service_http : public asio_socket, protected asio_handler
 {
@@ -31,27 +32,7 @@ public:
 				   boost::asio::ip::tcp::resolver::query & query,
 				   boost::asio::ip::tcp::resolver & resolver,
 				   boost::asio::io_service & io_service
-                 )
-    {
-        auto content_length = post_.size() * sizeof(std::string::value_type);
-        header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n"
-                + "Accept-Token: " + token_ + "\r\n"
-                + "Connection: close\r\n"
-                + "Content-Length: " + boost::lexical_cast<std::string>(content_length)
-                + "\r\n\r\n";
-
-        if (!socket_){
-            socket_ = std::unique_ptr<boost::asio::ip::tcp::socket>(
-									  new boost::asio::ip::tcp::socket(io_service));
-		}
-        std::ostream request_stream(&request_);
-        request_stream << header_ << post_ << "\r\n";
-        resolver.async_resolve(query,
-                               boost::bind(&asio_service_http::handle_resolve,
-                                           this,
-                                           boost::asio::placeholders::error,
-                                           boost::asio::placeholders::iterator));
-    }
+                 );
     
 protected:
     /** 
@@ -86,7 +67,13 @@ protected:
     /// Callback for Handling Actual Data Contents \param err is a possible error message
     void handle_read_content(const boost::system::error_code & err, std::size_t bytes);
 
+    /// \brief reset handler (clear data, bytes, etc) and stop connection
+    void reset();
 
+    /// \brief check timed-out
+    void check_timeout();
+
+private:
     /// TCP Socket (plain-text)
     std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
 };

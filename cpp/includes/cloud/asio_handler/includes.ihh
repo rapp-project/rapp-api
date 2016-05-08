@@ -5,6 +5,7 @@
 #include <functional>
 #include <thread>
 #include <algorithm>
+#include <atomic>
 
 #include <boost/random/random_device.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
@@ -14,3 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/asio.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/bind.hpp>
+

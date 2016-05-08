@@ -40,6 +40,9 @@ public:
      */
     void run_jobs(const std::vector<std::shared_ptr<asio_socket>> & jobs);
 
+    /// \brief stop the service controller
+    void stop();
+
 private:
     /// resolution, query and io service
     boost::asio::ip::tcp::resolver::query query_;

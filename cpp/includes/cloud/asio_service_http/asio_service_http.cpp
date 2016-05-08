@@ -3,6 +3,41 @@
 namespace rapp {
 namespace cloud {
 
+void asio_service_http::schedule( 
+                                   boost::asio::ip::tcp::resolver::query & query,
+                                   boost::asio::ip::tcp::resolver & resolver,
+                                   boost::asio::io_service & io_service
+                                 )
+{
+    auto content_length = post_.size() * sizeof(std::string::value_type);
+    header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n"
+            + "Accept-Token: " + token_ + "\r\n"
+            + "Connection: close\r\n"
+            + "Content-Length: " + boost::lexical_cast<std::string>(content_length)
+            + "\r\n\r\n";
+
+    std::ostream request_stream(&request_);
+    request_stream << header_ << post_ << "\r\n";
+
+    // init timer
+    if (!timer_) {
+        timer_ = std::unique_ptr<boost::asio::deadline_timer>(
+                                 new boost::asio::deadline_timer(io_service));
+    }
+    timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
+
+    // init socket
+    if (!socket_) {
+        socket_ = std::unique_ptr<boost::asio::ip::tcp::socket>(
+                                  new boost::asio::ip::tcp::socket(io_service));
+    }
+    resolver.async_resolve(query,
+                           boost::bind(&asio_service_http::handle_resolve,
+                                       this,
+                                       boost::asio::placeholders::error,
+                                       boost::asio::placeholders::iterator));
+}
+
 void asio_service_http::handle_resolve( 
                                          const boost::system::error_code & err,
                                          boost::asio::ip::tcp::resolver::iterator endpoint_iterator
@@ -21,13 +56,14 @@ void asio_service_http::handle_resolve(
         error_handler(err);
 }
 
-void asio_service_http::handle_connect( 
-                                          const boost::system::error_code & err,
-                                          boost::asio::ip::tcp::resolver::iterator endpoint_iterator
-                                       )
+void asio_service_http::handle_connect(
+                                        const boost::system::error_code & err,
+                                        boost::asio::ip::tcp::resolver::iterator endpoint_iterator
+                                      )
 {
     assert(socket_);
     if (!err) {
+        timer_->expires_from_now(boost::posix_time::seconds(30));
         boost::asio::async_write(*socket_.get(),
                                  request_,
                                  boost::bind(&asio_service_http::handle_write_request, 
@@ -43,14 +79,17 @@ void asio_service_http::handle_connect(
                                            boost::asio::placeholders::error, 
                                            ++endpoint_iterator));
     }
-    else error_handler(err);
+    else { 
+        error_handler(err);
+    }
 }
 
 /// Callback for handling request and waiting for response \param err is a possible error
 void asio_service_http::handle_write_request(const boost::system::error_code & err)
 {
-    assert(socket_);
+    assert(socket_ && timer_);
     if (!err) {
+        timer_->expires_from_now(boost::posix_time::seconds(30));
         // Read the response status line - Callback handler is ::handle_read_status_line
         boost::asio::async_read_until(*socket_.get(),
                                       response_, 
@@ -59,14 +98,15 @@ void asio_service_http::handle_write_request(const boost::system::error_code & e
                                                   this,
                                                   boost::asio::placeholders::error));
     }
-    else 
+    else {
         error_handler(err);
+    }
 }
 
 /// Callback for handling HTTP Header Response Data \param err is a possible error message
 void asio_service_http::handle_read_status_line(const boost::system::error_code & err)
 {
-    assert(socket_);
+    assert(socket_ && timer_);
     if (!err) {
         // Check that HTTP Header Response is OK.
         std::istream response_stream(&response_);
@@ -84,6 +124,7 @@ void asio_service_http::handle_read_status_line(const boost::system::error_code 
             invalid_request(std::to_string(status_code));
             return;
         }
+        timer_->expires_from_now(boost::posix_time::seconds(30));
         // Read the response headers, which are terminated by a blank line. 
         // This is HTTP Protocol 1.0 & 1.1
         boost::asio::async_read_until(*socket_.get(),
@@ -101,8 +142,9 @@ void asio_service_http::handle_read_status_line(const boost::system::error_code 
 /// Callback for Handling Headers \param err is a possible error message
 void asio_service_http::handle_read_headers(const boost::system::error_code & err)
 {
-    assert(socket_);
+    assert(socket_ && timer_);
     if (!err) {
+        timer_->expires_from_now(boost::posix_time::seconds(30));
         // Start reading Content data until EOF (see handle_read_content)
         boost::asio::async_read_until(*socket_.get(),
                                       response_,
@@ -120,9 +162,9 @@ void asio_service_http::handle_read_headers(const boost::system::error_code & er
 /// Callback for Handling Actual Data Contents \param err is a possible error message
 void asio_service_http::handle_read_content(const boost::system::error_code & err, std::size_t bytes)
 {
-    assert(socket_);
-    if (!err)
-    {
+    assert(socket_ && timer_);
+    if (!err) {
+        timer_->expires_from_now(boost::posix_time::seconds(30));
         // Continue reading remaining data until EOF - It reccursively calls its self
         boost::asio::async_read(*socket_.get(),
                                 response_,
@@ -137,8 +179,7 @@ void asio_service_http::handle_read_content(const boost::system::error_code & er
                             std::istreambuf_iterator<char>());
 
         // extract content length once and strip header
-        std::call_once(cflag_, 
-        [&]{
+        if (!flag_) {
             if (has_content_length(buffer)) {
                 content_length(buffer, content_length_);
                 std::string tmp = buffer;
@@ -147,7 +188,9 @@ void asio_service_http::handle_read_content(const boost::system::error_code & er
             else {
                 throw std::runtime_error("no `Content-Length` in header response");
             }
-        });
+            flag_ = true;
+        }
+
         // append buffer and count bytes
         if (!buffer.empty()) {
             json_ += buffer;
@@ -170,5 +213,31 @@ void asio_service_http::handle_read_content(const boost::system::error_code & er
         }
     }
 }
+
+void asio_service_http::reset()
+{
+    assert(timer_ && socket_);
+    header_.clear();
+    post_.clear();
+    json_.clear();
+    content_length_ = 0;
+    bytes_transferred_ = 0;
+    flag_ = false;
+    socket_->close();
+    timer_->expires_at(boost::posix_time::pos_infin);
+}
+
+void asio_service_http::check_timeout()
+{
+    assert(timer_);
+    if (timer_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
+        std::cerr << "connection time-out" << std::endl;
+        reset();
+    }
+    // Put the actor back to sleep.
+    timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
+}
+
+
 }
 }
