@@ -36,7 +36,7 @@ import json
 
 from RAPPAuth import RAPPAuth
 from requests.adapters import HTTPAdapter
-from Adapters import TLS12Adapter as SSLAdapter
+from Adapters import TLSAdapter as SSLAdapter
 
 
 class ServiceControllerSync(ServiceControllerBase):

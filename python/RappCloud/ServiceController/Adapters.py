@@ -149,7 +149,7 @@ class TLS11Adapter(SSLAdapter):
 class TLS12Adapter(SSLAdapter):
     """ TLSv1.2 Default transport Adapter """
     def __init__(self, **kwargs):
-        super(TLS12Adapter, self).__init__(ssl_version=None, **kwargs)
+        super(TLS12Adapter, self).__init__(ssl_version=SSLDef.TLSv1_2, **kwargs)
 
 
 class SSL2Adapter(SSLAdapter):
