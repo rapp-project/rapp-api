@@ -28,18 +28,14 @@
 
 
 import random
+import string
 
 
 class RandStrGen:
-  """ Random String Generator implementation class.
+  """ Random String Generator static class (Namespace).
 
   Generates random string boundaries.
   """
-  ## Characters Array.
-  __charsArray = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-  ## Generated string size (Default value).
-  __defaultSize = 5
-
 
   @staticmethod
   def create(size):
@@ -47,9 +43,9 @@ class RandStrGen:
 
     @param size string - Number of characters for the random string to generate
     """
-    randStr = ''
-    for i in range(size):
-      # Random number in range of __charsArray size.
-      randNum = random.randint(0, len(RandStrGen.__charsArray) -1)
-      randStr += RandStrGen.__charsArray[randNum:randNum + 1]
+    randStr = ''.join(
+        random.SystemRandom().choice(
+        string.ascii_uppercase + string.ascii_lowercase + string.digits)
+        for _ in range(size))
+
     return randStr
