@@ -55,6 +55,12 @@ class CognitiveTestSelect(Service):
     # If left blank, the exercise will be selected based on user's
     # performance history.
     self.test_type = ''
+    # Test Subtype according to the test type.
+    self.test_subtype = ''
+    # Test difficulty
+    self.test_diff = ''
+    # Test Index
+    self.test_index = ''
     # -------------------------------------------------------------
 
     super(CognitiveTestSelect, self).__init__(
@@ -65,7 +71,11 @@ class CognitiveTestSelect(Service):
 
   def _make_payload(self):
     """ Make request payload object """
-    return Payload(test_type=self.test_type)
+    return Payload(
+        test_type=self.test_type,
+        test_subtype=self.test_subtype,
+        test_diff=self.test_diff,
+        test_index=self.test_index)
 
 
   def _make_files(self):
