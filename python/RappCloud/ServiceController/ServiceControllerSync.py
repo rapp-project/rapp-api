@@ -68,19 +68,10 @@ class ServiceControllerSync(ServiceControllerBase):
     # Unpack payload and file objects from cloud service object
     payload, files  = self._service.req.unpack()
 
-    # Serialize file objects to dictionaries
-    _files = []
-    for f in files:
-      _files.append(f.serialize())
-    # ----------------------------------------
-
-    # Serialize payload object to dictionary
-    _payload = payload.serialize()
-
     if self.persistentConn_:
-      resp = self.__post_persistent(_payload, _files)
+      resp = self.__post_persistent(payload, files)
     else:
-      resp = self.__post_session_once(_payload, _files)
+      resp = self.__post_session_once(payload, files)
     return resp
 
 
@@ -95,7 +86,7 @@ class ServiceControllerSync(ServiceControllerBase):
 
 
 
-  def post_request(self, session, data={}, files=[]):
+  def post_request(self, session, payload={}, files=[]):
     """! General member method to perform a .post request to the
 
     Platform service.
@@ -110,19 +101,10 @@ class ServiceControllerSync(ServiceControllerBase):
     @return dictionary - Platform Service response.
     """
 
-    _payload = self._make_payload_dic(data)
+    _payload = {'json': payload.make_json()}
     _files = []
     for f in files:
-      try:
-        fTuble = self._make_file_tuple(f['path'], f['field_name'])
-      except Exception as e:
-        # Maybe raise exception here to allow external handle
-        resp = {
-          'error': str(e)
-        }
-        return resp
-      else:
-        _files.append(fTuble)
+      _files.append(f.make_tuple())
 
     response = {'error': ''}
     try:

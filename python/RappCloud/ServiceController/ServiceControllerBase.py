@@ -78,34 +78,6 @@ class ServiceControllerBase(object):
     return True
 
 
-  def _make_file_tuple(self, filepath, httpField='file' ):
-    """! Make file tuples for multipart/form-data http/s requests.
-
-    {httpFieldName: {filename: '', file descriptor: }}
-
-    @param filepath string: The file path.
-    @param httpField string - The post field name.
-    @return Tuple
-    """
-
-    filename = self.__basename(filepath)
-    tuple_ = (httpField, (filename, open(filepath, 'rb')))
-    return tuple_
-
-
-  def _make_payload_dic(self, payload, httpField='json' ):
-    """! Make payload tuple for multipart/form-data http/s requests.
-    {httpFieldName: {filename: '', file descriptor: }}
-
-    @param payload Data payload - dictionary.
-    @param httpField Optional http field name value.
-    @return payload json
-    """
-
-    dic = {httpField: json.dumps(payload)}
-    return dic
-
-
   def run_job(self):
     raise NotImplementedError()
 

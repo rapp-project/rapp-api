@@ -25,61 +25,68 @@
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
+from RappCloud.Utils import RandStrGen
 
 class File(object):
-  """ File object class """
+    """ File object class """
 
-  def __init__(self, path="", httpField=""):
-    """! Constructor
+    def __init__(self, path="", httpField=""):
+        """! Constructor
 
-    @param string path -The filepath
-    @param string httpField - The post field name.
-    """
+        @param string path -The filepath
+        @param string httpField - The post field name.
+        """
 
-    self.__path = path
-    if httpField is not "":
-      self.__postField = httpField
-    else:
-      self.__postField = "file"
-
-
-  @property
-  def path(self):
-    """! file path getter
-
-    @return string - The file path.
-    """
-    return self.__path
+        self.__boundarySize = 30
+        self.__path = path
+        if httpField is not "":
+            self.__postField = httpField
+        else:
+            self.__postField = "file"
 
 
-  @path.setter
-  def path(self, path):
-    """! file path setter
+    @property
+    def path(self):
+        """! file path getter
 
-    @param path (String) - The file path.
-    """
-    self.__path = path
-
-
-  @property
-  def postField(self):
-    """! Post field name getter
-
-    @return string - The post field name.
-    """
-    return self.__postField
+        @return string - The file path.
+        """
+        return self.__path
 
 
-  @postField.setter
-  def postfield(self, fieldname):
-    """! Post field name setter
+    @path.setter
+    def path(self, path):
+        """! file path setter
 
-    @param fieldname (String) - The post field name.
-    """
-    self.__postField = fieldname
+        @param path (String) - The file path.
+        """
+        self.__path = path
 
 
-  def serialize(self):
-    return {'path': self.__path, 'field_name': self.__postField}
+    @property
+    def postField(self):
+        """! Post field name getter
+
+        @return string - The post field name.
+        """
+        return self.__postField
+
+
+    @postField.setter
+    def postfield(self, fieldname):
+        """! Post field name setter
+
+        @param fieldname (String) - The post field name.
+        """
+        self.__postField = fieldname
+
+
+    def serialize(self):
+        return {'path': self.__path, 'field_name': self.__postField}
+
+
+    def make_tuple(self):
+        name = RandStrGen.create(self.__boundarySize)
+        return (self.__postField, (name, open(self.__path)))
 
 

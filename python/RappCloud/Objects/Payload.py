@@ -25,38 +25,47 @@
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
+import json
 
 class Payload(object):
-  """ Payload object class """
-  def __init__(self, **kwargs):
-    for key, value in kwargs.iteritems():
-      setattr(self, key, value)
+    """ Payload object class """
+    def __init__(self, **kwargs):
+        for key, value in kwargs.iteritems():
+            setattr(self, key, value)
 
 
-  def append(self, **kwargs):
-    """! Append key-value pairs to the request payload.
+    def append(self, **kwargs):
+        """! Append key-value pairs to the request payload.
 
-    @param **kwargs - Keyword arguments. Key-Value pairs to append to the
-    payload.
-    """
-    for key, value in kwargs.iteritems():
-      setattr(self, key, value)
-
-
-  def remove(self, toDelAttr):
-    """! Remove payload properties
-
-    @param toDelAttr (Array) - Array of Strings for properties to remove from
-    the payload.
-    """
-    for key in kwargs.iteritems():
-      delattr(self, key)
+        @param **kwargs - Keyword arguments. Key-Value pairs to append to the
+        payload.
+        """
+        for key, value in kwargs.iteritems():
+            setattr(self, key, value)
 
 
-  def serialize(self):
-    """! Serialize to Dictionary
+    def remove(self, toDelAttr):
+        """! Remove payload properties
 
-    @return dictionary - Request Payload dictionary.
-    """
-    return self.__dict__
+        @param toDelAttr (Array) - Array of Strings for properties to remove from
+        the payload.
+        """
+        for key in kwargs.iteritems():
+            delattr(self, key)
+
+
+    def serialize(self):
+        """! Serialize to Dictionary
+
+        @return dictionary - Request Payload dictionary.
+        """
+        return self.__dict__
+
+
+    def make_json(self):
+        """! Serialize to Dictionary and create a json string
+
+        @return json - Request Payload json string.
+        """
+        return json.dumps(self.serialize())
 
