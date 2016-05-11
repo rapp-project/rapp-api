@@ -37,7 +37,7 @@ from ConfigParser import SafeConfigParser
 class ServiceControllerBase(object):
   """ Service Controller base class implementation """
 
-  def __init__(self, service, connection=None, timeout=None):
+  def __init__(self, service, connection=None):
     """! Constructor
 
     @param service Service: Service instance
@@ -46,8 +46,6 @@ class ServiceControllerBase(object):
     """
     ## Hold the Cloud Service instance.
     self._service = service
-    ## Connection timeout value
-    self._timeout = timeout
 
     self.__cfgDir = path.join(path.dirname(__file__), '../config')
     self._connection = {
