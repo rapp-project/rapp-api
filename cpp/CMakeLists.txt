@@ -206,3 +206,17 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message (FATAL_ERROR "unsupported compiler")
 endif()
+
+
+# Prepare the CMake config files
+configure_file(cmake/RappConfig.cmake.in "${PROJECT_BINARY_DIR}/RappConfig.cmake" @ONLY)
+configure_file(cmake/RappConfigVersion.cmake.in "${PROJECT_BINARY_DIR}/RappConfigVersion.cmake" @ONLY)
+ 
+# Install the CMake config files
+install(FILES
+  "${PROJECT_BINARY_DIR}/RappConfig.cmake"
+  "${PROJECT_BINARY_DIR}/RappConfigVersion.cmake"
+  "cmake/RappMacros.cmake"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/share/Rapp"
+)
+
