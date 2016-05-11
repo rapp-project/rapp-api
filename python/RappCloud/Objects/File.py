@@ -26,11 +26,13 @@
 #
 
 from RappCloud.Utils import RandStrGen
+from os import path
+
 
 class File(object):
     """ File object class """
 
-    def __init__(self, path="", httpField=""):
+    def __init__(self, filepath="", httpField=""):
         """! Constructor
 
         @param string path -The filepath
@@ -38,7 +40,7 @@ class File(object):
         """
 
         self.__boundarySize = 30
-        self.__path = path
+        self.__path = path.expanduser(filepath)
         if httpField is not "":
             self.__postField = httpField
         else:
