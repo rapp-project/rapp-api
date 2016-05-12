@@ -8,6 +8,7 @@ var __objectsDir = path.join(__dirname, '..', 'includes', 'objects');
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
 RAPPObject.face = require(path.join(__objectsDir, 'face.js'));
 RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
+RAPPObject.human = require(path.join(__objectsDir, 'human.js'));
 
 var objects = new RAPPObject( );
 
@@ -29,7 +30,7 @@ describe('#face.isEqual()', function(){
 });
 
 describe('#QrCode()', function(){
-	it('should construct a qrCode when given the x and y centres and a label', function(){
+	it('should construct a qrCode object when given the x and y centres and a label', function(){
 		var qrCode = new objects.QrCode( 0.1, 0.1, "lazaros" );
 	});
 });
@@ -51,4 +52,20 @@ describe('#qrCode.label()', function(){
 		test.assert.equal(qrCode.label(), "lazaros");
 	});
 
+});
+
+describe('#Human()', function(){
+	it('should construct a human object when given the 4 values of coordinates', function(){
+		var Human = new objects.Human( 0.1, 0.1, 0.5, 0.5 );
+	});
+});
+
+describe('#human.isEqual()', function(){
+	it('should return true if and only if the label of the human whose isEqual is a member function is equal to the label of the human object given as an argument', function(){
+		var human1 = new objects.Human( 0.5, 0.3, 0.1, 0.6 );
+		var human2 = new objects.Human( 0.5, 0.3, 0.1, 0.6 );
+		var human3 = new objects.Human( 1, 0.3, 0.1, 0.6 );
+		test.assert.equal(human1.isEqual(human2), true);
+		test.assert.equal(human1.isEqual(human3), false);
+	});
 });

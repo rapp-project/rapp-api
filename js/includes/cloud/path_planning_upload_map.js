@@ -28,19 +28,24 @@ RAPPCloud.prototype.path_planning_upload_map = function ( png_file, yaml_file, m
 	});
 
     var cloud = this;
-    var object = new RAPPObject( );
 	var form = new formData();
 
 	var body_obj = new Object();
     body_obj.map_name = map_name;
     var body_json = JSON.stringify(body_obj);
 	
-	form.append('file', fs.createReadStream(png_file), { 
-        filename: png_file
-    }); 
-    form.append('file', fs.createReadStream(yaml_file), { 
-        filename: yaml_file
-    });
+	if (!!png_file) {
+		form.append('file', fs.createReadStream(png_file), { 
+	        filename: png_file
+	    });
+	}
+	else return console.error('png file name missing');
+    if (!!yaml_file) {
+	    form.append('file', fs.createReadStream(yaml_file), { 
+	        filename: yaml_file
+	    });
+	}
+	else return console.error('yaml file name missing');
 	form.append('json', body_json);
 	var r = request.post(cloud.cloud_url + '/hop/path_planning_upload_map/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error) {
