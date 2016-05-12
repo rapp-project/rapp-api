@@ -34,6 +34,11 @@ class Payload(object):
             setattr(self, key, value)
 
 
+    def __eq__(self, other):
+        """! Equality method """
+        return self.serialize() == other.serialize()
+
+
     def append(self, **kwargs):
         """! Append key-value pairs to the request payload.
 

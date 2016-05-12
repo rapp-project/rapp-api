@@ -34,8 +34,13 @@ class CloudRequest(object):
                     ' object does not have a property named ' + str(key)))
 
 
+    def __eq__(self, other):
+        """! Equality method """
+        return self.serialize() == other.serialize()
+
+
     def make_payload(self):
-        """! Abstract methor. Return Payload Object.
+        """! Abstract method. Return Payload Object.
 
             @returns Payload - The Payload object
         """
@@ -70,6 +75,11 @@ class CloudResponse(object):
                 setattr(self.req, key, value)
             else:
                 raise AttributeError()
+
+
+    def __eq__(self, other):
+        """! Equality method """
+        return self.serialize() == other.serialize()
 
 
     def serialize(self):

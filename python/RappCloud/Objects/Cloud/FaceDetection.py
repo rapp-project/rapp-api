@@ -34,7 +34,6 @@ class FaceDetection(CloudObject):
     def __init__(self, **kwargs):
         self.req = FaceDetection.Request()
         self.resp = FaceDetection.Response()
-        self._svcname = 'face_detection'
-        super(FaceDetection, self).__init__(**kwargs)
+        super(FaceDetection, self).__init__(svcname='face_detection', **kwargs)
 
 

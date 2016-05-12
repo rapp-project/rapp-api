@@ -47,6 +47,11 @@ class File(object):
             self.__postfield = "file"
 
 
+    def __eq__(self, other):
+        """! Equality method """
+        return self.serialize() == other.serialize()
+
+
     @property
     def path(self):
         """! file path getter
