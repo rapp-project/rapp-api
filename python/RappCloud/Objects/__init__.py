@@ -4,6 +4,6 @@
 #
 
 
-from Cloud import CloudRequest, CloudResponse
 from File import File
 from Payload import Payload
+import Cloud

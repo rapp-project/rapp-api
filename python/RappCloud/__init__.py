@@ -3,6 +3,7 @@
 ## @file RappCloud/__init__.py
 #
 #  @package RappCloud
-#
 
-from CloudServices import *
+from Objects import Cloud as CloudObjects
+import Objects
+__all__ = ["CloudObjects", "Service"]
