@@ -42,18 +42,15 @@ from Adapters import TLSAdapter as SSLAdapter
 class ServiceControllerSync(ServiceControllerBase):
   """ Synchronous service controller class implementation. """
 
-  def __init__(self, service, connect=None, timeout=None, \
-        persistent=True):
+  def __init__(self, service, connect=None):
     """! Constructor
 
     @param service Service - Service instance.
     @param connect dictionary - Connection information.
-    @param timeout int - Connection timeout value
-    @param persistent Boolean - Set by default to True. Set to False
     to disable persistent connections to the server.
     """
 
-    super(ServiceControllerSync, self).__init__(service, timeout=timeout)
+    super(ServiceControllerSync, self).__init__(service)
 
     if self._service.persistent:
       self.__http_persistent_connection()

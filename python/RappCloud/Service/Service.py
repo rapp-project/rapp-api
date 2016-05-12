@@ -31,7 +31,7 @@ from RappCloud.ServiceController import ServiceControllerSync
 class Service(object):
     """ Service class """
 
-    def __init__(self, cloud_object=None, persistent=True, timeout=None,
+    def __init__(self, msg=None, persistent=True, timeout=None,
                  **kwargs):
         """!
         Constructor
@@ -41,13 +41,13 @@ class Service(object):
         for key, value in kwargs.iteritems():
             pass
 
-        self.__cloudObj = cloud_object
+        self.__cloudObj = msg
         self._persistent = persistent
         self._timeout = timeout
 
         ## Service Name
-        if cloud_object is not None:
-            self.__svcname = cloud_object.svcname
+        if msg is not None:
+            self.__svcname = msg.svcname
         else:
             self.__svcname = ''
         ## Service Url path. Will be applied by the ServiceController
@@ -104,7 +104,7 @@ class Service(object):
 
 
 
-    def call(self, cloud_object=object):
+    def call(self, msg=None):
         """! Call the Platform Service """
         self.svcname = self.__cloudObj.svcname
         cloudResponseDic = self.__controller.run_job()
