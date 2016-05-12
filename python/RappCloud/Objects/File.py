@@ -32,7 +32,7 @@ from os import path
 class File(object):
     """ File object class """
 
-    def __init__(self, filepath="", httpField=""):
+    def __init__(self, filepath="", postfield=""):
         """! Constructor
 
         @param string path -The filepath
@@ -40,11 +40,11 @@ class File(object):
         """
 
         self.__boundarySize = 30
-        self.__path = path.expanduser(filepath)
-        if httpField is not "":
-            self.__postField = httpField
+        self.__path = path.expanduser(path.realpath(filepath))
+        if postfield is not "":
+            self.__postfield = postfield
         else:
-            self.__postField = "file"
+            self.__postfield = "file"
 
 
     @property
@@ -66,29 +66,29 @@ class File(object):
 
 
     @property
-    def postField(self):
+    def postfield(self):
         """! Post field name getter
 
         @return string - The post field name.
         """
-        return self.__postField
+        return self.__postfield
 
 
-    @postField.setter
+    @postfield.setter
     def postfield(self, fieldname):
         """! Post field name setter
 
         @param fieldname (String) - The post field name.
         """
-        self.__postField = fieldname
+        self.__postfield = fieldname
 
 
     def serialize(self):
-        return {'path': self.__path, 'field_name': self.__postField}
+        return {'path': self.__path, 'field_name': self.__postfield}
 
 
     def make_tuple(self):
         name = RandStrGen.create(self.__boundarySize)
-        return (self.__postField, (name, open(self.__path)))
+        return (self.__postfield, (name, open(self.__path)))
 
 

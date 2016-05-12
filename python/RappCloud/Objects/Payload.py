@@ -59,7 +59,7 @@ class Payload(object):
 
         @return dictionary - Request Payload dictionary.
         """
-        return self.__dict__
+        return { k:v for k,v in vars(self).items() if not k.startswith('_') or callable(v) }
 
 
     def make_json(self):
