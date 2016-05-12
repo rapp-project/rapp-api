@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the speech_detection_google JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.speech_detection_google = require('speech_detection_google');
+var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
+RAPPCloud.speech_detection_google = require('../includes/cloud/speech_detection_google.js');
 
 var services = new RAPPCloud( );
 
@@ -39,7 +39,6 @@ function handler ( possible_vectors )
 
 services.speech_detection_google( audio,           // audio file
 								"nao_ogg",       // Audio Source Type
-								"rapp",          // user
 								"en",            // Language
 								//"headset",
 								//"nao_wav_1_ch",

@@ -1,14 +1,8 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-var request = require('request');
 var path = require('path');
-var formData = require('form-data');
-var randomstring = require('randomstring');
-
 var __cloudDir = path.join(__dirname);
 var __objectsDir = path.join(__dirname, '..', 'objects');
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
 RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
@@ -28,14 +22,22 @@ RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
  */
 RAPPCloud.prototype.qr_detection = function ( image, image_format, callback )
 {
-    var cloud = this;
-    var object = new RAPPObject( );
-    var _delegate=callback;
-	var form = new formData();
+    var formData = require('form-data');
+	var randomstring = require('randomstring');
+	var fs = require('fs');
+	var request = require('request').defaults({
+	  secureProtocol: 'TLSv1_2_method',
+	  rejectUnauthorized: false
+	});
 
+    var cloud = this;
+    var object = new RAPPObject();
+    var _delegate = callback;
+	var form = new formData();
+	//Generate a random file name under which the image will be saved on the Server 
 	var filename = randomstring.generate() + '.' + image_format;
 
-	form.append('file_uri', fs.createReadStream(image), { 
+	form.append('file', fs.createReadStream(image), { 
 		filename: filename,
 		contentType: 'image/' + image_format
 	});
@@ -53,19 +55,19 @@ RAPPCloud.prototype.qr_detection = function ( image, image_format, callback )
 	});
 	r._form = form;
 	r.setHeader('Connection', 'close');
+	r.setHeader('Accept-Token', cloud.token);
 
 	function handle_reply( json )
     {
 		var json_obj;
 		var codes = [];
 		try {
-			var i;
 			json_obj = JSON.parse(json);
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('qrDetection JSON error: ' + json_obj.error);
+			if(json_obj.error){  // Check for Errors  
+				console.log('qr_detection JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"qr_centers":[{"x":86.0,"y":86.0}],"qr_messages":["http://www.qrstuff.com"],"error":""}
-			for (i=0; i<json_obj.qr_centers.length; i++){
+			for (var i=0; i<json_obj.qr_centers.length; i++){
 				var x = json_obj.qr_centers[i].x;
 				var y = json_obj.qr_centers[i].y;
 				var label = json_obj.qr_messages[i];

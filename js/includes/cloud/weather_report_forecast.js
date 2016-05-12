@@ -7,17 +7,18 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class ontology_is_subsuperclass_of
+ * @class weather_report_forecast
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
+ * @description Asynchronous Service which will request the weather_report_forecast RAPP platform service
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param parent is the parent class in question
- * @param child is the child of the parent class in question
- * @param recursive is a boolean argument, when true the function checks for indirect parent-child relationship as well
+ * @param city (String): The desired city
+ * @param weather_reporter (String): The weather API to use. Defaults to "yweather" .
+ * @param metric (Integer): The return value units.
  * @param callback is the function that will receive the result
  */
-RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, recursive, callback )
+
+RAPPCloud.prototype.weather_report_forecast = function ( city, weather_reporter, metric, callback )
 {
     var request = require('request').defaults({
 	  secureProtocol: 'TLSv1_2_method',
@@ -28,9 +29,9 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
     var _delegate = callback;
     
     var body_obj = new Object();
-    body_obj.parent_class = cloud.escape_string(parent);
-    body_obj.child_class = cloud.escape_string(child);
-    body_obj.recursive = recursive;
+    body_obj.city = cloud.escape_string(city);
+    body_obj.weather_reporter = cloud.escape_string(weather_reporter);
+    body_obj.metric = metric;
     var body_json = JSON.stringify(body_obj);
     
     request.post({
@@ -39,7 +40,7 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
-        url: cloud.cloud_url + '/hop/ontology_is_subsuperclass_of/ ',
+        url: cloud.cloud_url + '/hop/weather_report_forecast/ ',
         body: "json=" + body_json
     },
     function ( error, response, json ) 
@@ -57,14 +58,14 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 		var json_obj;
 		try {
 			json_obj = JSON.parse(json);
-			// JSON reply is: { "result":true,"trace":[],"error":"" }
+			// JSON reply is: { forecast: [{<forecastEntry_1>}, ...,  {<forecastEntry_n>}], error: '' }
 		
 			if(json_obj.error){  // Check for Errors  
-				console.log('ontology_is_subsuperclass_of JSON error: ' + json_obj.error);
+				console.log('weather_report_forecast JSON error: ' + json_obj.error);
 			}
-			_delegate( parent, child, json_obj.result);
+			_delegate( json_obj.forecast );
 		} catch (e) {
-			console.log('ontology_is_subsuperclass_of::handle_reply Error parsing: ');
+			console.log('weather_report_forecast::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -75,4 +76,4 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 };
 
 /// Export
-module.exports = RAPPCloud.ontology_is_subsuperclass_of;
+module.exports = RAPPCloud.weather_report_forecast;

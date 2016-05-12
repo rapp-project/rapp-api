@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-var request = require('request');
 var path = require('path');
-
 var __cloudDir = path.join(__dirname);
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
@@ -21,18 +18,27 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  
 RAPPCloud.prototype.text_to_speech = function ( text, language, callback )
 {
-	var cloud = this;
-    var body_string = 'text=' + cloud.escape_string(text) + '&language=' + language;
-    var _delegate = callback;
+	var request = require('request').defaults({
+	  secureProtocol: 'TLSv1_2_method',
+	  rejectUnauthorized: false
+	});
 
+	var cloud = this;
+	var _delegate = callback;
+
+	var body_obj = new Object();
+    body_obj.text = cloud.escape_string(text);
+    body_obj.language = cloud.escape_string(language);
+    var body_json = JSON.stringify(body_obj);
+    
     request.post({
         headers: {
-//			'Authorization' : 'Basic cmFwcGRldjpyYXBwZGV2',
+        	'Accept-Token' : cloud.token,
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
         url: cloud.cloud_url + '/hop/text_to_speech/ ',
-        body: body_string
+        body: "json=" + body_json
     },
     function ( error, response, json ) 
     {
@@ -52,11 +58,12 @@ RAPPCloud.prototype.text_to_speech = function ( text, language, callback )
 			json_obj = JSON.parse(json);
 			// JSON reply is: { payload: <audio_data>, basename: <audio_file_basename>, encoding: <payload_encoding>, error: <error_message> }
 		
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+			if(json_obj.error){  // Check for Errors  
 				console.log('text_to_speech JSON error: ' + json_obj.error);
 			}
 			_delegate( json_obj.payload, json_obj.encoding, json_obj.basename);
 		} catch (e) {
+			console.log('text_to_speech::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}

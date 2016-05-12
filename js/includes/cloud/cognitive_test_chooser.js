@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-var request = require('request');
 var path = require('path');
-
 var __cloudDir = path.join(__dirname);
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
@@ -12,27 +9,45 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * 
  * @class cognitive_test_chooser
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the record_cognitive_test_chooser web service for an Input
+ * @description Asynchronous Service which will request the cognitive_test_chooser web service for an Input
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param user is the username of client used to retrieve information from database.
- * @param test_type is the Cognitive Exercise test type. Can be one of ['ArithmeticCts', 'AwarenessCts', 'ReasoningCts']
+ * @param test_type (String) is the Cognitive Exercise test type. Can be one of ['ArithmeticCts', 'AwarenessCts', 'ReasoningCts', '']
+ * @param test_subtype (String): Use this to force select from this subtype. Defaults to empty string "".
+ * @param test_diff (String): Use this to force select from this difficulty. Defaults to empty string "".
+ * @param test_index (String): Use this to force select from this id. Defaults to empty string "".
  * @param callback is the function that will receive the result
  */
-RAPPCloud.prototype.cognitive_test_chooser = function ( user, test_type, callback )
+
+RAPPCloud.prototype.cognitive_test_chooser = function ( test_type, callback, test_subtype, test_diff, test_index )
 {
+    test_subtype = typeof test_subtype !== 'undefined' ? test_subtype : '';
+    test_diff = typeof test_diff !== 'undefined' ? test_diff : '';
+    test_index = typeof test_index !== 'undefined' ? test_index : '';
+    
+    var request = require('request').defaults({
+	  secureProtocol: 'TLSv1_2_method',
+	  rejectUnauthorized: false
+	});
+
     var cloud = this;
-    var body_string = 'user=' + cloud.escape_string(user) + '&test_type=' + cloud.escape_string(test_type);
     var _delegate = callback;
+
+    var body_obj = new Object();
+    body_obj.test_type = cloud.escape_string(test_type);
+    body_obj.test_subtype = cloud.escape_string(test_subtype);
+    body_obj.test_diff = cloud.escape_string(test_diff);
+    body_obj.test_index = cloud.escape_string(test_index);
+    var body_json = JSON.stringify(body_obj);
     
     request.post({
         headers: {
-//			'Authorization' : 'Basic cmFwcGRldjpyYXBwZGV2',
+			'Accept-Token' : cloud.token,
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
         url: cloud.cloud_url + '/hop/cognitive_test_chooser/ ',
-        body: body_string
+        body: "json=" + body_json
     },
     function ( error, response, json ) 
     {
@@ -51,12 +66,13 @@ RAPPCloud.prototype.cognitive_test_chooser = function ( user, test_type, callbac
 			json_obj = JSON.parse(json);
 			// JSON reply is: { questions: [], possib_ans: [], correct_ans: [], test_instance: '', test_type: '', test_subtype: '', error: '' }
 		
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+			if(json_obj.error){  // Check for Errors  
 				console.log('cognitive_test_chooser JSON error: ' + json_obj.error);
 			}
 			_delegate( json_obj.questions, json_obj.possib_ans, json_obj.correct_ans, json_obj.test_instance, json_obj.test_type, json_obj.test_subtype );
 		} catch (e) {
-			return console.error(e);
+			console.log('cognitive_test_chooser::handle_reply Error parsing: ');
+            return console.error(e);
 		}
 	}
 	

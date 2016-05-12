@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-var request = require('request');
 var path = require('path');
-
 var __cloudDir = path.join(__dirname);
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
@@ -19,12 +16,17 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  */
 RAPPCloud.prototype.available_services = function ( callback )
 {
-	var cloud = this;
+	var request = require('request').defaults({
+      secureProtocol: 'TLSv1_2_method',
+      rejectUnauthorized: false
+    });
+
+    var cloud = this;
     var _delegate = callback;
 	
 	request.post({
         headers: {
-//			'Authorization' : 'Basic cmFwcGRldjpyYXBwZGV2',
+            'Accept-Token' : cloud.token,
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
@@ -47,13 +49,14 @@ RAPPCloud.prototype.available_services = function ( callback )
             json_obj = JSON.parse(json);
             // JSON reply is: { services: [], error: '' }
     
-            if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+            if(json_obj.error){  // Check for Errors  
                     console.log('available_services JSON error: ' + json_obj.error);
             }
             if (json_obj.services){
                     _delegate(json_obj.services);
             }
         } catch (e) {
+            console.log('available_services::handle_reply Error parsing: ');
             return console.error(e);
         }
     }

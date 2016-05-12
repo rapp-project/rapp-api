@@ -7,39 +7,37 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class ontology_is_subsuperclass_of
+ * @class cognitive_record_performance
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
+ * @description Asynchronous Service which will request the cognitive_record_performance web service for an Input
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param parent is the parent class in question
- * @param child is the child of the parent class in question
- * @param recursive is a boolean argument, when true the function checks for indirect parent-child relationship as well
+ * @param test_instance (String) is the Cognitive Exercise test instance. The full cognitive test entry name as reported by the cognitive_test_chooser()
+ * @param score (Integer) User's performance score on given test entry.
  * @param callback is the function that will receive the result
  */
-RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, recursive, callback )
+RAPPCloud.prototype.cognitive_record_performance = function ( test_instance, score, callback )
 {
     var request = require('request').defaults({
-	  secureProtocol: 'TLSv1_2_method',
-	  rejectUnauthorized: false
-	});
+      secureProtocol: 'TLSv1_2_method',
+      rejectUnauthorized: false
+    });
 
     var cloud = this;
     var _delegate = callback;
     
     var body_obj = new Object();
-    body_obj.parent_class = cloud.escape_string(parent);
-    body_obj.child_class = cloud.escape_string(child);
-    body_obj.recursive = recursive;
+    body_obj.test_instance = cloud.escape_string(test_instance);
+    body_obj.score = score;
     var body_json = JSON.stringify(body_obj);
-    
+
     request.post({
         headers: {
 			'Accept-Token' : cloud.token,
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
-        url: cloud.cloud_url + '/hop/ontology_is_subsuperclass_of/ ',
+        url: cloud.cloud_url + '/hop/cognitive_record_performance/ ',
         body: "json=" + body_json
     },
     function ( error, response, json ) 
@@ -57,15 +55,15 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 		var json_obj;
 		try {
 			json_obj = JSON.parse(json);
-			// JSON reply is: { "result":true,"trace":[],"error":"" }
+			// JSON reply is: { performance_entry: '', error: '' }
 		
 			if(json_obj.error){  // Check for Errors  
-				console.log('ontology_is_subsuperclass_of JSON error: ' + json_obj.error);
+				console.log('cognitive_record_performance JSON error: ' + json_obj.error);
 			}
-			_delegate( parent, child, json_obj.result);
+			_delegate( json_obj.performance_entry );
 		} catch (e) {
-			console.log('ontology_is_subsuperclass_of::handle_reply Error parsing: ');
-			return console.error(e);
+			console.log('cognitive_record_performance::handle_reply Error parsing: ');
+            return console.error(e);
 		}
 	}
 	
@@ -75,4 +73,4 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 };
 
 /// Export
-module.exports = RAPPCloud.ontology_is_subsuperclass_of;
+module.exports = RAPPCloud.cognitive_record_performance;

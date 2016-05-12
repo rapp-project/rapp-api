@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 
-var request = require('request');
 var path = require('path');
-
 var __cloudDir = path.join(__dirname);
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
@@ -22,18 +19,26 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  */
 RAPPCloud.prototype.ontology_subclasses_of = function ( query, callback )
 {
+    var request = require('request').defaults({
+      secureProtocol: 'TLSv1_2_method',
+      rejectUnauthorized: false
+    });
+
     var cloud = this;
-    var body_string = 'query=' + cloud.escape_string(query);
     var _delegate = callback;
+    
+    var body_obj = new Object();
+    body_obj.query = cloud.escape_string(query);
+    var body_json = JSON.stringify(body_obj);
     
     request.post({
         headers: {
-//			'Authorization' : 'Basic cmFwcGRldjpyYXBwZGV2',
-			'Content-Type' : 'application/x-www-form-urlencoded',
-			'Connection' : 'close'
-			},
+            'Accept-Token' : cloud.token,
+            'Content-Type' : 'application/x-www-form-urlencoded',
+            'Connection' : 'close'
+            },
         url: cloud.cloud_url + '/hop/ontology_subclasses_of/ ',
-        body: body_string
+        body: "json=" + body_json
     },
     function ( error, response, json ) 
     {
@@ -52,13 +57,14 @@ RAPPCloud.prototype.ontology_subclasses_of = function ( query, callback )
             json_obj = JSON.parse(json);
             // JSON reply is: { results: [], trace: [], error: '' }
     
-            if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+            if(json_obj.error){  // Check for Errors  
                     console.log('ontology_subclasses_of JSON error: ' + json_obj.error);
             }
             if (json_obj.results){
                     _delegate(json_obj.results);
             }
         } catch (e) {
+            console.log('ontology_subclasses_of::handle_reply Error parsing: ');
             return console.error(e);
         }
     }

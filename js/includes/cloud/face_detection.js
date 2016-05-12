@@ -1,17 +1,11 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-var request = require('request');
 var path = require('path');
-var formData = require('form-data');
-var randomstring = require('randomstring');
-
 var __cloudDir = path.join(__dirname);
 var __objectsDir = path.join(__dirname, '..', 'objects');
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
-RAPPObject.qrCode = require(path.join(__objectsDir, 'face.js'));
+RAPPObject.face = require(path.join(__objectsDir, 'face.js'));
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
@@ -26,20 +20,34 @@ RAPPObject.qrCode = require(path.join(__objectsDir, 'face.js'));
  * @param callback is the function that will receive a vector of the detected face(s) coordinates
  * @param fast is a string. Only valid values 'true' and 'false'. When 'true' the fast face detection service is called, which should be used for tracking applications
  */
-RAPPCloud.prototype.face_detection = function ( image, image_format, callback )
+RAPPCloud.prototype.face_detection = function ( image, image_format, callback, fast )
 {
-    fast = typeof fast !== 'undefined' ? fast : 'false';
+    fast = typeof fast !== 'undefined' ? fast : false;
+
+    var formData = require('form-data');
+	var randomstring = require('randomstring');
+	var fs = require('fs');
+	var request = require('request').defaults({
+	  secureProtocol: 'TLSv1_2_method',
+	  rejectUnauthorized: false
+	});
+
     var cloud = this;
     var object = new RAPPObject( );
-    var _delegate=callback;
+    var _delegate = callback;
 	var form = new formData();
+	//Generate a random file name under which the image will be saved on the Server 
 	var filename = randomstring.generate() + '.' + image_format;
+
+	var body_obj = new Object();
+    body_obj.fast = fast;
+    var body_json = JSON.stringify(body_obj);
 	
-	form.append('file_uri', fs.createReadStream(image), { 
+	form.append('file', fs.createReadStream(image), { 
 		filename: filename,
 		contentType: 'image/' + image_format 
 	});
-
+	form.append('json', body_json);
 	var r = request.post(cloud.cloud_url + '/hop/face_detection/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
 			handle_reply( json );
@@ -53,19 +61,19 @@ RAPPCloud.prototype.face_detection = function ( image, image_format, callback )
 	});
 	r._form = form;
 	r.setHeader('Connection', 'close');
+	r.setHeader('Accept-Token', cloud.token);
 
 	function handle_reply( json )
     {
 		var json_obj;
 		var faces = [];
 		try {
-			var i;
 			json_obj = JSON.parse(json);
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
-				console.log('faceDetection JSON error: ' + json_obj.error);
+			if(json_obj.error){  // Check for Errors  
+				console.log('face_detection JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: { "faces":[{"up_left_point":{"x":212.0,"y":200.0},"down_right_point":{"x":391.0,"y":379.0}}],"error":""}
-			for (i=0; i<json_obj.faces.length; i++){
+			for (var i=0; i<json_obj.faces.length; i++){
 				var up_left = json_obj.faces[i].up_left_point;
 				var down_right = json_obj.faces[i].down_right_point;
 				faces.push(new object.Face( up_left.x, up_left.y, down_right.x, down_right.y ));

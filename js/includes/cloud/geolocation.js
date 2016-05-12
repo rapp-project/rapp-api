@@ -7,17 +7,17 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class ontology_is_subsuperclass_of
+ * @class geolocation
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
+ * @description Asynchronous Service which will request the geolocation RAPP platform service
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param parent is the parent class in question
- * @param child is the child of the parent class in question
- * @param recursive is a boolean argument, when true the function checks for indirect parent-child relationship as well
+ * @param ipaddr: The machine's ipaddr
+ * @param engine: Engine to use. Defaults to 'ip-api' (Currently the only supported).
  * @param callback is the function that will receive the result
  */
-RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, recursive, callback )
+    
+RAPPCloud.prototype.geolocation = function ( ipaddr, engine, callback )
 {
     var request = require('request').defaults({
 	  secureProtocol: 'TLSv1_2_method',
@@ -28,9 +28,8 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
     var _delegate = callback;
     
     var body_obj = new Object();
-    body_obj.parent_class = cloud.escape_string(parent);
-    body_obj.child_class = cloud.escape_string(child);
-    body_obj.recursive = recursive;
+    body_obj.ipaddr = cloud.escape_string(ipaddr);
+    body_obj.engine = cloud.escape_string(engine);
     var body_json = JSON.stringify(body_obj);
     
     request.post({
@@ -39,7 +38,7 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 			'Content-Type' : 'application/x-www-form-urlencoded',
 			'Connection' : 'close'
 			},
-        url: cloud.cloud_url + '/hop/ontology_is_subsuperclass_of/ ',
+        url: cloud.cloud_url + '/hop/geolocation/ ',
         body: "json=" + body_json
     },
     function ( error, response, json ) 
@@ -57,14 +56,22 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 		var json_obj;
 		try {
 			json_obj = JSON.parse(json);
-			// JSON reply is: { "result":true,"trace":[],"error":"" }
+			// JSON reply is: { city: '', country: '', country_code: '', latitude: 0.0, longtitude: 0.0, region: '', timezone: '', zip: '', error: '' }	
+		    // city: (String): The city.
+		    // country (String): The country.
+		    // country_code (String): The country code.
+		    // latitude: (Float): The latitude.
+		    // longtitude (Float): The longtitude.
+		    // timezone (String): The timezone.
+		    // zip (String): The zip postal code.
+		    // error (String): Error message, if one occures.
 		
-			if(json_obj.error){  // Check for Errors  
-				console.log('ontology_is_subsuperclass_of JSON error: ' + json_obj.error);
-			}
-			_delegate( parent, child, json_obj.result);
+			if(json_obj.error)  // Check for Errors  
+				console.log('geolocation JSON error: ' + json_obj.error);
+	        else 
+	        	_delegate(json_obj.city, json_obj.country, json_obj.country_code, json_obj.latitude, json_obj.longtitude, json_obj.timezone, json_obj.zip);
 		} catch (e) {
-			console.log('ontology_is_subsuperclass_of::handle_reply Error parsing: ');
+			console.log('geolocation::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -75,4 +82,4 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 };
 
 /// Export
-module.exports = RAPPCloud.ontology_is_subsuperclass_of;
+module.exports = RAPPCloud.geolocation;

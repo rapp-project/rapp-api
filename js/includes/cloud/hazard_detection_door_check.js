@@ -1,14 +1,7 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-var request = require('request');
 var path = require('path');
-var formData = require('form-data');
-var randomstring = require('randomstring');
-
 var __cloudDir = path.join(__dirname);
-var __objectsDir = path.join(__dirname, '..', 'objects');
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
@@ -25,12 +18,21 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  */
 RAPPCloud.prototype.hazard_detection_door_check = function ( image, image_format, callback )
 {
+	var formData = require('form-data');
+	var randomstring = require('randomstring');
+	var fs = require('fs');
+	var request = require('request').defaults({
+	  secureProtocol: 'TLSv1_2_method',
+	  rejectUnauthorized: false
+	});
+
 	var cloud = this;
 	var _delegate=callback;
 	var form = new formData();
+	//Generate a random file name under which the image will be saved on the Server 
 	var filename = randomstring.generate() + '.' + image_format;
 	
-	form.append('file_uri', fs.createReadStream(image), { 
+	form.append('file', fs.createReadStream(image), { 
 		filename: filename,
 		contentType: 'image/' + image_format 
 	});
@@ -48,6 +50,7 @@ RAPPCloud.prototype.hazard_detection_door_check = function ( image, image_format
 	});
 	r._form = form;
 	r.setHeader('Connection', 'close');
+	r.setHeader('Accept-Token', cloud.token);
 
 	function handle_reply( json )
 	{
@@ -55,7 +58,7 @@ RAPPCloud.prototype.hazard_detection_door_check = function ( image, image_format
 		try {
 			var i;
 			json_obj = JSON.parse(json);
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+			if(json_obj.error){  // Check for Errors  
 				console.log('hazard_detection_door_check JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: { "faces":[{"up_left_point":{"x":212.0,"y":200.0},"down_right_point":{"x":391.0,"y":379.0}}],"error":""}

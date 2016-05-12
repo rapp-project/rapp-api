@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the hazard_detection_light_check JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.hazard_detection_light_check = require('hazard_detection_light_check');
+var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
+RAPPCloud.hazard_detection_light_check = require('../includes/cloud/hazard_detection_light_check.js');
 
 var services = new RAPPCloud( );
 

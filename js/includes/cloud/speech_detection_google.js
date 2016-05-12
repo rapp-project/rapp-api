@@ -1,13 +1,7 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-var request = require('request');
 var path = require('path');
-var formData = require('form-data');
-var randomstring = require('randomstring');
-
 var __cloudDir = path.join(__dirname);
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
@@ -19,23 +13,35 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param audio is the actual binary sound file
  * @param audio_source is a string with the audio source type
- * @param user is the user token
  * @param language is the language used for speech to text
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, user, language, callback )
+RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, language, callback )
 {
+    var formData = require('form-data');
+	var randomstring = require('randomstring');
+	var fs = require('fs');
+	var request = require('request').defaults({
+	  secureProtocol: 'TLSv1_2_method',
+	  rejectUnauthorized: false
+	});
+
     var cloud = this;
     var _delegate=callback;
+
 	var form = new formData();
 	var ext = audio.substr(audio.lastIndexOf('.') + 1);
+	//Generate a random file name under which the audio file will be saved on the Server 
 	var filename = randomstring.generate() + '.' + ext;
 	
-	form.append('file_uri', fs.createReadStream(audio), { filename: filename });
-	form.append('audio_source', audio_source);
-	form.append('user', cloud.escape_string(user));
-	form.append('language', language);
+	var body_obj = new Object();
+    body_obj.audio_source = audio_source;
+    body_obj.language = language;
+    var body_json = JSON.stringify(body_obj);
+
+	form.append('file', fs.createReadStream(audio), { filename: filename });
+	form.append('json', body_json);
 	
 	var r = request.post(cloud.cloud_url + '/hop/speech_detection_google/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
@@ -50,6 +56,7 @@ RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, us
 	});
 	r._form = form;
 	r.setHeader('Connection', 'close');
+	r.setHeader('Accept-Token', cloud.token);
 
 	function handle_reply( json )
     {
@@ -57,7 +64,7 @@ RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, us
 		try {
 			var i;
 			json_obj = JSON.parse(json);
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+			if(json_obj.error){  // Check for Errors  
 				console.log('speech_detection_google JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"words":["check","minus"],"alternatives":[["check","-"],["check","my","mail"],["Tech","-"],["take","-"],["10","-"],["check","cashing"],["check","in"],["check","cash"]],"error":""}

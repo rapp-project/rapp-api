@@ -1,13 +1,7 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-var request = require('request');
 var path = require('path');
-var formData = require('form-data');
-var randomstring = require('randomstring');
-
 var __cloudDir = path.join(__dirname);
-
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 /**
@@ -19,7 +13,6 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param audio is the actual binary sound file
  * @param language is the language used for speech to text
- * @param user is the user token
  * @param audio_source is a string with the audio source type
  * @param grammar is the Grammars used in Spc2Txt
  * @param words will be searched for in the audio
@@ -27,12 +20,22 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, user, audio_source, grammar, words, sentences, callback )
+RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, audio_source, grammar, words, sentences, callback )
 {
+    var formData = require('form-data');
+	var randomstring = require('randomstring');
+	var fs = require('fs');
+	var request = require('request').defaults({
+	  secureProtocol: 'TLSv1_2_method',
+	  rejectUnauthorized: false
+	});
+
     var cloud = this;
     var _delegate=callback;
+
 	var form = new formData();
 	var ext = audio.substr(audio.lastIndexOf('.') + 1);
+	//Generate a random file name under which the audio file will be saved on the Server 
 	var filename = randomstring.generate() + '.' + ext;
 	
 	var i;
@@ -57,13 +60,17 @@ RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, user,
 	}
 	words_str += ']';
 	
-	form.append('file_uri', fs.createReadStream(audio), { filename: filename });
-	form.append('language', language);
-	form.append('user', cloud.escape_string(user));
-	form.append('audio_source', audio_source);
-	form.append('grammar', grammar_str);
-	form.append('words', words_str);
-	form.append('sentences', sentences_str);
+
+	var body_obj = new Object();
+    body_obj.language = language;
+    body_obj.audio_source = audio_source;
+    body_obj.grammar = grammar;
+    body_obj.words = words;
+    body_obj.sentences = sentences;
+    var body_json = JSON.stringify(body_obj);
+
+	form.append('file', fs.createReadStream(audio), { filename: filename });
+	form.append('json', body_json);
 	
 	var r = request.post(cloud.cloud_url + '/hop/speech_detection_sphinx4/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
@@ -78,6 +85,7 @@ RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, user,
 	});
 	r._form = form;
 	r.setHeader('Connection', 'close');
+	r.setHeader('Accept-Token', cloud.token);
 
 	function handle_reply( json )
     {
@@ -85,7 +93,7 @@ RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, user,
 		var words_vector = [];
 		try {
 			json_obj = JSON.parse(json);
-			if(json_obj.error){  // Check for Errors returned by the api.rapp.cloud
+			if(json_obj.error){  // Check for Errors  
 				console.log('speech_detection_sphinx4 JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"words":["check","my","emails"],"error":""}

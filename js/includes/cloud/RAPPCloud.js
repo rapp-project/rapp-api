@@ -6,8 +6,9 @@
  */
 function RAPPCloud ( )
 {
-    //this.cloud_url = 'http://155.207.19.13:9001';
-    this.cloud_url = 'http://localhost:9001'; 
+    fs = require('fs')
+	this.token = fs.readFileSync('/home/leizer/.config/rapp_platform/application_token', 'utf8').toString().replace(/\n$/, '');
+    this.cloud_url = 'https://localhost:9001';
 }
 
 /// escape JSON strings when sending them over the socket

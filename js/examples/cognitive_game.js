@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-// Import the record_cognitive_test_performance JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.cognitive_test_chooser = require('cognitive_test_chooser');
-RAPPCloud.cognitive_test_chooser = require('record_cognitive_test_performance');
-
+// Import the cognitive_record_performance JS API Service & Init the RAPPCloud Object
+var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
+RAPPCloud.cognitive_test_chooser = require('../includes/cloud/cognitive_test_chooser.js');
+RAPPCloud.cognitive_record_performance = require('../includes/cloud/cognitive_record_performance.js');
+RAPPCloud.cognitive_get_history = require('../includes/cloud/cognitive_get_history.js');
+RAPPCloud.cognitive_get_scores = require('../includes/cloud/cognitive_get_scores.js');
 var services = new RAPPCloud( );
 
 /** 
@@ -30,11 +31,25 @@ function cb2 ( performance_entry )
 	console.log( performance_entry );
 }
 
-services.cognitive_test_chooser('rapp', // 'ArithmeticCts',
+function cb3 ( records )
+{
+	console.log( records );
+}
+
+function cb4 ( test_classes, scores )
+{
+	for (var i=0; i<test_classes.length; i++) {
+		console.log ("Your score in " + test_classes[i] + " category is: " + scores[i] );
+	}
+}
+
+services.cognitive_test_chooser(	// 'ArithmeticCts',
 								    // 'AwarenessCts',
-									 'ReasoningCts', 
+									'ReasoningCts', 
 									cb1 );
 						
-services.record_cognitive_test_performance('rapp', "ReasoningCts_pQmhNKHv", 1, cb2 );
+services.cognitive_record_performance("ReasoningCts_pQmhNKHv", 1, cb2 );
 
+services.cognitive_get_history( cb3, '', 1450348786, 1450348787 );
 
+services.cognitive_get_scores( cb4, 1450348787, '' );

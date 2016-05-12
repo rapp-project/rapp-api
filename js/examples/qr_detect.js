@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-// Import the face_detection JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.qr_detection = require('qr_detection');
+// Import the qr_detection JS API Service & Init the RAPPCloud Object
+var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
+RAPPCloud.qr_detection = require('../includes/cloud/qr_detection.js');
 var services = new RAPPCloud( );
 
 /** 

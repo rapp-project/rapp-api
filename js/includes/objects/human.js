@@ -7,7 +7,7 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
 /**
  * @fileOverview Prototype this RAPP Object Class.
  * 
- * @class Face
+ * @class Human
  * @memberof RAPPObject
  * @description class which should somehow encapsulate a face
  * @version 1
@@ -15,13 +15,13 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
  */ 
 
 /*** 
-* Define Face "class" inside an immediate function.
+* Define Human "class" inside an immediate function.
 * A bit unconventional way but it's the only way I have found to have the same information flow with C++
 * in the way that instances of this Face and only those can have access to private variables of 
 * other instances of the same "class" so that member functions like isEqual can work.
 */
 
-RAPPObject.prototype.Face = (function(){   // immediate function
+RAPPObject.prototype.Human = (function(){   // immediate function
 	
 	var _top_left_x;
 	var _top_left_y;
@@ -29,10 +29,10 @@ RAPPObject.prototype.Face = (function(){   // immediate function
 	var _bottom_right_y;
 	
 	var instance = 0; // counts the number of instances
-	var faces = []; // an array of private objects
+	var humans = []; // an array of private objects
 	
 	/**
-	 * @constructor Face
+	 * @constructor Human
      	* @description Consruct using face coordinates (a rectangle)
      	* @param top_left_x is the top left x coordinate
      	* @param top_left_y is the top left y coordinate
@@ -40,19 +40,19 @@ RAPPObject.prototype.Face = (function(){   // immediate function
      	* @param bottom_right_y is the bottom right y coordinate
      	*/
 	
-	function Face( top_left_x, top_left_y, bottom_right_x, bottom_right_y )
+	function Human( top_left_x, top_left_y, bottom_right_x, bottom_right_y )
 	{
 		// Increment the instance count and save it to the instance. 
         // This will become the key to the private space.
 		this.i = instance++;
 		
 		// Create a new object in the private space.
-		faces[this.i] = {};
+		humans[this.i] = {};
 		
-		faces[this.i]._top_left_x = top_left_x;
-		faces[this.i]._top_left_y = top_left_y;
-		faces[this.i]._bottom_right_x = bottom_right_x;
-		faces[this.i]._bottom_right_y = bottom_right_y;
+		humans[this.i]._top_left_x = top_left_x;
+		humans[this.i]._top_left_y = top_left_y;
+		humans[this.i]._bottom_right_x = bottom_right_x;
+		humans[this.i]._bottom_right_y = bottom_right_y;
 	}
 
 	//TODO: A function that can be used as a Copy Constructor
@@ -62,18 +62,18 @@ RAPPObject.prototype.Face = (function(){   // immediate function
      * @description Check Equality
      * @param rhs is the Face object to which this object is compared for equality
      */	
-	Face.prototype.isEqual = function (rhs) 
+	Human.prototype.isEqual = function (rhs) 
 	{
 		// It has access to the private space and it's children!
-		return ( faces[this.i]._top_left_x === faces[rhs.i]._top_left_x &&
-                 faces[this.i]._top_left_y === faces[rhs.i]._top_left_y &&
-                 faces[this.i]._bottom_right_x === faces[rhs.i]._bottom_right_x &&
-                 faces[this.i]._bottom_right_y === faces[rhs.i]._bottom_right_y );
+		return ( humans[this.i]._top_left_x === humans[rhs.i]._top_left_x &&
+                 humans[this.i]._top_left_y === humans[rhs.i]._top_left_y &&
+                 humans[this.i]._bottom_right_x === humans[rhs.i]._bottom_right_x &&
+                 humans[this.i]._bottom_right_y === humans[rhs.i]._bottom_right_y );
 	};
 	
-	return Face;	
+	return Human;	
 })();
 
 
 /// Export
-module.exports = RAPPObject.Face;
+module.exports = RAPPObject.Human;

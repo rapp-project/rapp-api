@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the available_services JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.available_services = require('available_services');
+var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
+RAPPCloud.available_services = require('../includes/cloud/available_services.js');
 
 var services = new RAPPCloud( );
 
@@ -13,7 +13,10 @@ var services = new RAPPCloud( );
  
 function handler ( services )
 {
-	console.log( "The following services are available:\n" + services );
+	console.log( "The following services are available:\n" );
+	for (i = 0; i < services.length; i++) {
+    	console.log(services[i]);
+	}
 }
 
 services.available_services( handler );

@@ -7,17 +7,17 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
- * @class set_noise_profile
+ * @class path_planning_upload_map
  * @memberof RAPPCloud
- * @description Setting the denoising audio profile for speech recognition
+ * @description Asynchronous Service which will try to upload a map to be used for path planning on the cloud
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param file is the input audio file
- * @param user is a string with the username
- * @param audio_source is a string with the audio source type
- */
+ * @param png_file: The map image png file.
+ * @param yaml_file: The map description yaml file.
+ * @param map_name: The map name.
+ */ 
 
-RAPPCloud.prototype.set_noise_profile = function ( file, audio_source )
+RAPPCloud.prototype.path_planning_upload_map = function ( png_file, yaml_file, map_name )
 {
     var formData = require('form-data');
 	var randomstring = require('randomstring');
@@ -28,27 +28,26 @@ RAPPCloud.prototype.set_noise_profile = function ( file, audio_source )
 	});
 
     var cloud = this;
-
+    var object = new RAPPObject( );
 	var form = new formData();
-	var ext = file.substr(file.lastIndexOf('.') + 1);
-	//Generate a random file name under which the audio file will be saved on the Server 
-	var filename = randomstring.generate() + '.' + ext;
-	
-	var body_obj = new Object();
-    body_obj.audio_source = audio_source;
-    var body_json = JSON.stringify(body_obj);
 
-	form.append('file', fs.createReadStream(file), { 
-		filename: filename
-	});
-	form.append('json', body_json);
+	var body_obj = new Object();
+    body_obj.map_name = map_name;
+    var body_json = JSON.stringify(body_obj);
 	
-	var r = request.post(cloud.cloud_url + '/hop/set_noise_profile/ ', function(error, res, json){ 
-		if (res.statusCode==200 && !error){
-			handle_reply(json);
-			}
+	form.append('file', fs.createReadStream(png_file), { 
+        filename: png_file
+    }); 
+    form.append('file', fs.createReadStream(yaml_file), { 
+        filename: yaml_file
+    });
+	form.append('json', body_json);
+	var r = request.post(cloud.cloud_url + '/hop/path_planning_upload_map/ ', function(error, res, json){ 
+		if (res.statusCode==200 && !error) {
+			handle_reply( json );
+		}
 		else if (error) {
-			error_handler(error);
+			error_handler(error);	
 		}
 		else if ( res.statusCode != 200 ) {
 			console.log(res.statusCode);
@@ -61,13 +60,14 @@ RAPPCloud.prototype.set_noise_profile = function ( file, audio_source )
 	function handle_reply( json )
     {
 		var json_obj;
+		var faces = [];
 		try {
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors  
-				console.log('set_noise_profile JSON error: ' + json_obj.error);
-			}	
+				console.log('path_planning_upload_map JSON error: ' + json_obj.error);
+			}
 		} catch (e) {
-			console.log('set_noise_profile::handle_reply Error parsing: ');
+			console.log('path_planning_upload_map::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -77,7 +77,5 @@ RAPPCloud.prototype.set_noise_profile = function ( file, audio_source )
 	}
 };
 
-
-
 /// Export
-module.exports = RAPPCloud.set_noise_profile;
+module.exports = RAPPCloud.path_planning_upload_map;

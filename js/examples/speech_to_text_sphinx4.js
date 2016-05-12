@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the speech_detection_sphinx4 JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.speech_detection_sphinx4 = require('speech_detection_sphinx4');
+var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
+RAPPCloud.speech_detection_sphinx4 = require('../includes/cloud/speech_detection_sphinx4.js');
 
 var services = new RAPPCloud( );
 
@@ -50,7 +50,6 @@ function handler ( words_detected )
 
 services.speech_detection_sphinx4( audio,           // audio file
 								"en",            // Language
-								"rapp",          // user
 								//"headset",
 								//"nao_wav_1_ch",
 								//"nao_wav_4_ch",

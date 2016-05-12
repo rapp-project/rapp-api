@@ -2,7 +2,6 @@
 
 var path = require('path');
 var __objectsDir = path.join(__dirname);
-
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
 
 /**
@@ -24,8 +23,8 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
 
 RAPPObject.prototype.QrCode = (function( ){   // immediate function
 	
-	var _centre_x = -1; 
-	var _centre_y = -1;
+	var _centre_x; 
+	var _centre_y;
 	var _message ;
 	
 	var instance = 0; // counts the number of instances
