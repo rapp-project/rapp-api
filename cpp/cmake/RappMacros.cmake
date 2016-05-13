@@ -6,6 +6,7 @@ macro(SETUP_RAPP)
 	string(REPLACE ":" ";" LIBS_LIST $ENV{LD_LIBRARY_PATH})
 	link_directories(${LIBS_LIST})
 
+	find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex REQUIRED)
 endmacro(SETUP_RAPP)
 
 macro(CREATE_RAPP)
@@ -25,9 +26,18 @@ macro(CREATE_RAPP)
 #	MESSAGE("Libs: ${RAPP_LIBS}")
 
 	add_executable(${RAPP_NAME} ${RAPP_SRCS})
-	target_link_libraries(${RAPP_NAME} rapp_robot_vision rapp_robot_navigation rapp_robot_communication ${RAPP_LIBS})
+	target_link_libraries(${RAPP_NAME} rapp_robot_vision rapp_robot_navigation rapp_robot_communication ${RAPP_LIBS} ${Boost_LIBRARIES})
 
 	install(TARGETS ${RAPP_NAME} DESTINATION bin)
+	
+	if (EXISTS ${CMAKE_SOURCE_DIR}/run.sh)
+		MESSAGE(WARNING "Run script found")
+		install(FILES run.sh DESTINATION .)
+	else()
+		file(WRITE ${CMAKE_BINARY_DIR}/run.sh "#/bin/sh\n$1/bin/${RAPP_NAME} --base_path $1" )
+		MESSAGE(WARNING "Run script is missing! Using default:\n\t#/bin/sh\n\tbin/${RAPP_NAME}")
+		install(FILES ${CMAKE_BINARY_DIR}/run.sh DESTINATION .)
+	endif()
 
 endmacro(CREATE_RAPP)
 
