@@ -27,8 +27,8 @@ class CloudRequest(object):
     """
     def __init__(self, **kwargs):
         for key, value in kwargs.iteritems():
-            if hasattr(self.req, key):
-                setattr(self.req, key, value)
+            if hasattr(self, key):
+                setattr(self, key, value)
             else:
                 raise AttributeError(''.join(self.__class__.__name__ +
                     ' object does not have a property named ' + str(key)))
@@ -37,6 +37,11 @@ class CloudRequest(object):
     def __eq__(self, other):
         """! Equality method """
         return self.serialize() == other.serialize()
+
+
+    def set(self, key, val):
+        if hasattr(self, key):
+            setattr(self, key, val)
 
 
     def make_payload(self):
@@ -70,9 +75,9 @@ class CloudResponse(object):
     Cloud Object specific Response objects.
     """
     def __init__(self, **kwargs):
-        for key, value in kwargs.iteritems():
-            if hasattr(self.req, key):
-                setattr(self.req, key, value)
+        for key, val in kwargs.iteritems():
+            if hasattr(self, key):
+                setattr(self, key, val)
             else:
                 raise AttributeError()
 
@@ -80,6 +85,11 @@ class CloudResponse(object):
     def __eq__(self, other):
         """! Equality method """
         return self.serialize() == other.serialize()
+
+
+    def set(self, key, val):
+        if hasattr(self, key):
+            setattr(self, key, val)
 
 
     def serialize(self):

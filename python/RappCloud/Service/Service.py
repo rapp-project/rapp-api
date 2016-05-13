@@ -41,9 +41,12 @@ class Service(object):
         for key, value in kwargs.iteritems():
             pass
 
+        # Cloud Object passed to the Service.
         self.__cloudObj = msg
-        self._persistent = persistent
-        self._timeout = timeout
+        # Persistent connection value (Boolean)
+        self.__persistent = persistent
+        # Client timeout value (Number)
+        self.__timeout = timeout
 
         ## Service Name
         if msg is not None:
@@ -66,12 +69,25 @@ class Service(object):
     @property
     def persistent(self):
         """! Service persistent connection value getter """
-        return self._persistent
+        return self.__persistent
+
+    @persistent.setter
+    def persistent(self, val):
+        """! Service persistent connection value setter """
+        self.__persistent = val
+
 
     @property
     def timeout(self):
         """! Service timeout value getter """
-        return self._timeout
+        return self.__timeout
+
+
+    @timeout.setter
+    def timeout(self, val):
+        """! Service timeout value setter """
+        self.__timeout = val
+
 
     @property
     def url(self):
@@ -88,13 +104,13 @@ class Service(object):
     @property
     def req(self):
         """! Service request object getter """
-        return self.__cloudObj.req
+        return self.__cloudObj.req if self.__cloudObj is not None else None
 
 
     @property
     def resp(self):
         """! Service response object getter """
-        return self.__cloudObj.resp
+        return self.__cloudObj.resp if self.__cloudObj is not None else None
 
 
     @resp.setter
@@ -106,6 +122,10 @@ class Service(object):
 
     def call(self, msg=None):
         """! Call the Platform Service """
-        self.svcname = self.__cloudObj.svcname
+        if msg is not None:
+            self.__cloudObj = msg
+            self.__svcname = msg.svcname
         cloudResponseDic = self.__controller.run_job()
-        ## TODO Append values to the self.__cloudObj.resp object
+        for key, val in cloudResponseDic.iteritems():
+            self.resp.set(key, val)
+        return self.resp
