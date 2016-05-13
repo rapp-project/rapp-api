@@ -16,6 +16,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param score (Integer) User's performance score on given test entry.
  * @param callback is the function that will receive the result
  */
+ 
 RAPPCloud.prototype.cognitive_record_performance = function ( test_instance, score, callback )
 {
     var request = require('request').defaults({
@@ -26,7 +27,7 @@ RAPPCloud.prototype.cognitive_record_performance = function ( test_instance, sco
     var cloud = this;
     var _delegate = callback;
     
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.test_instance = cloud.escape_string(test_instance);
     body_obj.score = score;
     var body_json = JSON.stringify(body_obj);

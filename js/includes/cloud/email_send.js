@@ -35,7 +35,7 @@ RAPPCloud.prototype.email_send = function ( email, passwd, server, port, recipie
 
     var form = new formData();
     
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.email = cloud.escape_string(email);
     body_obj.passwd = cloud.escape_string(passwd);
     body_obj.server = cloud.escape_string(server);

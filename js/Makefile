@@ -15,7 +15,7 @@ uninstall:
 	. ~/.bashrc
 	
 jshint:
-	jshint includes
+	node_modules/jshint/bin/jshint includes
 	
 test:	   	deps
 	@NODE_ENV=test ./node_modules/mocha/bin/mocha test/cloud_test.js test/object_test.js

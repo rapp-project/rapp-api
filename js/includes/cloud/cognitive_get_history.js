@@ -32,7 +32,7 @@ RAPPCloud.prototype.cognitive_get_history = function ( callback, test_type, from
     var cloud = this;
     var _delegate = callback;
 
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.test_type = cloud.escape_string(test_type);
     body_obj.from_time = from_time;
     body_obj.to_time = to_time;

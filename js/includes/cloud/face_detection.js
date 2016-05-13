@@ -39,7 +39,7 @@ RAPPCloud.prototype.face_detection = function ( image, image_format, callback, f
 	//Generate a random file name under which the image will be saved on the Server 
 	var filename = randomstring.generate() + '.' + image_format;
 
-	var body_obj = new Object();
+	var body_obj = {};
     body_obj.fast = fast;
     var body_json = JSON.stringify(body_obj);
 	

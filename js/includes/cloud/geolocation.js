@@ -27,7 +27,7 @@ RAPPCloud.prototype.geolocation = function ( ipaddr, engine, callback )
     var cloud = this;
     var _delegate = callback;
     
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.ipaddr = cloud.escape_string(ipaddr);
     body_obj.engine = cloud.escape_string(engine);
     var body_json = JSON.stringify(body_obj);

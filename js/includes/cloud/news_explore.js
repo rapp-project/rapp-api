@@ -31,13 +31,13 @@ RAPPCloud.prototype.news_explore = function ( news_engine, keywords, exclude_tit
     var cloud = this;
     var _delegate = callback;
     
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.news_engine = cloud.escape_string(news_engine);
     body_obj.keywords = [];
    	for (var i=0; i<keywords.length; i++)
        	body_obj.keywords[i] = cloud.escape_string(keywords[i]);
     body_obj.exclude_titles = [];
-    for (var i=0; i<exclude_titles.length; i++)
+    for (i=0; i<exclude_titles.length; i++)
         body_obj.exclude_titles[i] = cloud.escape_string(exclude_titles[i]);
     body_obj.region = cloud.escape_string(region);
     body_obj.topic = cloud.escape_string(topic);

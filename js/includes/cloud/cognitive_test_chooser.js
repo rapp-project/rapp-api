@@ -33,7 +33,7 @@ RAPPCloud.prototype.cognitive_test_chooser = function ( test_type, callback, tes
     var cloud = this;
     var _delegate = callback;
 
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.test_type = cloud.escape_string(test_type);
     body_obj.test_subtype = cloud.escape_string(test_subtype);
     body_obj.test_diff = cloud.escape_string(test_diff);

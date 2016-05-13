@@ -61,7 +61,7 @@ RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, audio
 	words_str += ']';
 	
 
-	var body_obj = new Object();
+	var body_obj = {};
     body_obj.language = language;
     body_obj.audio_source = audio_source;
     body_obj.grammar = grammar;

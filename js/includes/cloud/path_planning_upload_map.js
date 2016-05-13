@@ -20,7 +20,6 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 RAPPCloud.prototype.path_planning_upload_map = function ( png_file, yaml_file, map_name )
 {
     var formData = require('form-data');
-	var randomstring = require('randomstring');
 	var fs = require('fs');
 	var request = require('request').defaults({
 	  secureProtocol: 'TLSv1_2_method',
@@ -30,7 +29,7 @@ RAPPCloud.prototype.path_planning_upload_map = function ( png_file, yaml_file, m
     var cloud = this;
 	var form = new formData();
 
-	var body_obj = new Object();
+	var body_obj = {};
     body_obj.map_name = map_name;
     var body_json = JSON.stringify(body_obj);
 	
@@ -65,7 +64,6 @@ RAPPCloud.prototype.path_planning_upload_map = function ( png_file, yaml_file, m
 	function handle_reply( json )
     {
 		var json_obj;
-		var faces = [];
 		try {
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors  

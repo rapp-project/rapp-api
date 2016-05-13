@@ -34,7 +34,7 @@ RAPPCloud.prototype.set_noise_profile = function ( file, audio_source )
 	//Generate a random file name under which the audio file will be saved on the Server 
 	var filename = randomstring.generate() + '.' + ext;
 	
-	var body_obj = new Object();
+	var body_obj = {};
     body_obj.audio_source = audio_source;
     var body_json = JSON.stringify(body_obj);
 

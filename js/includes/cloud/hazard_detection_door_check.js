@@ -56,13 +56,12 @@ RAPPCloud.prototype.hazard_detection_door_check = function ( image, image_format
 	{
 		var json_obj;
 		try {
-			var i;
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors  
 				console.log('hazard_detection_door_check JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: { "faces":[{"up_left_point":{"x":212.0,"y":200.0},"down_right_point":{"x":391.0,"y":379.0}}],"error":""}
-			door_angle = json_obj.door_angle;
+			var door_angle = json_obj.door_angle;
 			_delegate(door_angle);
 		} catch (e) {
 			console.log('hazard_detection_door_check::handle_reply Error parsing: ');

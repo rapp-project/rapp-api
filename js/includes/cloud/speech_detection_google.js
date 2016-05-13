@@ -35,7 +35,7 @@ RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, la
 	//Generate a random file name under which the audio file will be saved on the Server 
 	var filename = randomstring.generate() + '.' + ext;
 	
-	var body_obj = new Object();
+	var body_obj = {};
     body_obj.audio_source = audio_source;
     body_obj.language = language;
     var body_json = JSON.stringify(body_obj);

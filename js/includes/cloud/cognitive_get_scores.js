@@ -19,7 +19,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 RAPPCloud.prototype.cognitive_get_scores = function ( callback, up_to_time, test_type )
 {
-    up_to_time = typeof to_time !== 'undefined' ? to_time : 0;
+    up_to_time = typeof up_to_time !== 'undefined' ? up_to_time : 0;
     test_type = typeof test_type !== 'undefined' ? test_type : '';
     
     var request = require('request').defaults({
@@ -30,7 +30,7 @@ RAPPCloud.prototype.cognitive_get_scores = function ( callback, up_to_time, test
     var cloud = this;
     var _delegate = callback;
 
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.up_to_time = up_to_time;
     body_obj.test_type = cloud.escape_string(test_type);
     var body_json = JSON.stringify(body_obj);

@@ -33,7 +33,7 @@ RAPPCloud.prototype.email_fetch = function ( email, passwd, server, port, email_
     var cloud = this;
     var _delegate = callback;
     
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.email = cloud.escape_string(email);
     body_obj.passwd = cloud.escape_string(passwd);
     body_obj.server = cloud.escape_string(server);

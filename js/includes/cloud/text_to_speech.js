@@ -26,7 +26,7 @@ RAPPCloud.prototype.text_to_speech = function ( text, language, callback )
 	var cloud = this;
 	var _delegate = callback;
 
-	var body_obj = new Object();
+	var body_obj = {};
     body_obj.text = cloud.escape_string(text);
     body_obj.language = cloud.escape_string(language);
     var body_json = JSON.stringify(body_obj);

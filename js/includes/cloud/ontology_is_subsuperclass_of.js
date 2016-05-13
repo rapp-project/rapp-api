@@ -27,7 +27,7 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
     var cloud = this;
     var _delegate = callback;
     
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.parent_class = cloud.escape_string(parent);
     body_obj.child_class = cloud.escape_string(child);
     body_obj.recursive = recursive;

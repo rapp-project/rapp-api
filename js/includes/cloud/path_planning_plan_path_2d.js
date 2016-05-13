@@ -30,16 +30,12 @@ RAPPCloud.prototype.path_planning_plan_path_2d = function ( map_name, robot_type
     var cloud = this;
     var _delegate = callback;
     
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.map_name = cloud.escape_string(map_name);
     body_obj.robot_type = cloud.escape_string(robot_type);
     body_obj.algorithm = cloud.escape_string(algorithm);
-    body_obj.start = new Object();
-    for (var prop in start)
-        body_obj.start.prop = cloud.escape_string(start[prop]);
-    body_obj.goal = new Object();
-    for (var prop in goal)
-        body_obj.goal.prop = cloud.escape_string(goal[prop]);
+    body_obj.start = start;
+    body_obj.goal = goal;
     var body_json = JSON.stringify(body_obj);
     
     request.post({

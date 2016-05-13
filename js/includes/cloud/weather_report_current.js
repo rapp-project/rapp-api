@@ -28,7 +28,7 @@ RAPPCloud.prototype.weather_report_current = function ( city, weather_reporter, 
     var cloud = this;
     var _delegate = callback;
     
-    var body_obj = new Object();
+    var body_obj = {};
     body_obj.city = cloud.escape_string(city);
     body_obj.weather_reporter = cloud.escape_string(weather_reporter);
     body_obj.metric = metric;

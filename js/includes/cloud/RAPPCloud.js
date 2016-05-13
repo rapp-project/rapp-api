@@ -6,7 +6,7 @@
  */
 function RAPPCloud ( )
 {
-    fs = require('fs')
+    var fs = require('fs');
 	this.token = fs.readFileSync('/home/leizer/.config/rapp_platform/application_token', 'utf8').toString().replace(/\n$/, '');
     this.cloud_url = 'https://localhost:9001';
 }
