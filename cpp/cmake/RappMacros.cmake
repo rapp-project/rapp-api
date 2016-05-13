@@ -6,7 +6,7 @@ macro(SETUP_RAPP)
 	string(REPLACE ":" ";" LIBS_LIST $ENV{LD_LIBRARY_PATH})
 	link_directories(${LIBS_LIST})
 
-	find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex REQUIRED)
+	find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex filesystem REQUIRED)
 endmacro(SETUP_RAPP)
 
 macro(CREATE_RAPP)
