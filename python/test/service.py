@@ -5,6 +5,7 @@
 import unittest
 import time
 import inspect
+import sys, os
 from os import path
 
 from RappCloud import CloudObjects
@@ -17,28 +18,92 @@ testdatadir = path.realpath(
     )
 
 
+class NullDevice():
+    def write(self, s):
+        pass
 
-class TestServiceCalls(unittest.TestCase):
+
+class ServiceTest(unittest.TestCase):
+    def blockPrint(self):
+        sys.stdout = NullDevice()
+        sys.stderr = NullDevice()
+
+
+    def enablePrint(self):
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
+
+
     def setUp(self):
+        self.msg = FaceDetection()
+        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.fast = True
         self.startTime = time.time()
+        self.svc = Service()
 
     def tearDown(self):
         t = time.time() - self.startTime
         print "%s: %.3f" % (self.id(), t)
 
 
-    def test_service_instance(self):
-        _msg = CloudObjects.FaceDetection(
-            image='../../testdata/Lenna.png', fast=True)
-        _svc = Service(_msg)
-        self.assertEqual(_svc.svcname, 'face_detection')
+    def test_constructor_pass_cloud_object(self):
+        self.svc = Service(msg=self.msg, persistent=False, timeout=15000)
+        self.assertIsInstance(self.svc.req, FaceDetection.Request)
+        self.assertIsInstance(self.svc.resp, FaceDetection.Response)
+        self.assertEqual(self.svc.svcname, 'face_detection')
 
-        _validReq = {}
-        self.assertEqual(_svc.req, _msg.req)
-        self.assertEqual(_svc.resp, _msg.resp)
 
+    def test_constructor_arguments(self):
+        self.svc = Service(msg=self.msg, persistent=False, timeout=15000)
+        self.assertEqual(self.svc.svcname, 'face_detection')
+        self.assertEqual(self.svc.timeout, 15000)
+        self.assertEqual(self.svc.persistent, False)
+        self.assertEqual(self.svc.req, self.msg.req)
+        self.assertEqual(self.svc.resp, self.msg.resp)
+
+
+    def test_explicit_set_attributes(self):
+        self.svc.persistent = False
+        self.svc.timeout = 15000
+        self.assertEqual(self.svc.timeout, 15000)
+        self.assertEqual(self.svc.persistent, False)
+
+
+    def test_request_object_getter(self):
+        self.svc = Service(msg=self.msg)
+        _req = self.svc.req
+        self.assertIsInstance(_req, FaceDetection.Request)
+        self.assertEqual(_req, self.msg.req)
+
+
+    def test_response_object_getter(self):
+        self.svc = Service(msg=self.msg)
+        _resp = self.svc.resp
+        self.assertIsInstance(_resp, FaceDetection.Response)
+        self.assertEqual(_resp, self.msg.resp)
+
+
+    def test_call_response(self):
+        self.svc = Service(msg=self.msg)
+        self.blockPrint()
+        _resp = self.svc.call(self.msg)
+        self.enablePrint()
+        self.assertIsInstance(_resp, FaceDetection.Response)
+        self.assertIsInstance(_resp.faces, list)
+        self.assertIsInstance(_resp.error, str)
+
+
+    def test_call_multi(self):
+        self.svc = Service(msg=self.msg)
+        self.blockPrint()
+        _resp = self.svc.call(self.msg)
+        for _ in range(10):
+            _respTemp = self.svc.call(self.msg)
+            self.assertEqual(_resp, _respTemp)
+            _resp = _respTemp
+        self.enablePrint()
 
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestServiceCalls)
+    suite = unittest.TestLoader().loadTestsFromTestCase(ServiceTest)
     unittest.TextTestRunner(verbosity=0).run(suite)

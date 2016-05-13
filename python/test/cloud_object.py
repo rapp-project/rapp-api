@@ -9,6 +9,9 @@ from os import path
 
 from RappCloud import CloudObjects
 from RappCloud.Objects.Cloud import FaceDetection
+from RappCloud.Objects import (
+    Payload,
+    File)
 
 global testdatadir
 testdatadir = path.realpath(
@@ -17,67 +20,75 @@ testdatadir = path.realpath(
 
 
 
-class TestServiceCalls(unittest.TestCase):
+class CloudObjectTest(unittest.TestCase):
+    # Overwrite
     def setUp(self):
+        self.msg = FaceDetection()
         self.startTime = time.time()
 
+    # Overwrite
     def tearDown(self):
         t = time.time() - self.startTime
         print "%s: %.3f" % (self.id(), t)
 
 
-    def test_cloud_object_request(self):
-        msg = CloudObjects.FaceDetection(
-            image='/tmp/test', fast=True)
-
-        self.assertEqual(msg.req.image, '/tmp/test')
-        self.assertEqual(msg.req.fast, True)
-        self.assertEqual(msg.req.serialize(),
-                         {
-                            'image': '/tmp/test',
-                            'fast': True
-                         })
+    def test_request_object_instance(self):
+        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.fast = True
+        self.assertIsInstance(self.msg.req, FaceDetection.Request)
 
 
-    def test_cloud_object_response(self):
-        msg = CloudObjects.FaceDetection(
-            image='/tmp/test', fast=True)
-
-        self.assertEqual(msg.resp.faces, [])
-        self.assertEqual(msg.resp.error, '')
-        self.assertEqual(msg.resp.serialize(),
-                         {
-                             'faces': [],
-                             'error': ''
-                         })
+    def test_set_req_properties(self):
+        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.fast = True
+        self.assertEqual(self.msg.req.image, '../../testdata/Lenna.png')
+        self.assertEqual(self.msg.req.fast, True)
+        self.msg.req.fast = False
+        self.assertEqual(self.msg.req.fast, False)
 
 
-    def test_cloud_object_attribute_error(self):
-        try:
-            msg = FaceDetection(
-                filepath='../../testdata/Lenna.png', fast=True)
-        except AttributeError as e:
-            pass
+    @unittest.expectedFailure
+    def test_attribute_error(self):
+        msg = FaceDetection(
+            filepath='../../testdata/Lenna.png', fast=True)
 
 
-    def test_cloud_object_make_payload(self):
-        from RappCloud.Objects import Payload
-        _msg = CloudObjects.FaceDetection(
-            image='../../testdata/Lenna.png', fast=True)
+    def test_request_serialize(self):
+        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.fast = True
+        _expected = {
+            'image': '../../testdata/Lenna.png',
+            'fast': True
+        }
+        self.assertEqual(self.msg.req.serialize(), _expected)
 
-        _payload = _msg.req.make_payload()
+
+    def test_response_serialize(self):
+        self.assertEqual(self.msg.resp.faces, [])
+        self.assertEqual(self.msg.resp.error, '')
+        _expected = {
+            'faces': [],
+            'error': ''
+        }
+        self.assertEqual(self.msg.resp.serialize(), _expected)
+
+
+
+    def test_make_payload(self):
+        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.fast = True
+        _payload = self.msg.req.make_payload()
         self.assertIsInstance(_payload, Payload)
         self.assertIsInstance(_payload.serialize(), dict)
         self.assertEqual(_payload.serialize(), {'fast': True})
         self.assertEqual(_payload.make_json(), '{"fast": true}')
 
 
-    def test_cloud_object_make_files(self):
-        from RappCloud.Objects import File
-        _msg = CloudObjects.FaceDetection(
-            image='../../testdata/Lenna.png', fast=True)
+    def test_make_files(self):
+        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.fast = True
 
-        _files = _msg.req.make_files()
+        _files = self.msg.req.make_files()
         self.assertIsInstance(_files, list)
         self.assertEqual(len(_files), 1)
         self.assertIsInstance(_files[0], File)
@@ -90,5 +101,5 @@ class TestServiceCalls(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestServiceCalls)
+    suite = unittest.TestLoader().loadTestsFromTestCase(CloudObjectTest)
     unittest.TextTestRunner(verbosity=0).run(suite)
