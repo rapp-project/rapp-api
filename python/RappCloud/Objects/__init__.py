@@ -6,4 +6,3 @@
 
 from File import File
 from Payload import Payload
-import Cloud

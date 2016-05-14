@@ -4,7 +4,7 @@
 #
 #  @package RappCloud
 
-from Objects import Cloud as CloudObjects
+import CloudMsgs
 import Objects
 from Service import Service
-__all__ = ["CloudObjects", "Service"]
+__all__ = ["CloudMsgs", "Service"]

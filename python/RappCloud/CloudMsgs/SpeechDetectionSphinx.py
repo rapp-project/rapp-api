@@ -3,12 +3,12 @@ from RappCloud.Objects import (
     Payload)
 
 from Cloud import (
-    CloudObject,
+    CloudMsg,
     CloudRequest,
     CloudResponse)
 
 
-class FaceDetection(CloudObject):
+class FaceDetection(CloudMsg):
     """ Face Detection Cloud Object """
 
     class Request(CloudRequest):
@@ -35,9 +35,9 @@ class FaceDetection(CloudObject):
 
 
     def __init__(self, **kwargs):
-        # Create and hold the Request object for this CloudObject
+        # Create and hold the Request object for this CloudMsg
         self.req = FaceDetection.Request()
-        # Create and hold the Response object for this CloudObject
+        # Create and hold the Response object for this CloudMsg
         self.resp = FaceDetection.Response()
         super(FaceDetection, self).__init__(svcname='face_detection', **kwargs)
 

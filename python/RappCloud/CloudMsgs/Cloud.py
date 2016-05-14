@@ -1,5 +1,5 @@
 
-class CloudObject(object):
+class CloudMsg(object):
     """ Cloud object base class implementation. Inherit to implement
     service specific cloud objects
     """

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-## @file CloudObjects/__init__.py
+## @file CloudMsgs/__init__.py
 #
 #  @package CloudServices
 #
