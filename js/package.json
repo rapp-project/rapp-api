@@ -1,6 +1,6 @@
 {
   "name": "rapp-platform-api",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Containes RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.",
   "engines": {
     "node": ">= 0.10.0"
@@ -17,7 +17,6 @@
     "request": "^2.72.0"
   },
   "devDependencies": {
-    "mocha": "~2.3.4",
     "grunt": "~0.4.5",
     "grunt-contrib-jshint": "~0.11.3",
     "grunt-jsdoc": "~1.1.0",
@@ -25,6 +24,7 @@
     "ink-docstrap": "~0.5.4",
     "jsdoc": "~3.4.0",
     "jshint": "~2.9.1",
+    "mocha": "~2.3.4",
     "unit.js": "~2.0.0"
   },
   "scripts": {
@@ -58,7 +58,7 @@
     "url": "https://github.com/rapp-project/rapp-api/issues"
   },
   "homepage": "https://github.com/rapp-project/rapp-api",
-  "_id": "rapp-api@0.6.1",
+  "_id": "rapp-api@0.6.2",
   "_shasum": "e73813c3ffd97aebd680accaa44b8f511d59ac4b",
   "_from": "rapp-api@latest",
   "_npmVersion": "2.14.22",
@@ -69,7 +69,7 @@
   },
   "dist": {
     "shasum": "e73813c3ffd97aebd680accaa44b8f511d59ac4b",
-    "tarball": "https://registry.npmjs.org/rapp-api/-/rapp-platform-api-0.6.1.tgz"
+    "tarball": "https://registry.npmjs.org/rapp-api/-/rapp-platform-api-0.6.2.tgz"
   },
   "maintainers": [
     {
@@ -79,7 +79,7 @@
   ],
   "_npmOperationalInternal": {
     "host": "packages-13-west.internal.npmjs.com",
-    "tmp": "tmp/rapp-api-0.6.1.tgz_1457700493584_0.9652831763960421"
+    "tmp": "tmp/rapp-api-0.6.2.tgz_1457700493584_0.9652831763960421"
   },
-  "_resolved": "https://registry.npmjs.org/rapp-api/-/rapp-api-0.6.1.tgz"
+  "_resolved": "https://registry.npmjs.org/rapp-api/-/rapp-api-0.6.2.tgz"
 }

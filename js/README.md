@@ -27,6 +27,11 @@ To install it globally:
 npm install rapp-platform-api -g
 ```
 
+If you also want to install the developer depencdencies, go to the root folder of the project and execute:
+
+```shell
+npm install
+```
 
 ## Usage
 
@@ -65,6 +70,8 @@ TODO: Provide the configuration parameters to connect the API to:
 
 ## Tests
 
+For the following to run you will also need to install the developer dependencies (check installation section).
+
 In the test directory unit tests for all the services and objects can be found. In order to run them while on root directory type:
 
 ```shell
@@ -72,6 +79,8 @@ npm test
 ```
 
 ## Documentation
+
+For the following to run you will also need to install the developer dependencies (check installation section).
 
 This package's source-code is documented using the [JSDoc](https://github.com/jsdoc3/jsdoc) javascript documentation generator.
 
