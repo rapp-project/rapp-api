@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the path_planning_upload_map JS API Services & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
-RAPPCloud.path_planning_upload_map = require('../includes/cloud/path_planning_upload_map.js');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.path_planning_upload_map = require('rapp-platform-api/includes/cloud/path_planning_upload_map');
 
 var services = new RAPPCloud( );
 

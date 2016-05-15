@@ -10,56 +10,49 @@ Containes RAPPCloud API modules used for interfering wth RAPP Platform as well a
 To use this JS API you need nodejs and npm.
 You can run the global_deps_install_script.sh located in the root folder to install them along with grunt-cli and mocha which are the global dependencies the API needs for task management and testing.
 
-After that you can install all the required npm modules (development and production) with:
+The rest dependencies (required npm modules), will be taken care of, from npm while you install the rapp-platform-api package.
 
-```shell
-$ npm install
-```
-or
-
-```shell
-$ make deps
-```
 
 ## Installation
 
-To install the API globally, given that you have installed all the dependencies as explained in the previous step, you must type:
+Installing the rapp-platform-api is as easy as 
 
 ```shell
-$ sudo make install
+npm install rapp-platform-api
 ```
 
-If at some point you no longer wish to have this API on your system you can remove it by typing:
+To install it globally:
 
 ```shell
-$ sudo make uninstall
+npm install rapp-platform-api -g
 ```
+
 
 ## Usage
 
 The examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
-Provided you have succesfully installed the API globally in your system (sudo make install), you can require the service(s) that you want to use in your application, after requiring the RAPPCloud module as shown in the examples:
+Provided you have succesfully installed the API in your system, you can require the service(s) that you want to use in your application, after requiring the RAPPCloud module as shown in the examples:
 
 ```shell
-var RAPPCloud = require('RAPPCloud');
-RAPPCloud.qrDetector = require('qrDetector');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.qrDetector = require('rapp-platform-api/includes/cloud/qrDetector');
 ```
 
-You can run all the examples as executables, eg. ./face_detect.js
+For the RAPP platform API objects you would have to point as well, to the respective directory in order to require them:
+
+```shell
+var RAPPObjects = require('rapp-platform-api/includes/cloud/RAPPObject');
+RAPPObject.face = require('rapp-platform-api/includes/objects/face');
+```
 
 
 ##  Configurations
 
-On default the RAPP API connects on the RAPP Platform installed **LOCALLY**.
+On default the RAPP API connects on a RAPP Platform installed **LOCALLY**.
 TODO: Provide the configuration parameters to connect the API to:
 
 - The RAPP Platform Deployment Server.
 - The RAPP Platform Development Server.
-
-
-## How to use the RappCloud services
-
-The examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
 
 
 ## Directories
@@ -72,42 +65,39 @@ The examples located in the examples directory showcase how you may use the RAPP
 
 ## Tests
 
-In the test directory unit tests for all the services and objects can be found. In order to run them:
+In the test directory unit tests for all the services and objects can be found. In order to run them while on root directory type:
 
 ```shell
-$ make test
+npm test
 ```
 
 ## Documentation
 
 This package's source-code is documented using the [JSDoc](https://github.com/jsdoc3/jsdoc) javascript documentation generator.
 
-Generate documentation for the RAPP API Cloud Services ONLY!:
+Generate documentation for the RAPP API Cloud Services only:
 
 ```shell
-$ grunt jsdoc:cloud
+npm run doc-cloud
 ```
 
-Generate documentation for the RAPP API Objects ONLY!:
+Generate documentation for the RAPP API Objects only:
 
 ```shell
-$ grunt jsdoc:objects
+npm run doc-objects
 ```
 
 Gererate documentation for ALL:
 
 ```shell
-$ make doc
+npm run doc
 ```
 
 Or
 
 ```shell
-$ grunt jsdoc
+grunt jsdoc
 ```
-
-Makefile tasks integrates grunt tasks on generating source-code documentation.
-
 
 Generated doc files are located under the **doc/** directory.
 

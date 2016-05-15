@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the hazard_detection_door_check JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
-RAPPCloud.hazard_detection_door_check = require('../includes/cloud/hazard_detection_door_check.js');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.hazard_detection_door_check = require('rapp-platform-api/includes/cloud/hazard_detection_door_check');
 
 var services = new RAPPCloud( );
 

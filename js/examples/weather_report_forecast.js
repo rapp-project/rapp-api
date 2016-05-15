@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the weather_report_forecast JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
-RAPPCloud.weather_report_forecast = require('../includes/cloud/weather_report_forecast.js');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.weather_report_forecast = require('rapp-platform-api/includes/cloud/weather_report_forecast');
 
 var services = new RAPPCloud( );
 
@@ -13,7 +13,6 @@ var services = new RAPPCloud( );
 function callback ( forecast )
 {
 //    date: '', temperature: '', weather_description: '', humidity: '', visibility: '', pressure: '', wind_speed: '', wind_temperature: '', wind_direction: ''
-//    var weather_json = JSON.parse(weather);
     for (var i=0; i<forecast.length; i++) {
     	var str = JSON.stringify(forecast[i], null, 2);
     	console.log(str);

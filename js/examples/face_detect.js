@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
 // Import the face_detection JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
-RAPPCloud.face_detection = require('../includes/cloud/face_detection.js');
-
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.face_detection = require('rapp-platform-api/includes/cloud/face_detection');
 var services = new RAPPCloud( );
-
 
 /** 
  * This is the method that will handle the reply by the service.face_detection

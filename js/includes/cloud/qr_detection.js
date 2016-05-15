@@ -7,7 +7,6 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
 RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
 
-
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  * 
@@ -88,4 +87,5 @@ RAPPCloud.prototype.qr_detection = function ( image, image_format, callback )
 
 
 /// Export
+//module.exports = RAPPCloud.qr_detection;
 module.exports = RAPPCloud.qr_detection;

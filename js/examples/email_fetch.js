@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the email_fetch JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
-RAPPCloud.email_fetch = require('../includes/cloud/email_fetch.js');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.email_fetch = require('rapp-platform-api/includes/cloud/email_fetch');
 
 var services = new RAPPCloud( );
 /** 
@@ -14,8 +14,8 @@ function callback ( emails )
     console.log ( emails );
 }
 
-var now = new Date();
-var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-var today_start = startOfDay / 1000;
+//var now = new Date();
+//var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+//var today_start = startOfDay / 1000;
 
-services.email_fetch( '', '', 'imap.mail.yahoo.com', '993', "ALL", 1462496400, 1462535475, 1, callback );
+services.email_fetch( '', '', 'imap.gmail.com', '993', "ALL", 0, 0, 1, callback );

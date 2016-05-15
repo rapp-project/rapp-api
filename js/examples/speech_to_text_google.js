@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the speech_detection_google JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
-RAPPCloud.speech_detection_google = require('../includes/cloud/speech_detection_google.js');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.speech_detection_google = require('rapp-platform-api/includes/cloud/speech_detection_google');
 
 var services = new RAPPCloud( );
 

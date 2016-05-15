@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Define the RAPP Cloud Services object, which needs a username and password
+ * Define the RAPP Cloud Services object
  * @namespace RAPPCloud
  */
 function RAPPCloud ( )

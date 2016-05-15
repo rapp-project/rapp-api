@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the human_detection JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud.js');
-RAPPCloud.human_detection = require('../includes/cloud/human_detection.js');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.human_detection = require('rapp-platform-api/includes/cloud/human_detection');
 var services = new RAPPCloud( );
 
 /** 
