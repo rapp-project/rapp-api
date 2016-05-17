@@ -7,8 +7,8 @@ import time
 import inspect
 from os import path
 
-from RappCloud import CloudObjects
-from RappCloud.Objects.Cloud import FaceDetection
+# from RappCloud import CloudMsgs
+from RappCloud.CloudMsgs import FaceDetection
 from RappCloud.Objects import (
     Payload,
     File)
@@ -20,28 +20,23 @@ testdatadir = path.realpath(
 
 
 
-class CloudObjectTest(unittest.TestCase):
+class CloudMsgTest(unittest.TestCase):
     # Overwrite
     def setUp(self):
         self.msg = FaceDetection()
         self.startTime = time.time()
 
-    # Overwrite
-    def tearDown(self):
-        t = time.time() - self.startTime
-        print "%s: %.3f" % (self.id(), t)
-
 
     def test_request_object_instance(self):
-        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.imageFilepath = '../../testdata/Lenna.png'
         self.msg.req.fast = True
         self.assertIsInstance(self.msg.req, FaceDetection.Request)
 
 
     def test_set_req_properties(self):
-        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.imageFilepath = '../../testdata/Lenna.png'
         self.msg.req.fast = True
-        self.assertEqual(self.msg.req.image, '../../testdata/Lenna.png')
+        self.assertEqual(self.msg.req.imageFilepath, '../../testdata/Lenna.png')
         self.assertEqual(self.msg.req.fast, True)
         self.msg.req.fast = False
         self.assertEqual(self.msg.req.fast, False)
@@ -54,10 +49,10 @@ class CloudObjectTest(unittest.TestCase):
 
 
     def test_request_serialize(self):
-        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.imageFilepath = '../../testdata/Lenna.png'
         self.msg.req.fast = True
         _expected = {
-            'image': '../../testdata/Lenna.png',
+            'imageFilepath': '../../testdata/Lenna.png',
             'fast': True
         }
         self.assertEqual(self.msg.req.serialize(), _expected)
@@ -75,7 +70,7 @@ class CloudObjectTest(unittest.TestCase):
 
 
     def test_make_payload(self):
-        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.imageFilepath = '../../testdata/Lenna.png'
         self.msg.req.fast = True
         _payload = self.msg.req.make_payload()
         self.assertIsInstance(_payload, Payload)
@@ -85,7 +80,7 @@ class CloudObjectTest(unittest.TestCase):
 
 
     def test_make_files(self):
-        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.imageFilepath = '../../testdata/Lenna.png'
         self.msg.req.fast = True
 
         _files = self.msg.req.make_files()
@@ -101,5 +96,5 @@ class CloudObjectTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(CloudObjectTest)
-    unittest.TextTestRunner(verbosity=0).run(suite)
+    suite = unittest.TestLoader().loadTestsFromTestCase(CloudMsgTest)
+    unittest.TextTestRunner(verbosity=2).run(suite)

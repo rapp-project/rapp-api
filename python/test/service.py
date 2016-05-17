@@ -8,8 +8,7 @@ import inspect
 import sys, os
 from os import path
 
-from RappCloud import CloudObjects
-from RappCloud.Objects.Cloud import FaceDetection
+from RappCloud.CloudMsgs import FaceDetection
 from RappCloud import Service
 
 global testdatadir
@@ -36,7 +35,7 @@ class ServiceTest(unittest.TestCase):
 
     def setUp(self):
         self.msg = FaceDetection()
-        self.msg.req.image = '../../testdata/Lenna.png'
+        self.msg.req.imageFilepath = '../../testdata/Lenna.png'
         self.msg.req.fast = True
         self.startTime = time.time()
         self.svc = Service()
