@@ -1,7 +1,7 @@
 
 class CloudMsg(object):
-    """ Cloud object base class implementation. Inherit to implement
-    service specific cloud objects
+    """ Cloud Message base class implementation. Inherit to implement
+    service specific cloud message objects
     """
 
     def __init__(self, svcname='', **kwargs):
@@ -23,7 +23,7 @@ class CloudMsg(object):
 
 class CloudRequest(object):
     """ Cloud request base class implementation. Inheric to implement
-    Cloud Object specific Request objects.
+    Cloud Message specific Request objects.
     """
     def __init__(self, **kwargs):
         for key, value in kwargs.iteritems():

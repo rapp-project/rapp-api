@@ -9,11 +9,19 @@ from Cloud import (
 
 
 class FaceDetection(CloudMsg):
-    """ Face Detection Cloud Object """
+    """ Face Detection CloudMsg object"""
 
     class Request(CloudRequest):
         """ Face Detection Cloud Request object. FaceDetection.Request """
         def __init__(self, **kwargs):
+            """!
+            Constructor
+
+            @param **kwargs - Keyword arguments. Apply values to the request attributes.
+                - @ref imageFilepath
+                - @ref fast
+            """
+
             ## File path to the image to load. This is the image to perform
             # face-detection on.
             self.imageFilepath = ''
@@ -36,6 +44,14 @@ class FaceDetection(CloudMsg):
     class Response(CloudResponse):
         """ Face Detection Cloud Response object. FaceDetection.Response """
         def __init__(self, **kwargs):
+            """!
+            Constructor
+
+            @param **kwargs - Keyword arguments. Apply values to the request attributes.
+                - @ref error
+                - @ref faces
+            """
+
             ## Error message
             self.error = ''
             ## Detected faces. Array of face objects. TODO create face object.
@@ -49,8 +65,8 @@ class FaceDetection(CloudMsg):
         Constructor
 
         @param **kwargs - Keyword arguments. Apply values to the request attributes.
-          - @ref fast
-          - @ref imageFilepath
+          - @ref Request.fast
+          - @ref Request.imageFilepath
         """
 
         # Create and hold the Request object for this CloudMsg

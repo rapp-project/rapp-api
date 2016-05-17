@@ -9,7 +9,7 @@ from Cloud import (
 
 
 class QrDetection(CloudMsg):
-    """ Qr Detection Cloud Object """
+    """ Qr Detection Cloud Message object"""
 
     class Request(CloudRequest):
         """ Qr Detection Cloud Request object. QrDetection.Request """
@@ -62,7 +62,7 @@ class QrDetection(CloudMsg):
         Constructor
 
         @param **kwargs - Keyword arguments. Apply values to the request attributes.
-            - @ref imageFilepath
+            - @ref Request.imageFilepath
         """
 
         # Create and hold the Request object for this CloudMsg

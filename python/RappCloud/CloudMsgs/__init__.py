@@ -7,8 +7,8 @@
 
 
 from FaceDetection import FaceDetection
-# from QrDetection import QrDetection
-# from SpeechDetectionSphinx4 import SpeechDetectionSphinx4
+from QrDetection import QrDetection
+from SpeechRecognitionSphinx import SpeechRecognitionSphinx
 # from SpeechDetectionGoogle import SpeechDetectionGoogle
 # from SetNoiseProfile import SetNoiseProfile
 # from OntologySubclassesof import OntologySubclassesof
