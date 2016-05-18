@@ -8,12 +8,13 @@ from Cloud import (
     CloudResponse)
 
 
-class SpeechRecognitionSphinx(CloudMsg):
-    """ Speech Recognition Sphinx4 Cloud Message object """
+class SpeechRecognitionGoogle(CloudMsg):
+    """ Speech Recognition Google Cloud Message object """
 
     class Request(CloudRequest):
-        """ Speech Recognition Sphinx4 Cloud Request object.
-        SpeechRecognitionSphinx.Request
+        """ Speech Recognition Google  Cloud Request object.
+
+        SpeechRecognitionGoogle.Request
         """
         def __init__(self, **kwargs):
             """!
@@ -23,35 +24,23 @@ class SpeechRecognitionSphinx(CloudMsg):
                 - @ref audio_source
                 - @ref audiofile
                 - @ref language
-                - @ref words
-                - @ref sentences
-                - @ref grammar
             """
 
             ## Language to use for recognition
             self.language = ''
             ##  Audio source data format. e.g "nao_wav_1_ch".
             self.audio_source = ''
-            ## A vector that carries the words to recognize.
-            self.words = []
-            ## The under consideration sentences.
-            self.sentences = []
-            ## Grammar to use
-            self.grammar = []
             ## Path to the audio file.
             self.audiofile = ''
 
-            super(SpeechRecognitionSphinx.Request, self).__init__(**kwargs)
+            super(SpeechRecognitionGoogle.Request, self).__init__(**kwargs)
 
 
         def make_payload(self):
             """ Create and return the Payload of the Request. """
             return Payload(
                 language=self.language,
-                audio_source = self.audio_source,
-                words=self.words,
-                sentences=self.sentences,
-                grammar=self.grammar)
+                audio_source = self.audio_source)
 
 
         def make_files(self):
@@ -60,8 +49,9 @@ class SpeechRecognitionSphinx(CloudMsg):
 
 
     class Response(CloudResponse):
-        """ Speech Recognition Sphinx4 Cloud Response object.
-        SpeechRecognitionSphinx.Response
+        """ Speech Recognition Google Cloud Response object.
+
+        SpeechRecognitionGoogle.Response
         """
         def __init__(self, **kwargs):
             """!
@@ -70,13 +60,17 @@ class SpeechRecognitionSphinx(CloudMsg):
             @param **kwargs - Keyword arguments. Apply values to the request attributes.
                 - @ref error
                 - @ref words
+                - @ref alternatives
             """
 
-            ## Recognized words.
+            ## An array that contains the "words-found" with highest confidence.
             self.words = []
+            ## Alternative sentences.
+            # e.g. [['send', 'mail'], ['send', 'email'], ['set', 'mail']...]
+            self.alternatives = []
             ## Error message.
             self.error = ''
-            super(SpeechRecognitionSphinx.Response, self).__init__(**kwargs)
+            super(SpeechRecognitionGoogle.Response, self).__init__(**kwargs)
 
 
     def __init__(self, **kwargs):
@@ -87,16 +81,13 @@ class SpeechRecognitionSphinx(CloudMsg):
             - @ref Request.audio_source
             - @ref Request.audiofile
             - @ref Request.language
-            - @ref Request.words
-            - @ref Request.sentences
-            - @ref Request.grammar
         """
 
         # Create and hold the Request object for this CloudMsg
-        self.req = SpeechRecognitionSphinx.Request()
+        self.req = SpeechRecognitionGoogle.Request()
         # Create and hold the Response object for this CloudMsg
-        self.resp = SpeechRecognitionSphinx.Response()
-        super(SpeechRecognitionSphinx, self).__init__(
-            svcname='speech_detection_sphinx4', **kwargs)
+        self.resp = SpeechRecognitionGoogle.Response()
+        super(SpeechRecognitionGoogle, self).__init__(
+            svcname='speech_detection_google', **kwargs)
 
 
