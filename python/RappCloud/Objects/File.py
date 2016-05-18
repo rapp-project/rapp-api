@@ -93,7 +93,14 @@ class File(object):
 
 
     def make_tuple(self):
-        name = RandStrGen.create(self.__boundarySize)
-        return (self.__postfield, (name, open(self.__path)))
+        randStr = RandStrGen.create(self.__boundarySize)
+        name, ext = path.splitext(self.basename(self.__path))
+        filename = '.'.join((''.join((name, '-', randStr)), ext))
+        return (self.__postfield, (filename, open(self.__path)))
+
+
+    def basename(self, filepath):
+        """! Return the basename of input filepath. """
+        return path.basename(filepath)
 
 
