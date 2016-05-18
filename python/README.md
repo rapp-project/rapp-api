@@ -24,7 +24,7 @@ python setup.py develop --user
 ```
 
 
-##  Configure 
+##  Configure
 
 ### Authentication/Tokens
 The RAPP Platform uses token-based authentication mechanisms to authenticate user's use it's resources.
@@ -60,8 +60,8 @@ Cloud Service is the RAPP term for an established connection to the RAPP-Platfor
 Each Platform Service has it's own unique Response and Request message.
 
 The `Service` class is used to establish connections to the RAPP-Platform Web-Services, while `CloudMsg` objects include:
-- RAPP-Platform Service specific Request message.
-- RAPP-Platform Service specific Response message.
+- `Request` object. RAPP-Platform Service specific Request message
+- `Response` object. RAPP-Platform Service specific Response message
 
 
 ```py
@@ -92,7 +92,7 @@ from RappCloud.CloudMsgs import FaceDetection
 
 The above line of code is used as an example of importing the `FaceDetection` CloudMsg class.
 
-A complete description on available CloudMsg classes as long as their Request and Response message classes is available [here](#)
+A complete description on available CloudMsg classes as long as their Request and Response message classes is available [here](RappCloud/CloudMsgs/CLOUD_MSGS.md)
 
 CloudMsg objects hold a Request and a Response object:
 
