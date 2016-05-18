@@ -54,54 +54,167 @@ configuration file. This file already includes configuration parameters used to 
 - The RAPP Platform installed **LOCALLY**.
 
 
-## How to use the RAPP Platform Services though the API.
+## Calling RAPP Platform Services - API usage.
 
-CloudService classes are implemented, for each RAPP Platform Service, under the RappCloud/CloudServices directory.
-CloudService is the RAPP term for an established connection to the Platform Services over the Network.
-Each CloudService class holds a ServiceController instance that is responsible for over network communications
-to the RAPP Platform Services.
+Cloud Service is the RAPP term for an established connection to the RAPP-Platform Services, over the www (World-Wide-Web).
+Each Platform Service has it's own unique Response and Request message.
+
+The `Service` class is used to establish connections to the RAPP-Platform Web-Services, while `CloudMsg` objects include:
+- RAPP-Platform Service specific Request message.
+- RAPP-Platform Service specific Response message.
 
 
-```python
+```py
+from RappCloud import Service
 
-# Import the FaceDetection CloudService
-from RappCloud import FaceDetection
+svcClient = Service(persistent=True, timeout=30000)
+```
 
-# Instantiate a new FaceDetection service
-faceDetector = FaceDetection(image='<path_to_image_file>', fast=True)
-# Call the RAPP Platform FaceDetection service
-response = faceDetector.call()
-# Print detected faces. Response properties can be retrieved using the dot notation
+`Service` object constructor allow to set:
+
+- persistent: Force peristent connections (Defaults to `True`)
+- timeout: Client timeout value. This is the timeout value waiting for a response from the RAPP Platform. (Defaults to infinity)
+
+The `persistent` and `timeout` properties of a `Service` object are public members and can be set using the **dot** (.) notation:
+
+```py
+svcClient = Service()
+svcClient.persistent = True
+svcClient.timeout = 30000
+```
+
+`CloudMsg` objects are feed to the `Service` object to specific RAPP-Platform Services.
+`CloudMsg` classes can be imported from the CloudMsgs submodule of the RappCloud module:
+
+```py
+from RappCloud.CloudMsgs import FaceDetection
+```
+
+The above line of code is used as an example of importing the `FaceDetection` CloudMsg class.
+
+A complete description on available CloudMsg classes as long as their Request and Response message classes is available [here](#)
+
+CloudMsg objects hold a Request and a Response object:
+
+```py
+from RappCloud.CloudMsgs import FaceDetection
+faceDetectMsg = FaceDetection()
+
+reqObj = faceDetectMsg.req
+respObj = faceDetectMsg.resp
+```
+
+Request and Response objects of a CloudMsg can be serialized to a dictionary:
+
+```py
+reqDict = faceDetectMsg.req.serialize()
+print reqDict
+  >> {fast: False, imageFilePath: ''}
+
+respDict = faceDetectMsg.resp.serialize()
+print respDict
+  >> {faces: [], error: ''}
+```
+
+CloudMsg Request property values can be set through the `req` property of the CloudMsg object. or as keyword arguments to the constructor of a CloudMsg:
+
+```py
+from RappCloud.CloudMsgs import FaceDetection
+
+msg = FaceDetection(imageFilepath='/tmp/face-sample.png')
+print msg.req.serialize()
+  >> {fast: False, imageFilepath: '/tmp/face-sample.png'}
+
+msg.req.fast = True
+print msg.req.serialize()
+  >> {fast: True, imageFilepath: '/tmp/face-sample.png'}
+```
+
+`Service` objects have a `.call()` method for calling RAPP-Platform Services:
+
+```py
+class Service:
+    ...
+
+    def call(self, msg=None):
+        ...
+        return self.resp
+
+    ...
+```
+
+The `.call()` method returns the Response object.
+
+```py
+svcClient= Service()
+msg = FaceDetection()
+msg.req.fast = True
+msg.req.imageFilepath = '/tmp/face-sample.png'
+
+response = svc.call(msg)
 print response.faces
-# Print the wohole response object, serialized to dictionary
-print response.serialize() # Print the whole Platform's response object
-
-...
-# Set an attribute
-faceDetector.fast = False
-# Call
-response = faceDetector.call()
-
+print response.error
 
 ```
+
+CloudMsg objects are passed as argument to the `.call()` method of the `Service` object:
+
+```py
+svcClient= Service()
+msg = FaceDetection(imageFilepath='/tmp/face-sample.png')
+response = svc.call(msg)
+```
+
+`CloudMsg` objects can also be passed to the constructor of the `Service` class:
+
+```py
+faceMsg = FaceDetection(imageFilepath='/tmp/face-sample.png')
+svcClient= Service(msg=faceMsg, timeout=15000)
+response = svc.call()
+```
+
+**Note**: Calling several different RAPP-Platform Services is done by passing the service specific
+Cloud Message objects to the `.call()` of the `Service` object.
+
+
+The following example creates a `FaceDetection` and a `QrDetection` CloudMsg to call both
+the Face-Detection and Qr-Detection RAPP-Platform Services.
+
+```py
+from RappCloud import Service
+from RappCloud.CloudMsgs import (
+    FaceDetection,
+    QrDetection)
+
+svcClient= Service(timeout=1000)
+faceMsg = FaceDetection(fast=True, imageFilepath='/tmp/face-sample.png')
+qrMsg = QrDetection()
+qrMsg.req.imageFilepath = '/tmp/qr-sample.png'
+
+fdResp = svc.call(faceMsg)
+print "Found %s Faces" %len(fdResp.faces)
+
+qrResp = svc.call(qrMsg)
+print "Found %s QRs: %s" %(len(qrResp.qr_centers), qrResp.qr_messages)
+
+```
+
 
 
 ## Directories
 
 - **RappCloud**: The RappCloud python module directory.
-- **RappCloud/CloudService**: CloudService implementation classes.
-- **RappCloud/ServiceController**: The ServiceController implementation. Includes Transport Adapters, Authentication and ServiceController implementations.
-- **RappCloud/RandStrGen**: The Random String Generator class used by the RappCloud class to generate random strings.
+- **RappCloud/CloudMsgs**: Cloud Message classes.
+- **RappCloud/Service**: Service submodule
 
 
 ## Examples
 
-Examples can be found under the examples directory.
+Examples can be found in the `examples` directory.
 
 
 ## Tests
-Functional/Unit are stored under the **tests** directory.
-(**Under Development**)
+Functional/Unit tests are stored under the **tests** directory.
 
 
 RAPP Platform's integration tests, use the python rapp-platform-api. Those are located under the rapp-platform repository:
