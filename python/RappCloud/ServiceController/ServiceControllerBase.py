@@ -59,9 +59,6 @@ class ServiceControllerBase(object):
     else:
         self.__parse_platform_cfg()
 
-    # Assign urlpath value to the Cloud Service object
-    self._service.url = self._svc_url(self._service.svcname)
-
 
   def is_json(self, obj):
     """! Check if it is a json string.

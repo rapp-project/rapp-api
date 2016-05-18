@@ -61,6 +61,10 @@ class ServiceControllerSync(ServiceControllerBase):
 
   def run_job(self):
     """! Run the service"""
+
+    # Assign urlpath value to the Cloud Service object
+    self._service.url = self._svc_url(self._service.svcname)
+
     # Unpack payload and file objects from cloud service object
     payload = self._service.req.make_payload()
     files = self._service.req.make_files()
