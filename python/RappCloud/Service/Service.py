@@ -125,6 +125,8 @@ class Service(object):
         if msg is not None:
             self.__cloudObj = msg
             self.__svcname = msg.svcname
+        if self.__cloudObj is None:
+            raise AttributeError('Missing Cloud Message object!')
         cloudResponseDic = self.__controller.run_job()
         for key, val in cloudResponseDic.iteritems():
             self.resp.set(key, val)
