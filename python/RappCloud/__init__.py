@@ -7,4 +7,4 @@
 import CloudMsgs
 import Objects
 from Service import Service
-__all__ = ["CloudMsgs", "Service"]
+__all__ = ["CloudMsgs", "Service", "Objects"]
