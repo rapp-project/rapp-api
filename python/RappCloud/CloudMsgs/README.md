@@ -45,7 +45,7 @@ class MockMsg(CloudMsg):
 
 ## Face detection
 
-**Description**: Performs face detection in an image
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Face-Detection)
 
 **Request object: FaceDetection.Request**
 ```python
@@ -95,14 +95,16 @@ print response.error
 
 ## Qr detection
 
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-QR-Detection)
+
 **Request object: QrDetection.Request**
-```
+```python
 # System path to the image file
 String imageFilepath
 ```
 
 **Response object: QrDetection.Response**
-```
+```python
 # Center points (point2D) of found QR codes
 # qr_centers: [{<point2D_1>}, ..., {<point2D_n>}] where point2D is an object of structure:
 # point2D: { x: <value_int>, y: <value_int> }
@@ -144,14 +146,16 @@ print response.error
 
 ## Human detection
 
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Human-Detection)
+
 **Request object: HumanDetection.Request**
-```
+```python
 # System path to the image file
 String imageFilepath
 ```
 
 **Response object: HumanDetection.Response**
-```
+```python
 # Array of detected humans
 # humans: [{<human_1>}, ..., {<human_n>}] where human_x is an object of structure:
 # human: { up_left_point: {x: 0, y: 0}, down_right_point: {x: 0, y: 0} }
@@ -183,16 +187,20 @@ print response.error
 >> ""
 ```
 
+***
+
 ## Hazard detection - Door
 
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Hazard-Detection)
+
 **Request object: HazardDetectionDoor.Request**
-```
+```python
 # System path to the image file
 String imageFilepath
 ```
 
 **Response object: HazardDetectionDoor.Response**
-```
+```python
 # The angle of the detected open door
 Float door_angle
 
@@ -222,16 +230,20 @@ print response.error
 >> ""
 ```
 
+***
+
 ## Hazard detection - Lights
 
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Hazard-Detection)
+
 **Request object: HazardDetectionLight.Request**
-```
+```python
 # System path to the image file
 String imageFilepath
 ```
 
 **Response object: HazardDetectionLight.Response**
-```
+```python
 # The, detected on the image frame, light level.
 Float light_level
 
@@ -261,16 +273,20 @@ print response.error
 >> ""
 ```
 
+***
+
 ## Object detection Caffe
 
+**Description** [here - TBD]()
+
 **Request object: ObjectDetectionCaffe.Request**
-```
+```python
 # System path to the image file
 String imageFilepath
 ```
 
 **Response object: ObjectDetectionCaffe.Response**
-```
+```python
 # Recognized object class
 String object_class
 
@@ -300,10 +316,14 @@ print response.error
 >> ""
 ```
 
+***
+
 ## Set Noise Profile
 
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Audio-Processing)
+
 **Request object: SetNoiseProfile.Request**
-```
+```python
 # System path to the audio file
 String audiofile
 
@@ -312,7 +332,7 @@ String audio_source
 ```
 
 **Response object: SetNoiseProfile.Response**
-```
+```python
 # Error message
 String error
 ```
@@ -339,11 +359,15 @@ print response.error
 >> ""
 ```
 
+***
+
 ## Speech Recognition Sphinx
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Speech-Detection-using-Sphinx4)
 
 **Request object: SpeechRecognitionSphinx.Request**
 
-```
+```python
 # System path to the audio file
 String audiofile
 
@@ -364,7 +388,7 @@ Array grammar
 ```
 
 **Response object: SpeechRecognitionSphinx.Response**
-```
+```python
 # Recognized words
 Array words
 
@@ -403,6 +427,8 @@ print response.words
 print response.error
 >> ""
 ```
+
+***
 
 ## CloudMsgs/SpeechRecognitionGoogle Message
 
