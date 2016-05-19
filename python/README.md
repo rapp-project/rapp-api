@@ -162,7 +162,7 @@ CloudMsg objects are passed as argument to the `.call()` method of the `Service`
 ```py
 svcClient= Service()
 msg = FaceDetection(imageFilepath='/tmp/face-sample.png')
-response = svc.call(msg)
+response = svcClient.call(msg)
 ```
 
 `CloudMsg` objects can also be passed to the constructor of the `Service` class:
@@ -170,7 +170,7 @@ response = svc.call(msg)
 ```py
 faceMsg = FaceDetection(imageFilepath='/tmp/face-sample.png')
 svcClient= Service(msg=faceMsg, timeout=15000)
-response = svc.call()
+response = svcClient.call()
 ```
 
 **Note**: Calling several different RAPP-Platform Services is done by passing the service specific
@@ -186,15 +186,15 @@ from RappCloud.CloudMsgs import (
     FaceDetection,
     QrDetection)
 
-svcClient= Service(timeout=1000)
+svcClient = Service(timeout=1000)
 faceMsg = FaceDetection(fast=True, imageFilepath='/tmp/face-sample.png')
 qrMsg = QrDetection()
 qrMsg.req.imageFilepath = '/tmp/qr-sample.png'
 
-fdResp = svc.call(faceMsg)
+fdResp = svcClient.call(faceMsg)
 print "Found %s Faces" %len(fdResp.faces)
 
-qrResp = svc.call(qrMsg)
+qrResp = svcClient.call(qrMsg)
 print "Found %s QRs: %s" %(len(qrResp.qr_centers), qrResp.qr_messages)
 
 ```
