@@ -56,34 +56,34 @@ configuration file. This file already includes configuration parameters used to 
 
 ## Calling RAPP Platform Services - API usage.
 
-Cloud Service is the RAPP term for an established connection to the RAPP-Platform Services, over the www (World-Wide-Web).
+`RappPlatformService` is the RAPP term for an established connection to the RAPP-Platform Services, over the www (World-Wide-Web).
 Each Platform Service has it's own unique Response and Request message.
 
-The `Service` class is used to establish connections to the RAPP-Platform Web-Services, while `CloudMsg` objects include:
+The `RappPlatformService` class is used to establish connections to the RAPP-Platform Web-Services, while `CloudMsg` objects include:
 - `Request` object. RAPP-Platform Service specific Request message
 - `Response` object. RAPP-Platform Service specific Response message
 
 
 ```py
-from RappCloud import Service
+from RappCloud import RappPlatformService
 
-svcClient = Service(persistent=True, timeout=30000)
+svcClient = RappPlatformService(persistent=True, timeout=30000)
 ```
 
-`Service` object constructor allow to set:
+`RappPlatformService` object constructor allow to set:
 
 - persistent: Force peristent connections (Defaults to `True`)
 - timeout: Client timeout value. This is the timeout value waiting for a response from the RAPP Platform. (Defaults to infinity)
 
-The `persistent` and `timeout` properties of a `Service` object are public members and can be set using the **dot** (.) notation:
+The `persistent` and `timeout` properties of a `RappPlatformService` object are public members and can be set using the **dot** (.) notation:
 
 ```py
-svcClient = Service()
+svcClient = RappPlatformService()
 svcClient.persistent = True
 svcClient.timeout = 30000
 ```
 
-`CloudMsg` objects are feed to the `Service` object to specific RAPP-Platform Services.
+`CloudMsg` objects are feed to the `RappPlatformService` object to specific RAPP-Platform Services.
 `CloudMsg` classes can be imported from the CloudMsgs submodule of the RappCloud module:
 
 ```py
@@ -130,10 +130,10 @@ print msg.req.serialize()
   >> {fast: True, imageFilepath: '/tmp/face-sample.png'}
 ```
 
-`Service` objects have a `.call()` method for calling RAPP-Platform Services:
+`RappPlatfomrService` objects have a `.call()` method for calling RAPP-Platform Services:
 
 ```py
-class Service:
+class RappPlatformService:
     ...
 
     def call(self, msg=None):
@@ -146,7 +146,7 @@ class Service:
 The `.call()` method returns the Response object.
 
 ```py
-svcClient= Service()
+svcClient= RappPlatformService()
 msg = FaceDetection()
 msg.req.fast = True
 msg.req.imageFilepath = '/tmp/face-sample.png'
@@ -157,36 +157,36 @@ print response.error
 
 ```
 
-CloudMsg objects are passed as argument to the `.call()` method of the `Service` object:
+CloudMsg objects are passed as argument to the `.call()` method of the `RappPlatformService` object:
 
 ```py
-svcClient= Service()
+svcClient= RappPlatformService()
 msg = FaceDetection(imageFilepath='/tmp/face-sample.png')
 response = svcClient.call(msg)
 ```
 
-`CloudMsg` objects can also be passed to the constructor of the `Service` class:
+`CloudMsg` objects can also be passed to the constructor of the `RappPlatformService` class:
 
 ```py
 faceMsg = FaceDetection(imageFilepath='/tmp/face-sample.png')
-svcClient= Service(msg=faceMsg, timeout=15000)
+svcClient= RappPlatformService(msg=faceMsg, timeout=15000)
 response = svcClient.call()
 ```
 
 **Note**: Calling several different RAPP-Platform Services is done by passing the service specific
-Cloud Message objects to the `.call()` of the `Service` object.
+Cloud Message objects to the `.call()` of the `RappPlatformService` object.
 
 
 The following example creates a `FaceDetection` and a `QrDetection` CloudMsg to call both
 the Face-Detection and Qr-Detection RAPP-Platform Services.
 
 ```py
-from RappCloud import Service
+from RappCloud import RappPlatformService
 from RappCloud.CloudMsgs import (
     FaceDetection,
     QrDetection)
 
-svcClient = Service(timeout=1000)
+svcClient = RappPlatformService(timeout=1000)
 faceMsg = FaceDetection(fast=True, imageFilepath='/tmp/face-sample.png')
 qrMsg = QrDetection()
 qrMsg.req.imageFilepath = '/tmp/qr-sample.png'
@@ -205,7 +205,7 @@ print "Found %s QRs: %s" %(len(qrResp.qr_centers), qrResp.qr_messages)
 
 - **RappCloud**: The RappCloud python module directory.
 - **RappCloud/CloudMsgs**: Cloud Message classes.
-- **RappCloud/Service**: Service submodule
+- **RappCloud/Service**: Service submodule that includes the `RappPlatformService` implementation.
 
 
 ## Examples
