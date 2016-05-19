@@ -40,6 +40,15 @@ public:
                  this->bottom_right_x__ == rhs.bottom_right_x__ &&
                  this->bottom_right_y__ == rhs.bottom_right_y__);
     }
+
+    float cx() const {
+        return (top_left_x__ + bottom_right_x__) / 2;
+    }
+
+    float cy() const {
+        return (top_left_y__ + bottom_right_y__) / 2;
+    }
+
     
 private:
     float top_left_x__;
