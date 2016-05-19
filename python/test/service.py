@@ -9,7 +9,7 @@ import sys, os
 from os import path
 
 from RappCloud.CloudMsgs import FaceDetection
-from RappCloud import Service
+from RappCloud import RappPlatformService as Service
 
 global testdatadir
 testdatadir = path.realpath(
