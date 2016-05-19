@@ -19,7 +19,7 @@
 # contact: klpanagi@gmail.com
 
 
-## @file RappCloud/CloudServices/Service.py
+## @file RappCloud/Service/RappPlatformService.py
 #
 #  @copyright Rapp Projecty EU 2016
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
@@ -28,7 +28,7 @@
 from RappCloud.ServiceController import ServiceControllerSync
 
 
-class Service(object):
+class RappPlatformService(object):
     """ Service class """
 
     def __init__(self, msg=None, persistent=True, timeout=None,
@@ -41,7 +41,7 @@ class Service(object):
         for key, value in kwargs.iteritems():
             pass
 
-        # Cloud Object passed to the Service.
+        # Cloud Object passed to the RappPlatformService.
         self.__cloudObj = msg
         # Persistent connection value (Boolean)
         self.__persistent = persistent
@@ -63,7 +63,7 @@ class Service(object):
 
     @property
     def svcname(self):
-        """! Service service name getter """
+        """! Service name getter """
         return self.__svcname
 
     @property
@@ -121,7 +121,7 @@ class Service(object):
 
 
     def call(self, msg=None):
-        """! Call the Platform Service """
+        """! Call the RAPP Platform Service """
         if msg is not None:
             self.__cloudObj = msg
             self.__svcname = msg.svcname

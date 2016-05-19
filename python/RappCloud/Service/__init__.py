@@ -3,4 +3,4 @@
 ## @file RappCloud/Service/__init__.py
 #
 
-from Service import Service
+from RappPlatformService import RappPlatformService
