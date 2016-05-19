@@ -1,6 +1,6 @@
 - [Cloud Messages - General description](https://github.com/rapp-project/rapp-api/blob/python/python/RappCloud/CloudMsgs/README.md#cloud-messages)
 - RAPP Platform API Python calls
-  - [Face detection]()
+  - [Face detection](#face-detection)
 
 # Cloud Messages - General description
 
@@ -86,7 +86,7 @@ response = svc.call(msg)
 **Example output**:
 ```python
 print response.faces
->> [ { up_left_point: {x: 0, y: 0}, down_right_point: {x: 100, y: 100} }  ... ]
+>> [ { up_left_point: {x: 0, y: 0}, down_right_point: {x: 100, y: 100} } ]
 print response.error
 >> ""
 ```
@@ -135,7 +135,7 @@ response = svc.call(msg)
 **Example output**:
 ```python
 print response.qr_centers
->> [ {x: 0, y: 0}, {x: 100, y: 100}, ... ]
+>> [ {x: 0, y: 0}, {x: 100, y: 100} ]
 print response.qr_messages
 >> [ 'test 1', 'test 2' ]
 print response.error
@@ -157,7 +157,7 @@ String imageFilepath
 **Response object: HumanDetection.Response**
 ```python
 # Array of detected humans
-# humans: [{<human_1>}, ..., {<human_n>}] where human_x is an object of structure:
+# humans: [ {<human_1>}, ..., {<human_n>} ] where human_x is an object of structure:
 # human: { up_left_point: {x: 0, y: 0}, down_right_point: {x: 0, y: 0} }
 Array humans
 
@@ -181,8 +181,8 @@ response = svc.call(msg)
 
 **Example output**:
 ```python
-print response.qr_centers
->> [ {up_left_point: {x: 0, y: 0}, down_right_point: {x: 100, y: 100} }, ... ]
+print response.humans
+>> [ {up_left_point: {x: 0, y: 0}, down_right_point: {x: 100, y: 100} } ]
 print response.error
 >> ""
 ```
@@ -268,7 +268,7 @@ response = svc.call(msg)
 **Example output**:
 ```python
 print response.light_level
->> 0.83
+>> 100
 print response.error
 >> ""
 ```
@@ -430,13 +430,14 @@ print response.error
 
 ***
 
-## CloudMsgs/SpeechRecognitionGoogle Message
+## Speech Recognition Google 
 
-### File: RappCloud/CloudMsgs/SpeechRecognitionGoogle.py
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Speech-Detection-using-Google-API)
 
-### Request object: SpeechRecognitionGoogle.Request
+**Request object: SpeechRecognitionGoogle.Request**
 
-```
+
+```py
 # System path to the audio file
 String audiofile
 
@@ -447,9 +448,9 @@ String audio_source
 String language
 ```
 
-### Response object: SpeechRecognitionGoogle.Response
+**Response object: SpeechRecognitionGoogle.Response**
 
-```
+```py
 # Recognized words with highest confidence
 Array words
 
@@ -460,20 +461,50 @@ Array sentences
 String error
 ```
 
-## CloudMsgs/OntologySubclasses Message
+**Call example**:
+```python
+from RappCloud.CloudMsgs import SpeechRecognitionGoogle
+from RappCloud import RappPlatformService
 
-### File: RappCloud/CloudMsgs/OntologySubclasses.py
+svc = RappPlatformService()
+msg = SpeechRecognitionGoogle()
 
-### Request object: OntologySubclasses.Request
+# System path to the image file
+msg.audiofile = "PATH"
+# Audio source type/format. e.g. "nao_wav_1_ch"
+msg.audio_source = "nao_wav_1_ch"
+# Language to use for speech recognition
+msg.language = 'en'
 
+response = svc.call(msg)
 ```
+
+**Example output**:
+```python
+print response.words
+>> ['I', 'want', 'to', 'go', 'out']
+print response.alternatives
+>> [['I', 'want', 'to', 'go', 'up'], ['I', 'want', 'to', 'grow', 'up']]
+print response.error
+>> ""
+```
+
+***
+
+## Ontology Query - Subclasses of
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper#subclasses-of)
+
+**Request object: OntologySubclasses.Request**
+
+```py
 # The query to the ontology database
 String query
 ```
 
-### Response object: OntologySubclasses.Response
+**Response object: OntologySubclasses.Response**
 
-```
+```py
 # Ontology query results.
 Array results
 
@@ -481,20 +512,44 @@ Array results
 String error
 ```
 
-## CloudMsgs/OntologySuperclasses Message
+**Call example**:
+```python
+from RappCloud.CloudMsgs import OntologySubclasses
+from RappCloud import RappPlatformService
 
-### File: RappCloud/CloudMsgs/OntologySuperclasses.py
+svc = RappPlatformService()
+msg = OntologySubclasses()
+# Ontology subclasses of Oven query
+msg.query = 'Oven'
 
-### Request object: OntologySuperclasses.Request
-
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.results
+>> [u'http://knowrob.org/kb/knowrob.owl#MicrowaveOven', u'http://knowrob.org/kb/knowrob.owl#RegularOven', u'http://knowrob.org/kb/knowrob.owl#ToasterOven']
+print response.error
+>> ""
+```
+
+***
+
+## Ontology Query - Superclasses of
+
+**Description [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper#superclasses-of)**
+
+**Request object: OntologySuperclasses.Request**
+
+```python
 # The query to the ontology database
 String query
 ```
 
-### Response object: OntologySuperclasses.Response
+**Response object: OntologySuperclasses.Response**
 
-```
+```python
 # Ontology query results.
 Array results
 
@@ -502,13 +557,37 @@ Array results
 String error
 ```
 
-## CloudMsgs/OntologyIsSubsuperclass Message
+**Call example**:
+```python
+from RappCloud.CloudMsgs import OntologySuperclasses
+from RappCloud import RappPlatformService
 
-### File: RappCloud/CloudMsgs/OntologyIsSubsuperclass.py
+svc = RappPlatformService()
+msg = OntologySuperclasses()
+# Ontology superclasses of Oven query
+msg.query = 'Oven'
 
-### Request object: OntologyIsSubsuperclass.Request
-
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.results
+>> [u'http://knowrob.org/kb/knowrob.owl#Box-Container', u'http://knowrob.org/kb/knowrob.owl#FurniturePiece', u'http://knowrob.org/kb/knowrob.owl#HeatingDevice', u'http://knowrob.org/kb/knowrob.owl#HouseholdAppliance']
+print response.error
+>> ""
+```
+
+***
+
+## Ontology Query - Is Subsuperclass of
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper#is-sub-super-class-of)
+
+**Request object: OntologyIsSubsuperclass.Request**
+
+```python
 # The parent class
 String parent_class
 
@@ -519,9 +598,9 @@ String child_class
 Bool recursive
 ```
 
-### Response object: OntologyIsSubsuperclass.Response
+**Response object: OntologyIsSubsuperclass.Response**
 
-```
+```python
 # Ontology query result.
 Bool result
 
@@ -529,13 +608,41 @@ Bool result
 String error
 ```
 
-## CloudMsgs/CognitiveExerciseSelect Message
 
-### File: RappCloud/CloudMsgs/CognitiveExerciseSelect.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import OntologyIsSubsuperclass
+from RappCloud import RappPlatformService
 
-### Request object: CognitiveExerciseSelect.Request
+svc = RappPlatformService()
+msg = OntologyIsSubsuperclass()
+# Parent class
+msg.parent_class = 'Oven'
+# Child class
+msg.child_class = 'Microwave'
 
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.result
+>> True
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Cognitive Exercises - Test Selector
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise#test-selector)
+
+**Request object: CognitiveExerciseSelect.Request**
+```python
 # Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
 # https://github.com/rapp-project/rapp-platform/tree/master/rapp_cognitive_exercise
 String test_type
@@ -550,9 +657,8 @@ String test_diff
 String test_index
 ```
 
-### Response object: CognitiveExerciseSelect.Response
-
-```
+**Response object: CognitiveExerciseSelect.Response**
+```python
 # Set of questions for the exercise
 Array questions
 
@@ -575,13 +681,57 @@ String test_subtype
 String error
 ```
 
-## CloudMsgs/CognitiveGetHistory Message
 
-### File: RappCloud/CloudMsgs/CognitiveGetHistory.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import CognitiveExerciseSelect
+from RappCloud import RappPlatformService
 
-### Request object: CognitiveGetHistory.Request
+svc = RappPlatformService()
+msg = CognitiveExerciseSelect()
 
+# Test type
+msg.test_type = 'ArithmeticCts'
+# Test subtype
+msg.test_subtype = 'TransactionChangeCts'
+# Test difficulty
+msg.test_diff = '1'
+# Test index
+msg.test_index = '1'
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.test_type
+>> "ArithmeticCts"
+print response.test_subtype
+>> "TransactionChangeCts"
+print response.test_instance
+>> ArithmeticCts_stXqnGrc
+print response.questions
+>> [ "Q1", "Q2", ... ]
+print response.possib_ans
+>> [ ["Q1_PA1", "Q1_PA2", ...], ["Q2_PA1", "Q2_PA2", ...], ... ]
+print response.correct_ans
+>> [ "Q1_CA", "Q2_CA", ... ]
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Cognitive Exercises - Get History Records
+
+**Description** [here-Missing-GetHistory-Section](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
+
+
+**Request object: CognitiveGetHistory.Request**
+```python
 # Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
 # https://github.com/rapp-project/rapp-platform/tree/master/rapp_cognitive_exercise
 String test_type
@@ -593,9 +743,9 @@ Int time_from
 Int time_to
 ```
 
-### Response object: CognitiveGetHistory.Response
 
-```
+**Response object: CognitiveGetHistory.Response**
+```python
 # History records
 Dict records
 
@@ -603,13 +753,44 @@ Dict records
 String error
 ```
 
-## CloudMsgs/CognitiveGetScores Message
 
-### File: RappCloud/CloudMsgs/CognitiveGetScores.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import CognitiveGetHistory
+from RappCloud import RappPlatformService
 
-### Request object: CognitiveGetScores.Request
+svc = RappPlatformService()
+msg = CognitiveGetHistory()
 
+# Test type ('' == ALL)
+msg.test_type = ''
+# Time from value
+msg.time_from = 0
+# Time to value
+msg.time_to = 100000000
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.records
+>> {u'reasoningcts': [], u'arithmeticcts': [], u'awarenesscts': []}
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Cognitive Exercises - Get Scores
+
+**Description** [here-Missing-GetScores-Section](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
+
+**Request object: CognitiveGetScores.Request**
+```python
 # Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
 # https://github.com/rapp-project/rapp-platform/tree/master/rapp_cognitive_exercise
 String test_type
@@ -618,9 +799,9 @@ String test_type
 Int time_to
 ```
 
-### Response object: CognitiveGetScores.Response
 
-```
+**Response object: CognitiveGetScores.Response**
+```python
 # Test classes indexes
 Array test_classes
 
@@ -631,13 +812,45 @@ Array scores
 String error
 ```
 
-## CloudMsgs/CognitiveRecordPerformance Message
 
-### File: RappCloud/CloudMsgs/CognitiveRecordPerformance.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import CognitiveGetScores
+from RappCloud import RappPlatformService
 
-### Request object: CognitiveRecordPerformance.Request
+svc = RappPlatformService()
+msg = CognitiveGetScores()
 
+# Test type ('' == ALL)
+msg.test_type = ''
+# Time to value
+msg.time_to = 100000000
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.test_classes
+>> [u'ArithmeticCts', u'ReasoningCts', u'AwarenessCts']
+print response.scores
+>> [0.0, 0.0, 0.0]
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Cognitive Exercises - Record Performance
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise#record-user-performance)
+
+
+**Request object: CognitiveRecordPerformance.Request**
+```python
 # The exercise test instance name (Returned by CognitiveExerciseSelect)
 String test_instance
 
@@ -645,7 +858,7 @@ String test_instance
 Int score
 ```
 
-### Response object: CognitiveRecordPerformance.Response
+**Response object: CognitiveRecordPerformance.Response**
 
 ```
 # Cognitive exercise performance entry in ontology.
@@ -655,13 +868,43 @@ String performance_entry
 String error
 ```
 
-## CloudMsgs/EmailFetch Message
 
-### File: RappCloud/CloudMsgs/EmailFetch.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import CognitiveRecordPerformance
+from RappCloud import RappPlatformService
 
-### Request object: EmailFetch.Request
+svc = RappPlatformService()
+msg = CognitiveRecordPerformance()
 
+# Test instance (Returned by calling CognitiveExerciseSelect)
+msg.test_instance = 'ArithmeticCts_stXqnGrc'
+# Performance score to record
+msg.score = 40
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.performance_entry
+>> "http://knowrob.org/kb/knowrob.owl#CognitiveTestPerformed_gaOpMBqF"
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Email - Fetch received emails
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Email)
+
+
+**Request object: EmailFetch.Request**
+```python
 # Email account username
 String email
 
@@ -687,24 +930,64 @@ String email_status
 Int num_emails
 ```
 
-### Response object: EmailFetch.Response
 
-```
+**Response object: EmailFetch.Response**
+```python
 # Array of emailEntry objects, where emailEntry is of structure:
-# { sender: '', receivers: [], body: '', date: '', body: '', attachments: [] }
+# { sender: '', receivers: [], date: '', body: '', attachments: [] }
 Array emails
 
 # Error message
 String error
 ```
 
-## CloudMsgs/EmailSend Message
 
-### File: RappCloud/CloudMsgs/EmailSend.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import EmailFetch 
+from RappCloud import RappPlatformService
 
-### Request object: EmailSend.Request
+svc = RappPlatformService()
+msg = EmailFetch()
 
+# Email account name
+msg.email = "EMAIL_ACCOUNT_NAME"
+# Email account password
+msg.password = "EMAIL_PASSWORD"
+# The imap address of the email server/provider
+msg.server = "imap.gmail.com"
+# The listening port number of the imap server/providrer
+msg.port = ""
+# Fetch received emails from this date value.
+msg.date_from = "0"
+# Fetch emails up to this date value.
+# Max number of emails to fetch
+msg.num_emails = 5
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.emails
+>> { sender: 'SENDER_EMAIL', receivers: ["R1", "R2"], body: 'Body of the email', date: '', attachments: [] }
+print response.error
+>> ""
+```
+
+
+
+***
+
+
+## Email - Send
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Email)
+
+
+**Request object: EmailSend.Request**
+```python
 # Email account username
 String email
 
@@ -730,20 +1013,55 @@ String subject
 String attach_file
 ```
 
-### Response object: EmailSend.Response
+**Response object: EmailSend.Response**
 
-```
+```python
 # Error message
 String error
 ```
 
-## CloudMsgs/WeatherReportCurrent Message
 
-### File: RappCloud/CloudMsgs/WeatherReportCurrent.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import EmailSend
+from RappCloud import RappPlatformService
 
-### Request object: WeatherReportCurrent.Request
+svc = RappPlatformService()
+msg = EmailSend()
 
+# Email account name
+msg.email = "EMAIL_ACCOUNT_NAME"
+# Email account password
+msg.password = "EMAIL_PASSWORD"
+# The imap address of the email server/provider
+msg.server = "imap.gmail.com"
+# The listening port number of the imap server/providrer
+msg.port = ""
+msg.body = "Test sending email"
+msg.subject = "Test sending email"
+msg.recipients = ["RECIPIENT_1", "RECIPIENT_2"]
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Weather Reporter - Current Weather
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Weather-Reporter)
+
+
+**Request object: WeatherReportCurrent.Request**
+```python
 # The desired city
 String city
 
@@ -754,9 +1072,9 @@ String weather_reporter
 Int metric
 ```
 
-### Response object: WeatherReportCurrent.Response
 
-```
+**Response object: WeatherReportCurrent.Response**
+```python
 # Current date
 String date
 
@@ -788,13 +1106,38 @@ String wind_direction
 String error
 ```
 
-## CloudMsgs/WeatherReportForecast Message
 
-### File: RappCloud/CloudMsgs/WeatherReportForecast.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import WeatherReportCurrent
+from RappCloud import RappPlatformService
 
-### Request object: WeatherReportForecast.Request
+svc = RappPlatformService()
+msg = WeatherReportCurrent()
 
+mgs.city = "Athens"
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.temperature
+>> 21
+print response.error
+>> ""
+```
+
+
+
+## Weather Reporter - Forecast
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Weather-Reporter)
+
+
+**Request object: WeatherReportForecast.Request**
+```python
 # The desired city
 String city
 
@@ -805,7 +1148,7 @@ String weather_reporter
 Int metric
 ```
 
-### Response object: WeatherReportForecast.Response
+**Response object: WeatherReportForecast.Response**
 
 ```
 # Array of forecastEntry objects, where forecastEntry is of structure:
@@ -816,13 +1159,40 @@ Array forecast
 String error
 ```
 
-## CloudMsgs/PathPlanningPlan2D Message
 
-### File: RappCloud/CloudMsgs/PathPlanningPlan2D.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import WeatherReportForecast
+from RappCloud import RappPlatformService
 
-### Request object: PathPlanningPlan2D.Request
+svc = RappPlatformService()
+msg = WeatherReportForecast()
 
+mgs.city = "Athens"
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.forecast
+>> [ {FORECAST_ENTRY_1}, {FORECAST_ENTRY_2} ]
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Path Planning - Plan Path 2D
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Path-planner)
+
+
+**Request object: PathPlanningPlan2D.Request**
+```python
 # The name of the, stored to the Platform, map
 String map_name
 
@@ -839,26 +1209,75 @@ Dict pose_start
 Dict pose_goal
 ```
 
-### Response object: PathPlanningPlan2D.Response
-
-```
+**Response object: PathPlanningPlan2D.Response**
+```python
 # Plan status (https://github.com/rapp-project/rapp-platform/tree/master/rapp_path_planning/rapp_path_planning)
 Int plan_found
 
-# Ff plan_found is equal to 0 (path found), this is an array of waypoints from start to goal.
+# If plan_found is equal to 0 (path found), this is an array of waypoints from start to goal.
 Array path
 
 # Error message
 String error
 ```
 
-## CloudMsgs/PathPlanningUploadMap Message
 
-### File: RappCloud/CloudMsgs/PathPlanningUploadMap.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import PathPlanningPlan2D 
+from RappCloud import RappPlatformService
 
-### Request object: PathPlanningUploadMap.Request
+svc = RappPlatformService()
+msg = PathPlanningPlan2D()
 
+# The map name as previously upload to the Platform (look at [PathPlanningUploadMap](#path-planning-upload-map))
+msg.map_name = "MAP_NAME"
+# The type of robot executing path planning. In this case NAO robot.
+msg.robot_type = "NAO"
+# Use DIJKSTRA algorithm
+msg.algorithm = "dijkstra"
+
+msg.pose_start = { 
+    'header': {'seq': 0, 'stamp':{'sec': 0, 'nsecs': 0}, 'frame_id': '' },
+    'pose': {
+        'position': {'x': 10, 'y': 10, 'z': 20},
+        'orientation': {'x': 0, 'y': 0, 'z': 0, 'w': 0}
+    }
+}
+
+msg.pose_goal = { 
+    'header': {'seq': 0, 'stamp':{'sec': 0, 'nsecs': 0}, 'frame_id': '' },
+    'pose': {
+        'position': {'x': 30, 'y': 10, 'z': 20},
+        'orientation': {'x': 0, 'y': 0, 'z': 0, 'w': 0}
+    }
+}
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.plan_found
+>> 0
+print response.path
+>> [ {POSE_1}, {POSE_2}, ... ]
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Path Planning - Upload Map
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Path-planner)
+
+
+**Request object: PathPlanningUploadMap.Request**
+```python
 # The name of the map to store on the Platform
 String map_name
 
@@ -869,20 +1288,50 @@ String png_file
 String yaml_file
 ```
 
-### Response object: PathPlanningUploadMap.Response
 
-```
+**Response object: PathPlanningUploadMap.Response**
+```python
 # Error message
 String error
 ```
 
-## CloudMsgs/TextToSpeech Message
 
-### File: RappCloud/CloudMsgs/TextToSpeech.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import PathPlanningUploadMap
+from RappCloud import RappPlatformService
 
-### Request object: TextToSpeech.Request
+svc = RappPlatformService()
+msg = PathPlanningUploadMap()
 
+# The map name
+msg.map_name = "MAP_NAME"
+# Path to the map png image gile
+msg.png_file = "PATH"
+# Path to the map yaml descriptor file
+msg.yaml_file = "PATH"
+
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.error
+>> ""
+```
+
+
+***
+
+
+## Text To Speech
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Text-to-speech-using-Espeak-&-Mbrola)
+
+
+**Request object: TextToSpeech.Request**
+```python
 # Input text to translate to audio data
 String text
 
@@ -890,9 +1339,8 @@ String text
 String language
 ```
 
-### Response object: TextToSpeech.Response
-
-```
+**Response object: TextToSpeech.Response**
+```python
 # The audio data payload. Payload encoding is defined by the 'encoding' json field.
 String/base64 payload
 
@@ -906,13 +1354,44 @@ String basename
 String error
 ```
 
-## CloudMsgs/NewsExplore Message
 
-### File: RappCloud/CloudMsgs/NewsExplore.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import TextToSpeech
+from RappCloud import RappPlatformService
 
-### Request object: NewsExplore.Request
+svc = RappPlatformService()
+msg = TextToSpeech()
+msg.text = "Robots are awesome"
+msg.language = "en"
 
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.error
+>> ""
+print response.encoding
+>> "base64"
+
+if response.error is "":
+    # Store audio data to file
+    msg.store_audio("/tmp/tts.wav")
+```
+
+
+***
+
+
+## News Explorer
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-News-Explorer)
+
+
+**Request object: NewsExplore.Request**
+```python
 # The news search engine to use.
 String news_engine
 
@@ -932,9 +1411,8 @@ String topic
 Int num_news
 ```
 
-### Response object: NewsExplore.Response
-
-```
+**Response object: NewsExplore.Response**
+```python
 # Array of story objects, where story is of structure:
 # { title: '', content: '', puplisher: '', publishedDate: '', url: '' }
 Array news_stories
@@ -943,13 +1421,41 @@ Array news_stories
 String error
 ```
 
-## CloudMsgs/Geolocation Message
 
-### File: RappCloud/CloudMsgs/Geolocation.py
+**Call example**:
+```python
+from RappCloud.CloudMsgs import NewsExplore
+from RappCloud import RappPlatformService
 
-### Request object: Geolocation.Request
+svc = RappPlatformService()
+msg = NewsExplore()
+msg.num_news = 2
 
+response = svc.call(msg)
 ```
+
+
+**Example output**:
+```python
+print response.news_stories
+>> [ {STORY_1}, {STORY_2} ]
+print response.error
+>> ""
+```
+
+
+
+***
+
+
+## Geolocation
+
+
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Geolocator)
+
+
+**Request object: Geolocation.Request**
+```python
 # The ipv4 address
 String ipaddr
 
@@ -957,7 +1463,7 @@ String ipaddr
 String engine
 ```
 
-### Response object: Geolocation.Response
+**Response object: Geolocation.Response**
 
 ```
 # City location
@@ -987,4 +1493,41 @@ String zip
 # Error message
 String error
 ```
+
+
+**Call example**:
+```python
+from RappCloud.CloudMsgs import Geolocation
+from RappCloud import RappPlatformService
+
+svc = RappPlatformService()
+msg = Geolocation()
+msg.ipaddr = "104.16.115.182"
+
+response = svc.call(msg)
+```
+
+
+**Example output**:
+```python
+print response.country
+>> "United States"
+print response.region
+>> "California"
+print response.city
+>> "San Francisco"
+print response.country_core
+>> "US"
+print response.timezone
+>> "America/Los_Angeles"
+print response.zip
+>> "94107"
+print response.latitude
+>> 37.76969909667969
+print response.longtitude
+>> -122.39330291748047
+print response.error
+>> ""
+```
+
 
