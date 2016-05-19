@@ -86,7 +86,7 @@ class EmailFetch(CloudMsg):
             ## Error message
             self.error = ''
             ## An array of emailEntry objects, where emailEntry is of structure:
-            # {sender: '', receivers: [], body: '', date: '', body: '', attachments: []}
+            # {sender: '', receivers: [], date: '', body: '', attachments: []}
             self.emails = []
             super(EmailFetch.Response, self).__init__(**kwargs)
 
