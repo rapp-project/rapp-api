@@ -56,6 +56,17 @@ String imageFilepath
 Bool fast
 ```
 
+**Response object: FaceDetection.Response**
+```python
+# Found faces 2D points. A face is described by an up_left_point and a down_right_point in cartesian coordinates:
+# face: { up_left_point: {<point2D>}, down_right_point: {<point2D>} } where point2D is an object of structure:
+# point2D: { x: <value_int>, y: <value_int> }
+Array faces
+
+# Error message
+String error
+```
+
 **Call example**:
 ```python
 from RappCloud.CloudMsgs import FaceDetection
@@ -72,17 +83,6 @@ msg.fast = True
 response = svc.call(msg)
 ```
 
-**Response object: FaceDetection.Response**
-```python
-# Found faces 2D points. A face is described by an up_left_point and a down_right_point in cartesian coordinates:
-# face: { up_left_point: {<point2D>}, down_right_point: {<point2D>} } where point2D is an object of structure:
-# point2D: { x: <value_int>, y: <value_int> }
-Array faces
-
-# Error message
-String error
-```
-
 **Example output**:
 ```python
 print response.faces
@@ -91,19 +91,17 @@ print response.error
 >> ""
 ```
 
-## CloudMsgs/QrDetection Message
+***
 
-### File: RappCloud/CloudMsgs/QrDetection.py
+## Qr detection
 
-### Request object: QrDetection.Request
-
+**Request object: QrDetection.Request**
 ```
 # System path to the image file
 String imageFilepath
 ```
 
-### Response object: QrDetection.Response
-
+**Response object: QrDetection.Response**
 ```
 # Center points (point2D) of found QR codes
 # qr_centers: [{<point2D_1>}, ..., {<point2D_n>}] where point2D is an object of structure:
@@ -118,19 +116,41 @@ Array qr_messages
 String error
 ```
 
-## CloudMsgs/HumanDetection Message
+**Call example**:
+```python
+from RappCloud.CloudMsgs import QrDetection
+from RappCloud import RappPlatformService
 
-### File: RappCloud/CloudMsgs/HumanDetection.py
+svc = RappPlatformService()
+msg = QrDetection()
 
-### Request object: HumanDetection.Request
+# System path to the image file
+msg.imageFilepath = "PATH"
 
+response = svc.call(msg)
+```
+
+**Example output**:
+```python
+print response.qr_centers
+>> [ {x: 0, y: 0}, {x: 100, y: 100}, ... ]
+print response.qr_messages
+>> [ 'test 1', 'test 2' ]
+print response.error
+>> ""
+```
+
+***
+
+## Human detection
+
+**Request object: HumanDetection.Request**
 ```
 # System path to the image file
 String imageFilepath
 ```
 
-### Response object: HumanDetection.Response
-
+**Response object: HumanDetection.Response**
 ```
 # Array of detected humans
 # humans: [{<human_1>}, ..., {<human_n>}] where human_x is an object of structure:
@@ -141,20 +161,37 @@ Array humans
 String error
 ```
 
+**Call example**:
+```python
+from RappCloud.CloudMsgs import HumanDetection
+from RappCloud import RappPlatformService
 
-## CloudMsgs/HazardDetectionDoor Message
+svc = RappPlatformService()
+msg = HumanDetection()
 
-### File: RappCloud/CloudMsgs/HazardDetectionDoor.py
+# System path to the image file
+msg.imageFilepath = "PATH"
 
-### Request object: HazardDetectionDoor.Request
+response = svc.call(msg)
+```
 
+**Example output**:
+```python
+print response.qr_centers
+>> [ {up_left_point: {x: 0, y: 0}, down_right_point: {x: 100, y: 100} }, ... ]
+print response.error
+>> ""
+```
+
+## Hazard detection - Door
+
+**Request object: HazardDetectionDoor.Request**
 ```
 # System path to the image file
 String imageFilepath
 ```
 
-### Response object: HazardDetectionDoor.Response
-
+**Response object: HazardDetectionDoor.Response**
 ```
 # The angle of the detected open door
 Float door_angle
@@ -163,19 +200,37 @@ Float door_angle
 String error
 ```
 
-## CloudMsgs/HazardDetectionLight Message
+**Call example**:
+```python
+from RappCloud.CloudMsgs import HazardDetectionDoor
+from RappCloud import RappPlatformService
 
-### File: RappCloud/CloudMsgs/HazardDetectionLight.py
+svc = RappPlatformService()
+msg = HazardDetectionDoor()
 
-### Request object: HazardDetectionLight.Request
+# System path to the image file
+msg.imageFilepath = "PATH"
 
+response = svc.call(msg)
+```
+
+**Example output**:
+```python
+print response.door_angle
+>> 0.83
+print response.error
+>> ""
+```
+
+## Hazard detection - Lights
+
+**Request object: HazardDetectionLight.Request**
 ```
 # System path to the image file
 String imageFilepath
 ```
 
-### Response object: HazardDetectionLight.Response
-
+**Response object: HazardDetectionLight.Response**
 ```
 # The, detected on the image frame, light level.
 Float light_level
@@ -184,20 +239,37 @@ Float light_level
 String error
 ```
 
+**Call example**:
+```python
+from RappCloud.CloudMsgs import HazardDetectionLight
+from RappCloud import RappPlatformService
 
-## CloudMsgs/ObjectDetectionCaffe Message
+svc = RappPlatformService()
+msg = HazardDetectionLight()
 
-### File: RappCloud/CloudMsgs/ObjectDetectionCaffe.py
+# System path to the image file
+msg.imageFilepath = "PATH"
 
-### Request object: ObjectDetectionCaffe.Request
+response = svc.call(msg)
+```
 
+**Example output**:
+```python
+print response.light_level
+>> 0.83
+print response.error
+>> ""
+```
+
+## Object detection Caffe
+
+**Request object: ObjectDetectionCaffe.Request**
 ```
 # System path to the image file
 String imageFilepath
 ```
 
-### Response object: ObjectDetectionCaffe.Response
-
+**Response object: ObjectDetectionCaffe.Response**
 ```
 # Recognized object class
 String object_class
@@ -206,12 +278,31 @@ String object_class
 String error
 ```
 
-## CloudMsgs/SetNoiseProfile Message
+**Call example**:
+```python
+from RappCloud.CloudMsgs import ObjectDetectionCaffe
+from RappCloud import RappPlatformService
 
-### File: RappCloud/CloudMsgs/SetNoiseProfile.py
+svc = RappPlatformService()
+msg = ObjectDetectionCaffe()
 
-### Request object: SetNoiseProfile.Request
+# System path to the image file
+msg.imageFilepath = "PATH"
 
+response = svc.call(msg)
+```
+
+**Example output**:
+```python
+print response.object_class
+>> "television"
+print response.error
+>> ""
+```
+
+## Set Noise Profile
+
+**Request object: SetNoiseProfile.Request**
 ```
 # System path to the audio file
 String audiofile
@@ -220,18 +311,37 @@ String audiofile
 String audio_source
 ```
 
-### Response object: SetNoiseProfile.Response
-
+**Response object: SetNoiseProfile.Response**
 ```
 # Error message
 String error
 ```
 
-## CloudMsgs/SpeechRecognitionSphinx Message
+**Call example**:
+```python
+from RappCloud.CloudMsgs import SetNoiseProfile
+from RappCloud import RappPlatformService
 
-### File: RappCloud/CloudMsgs/SpeechRecognitionSphinx.py
+svc = RappPlatformService()
+msg = SetNoiseProfile()
 
-### Request object: SpeechRecognitionSphinx.Request
+# System path to the image file
+msg.audiofile = "PATH"
+# Audio source type/format. e.g. "nao_wav_1_ch"
+msg.audio_source = "nao_wav_1_ch"
+
+response = svc.call(msg)
+```
+
+**Example output**:
+```python
+print response.error
+>> ""
+```
+
+## Speech Recognition Sphinx
+
+**Request object: SpeechRecognitionSphinx.Request**
 
 ```
 # System path to the audio file
@@ -253,14 +363,45 @@ Array sentences
 Array grammar
 ```
 
-### Response object: SpeechRecognitionSphinx.Response
-
+**Response object: SpeechRecognitionSphinx.Response**
 ```
 # Recognized words
 Array words
 
 # Error message
 String error
+```
+
+**Call example**:
+```python
+from RappCloud.CloudMsgs import SpeechRecognitionSphinx
+from RappCloud import RappPlatformService
+
+svc = RappPlatformService()
+msg = SpeechRecognitionSphinx()
+
+# System path to the image file
+msg.audiofile = "PATH"
+# Audio source type/format. e.g. "nao_wav_1_ch"
+msg.audio_source = "nao_wav_1_ch"
+# Language to use for speech recognition
+msg.language = 'en'
+# Array of words to recognize
+msg.words = ['yes', 'no']
+# Under consideration sentences
+msg.sentences = msg.words
+# Grammar to use
+msg.grammar = []
+
+response = svc.call(msg)
+```
+
+**Example output**:
+```python
+print response.words
+>> ['yes']
+print response.error
+>> ""
 ```
 
 ## CloudMsgs/SpeechRecognitionGoogle Message
