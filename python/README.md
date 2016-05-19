@@ -151,7 +151,7 @@ msg = FaceDetection()
 msg.req.fast = True
 msg.req.imageFilepath = '/tmp/face-sample.png'
 
-response = svc.call(msg)
+response = svcClient.call(msg)
 print response.faces
 print response.error
 
