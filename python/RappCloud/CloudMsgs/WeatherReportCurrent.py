@@ -73,14 +73,23 @@ class WeatherReportCurrent(CloudMsg):
 
             ## Error message
             self.error = ''
+            ## Current date
             self.date = ''
+            ## Current temperature
             self.temperature = ''
+            ## A brief description of the current weather
             self.weather_description = ''
+            ## Current humidity
             self.humidity = ''
+            ## Current vilibility
             self.visibility = ''
+            ## Current pressure
             self.pressure = ''
+            ## Current speed of the wind
             self.wind_speed = ''
+            ## Current temperature of the wind
             self.wind_temperature = ''
+            ## Current wind direction
             self.wind_direction = ''
             super(WeatherReportCurrent.Response, self).__init__(**kwargs)
 

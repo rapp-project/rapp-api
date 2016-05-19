@@ -55,8 +55,8 @@ class HazardDetectionLight(CloudMsg):
 
             ## Error message
             self.error = ''
-            ## The, detected on the iimage frame, light level.
-            self.light_level = ''
+            ## The, detected on the image frame, light level.
+            self.light_level = 0.0
             super(HazardDetectionLight.Response, self).__init__(**kwargs)
 
 
