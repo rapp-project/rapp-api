@@ -1,4 +1,8 @@
-# Cloud Messages
+- [Cloud Messages - General description](https://github.com/rapp-project/rapp-api/blob/python/python/RappCloud/CloudMsgs/README.md#cloud-messages)
+- RAPP Platform API Python calls
+  - [Face detection]()
+
+# Cloud Messages - General description
 
 A complete list and description of the `CloudMsg` classes.
 
@@ -14,9 +18,7 @@ from Cloud import CloudMsg
 class MockMsg(CloudMsg):
     def __init__(self, **kwargs):
         pass
-
 ```
-
 
 Each `CloudMsg` inherited class has a `Request` and `Response` class. `Request` classes
 inherit from `CloudRequest` class and `Response` inherits from `CloudResponse`:
@@ -39,16 +41,14 @@ class MockMsg(CloudMsg):
     def __init__(self, **kwargs):
         pass
 ```
+***
 
+## Face detection
 
+**Description**: Performs face detection in an image
 
-## CloudMsgs/FaceDetection Message
-
-### File: RappCloud/CloudMsgs/FaceDetection.py
-
-### Request object: FaceDetection.Request
-
-```
+**Request object: FaceDetection.Request**
+```python
 # System path to the image file
 String imageFilepath
 
@@ -56,9 +56,24 @@ String imageFilepath
 Bool fast
 ```
 
-### Response object: FaceDetection.Response
+**Call example**:
+```python
+from RappCloud.CloudMsgs import FaceDetection
+from RappCloud import RappPlatformService
 
+svc = RappPlatformService()
+msg = FaceDetection()
+
+# System path to the image file
+msg.imageFilepath = "PATH"
+# If true, detection will take less time but it will be less accurate
+msg.fast = True
+
+response = svc.call(msg)
 ```
+
+**Response object: FaceDetection.Response**
+```python
 # Found faces 2D points. A face is described by an up_left_point and a down_right_point in cartesian coordinates:
 # face: { up_left_point: {<point2D>}, down_right_point: {<point2D>} } where point2D is an object of structure:
 # point2D: { x: <value_int>, y: <value_int> }
@@ -66,6 +81,14 @@ Array faces
 
 # Error message
 String error
+```
+
+**Example output**:
+```python
+print response.faces
+>> [ { up_left_point: {x: 0, y: 0}, down_right_point: {x: 100, y: 100} }  ... ]
+print response.error
+>> ""
 ```
 
 ## CloudMsgs/QrDetection Message
