@@ -92,7 +92,7 @@ from RappCloud.CloudMsgs import FaceDetection
 
 The above line of code is used as an example of importing the `FaceDetection` CloudMsg class.
 
-A complete description on available CloudMsg classes as long as their Request and Response message classes is available [here](RappCloud/CloudMsgs/CLOUD_MSGS.md)
+A complete description on available CloudMsg classes as long as their Request and Response message classes is available [here](RappCloud/CloudMsgs/README.md)
 
 CloudMsg objects hold a Request and a Response object:
 
