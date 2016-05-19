@@ -57,6 +57,9 @@ class ServiceControllerSync(ServiceControllerBase):
 
     self.__auth = RAPPAuth()
 
+    self.__customHeaders = {
+        'user-agent': 'rapp-platform-api/python'
+    }
 
 
   def run_job(self):
@@ -109,11 +112,13 @@ class ServiceControllerSync(ServiceControllerBase):
       _files.append(f.make_tuple())
 
     response = {'error': ''}
+
     try:
       resp = session.post(
         url=self._service.url,
         data=_payload,
         files=_files,
+        headers=self.__customHeaders,
         timeout=self._service.timeout,
         verify=False,
         auth=self.__auth)
