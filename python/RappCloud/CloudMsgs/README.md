@@ -1,6 +1,31 @@
 - [Cloud Messages - General description](https://github.com/rapp-project/rapp-api/blob/python/python/RappCloud/CloudMsgs/README.md#cloud-messages)
 - RAPP Platform API Python calls
   - [Face detection](#face-detection)
+  - [Qr detection](#qr-detection)
+  - [Human detection](#human-detection)
+  - [Hazard detection - Door](#hazard-detection-door)
+  - [Hazard detection - Lights](#hazard-detection-lights)
+  - [Object detection Caffe](#object-detection-caffe)
+  - [Set Noise Profile](#set-noise-profile)
+  - [Speech Recognition Sphinx](#speech-recognition-sphinx)
+  - [Speech Recognition Google](#speech-recognition-google)
+  - [Ontology Query - Subclasses of](#ontology-query-subclasses-of)
+  - [Ontology Query - Superclasses of](#ontology-query-superclasses-of)
+  - [Ontology Query - Is Subsuperclass of](#ontology-query-is-subsuperclass-of)
+  - [Cognitive Exercises - Test Selector](#cognitive-exercises-test-selector)
+  - [Cognitive Exercises - Get History Records](#cognitive-exercises-get-history-records)
+  - [Cognitive Exercises - Get Scores](#cognitive-exercises-get-scores)
+  - [Cognitive Exercises - Record Performance](#cognitive-exercises-record-performance)
+  - [Email - Fetch Received Emails](#email-fetch-received-emails)
+  - [Email - Send](#email-send)
+  - [Weather Reporter - Current Weather](#weather-reporter-current-weather)
+  - [Weather Reporter - Forecast](#weather-reporter-forecast)
+  - [Path Planning - Plan Path 2D](#path-planning-plan-path-2d)
+  - [Path Planning - Upload Map](#path-planning-upload-map)
+  - [Text To Speech](#text-to-speech)
+  - [News Explorer](#news-explorer)
+  - [Geolocation](#geolocation)
+
 
 # Cloud Messages - General description
 
@@ -898,7 +923,7 @@ print response.error
 ***
 
 
-## Email - Fetch received emails
+## Email - Fetch Received Emails
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Email)
 
