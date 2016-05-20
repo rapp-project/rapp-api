@@ -65,6 +65,77 @@ class MockMsg(CloudMsg):
     def __init__(self, **kwargs):
         pass
 ```
+
+Each `Request` class of a `CloudMsg` must implement the following methods:
+
+- `make_payload()`: Create and return a `Payload` object. This is the data payload to send to the RAPP Platform Service, except files. The `File` object is used as a container of sending files to the RAPP Platform Services.
+- `make_files()` Create and return Array of `File` objects
+
+```py
+from RappCloud.Objects import (
+    Payload,
+    File)
+
+from Cloud import (
+    CloudMsg,
+    CloudRequest,
+    CloudResponse)
+
+class MockMsg(CloudMsg):
+    class Request(CloudRequest):
+        def __init__(self, **kwargs):
+            pass
+            
+        def make_payload(self):
+            # Empty Payload. No data will be send
+            return Payload()
+            
+        def make_files(self):
+            # Return an empty array. In case of sending files this method should return an array of `File` objects.
+            return []
+
+    class Response(CloudResponse):
+        def __init__(self, **kwargs):
+            pass
+
+    def __init__(self, **kwargs):
+        pass
+```
+
+
+**Creating `Payload` objects**
+
+Simply pass the key-value pairs to the `Payload` constructor
+
+```py
+from RappCloud.Objects import Payload
+
+payload = Payload(prop_1: "test", prop_2: 10)
+print payload.prop_1
+>> "test"
+print payload.prop_2
+>> 10
+```
+
+**Creating `File` objects**
+
+A `File` is described by a `filepath` and a `postfield`.
+
+The `postfield` is the field name, of the http form, to append the file (multipart/form-data). This is the field name that the RAPP Platform Web Service parse for received files.
+
+You can set those values by passing to the `File` constructor, or using the **dot notation**.
+
+```python
+from RappCloud.Objects import File
+
+f1 = File(filepath="PATH", postfield="POST_FIELD_NAME")
+
+f2 = File()
+f2.path = "PATH"
+f2.postfield = "POST_FIELD_NAME"
+```
+
+
 ***
 
 ## Face detection
