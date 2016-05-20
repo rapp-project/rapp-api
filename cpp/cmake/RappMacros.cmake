@@ -2,7 +2,7 @@ macro(SETUP_RAPP)
 
     include_directories(${RAPP_INCLUDE_DIRS} ${RAPP_ROBOTS_INCLUDE_DIRS})
 
-    add_definitions("-std=c++11")
+    add_definitions("-std=c++11 -static-libstdc++")
     string(REPLACE ":" ";" LIBS_LIST $ENV{LD_LIBRARY_PATH})
     link_directories(${LIBS_LIST})
 
