@@ -23,15 +23,19 @@ class OntologySubclasses(CloudMsg):
             @param **kwargs - Keyword arguments. Apply values to the request attributes.
                 - @ref query
             """
-            ## The query to the ontology database.
+            ## The Ontology class.
             # e.g. 'Oven'
-            self.query = ''
+            self.ontology_class = ''
+            ## Recursive search.
+            self.recursive = False
             super(OntologySubclasses.Request, self).__init__(**kwargs)
 
 
         def make_payload(self):
             """ Create and return the Payload of the Request. """
-            return Payload(query=self.query)
+            return Payload(
+                ontology_class=self.ontology_class,
+                recursive=self.recursive)
 
 
         def make_files(self):
