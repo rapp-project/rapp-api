@@ -25,6 +25,8 @@
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
+import yaml
+from os import path
 from RappCloud.ServiceController import ServiceControllerSync
 
 
@@ -32,7 +34,8 @@ class RappPlatformService(object):
     """ Service class """
 
     def __init__(self, msg=None, persistent=True, timeout=None,
-                 **kwargs):
+                 address='localhost', port='9001',
+                 protocol='http', **kwargs):
         """!
         Constructor
 
@@ -41,9 +44,15 @@ class RappPlatformService(object):
         for key, value in kwargs.iteritems():
             pass
 
-        # Cloud Object passed to the RappPlatformService.
+        self.__platformParams = {
+            'address': address,
+            'port': port,
+            'protocol': protocol
+        }
+
+        ## Cloud Object passed to the RappPlatformService.
         self.__cloudObj = msg
-        # Persistent connection value (Boolean)
+        ## Persistent connection value (Boolean)
         self.__persistent = persistent
         # Client timeout value (Number)
         self.__timeout = timeout
@@ -51,13 +60,17 @@ class RappPlatformService(object):
         ## Service Name
         if msg is not None:
             self.__svcname = msg.svcname
+            self.__urlpath = self._make_url(msg.svcname)
         else:
+            ## Platform Service name
             self.__svcname = ''
-        ## Service Url path. Will be applied by the ServiceController
-        self.__urlpath = ''
+            ## Platform Service Url path
+            self.__urlpath = ''
+
         # Create service controller object. Pass the service instance
         # for the service controller to hold.
-        ## A Cloud Service holds a ServiceController instance.
+        # A Cloud Service holds a ServiceController instance.
+        ## Service Controller
         self.__controller = ServiceControllerSync(self)
 
 
@@ -119,12 +132,25 @@ class RappPlatformService(object):
         self.__cloudObj.resp = val
 
 
+    def _make_url(self, svcUrlName):
+        """! Craft patform service full url path.
+
+        @param svcUrlName string - The service urlname, i.e 'face_detection'
+
+        @returns string - The full service url path.
+        """
+        return ''.join((self.__platformParams['protocol'], '://',
+                        self.__platformParams['address'], ':',
+                        self.__platformParams['port'], '/hop/',
+                        svcUrlName))
+
 
     def call(self, msg=None):
         """! Call the RAPP Platform Service """
         if msg is not None:
             self.__cloudObj = msg
             self.__svcname = msg.svcname
+            self.__urlpath = self._make_url(msg.svcname)
         if self.__cloudObj is None:
             raise AttributeError('Missing Cloud Message object!')
         cloudResponseDic = self.__controller.run_job()
