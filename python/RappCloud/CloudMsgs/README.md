@@ -594,7 +594,9 @@ print response.error
 
 ```py
 # The query to the ontology database
-String query
+String ontology_class
+# Recursive search
+Bool recursive
 ```
 
 **Response object: OntologySubclasses.Response**
@@ -615,7 +617,8 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = OntologySubclasses()
 # Ontology subclasses of Oven query
-msg.query = 'Oven'
+msg.ontology_class = 'Oven'
+msg.recursive = False
 
 response = svc.call(msg)
 ```
@@ -639,7 +642,9 @@ print response.error
 
 ```python
 # The query to the ontology database
-String query
+String ontology_class
+# Recursive search
+Bool recursive
 ```
 
 **Response object: OntologySuperclasses.Response**
@@ -660,7 +665,8 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = OntologySuperclasses()
 # Ontology superclasses of Oven query
-msg.query = 'Oven'
+msg.ontology_class = 'Oven'
+msg.recursive = False
 
 response = svc.call(msg)
 ```
