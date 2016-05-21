@@ -44,16 +44,6 @@ Place the, received from the RAPP Platform, under the aforementioned directory (
 ${HOME}/.config/rapp_platform/tokens/app
 ```
 
-### Platform deployment/development
-
-On default the RAPP API connects to the RAPP Platform Deployment Server. You can change that into the [config/platform.cfg](https://github.com/rapp-project/rapp-api/blob/python/python/RappCloud/config/platform.cfg)
-configuration file. This file already includes configuration parameters used to connect to:
-
-- The RAPP Platform Deployment Server.
-- The RAPP Platform Development Server.
-- The RAPP Platform installed **LOCALLY**.
-
-
 ## Calling RAPP Platform Services - API usage.
 
 `RappPlatformService` is the RAPP term for an established connection to the RAPP-Platform Services, over the www (World-Wide-Web).
@@ -70,10 +60,25 @@ from RappCloud import RappPlatformService
 svcClient = RappPlatformService(persistent=True, timeout=30000)
 ```
 
+By Default it connects to the localhost, assuming that the RAPP Platform has been setup on the local machine.
+The constructor of the `RappPlatformService` class allow to specify the RAPP Platform parameters to connect to.
+
+```python
+from RappCloud import RappPlatformService
+
+svcClient = RappPlatformService(address='RAPP_PLATFORM_IPv4_ADDRESS',
+    port='RAPP_PLATFORM_PORT_NUMBER',
+    protocol='http')
+```
+
 `RappPlatformService` object constructor allow to set:
 
-- persistent: Force peristent connections (Defaults to `True`)
-- timeout: Client timeout value. This is the timeout value waiting for a response from the RAPP Platform. (Defaults to infinity)
+- persistent (Boolean): Force peristent connections. **Defaults to True**
+- timeout (Integer): Client timeout value. This is the timeout value waiting for a response from the RAPP Platform. **Defaults to infinity**
+- address (String): The RAPP Platform IPv4 address to connect to. **Defaults to 'localhost'**
+- port (String): The RAPP Platform listening port. **Defaults to "9001"**
+- protocol (String): The configured application protocol for the RAPP Platform. Valid values are "**https**" and "**http**". **Defaults to "http"**
+
 
 The `persistent` and `timeout` properties of a `RappPlatformService` object are public members and can be set using the **dot** (.) notation:
 
