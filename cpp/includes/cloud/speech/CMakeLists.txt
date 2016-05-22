@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+add_subdirectory(set_denoise_profile)
+add_subdirectory(speech_detection_google)
+add_subdirectory(speech_detection_sphinx4)
+add_subdirectory(text_to_speech)

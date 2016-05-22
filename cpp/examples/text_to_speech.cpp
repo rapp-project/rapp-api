@@ -1,9 +1,8 @@
-#include "../includes/cloud/service_controller/service_controller.hpp"
-#include "../includes/cloud/text_to_speech/text_to_speech.hpp"
+#include "cloud/service_controller/service_controller.hpp"
+#include "cloud/speech/text_to_speech/text_to_speech.hpp"
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp> 
 ///
-/// Pass as param a PNG image
 ///
 int main(int argc, char* argv[])
 {

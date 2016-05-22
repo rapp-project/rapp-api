@@ -30,6 +30,9 @@ set (INCLUDES ${INCLUDES} includes)
 add_subdirectory(${INCLUDES})
 set(CMAKE_MACOSX_RPATH 1)
 
+# include everything from "/includes"
+include_directories("includes")
+
 # Library-only Executables -
 set (SOURCES ${SOURCES} ${INCLUDES}/cloud/service_controller/service_controller.cpp
                         ${INCLUDES}/cloud/asio_service_http/asio_service_http.cpp
@@ -92,10 +95,10 @@ if (CMAKE_INSTALL_PREFIX)
 endif()
 
 # Header install dir
-install (DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+install (DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
 
 # Install Global header
-install (FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}) #copy global include header
+install (FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}) #copy global include header
 
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
@@ -125,18 +128,12 @@ if (${BUILD_TESTS})
     set (TESTS ${TESTS} tests)
     enable_testing ()
     add_executable(object_test           ${TESTS}/object_test.cpp)
-    add_executable(cloud_test            ${TESTS}/cloud_test.cpp)
     add_executable(service_test          ${TESTS}/service_test.cpp)
     add_test(unit_object_test            object_test) 
-    add_test(unit_cloud_test             cloud_test) 
     add_test(unit_service_test           service_test)
     target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
-                                         ${Boost_SYSTEM_LIBRARY}
-                                         ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-                                         rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    target_link_libraries(cloud_test     ${CMAKE_THREAD_LIBS_INIT}
                                          ${Boost_SYSTEM_LIBRARY}
                                          ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})

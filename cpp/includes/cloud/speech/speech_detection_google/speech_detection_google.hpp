@@ -5,12 +5,12 @@ namespace rapp {
 namespace cloud {
 /**
  * \class speech_detection_google
- * \brief Asynchronous Service which will request the cloud to process speech-to-text using Google
- * \version 1
+ * \brief delegate speech-to-text to Google via RAPP
+ * \version 0.5.0
  * \date January 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speech_detection_google : public rapp::services::asio_service_http
+class speech_detection_google : public asio_service_http
 {
 public:
 	/**
@@ -49,7 +49,6 @@ public:
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
         callback_ = std::bind(&speech_detection_google::handle_reply, this, std::placeholders::_1);
     }
-
 private:
 	/**
 	 * \brief handle rapp-platform JSON reply
@@ -84,12 +83,9 @@ private:
         }
         delegate_(words, alternatives);
     }
-
     /// The callback called upon completion of receiving the detected words and alternatives
     std::function<void(std::vector<std::string>, std::vector<std::string>)> delegate_;
 };
 }
 }
 #endif
-
-speech_detection_sphinx4 ( { file_uri: '', audio_source: '',  user: '', language: ''} )

@@ -1,4 +1,4 @@
-#include "../includes/objects/picture/picture.hpp"
+#include "objects/picture/picture.hpp"
 #include <memory>
 ///
 /// Open a picture and load it into an object

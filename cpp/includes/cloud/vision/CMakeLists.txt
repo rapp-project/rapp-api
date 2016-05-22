@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 2.8)
+add_subdirectory(face_detection)
+add_subdirectory(qr_detection)
+add_subdirectory(hazard_detection)
+add_subdirectory(human_detection)
+add_subdirectory(object_recognition)

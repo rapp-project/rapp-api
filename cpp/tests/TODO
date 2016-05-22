@@ -1,6 +1,0 @@
-Create individual tests for:
-				1. Creating cloud handlers.
-				2. Obtaining results from cloud handlers.
-				3. Creating objects.
-
-Simple assertions should be enough for now.

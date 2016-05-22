@@ -49,7 +49,6 @@ public:
         header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
         callback_ = std::bind(&hazard_detection_door_check::handle_reply, this, std::placeholders::_1);   
     }
-
 private:
 	/**
 	 * \brief handle the rapp-platform JSON reply

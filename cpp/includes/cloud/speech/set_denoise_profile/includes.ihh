@@ -8,6 +8,5 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-#include "../asio_service_http/asio_service_http.hpp"
-
-#include "../../objects/audio/audio.hpp"
+#include "cloud/asio_service_http/asio_service_http.hpp"
+#include "objects/audio/audio.hpp"

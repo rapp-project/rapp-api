@@ -1,5 +1,5 @@
-#include "../includes/cloud/service_controller/service_controller.hpp"
-#include "../includes/cloud/ontology/ontology.hpp"
+#include "cloud/service_controller/service_controller.hpp"
+#include "cloud/ontology/ontology.hpp"
 #include <iostream>
 ///
 /// query subclasses and superclass of of argv[1]
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
                      };
 
         // the caller object
-        auto sub_call = std::make_shared<rapp::cloud::ontology_subclasses_of>(query, sb_cb, token);
+        auto sub_call = std::make_shared<rapp::cloud::ontology_subclasses_of>(query, false, sb_cb, token);
 
         // Superclass Ontologies
         auto sp_cb = [](std::vector<std::string> classes)
@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
                      };
         
 		// the caller
-        auto super_call = std::make_shared<rapp::cloud::ontology_superclasses_of>(query, sp_cb, token);
+        auto super_call = std::make_shared<rapp::cloud::ontology_superclasses_of>(query, false, sp_cb, token);
 
         // Request from service controller to run this job
         ctrl.run_job(sub_call);

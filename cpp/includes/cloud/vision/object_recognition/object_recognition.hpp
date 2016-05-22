@@ -6,7 +6,7 @@ namespace cloud {
 /**
  * \class object_recognition
  * \brief recognize object from an image
- * \version 0.6.0
+ * \version 0.6.1
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
@@ -44,11 +44,10 @@ public:
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
         post_ += "\r\n";
         post_ += "--"+boundary+"--";
-        header_ =  "POST /hop/object_recognition HTTP/1.1\r\n";
+        header_ =  "POST /hop/object_recognition_caffe HTTP/1.1\r\n";
         header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
         callback_ = std::bind(&object_recognition::handle_reply, this, std::placeholders::_1);   
     }
-
 private:
 	/**
 	 * \brief handle the rapp-platform JSON reply

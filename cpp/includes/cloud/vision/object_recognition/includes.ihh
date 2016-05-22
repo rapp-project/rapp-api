@@ -10,3 +10,4 @@
 #include <boost/property_tree/json_parser.hpp>
 
 #include "cloud/asio_service_http/asio_service_http.hpp"
+#include "objects/picture/picture.hpp"

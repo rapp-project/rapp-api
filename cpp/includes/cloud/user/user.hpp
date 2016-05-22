@@ -1,20 +1,19 @@
-#ifndef RAPP_CLOUD_AVAILABLE_SERVICES
-#define RAPP_CLOUD_AVAILABLE_SERVICES
+#ifndef RAPP_CLOUD_USER
+#define RAPP_CLOUD_USER
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
 /**
- * \class available_services
- * \brief requests available services from platform
+ * \class login_user
+ * \brief 
  * \version 0.6.0
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class available_services : public asio_service_http
+class login_user : public asio_service_http
 {
 public:
     /**
-     * \brief construct without any special parameters
      * \param callback will receive a vector of services strings
      */
     available_services(
