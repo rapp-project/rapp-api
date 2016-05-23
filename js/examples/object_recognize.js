@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-// Import the object_recognition JS API Service & Init the RAPPCloud Object
+// Import the object_recognition_caffe JS API Service & Init the RAPPCloud Object
 var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.object_recognition = require('rapp-platform-api/includes/cloud/object_recognition');
+RAPPCloud.object_recognition_caffe = require('rapp-platform-api/includes/cloud/object_recognition_caffe');
 var services = new RAPPCloud( );
 
 
 /** 
- * This is the method that will handle the reply by the service.object_recognition
+ * This is the method that will handle the reply by the service.object_recognition_caffe
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
 function handler ( object_class )
@@ -18,4 +18,4 @@ function handler ( object_class )
 		console.log ( 'No objects recognized');
 }
 
-services.object_recognition('../../testdata/cat.jpg', 'jpg', handler, true );
+services.object_recognition_caffe('../../testdata/cat.jpg', 'jpg', handler, true );

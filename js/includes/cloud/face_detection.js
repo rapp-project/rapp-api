@@ -22,8 +22,6 @@ RAPPObject.face = require(path.join(__objectsDir, 'face.js'));
  */
 RAPPCloud.prototype.face_detection = function ( image, image_format, callback, fast )
 {
-    fast = typeof fast !== 'undefined' ? fast : false;
-
     var formData = require('form-data');
 	var randomstring = require('randomstring');
 	var fs = require('fs');
@@ -40,7 +38,8 @@ RAPPCloud.prototype.face_detection = function ( image, image_format, callback, f
 	var filename = randomstring.generate() + '.' + image_format;
 
 	var body_obj = {};
-    body_obj.fast = fast;
+	if (typeof fast != 'undefined')
+    	body_obj.fast = fast;
     var body_json = JSON.stringify(body_obj);
 	
 	form.append('file', fs.createReadStream(image), { 

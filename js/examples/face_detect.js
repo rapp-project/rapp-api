@@ -17,4 +17,4 @@ function handler ( faces )
 		console.log ( 'No faces detected');
 }
 
-services.face_detection('two_faces.jpg', 'jpg', handler, true );
+services.face_detection('two_faces.jpg', 'jpg', handler );

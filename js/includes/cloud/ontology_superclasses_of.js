@@ -14,10 +14,11 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @see HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
  * @see HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
- * @param query is the entity for which we will try to acquire its Super-Ordinates
+ * @param ontology_class(String): the entity for which we will try to acquire its Super-Ordinates
  * @param callback is the function that will receive the classes discovered
+ * @param recursive (Boolean): Recursive search
  */
-RAPPCloud.prototype.ontology_superclasses_of = function ( query, callback )
+RAPPCloud.prototype.ontology_superclasses_of = function ( ontology_class, callback, recursive )
 {
     var request = require('request').defaults({
 	  secureProtocol: 'TLSv1_2_method',
@@ -28,7 +29,9 @@ RAPPCloud.prototype.ontology_superclasses_of = function ( query, callback )
     var _delegate = callback;
     
     var body_obj = {};
-    body_obj.query = cloud.escape_string(query);
+    body_obj.ontology_class = cloud.escape_string(ontology_class);
+    if (typeof recursive != 'undefined')
+        body_obj.recursive = recursive;
     var body_json = JSON.stringify(body_obj);
     
     request.post({
