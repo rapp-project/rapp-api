@@ -171,9 +171,9 @@ svc = RappPlatformService()
 msg = FaceDetection()
 
 # System path to the image file
-msg.imageFilepath = "PATH"
+msg.req.imageFilepath = "PATH"
 # If true, detection will take less time but it will be less accurate
-msg.fast = True
+msg.req.fast = True
 
 response = svc.call(msg)
 ```
@@ -222,7 +222,7 @@ svc = RappPlatformService()
 msg = QrDetection()
 
 # System path to the image file
-msg.imageFilepath = "PATH"
+msg.req.imageFilepath = "PATH"
 
 response = svc.call(msg)
 ```
@@ -269,7 +269,7 @@ svc = RappPlatformService()
 msg = HumanDetection()
 
 # System path to the image file
-msg.imageFilepath = "PATH"
+msg.req.imageFilepath = "PATH"
 
 response = svc.call(msg)
 ```
@@ -312,7 +312,7 @@ svc = RappPlatformService()
 msg = HazardDetectionDoor()
 
 # System path to the image file
-msg.imageFilepath = "PATH"
+msg.req.imageFilepath = "PATH"
 
 response = svc.call(msg)
 ```
@@ -355,7 +355,7 @@ svc = RappPlatformService()
 msg = HazardDetectionLight()
 
 # System path to the image file
-msg.imageFilepath = "PATH"
+msg.req.imageFilepath = "PATH"
 
 response = svc.call(msg)
 ```
@@ -398,7 +398,7 @@ svc = RappPlatformService()
 msg = ObjectDetectionCaffe()
 
 # System path to the image file
-msg.imageFilepath = "PATH"
+msg.req.imageFilepath = "PATH"
 
 response = svc.call(msg)
 ```
@@ -441,9 +441,9 @@ svc = RappPlatformService()
 msg = SetNoiseProfile()
 
 # System path to the image file
-msg.audiofile = "PATH"
+msg.req.audiofile = "PATH"
 # Audio source type/format. e.g. "nao_wav_1_ch"
-msg.audio_source = "nao_wav_1_ch"
+msg.req.audio_source = "nao_wav_1_ch"
 
 response = svc.call(msg)
 ```
@@ -500,17 +500,17 @@ svc = RappPlatformService()
 msg = SpeechRecognitionSphinx()
 
 # System path to the image file
-msg.audiofile = "PATH"
+msg.req.audiofile = "PATH"
 # Audio source type/format. e.g. "nao_wav_1_ch"
-msg.audio_source = "nao_wav_1_ch"
+msg.req.audio_source = "nao_wav_1_ch"
 # Language to use for speech recognition
-msg.language = 'en'
+msg.req.language = 'en'
 # Array of words to recognize
-msg.words = ['yes', 'no']
+msg.req.words = ['yes', 'no']
 # Under consideration sentences
-msg.sentences = msg.words
+msg.req.sentences = msg.req.words
 # Grammar to use
-msg.grammar = []
+msg.req.grammar = []
 
 response = svc.call(msg)
 ```
@@ -565,11 +565,11 @@ svc = RappPlatformService()
 msg = SpeechRecognitionGoogle()
 
 # System path to the image file
-msg.audiofile = "PATH"
+msg.req.audiofile = "PATH"
 # Audio source type/format. e.g. "nao_wav_1_ch"
-msg.audio_source = "nao_wav_1_ch"
+msg.req.audio_source = "nao_wav_1_ch"
 # Language to use for speech recognition
-msg.language = 'en'
+msg.req.language = 'en'
 
 response = svc.call(msg)
 ```
@@ -617,8 +617,8 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = OntologySubclasses()
 # Ontology subclasses of Oven query
-msg.ontology_class = 'Oven'
-msg.recursive = False
+msg.req.ontology_class = 'Oven'
+msg.req.recursive = False
 
 response = svc.call(msg)
 ```
@@ -665,8 +665,8 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = OntologySuperclasses()
 # Ontology superclasses of Oven query
-msg.ontology_class = 'Oven'
-msg.recursive = False
+msg.req.ontology_class = 'Oven'
+msg.req.recursive = False
 
 response = svc.call(msg)
 ```
@@ -718,9 +718,9 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = OntologyIsSubsuperclass()
 # Parent class
-msg.parent_class = 'Oven'
+msg.req.parent_class = 'Oven'
 # Child class
-msg.child_class = 'Microwave'
+msg.req.child_class = 'Microwave'
 
 response = svc.call(msg)
 ```
@@ -792,13 +792,13 @@ svc = RappPlatformService()
 msg = CognitiveExerciseSelect()
 
 # Test type
-msg.test_type = 'ArithmeticCts'
+msg.req.test_type = 'ArithmeticCts'
 # Test subtype
-msg.test_subtype = 'TransactionChangeCts'
+msg.req.test_subtype = 'TransactionChangeCts'
 # Test difficulty
-msg.test_diff = '1'
+msg.req.test_diff = '1'
 # Test index
-msg.test_index = '1'
+msg.req.test_index = '1'
 
 response = svc.call(msg)
 ```
@@ -864,11 +864,11 @@ svc = RappPlatformService()
 msg = CognitiveGetHistory()
 
 # Test type ('' == ALL)
-msg.test_type = ''
+msg.req.test_type = ''
 # Time from value
-msg.time_from = 0
+msg.req.time_from = 0
 # Time to value
-msg.time_to = 100000000
+msg.req.time_to = 100000000
 
 response = svc.call(msg)
 ```
@@ -923,9 +923,9 @@ svc = RappPlatformService()
 msg = CognitiveGetScores()
 
 # Test type ('' == ALL)
-msg.test_type = ''
+msg.req.test_type = ''
 # Time to value
-msg.time_to = 100000000
+msg.req.time_to = 100000000
 
 response = svc.call(msg)
 ```
@@ -979,9 +979,9 @@ svc = RappPlatformService()
 msg = CognitiveRecordPerformance()
 
 # Test instance (Returned by calling CognitiveExerciseSelect)
-msg.test_instance = 'ArithmeticCts_stXqnGrc'
+msg.req.test_instance = 'ArithmeticCts_stXqnGrc'
 # Performance score to record
-msg.score = 40
+msg.req.score = 40
 
 response = svc.call(msg)
 ```
@@ -1052,18 +1052,18 @@ svc = RappPlatformService()
 msg = EmailFetch()
 
 # Email account name
-msg.email = "EMAIL_ACCOUNT_NAME"
+msg.req.email = "EMAIL_ACCOUNT_NAME"
 # Email account password
-msg.password = "EMAIL_PASSWORD"
+msg.req.password = "EMAIL_PASSWORD"
 # The imap address of the email server/provider
-msg.server = "imap.gmail.com"
+msg.req.server = "imap.gmail.com"
 # The listening port number of the imap server/providrer
-msg.port = ""
+msg.req.port = ""
 # Fetch received emails from this date value.
-msg.date_from = "0"
+msg.req.date_from = "0"
 # Fetch emails up to this date value.
 # Max number of emails to fetch
-msg.num_emails = 5
+msg.req.num_emails = 5
 
 response = svc.call(msg)
 ```
@@ -1131,16 +1131,16 @@ svc = RappPlatformService()
 msg = EmailSend()
 
 # Email account name
-msg.email = "EMAIL_ACCOUNT_NAME"
+msg.req.email = "EMAIL_ACCOUNT_NAME"
 # Email account password
-msg.password = "EMAIL_PASSWORD"
+msg.req.password = "EMAIL_PASSWORD"
 # The imap address of the email server/provider
-msg.server = "imap.gmail.com"
+msg.req.server = "imap.gmail.com"
 # The listening port number of the imap server/providrer
-msg.port = ""
-msg.body = "Test sending email"
-msg.subject = "Test sending email"
-msg.recipients = ["RECIPIENT_1", "RECIPIENT_2"]
+msg.req.port = ""
+msg.req.body = "Test sending email"
+msg.req.subject = "Test sending email"
+msg.req.recipients = ["RECIPIENT_1", "RECIPIENT_2"]
 
 response = svc.call(msg)
 ```
@@ -1216,7 +1216,7 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = WeatherReportCurrent()
 
-mgs.city = "Athens"
+msg.city = "Athens"
 
 response = svc.call(msg)
 ```
@@ -1269,7 +1269,7 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = WeatherReportForecast()
 
-mgs.city = "Athens"
+msg.city = "Athens"
 
 response = svc.call(msg)
 ```
@@ -1332,13 +1332,13 @@ svc = RappPlatformService()
 msg = PathPlanningPlan2D()
 
 # The map name as previously upload to the Platform (look at [PathPlanningUploadMap](#path-planning-upload-map))
-msg.map_name = "MAP_NAME"
+msg.req.map_name = "MAP_NAME"
 # The type of robot executing path planning. In this case NAO robot.
-msg.robot_type = "NAO"
+msg.req.robot_type = "NAO"
 # Use DIJKSTRA algorithm
-msg.algorithm = "dijkstra"
+msg.req.algorithm = "dijkstra"
 
-msg.pose_start = { 
+msg.req.pose_start = { 
     'header': {'seq': 0, 'stamp':{'sec': 0, 'nsecs': 0}, 'frame_id': '' },
     'pose': {
         'position': {'x': 10, 'y': 10, 'z': 20},
@@ -1346,7 +1346,7 @@ msg.pose_start = {
     }
 }
 
-msg.pose_goal = { 
+msg.req.pose_goal = { 
     'header': {'seq': 0, 'stamp':{'sec': 0, 'nsecs': 0}, 'frame_id': '' },
     'pose': {
         'position': {'x': 30, 'y': 10, 'z': 20},
@@ -1406,11 +1406,11 @@ svc = RappPlatformService()
 msg = PathPlanningUploadMap()
 
 # The map name
-msg.map_name = "MAP_NAME"
+msg.req.map_name = "MAP_NAME"
 # Path to the map png image gile
-msg.png_file = "PATH"
+msg.req.png_file = "PATH"
 # Path to the map yaml descriptor file
-msg.yaml_file = "PATH"
+msg.req.yaml_file = "PATH"
 
 response = svc.call(msg)
 ```
@@ -1463,8 +1463,8 @@ from RappCloud import RappPlatformService
 
 svc = RappPlatformService()
 msg = TextToSpeech()
-msg.text = "Robots are awesome"
-msg.language = "en"
+msg.req.text = "Robots are awesome"
+msg.req.language = "en"
 
 response = svc.call(msg)
 ```
@@ -1479,7 +1479,7 @@ print response.encoding
 
 if response.error is "":
     # Store audio data to file
-    msg.store_audio("/tmp/tts.wav")
+    msg.req.store_audio("/tmp/tts.wav")
 ```
 
 
@@ -1530,7 +1530,7 @@ from RappCloud import RappPlatformService
 
 svc = RappPlatformService()
 msg = NewsExplore()
-msg.num_news = 2
+msg.req.num_news = 2
 
 response = svc.call(msg)
 ```
@@ -1603,7 +1603,7 @@ from RappCloud import RappPlatformService
 
 svc = RappPlatformService()
 msg = Geolocation()
-msg.ipaddr = "104.16.115.182"
+msg.req.ipaddr = "104.16.115.182"
 
 response = svc.call(msg)
 ```
