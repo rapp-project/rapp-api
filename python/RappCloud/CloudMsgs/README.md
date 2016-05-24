@@ -12,7 +12,7 @@
   - [Hazard detection - Door](#hazard-detection---door)
   - [Hazard detection - Lights](#hazard-detection---lights)
   - [News Explorer](#news-explorer)
-  - [Object detection Caffe](#object-detection-caffe)
+  - [Object recognition Caffe](#object-recognition-caffe)
   - [Ontology Query - Subclasses of](#ontology-query---subclasses-of)
   - [Ontology Query - Superclasses of](#ontology-query---superclasses-of)
   - [Ontology Query - Is Subsuperclass of](#ontology-query---is-subsuperclass-of)
@@ -370,17 +370,17 @@ print response.error
 
 ***
 
-## Object detection Caffe
+## Object recognition Caffe
 
-**Description** [here - TBD]()
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Caffe-Wrapper)
 
-**Request object: ObjectDetectionCaffe.Request**
+**Request object: ObjectRecognitionCaffe.Request**
 ```python
 # System path to the image file
 String imageFilepath
 ```
 
-**Response object: ObjectDetectionCaffe.Response**
+**Response object: ObjectRecognitionCaffe.Response**
 ```python
 # Recognized object class
 String object_class
@@ -391,11 +391,11 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import ObjectDetectionCaffe
+from RappCloud.CloudMsgs import ObjectRecognitionCaffe
 from RappCloud import RappPlatformService
 
 svc = RappPlatformService()
-msg = ObjectDetectionCaffe()
+msg = ObjectRecognitionCaffe()
 
 # System path to the image file
 msg.req.imageFilepath = "PATH"
@@ -588,7 +588,7 @@ print response.error
 
 ## Ontology Query - Subclasses of
 
-**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper#subclasses-of)
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper)
 
 **Request object: OntologySubclasses.Request**
 
@@ -636,7 +636,7 @@ print response.error
 
 ## Ontology Query - Superclasses of
 
-**Description [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper#superclasses-of)**
+**Description [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper)**
 
 **Request object: OntologySuperclasses.Request**
 
@@ -684,7 +684,7 @@ print response.error
 
 ## Ontology Query - Is Subsuperclass of
 
-**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper#is-sub-super-class-of)
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper)
 
 **Request object: OntologyIsSubsuperclass.Request**
 
@@ -740,7 +740,7 @@ print response.error
 
 ## Cognitive Exercises - Test Selector
 
-**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise#test-selector)
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
 
 **Request object: CognitiveExerciseSelect.Request**
 ```python
@@ -828,7 +828,7 @@ print response.error
 
 ## Cognitive Exercises - Get History Records
 
-**Description** [here-Missing-GetHistory-Section](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
 
 
 **Request object: CognitiveGetHistory.Request**
@@ -888,7 +888,7 @@ print response.error
 
 ## Cognitive Exercises - Get Scores
 
-**Description** [here-Missing-GetScores-Section](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
 
 **Request object: CognitiveGetScores.Request**
 ```python
@@ -947,7 +947,7 @@ print response.error
 
 ## Cognitive Exercises - Record Performance
 
-**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise#record-user-performance)
+**Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
 
 
 **Request object: CognitiveRecordPerformance.Request**
