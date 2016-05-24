@@ -745,7 +745,7 @@ print response.error
 **Request object: CognitiveExerciseSelect.Request**
 ```python
 # Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
-# https://github.com/rapp-project/rapp-platform/tree/master/rapp_cognitive_exercise
+# https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise
 String test_type
 
 # Force select exercise from this subtype. Depends on test_type value
@@ -834,7 +834,7 @@ print response.error
 **Request object: CognitiveGetHistory.Request**
 ```python
 # Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
-# https://github.com/rapp-project/rapp-platform/tree/master/rapp_cognitive_exercise
+# https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise
 String test_type
 
 # Unix timestamp
@@ -893,7 +893,7 @@ print response.error
 **Request object: CognitiveGetScores.Request**
 ```python
 # Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
-# https://github.com/rapp-project/rapp-platform/tree/master/rapp_cognitive_exercise
+# https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise
 String test_type
 
 # Unix timestamp
@@ -1312,7 +1312,7 @@ Dict pose_goal
 
 **Response object: PathPlanningPlan2D.Response**
 ```python
-# Plan status (https://github.com/rapp-project/rapp-platform/tree/master/rapp_path_planning/rapp_path_planning)
+# Plan status: https://github.com/rapp-project/rapp-platform/wiki/RAPP-Path-planner
 Int plan_found
 
 # If plan_found is equal to 0 (path found), this is an array of waypoints from start to goal.
