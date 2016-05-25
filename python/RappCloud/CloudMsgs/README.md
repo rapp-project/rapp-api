@@ -1216,7 +1216,7 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = WeatherReportCurrent()
 
-msg.city = "Athens"
+msg.req.city = "Athens"
 
 response = svc.call(msg)
 ```
@@ -1269,7 +1269,7 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = WeatherReportForecast()
 
-msg.city = "Athens"
+msg.req.city = "Athens"
 
 response = svc.call(msg)
 ```
