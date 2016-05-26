@@ -82,32 +82,32 @@ class TextToSpeech(CloudMsg):
             super(TextToSpeech.Response, self).__init__(**kwargs)
 
 
-    def get_audio_raw(self):
-        """! Get audio raw data from response """
-        try:
-            b64Data = self.payload
-            rawData = base64.b64decode(b64Data)
-        except TypeError as e:
-            print str(e)
-            return None
-        return rawData
+        def get_audio_raw(self):
+            """! Get audio raw data from response """
+            try:
+                b64Data = self.payload
+                rawData = base64.b64decode(b64Data)
+            except TypeError as e:
+                print str(e)
+                return None
+            return rawData
 
 
-    def store_audio(self, destfile):
-        """! Store returned audio data to an audio file given by path
+        def store_audio(self, destfile):
+            """! Store returned audio data to an audio file given by path
 
-        @param destfile - Destination file path.
-        """
+            @param destfile - Destination file path.
+            """
 
-        destfile = path.expanduser(path.realpath(destfile))
-        rawData = self.get_audio_raw()
-        try:
-          with open(destfile, 'wb') as f:
-            f.write(rawData)
-        except IOError as e:
-          print str(e)
-          return False
-        return True
+            destfile = path.expanduser(path.realpath(destfile))
+            rawData = self.get_audio_raw()
+            try:
+                with open(destfile, 'wb') as f:
+                    f.write(rawData)
+            except IOError as e:
+                print str(e)
+                return False
+            return True
 
 
 
