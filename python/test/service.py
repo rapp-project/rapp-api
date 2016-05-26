@@ -53,12 +53,16 @@ class ServiceTest(unittest.TestCase):
 
 
     def test_constructor_arguments(self):
-        self.svc = Service(msg=self.msg, persistent=False, timeout=15000)
+        self.svc = Service(msg=self.msg, persistent=False, timeout=15000,
+                           address='155.207.19.229', port='9002',
+                           protocol='https')
         self.assertEqual(self.svc.svcname, 'face_detection')
         self.assertEqual(self.svc.timeout, 15000)
         self.assertEqual(self.svc.persistent, False)
         self.assertEqual(self.svc.req, self.msg.req)
         self.assertEqual(self.svc.resp, self.msg.resp)
+        self.assertEqual(self.svc.url,
+            'https://155.207.19.229:9002/hop/face_detection')
 
 
     def test_explicit_set_attributes(self):
@@ -89,7 +93,7 @@ class ServiceTest(unittest.TestCase):
         self.enablePrint()
         self.assertIsInstance(_resp, FaceDetection.Response)
         self.assertIsInstance(_resp.faces, list)
-        self.assertIsInstance(_resp.error, str)
+        self.assertIsInstance(_resp.error, basestring)
 
 
     def test_call_multi(self):
