@@ -1531,7 +1531,7 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = NewsExplore()
 msg.req.num_news = 2
-msg.req.keywords = 'Thessaloniki'
+msg.req.keywords = ['Thessaloniki']
 
 response = svc.call(msg)
 ```
