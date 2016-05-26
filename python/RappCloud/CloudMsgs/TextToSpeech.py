@@ -82,27 +82,10 @@ class TextToSpeech(CloudMsg):
             super(TextToSpeech.Response, self).__init__(**kwargs)
 
 
-    def __init__(self, **kwargs):
-        """!
-        Constructor
-
-        @param **kwargs - Keyword arguments. Apply values to the request attributes.
-            - @ref Request.text
-            - @ref Request.language
-        """
-
-        # Create and hold the Request object for this CloudMsg
-        self.req = TextToSpeech.Request()
-        # Create and hold the Response object for this CloudMsg
-        self.resp = TextToSpeech.Response()
-        super(TextToSpeech, self).__init__(
-            svcname='text_to_speech', **kwargs)
-
-
     def get_audio_raw(self):
         """! Get audio raw data from response """
         try:
-            b64Data = self.resp.payload
+            b64Data = self.payload
             rawData = base64.b64decode(b64Data)
         except TypeError as e:
             print str(e)
@@ -126,4 +109,21 @@ class TextToSpeech(CloudMsg):
           return False
         return True
 
+
+
+    def __init__(self, **kwargs):
+        """!
+        Constructor
+
+        @param **kwargs - Keyword arguments. Apply values to the request attributes.
+            - @ref Request.text
+            - @ref Request.language
+        """
+
+        # Create and hold the Request object for this CloudMsg
+        self.req = TextToSpeech.Request()
+        # Create and hold the Response object for this CloudMsg
+        self.resp = TextToSpeech.Response()
+        super(TextToSpeech, self).__init__(
+            svcname='text_to_speech', **kwargs)
 
