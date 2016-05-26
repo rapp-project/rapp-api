@@ -1479,7 +1479,7 @@ print response.encoding
 
 if response.error is "":
     # Store audio data to file
-    msg.req.store_audio("/tmp/tts.wav")
+    response.store_audio("/tmp/tts.wav")
 ```
 
 
