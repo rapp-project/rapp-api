@@ -34,21 +34,24 @@ class RappPlatformService(object):
     """ Service class """
 
     def __init__(self, msg=None, persistent=True, timeout=None,
-                 address='localhost', port='9001',
-                 protocol='http', **kwargs):
+                 address=None, port=None,
+                 protocol=None, **kwargs):
         """!
         Constructor
 
         @param **kwargs - Keyword arguments. Apply values to the request attributes.
         """
-        for key, value in kwargs.iteritems():
-            pass
 
-        self.__platformParams = {
-            'address': address,
-            'port': port,
-            'protocol': protocol
-        }
+        # Load Default RAPP PLatform parameters from configuration file
+        # ~/.congig/rapp_platform_python_api/config
+        self.__load_platform_cfg()
+
+        if address is not None:
+            self.__platformParams['address'] = address
+        if port is not None:
+            self.__platformParams['port'] = port
+        if protocol is not None:
+            self.__platformParams['protocol'] = protocol
 
         ## Cloud Object passed to the RappPlatformService.
         self.__cloudObj = msg
@@ -108,12 +111,6 @@ class RappPlatformService(object):
         return self.__urlpath
 
 
-    @url.setter
-    def url(self, val):
-        """! Service urlpath setter """
-        self.__urlpath = val
-
-
     @property
     def req(self):
         """! Service request object getter """
@@ -157,3 +154,28 @@ class RappPlatformService(object):
         for key, val in cloudResponseDic.iteritems():
             self.resp.set(key, val)
         return self.resp
+
+
+    def __load_platform_cfg(self):
+        _filepath = path.expanduser(
+            '~/.config/rapp_platform_python_api/config')
+
+        try:
+            f = open(_filepath, 'r')
+            _params = yaml.load(f)
+
+        except (IOError, yaml.YAMLError) as exc:
+            print str(exc)
+            print "Using default parameters:"
+            print " * address: 'localhost'"
+            print " * port: '9001'"
+            print " * protocol: 'http'"
+            # If config file does not exist or an exception is raised,
+            # fallback to use default parameters.
+            _params = {
+                'address': 'localhost',
+                'port': '9001',
+                'protocol': 'http'
+            }
+        self.__platformParams = _params
+
