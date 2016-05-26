@@ -30,8 +30,6 @@ python setup.py develop --user
 The RAPP Platform uses token-based authentication mechanisms to authenticate user's use it's resources.
 User's receive a token on registration to the RAPP Platform.
 
-For more information on how to register to the RAPP-Platform, look at [todo-reference-here](#)
-
 Tokens are stored under:
 
 ```shell
