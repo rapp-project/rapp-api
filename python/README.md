@@ -44,6 +44,31 @@ Place the, received from the RAPP Platform, under the aforementioned directory (
 ${HOME}/.config/rapp_platform/tokens/app
 ```
 
+### RAPP Platform parameters
+
+The API allows to set default parameters, for the RAPP Platform to connect to, through a simple configuration file (**yaml**). Those parameters are:
+
+- `address`: The RAPP Platform ipv4-address/hostname. Defaults to **'localhost'**
+- `port`: The RAPP Platform listening port number. Defaults to **'9001'**
+- `protocol`: Protocol to use. Either **'http'** or **'https'**
+
+Parameters are imported from the configuration file:
+
+```
+~/.config/rapp_platform_python_api/config
+```
+
+Below is a sample of the file that configures the API to connect to `http://localhost:9001`:
+
+```yaml
+address: 'localhost'
+port: '9001'
+protocol: 'http'
+```
+
+**Note**: In the next Section, we will indroduce the `Service` object and explain how we can connect to different RAPP Platform hosts, in a single application implementation.
+
+
 ## Calling RAPP Platform Services - API usage.
 
 `RappPlatformService` is the RAPP term for an established connection to the RAPP-Platform Services, over the www (World-Wide-Web).
