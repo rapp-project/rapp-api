@@ -6,4 +6,4 @@ RAPPCloud.path_planning_upload_map = require('rapp-platform-api/includes/cloud/p
 
 var services = new RAPPCloud( );
 
-services.path_planning_upload_map( '../../testdata/523_m.yaml', '../../testdata/523_mj.png', 'the map' );
+services.path_planning_upload_map( '../../testdata/maps/523_mj.png', '../../testdata/maps/523_m.yaml', 'the_map' );

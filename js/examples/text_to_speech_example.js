@@ -16,12 +16,12 @@ var text = "Hello human";
 function handler ( audio_data, encoding, basename )
 {
 	var fs = require('fs');
-	var path = "audio/" + basename;
+	var path = "../../testdata/audio_tts/" + basename;
 	fs.writeFile(path, audio_data, encoding, function(err) {
 	    if(err) {
 	        return console.log(err);
 	    }
-	    console.log("The file was saved under audio/" + basename );
+	    console.log("The file was saved under ../testdata/audio_tts/" + basename );
 	}); 
 }
 

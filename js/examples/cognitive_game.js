@@ -50,6 +50,6 @@ services.cognitive_test_chooser(	// 'ArithmeticCts',
 						
 services.cognitive_record_performance("ReasoningCts_pQmhNKHv", 1, cb2 );
 
-services.cognitive_get_history( cb3, '', 1450348786, 1450348787 );
+services.cognitive_get_history( cb3, '', 0, 0 );
 
-services.cognitive_get_scores( cb4, 1450348787, '' );
+services.cognitive_get_scores( cb4, 0, '' );

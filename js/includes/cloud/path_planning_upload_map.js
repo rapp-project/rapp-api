@@ -34,15 +34,11 @@ RAPPCloud.prototype.path_planning_upload_map = function ( png_file, yaml_file, m
     var body_json = JSON.stringify(body_obj);
 	
 	if (!!png_file) {
-		form.append('file', fs.createReadStream(png_file), { 
-	        filename: png_file
-	    });
+		form.append('png_file', fs.createReadStream(png_file));
 	}
 	else return console.error('png file name missing');
     if (!!yaml_file) {
-	    form.append('file', fs.createReadStream(yaml_file), { 
-	        filename: yaml_file
-	    });
+	    form.append('yaml_file', fs.createReadStream(yaml_file));
 	}
 	else return console.error('yaml file name missing');
 	form.append('json', body_json);

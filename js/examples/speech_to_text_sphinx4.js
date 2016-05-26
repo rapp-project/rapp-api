@@ -6,16 +6,16 @@ RAPPCloud.speech_detection_sphinx4 = require('rapp-platform-api/includes/cloud/s
 
 var services = new RAPPCloud( );
 
-var audio = //"nao_wav_d05_a1.wav_mono16k.wav";
-										 //"yes-no.wav";
-										 //"nao_wav_d05_a1.wav";
-										 //"nao_ogg_d05_a1.ogg"; 
-		     "recording_sentence2.ogg";
-		     //"email-robot.wav";
-		     //"recording_yes.ogg";
-		     //"recording_no.ogg";
-		     //"recording_tuesday.ogg";
-		     //"recording_triti.ogg";    
+var audio = //"../../testdata/nao_wav_d05_a1.wav_mono16k.wav";
+			//"../../testdata/yes-no.wav";
+			//"../../testdata/nao_wav_d05_a1.wav";
+			//"../../testdata/nao_ogg_d05_a1.ogg"; 
+		     "../../testdata/recording_sentence2.ogg";
+		     //"../../testdata/email-robot.wav";
+		     //"../../testdata/recording_yes.ogg";
+		     //"../../testdata/recording_no.ogg";
+		     //"../../testdata/recording_tuesday.ogg";
+		     //"../../testdata/recording_triti.ogg";    
 var grammar = [];
 var words = //["tuesday", "monday"];
 					   //["yes", "no"];

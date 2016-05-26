@@ -6,4 +6,4 @@ RAPPCloud.email_send = require('rapp-platform-api/includes/cloud/email_send');
 
 var services = new RAPPCloud( );
 
-services.email_send( '', '', 'smtp.gmail.com', '465', ['lp@ortelio.co.uk'], 'trela', 'test', '' );
+services.email_send( '', '', '', '465', ['lp@ortelio.co.uk'], 'blah', 'test', '' );

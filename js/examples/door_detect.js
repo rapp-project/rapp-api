@@ -19,4 +19,4 @@ function handler ( door_angle )
 		console.log ( 'Error processing image' );
 }
 
-services.hazard_detection_door_check('door_1.png', 'png', handler );
+services.hazard_detection_door_check('../../testdata/door_1.png', 'png', handler );

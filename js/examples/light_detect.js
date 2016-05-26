@@ -20,6 +20,6 @@ function handler ( light_level )
 }
 
 console.log('lamp_on.jpg: ');
-services.hazard_detection_light_check('lamp_on.jpg', 'jpg', handler );
+services.hazard_detection_light_check('../../testdata/lamp_on.jpg', 'jpg', handler );
 console.log('lamp_off.jpg: ');
-services.hazard_detection_light_check('lamp_off.jpg', 'jpg', handler );
+services.hazard_detection_light_check('../../testdata/lamp_off.jpg', 'jpg', handler );

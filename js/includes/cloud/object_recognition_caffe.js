@@ -16,7 +16,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param image_format is the image format
  * @param callback is the function that will receive the detected object class
  */
-RAPPCloud.prototype.object_recognition_caffe_caffe = function ( image, image_format, callback )
+RAPPCloud.prototype.object_recognition_caffe = function ( image, image_format, callback )
 {
     var formData = require('form-data');
 	var randomstring = require('randomstring');
@@ -37,7 +37,7 @@ RAPPCloud.prototype.object_recognition_caffe_caffe = function ( image, image_for
 		contentType: 'image/' + image_format
 	});
 	
-	var r = request.post(cloud.cloud_url + '/hop/object_recognition_caffe_caffe/ ', function(error, res, json){ 
+	var r = request.post(cloud.cloud_url + '/hop/object_recognition_caffe/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
 			handle_reply(json);
 			}

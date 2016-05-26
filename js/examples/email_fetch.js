@@ -18,4 +18,4 @@ function callback ( emails )
 //var startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 //var today_start = startOfDay / 1000;
 
-services.email_fetch( '', '', 'imap.gmail.com', '993', "ALL", 0, 0, 1, callback );
+services.email_fetch( '', '', '', '993', "ALL", 0, 0, 1, callback );

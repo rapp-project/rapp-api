@@ -21,4 +21,4 @@ function handler ( codes )
 		console.log ( 'No qrCodes detected');
 }
 
-services.qr_detection( 'qrcode.png', 'png', handler );
+services.qr_detection( '../../testdata/qrcode.png', 'png', handler );
