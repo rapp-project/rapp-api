@@ -1496,7 +1496,7 @@ if response.error is "":
 # The news search engine to use.
 String news_engine
 
-# Desired keywords.
+# Desired keywords. Required!
 Array keywords
 
 # Reject list of previously read articles, in order to avoid duplicates.
@@ -1531,6 +1531,7 @@ from RappCloud import RappPlatformService
 svc = RappPlatformService()
 msg = NewsExplore()
 msg.req.num_news = 2
+msg.req.keywords = 'Thessaloniki'
 
 response = svc.call(msg)
 ```
