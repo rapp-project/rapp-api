@@ -32,8 +32,8 @@
 **Sample call** ```faceDetection(imageFilepath, fast)```
 
 **Input arguments**
-- String imageFilepath: System path to the image file
-- Bool fast: If true, detection will take less time but it will be less accurate
+- ```String imageFilepath```: System path to the image file
+- ```Bool fast```: If true, detection will take less time but it will be less accurate
 
 **Return values**
 ```python
@@ -57,22 +57,20 @@ response = ch.faceDetection("PATH", False)
 **Example output**:
 ```python
 print response
->> [ { up_left_point: {x: 0, y: 0}, down_right_point: {x: 100, y: 100} } ]
+>> {'error': u'', 'faces': [{u'up_left_point': {u'y': 246.0, u'x': 658.0}, u'down_right_point': {u'y': 375.0, u'x': 787.0}}]}
 ```
-
 ***
 
 ## Qr detection
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-QR-Detection)
 
-**Request object: QrDetection.Request**
-```python
-# System path to the image file
-String imageFilepath
-```
+**Sample call** ```qrDetection(imageFilepath)```
 
-**Response object: QrDetection.Response**
+**Input arguments**
+- ```String imageFilepath```: System path to the image file
+
+**Return values**
 ```python
 # Center points (point2D) of found QR codes
 # qr_centers: [{<point2D_1>}, ..., {<point2D_n>}] where point2D is an object of structure:
@@ -89,26 +87,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import QrDetection
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = QrDetection()
-
-# System path to the image file
-msg.req.imageFilepath = "PATH"
-
-response = svc.call(msg)
+response = ch.qrDetection("PATH")
 ```
 
 **Example output**:
 ```python
-print response.qr_centers
->> [ {x: 0, y: 0}, {x: 100, y: 100} ]
-print response.qr_messages
->> [ 'test 1', 'test 2' ]
-print response.error
->> ""
+print response
+>> {'qr_messages': [u'rapp project qr sample'], 'qr_centers': [{u'y': 165.0, u'x': 165.0}], 'error': u''}
 ```
 
 ***
@@ -117,13 +105,12 @@ print response.error
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Human-Detection)
 
-**Request object: HumanDetection.Request**
-```python
-# System path to the image file
-String imageFilepath
-```
+**Sample call** ```humanDetection(imageFilepath)```
 
-**Response object: HumanDetection.Response**
+**Input arguments**
+- ```String imageFilepath```: System path to the image file
+
+**Return values**
 ```python
 # Array of detected humans
 # humans: [ {<human_1>}, ..., {<human_n>} ] where human_x is an object of structure:
@@ -136,24 +123,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import HumanDetection
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = HumanDetection()
-
-# System path to the image file
-msg.req.imageFilepath = "PATH"
-
-response = svc.call(msg)
+response = ch.humanDetection("PATH")
 ```
 
 **Example output**:
 ```python
-print response.humans
->> [ {up_left_point: {x: 0, y: 0}, down_right_point: {x: 100, y: 100} } ]
-print response.error
->> ""
+print response
+>> {'humans': [{u'up_left_point': {u'y': 34.0, u'x': 48.0}, u'down_right_point': {u'y': 402.0, u'x': 232.0}}, {u'up_left_point': {u'y': 13.0, u'x': 494.0}, u'down_right_point': {u'y': 893.0, u'x': 934.0}}], 'error': u''}
 ```
 
 ***
@@ -162,13 +141,12 @@ print response.error
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Hazard-Detection)
 
-**Request object: HazardDetectionDoor.Request**
-```python
-# System path to the image file
-String imageFilepath
-```
+**Sample call** ```hazardDetectionDoor(imageFilepath)```
 
-**Response object: HazardDetectionDoor.Response**
+**Input arguments**
+- ```String imageFilepath```: System path to the image file
+
+**Return values**
 ```python
 # The angle of the detected open door
 Float door_angle
@@ -179,24 +157,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import HazardDetectionDoor
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = HazardDetectionDoor()
-
-# System path to the image file
-msg.req.imageFilepath = "PATH"
-
-response = svc.call(msg)
+response = ch.hazardDetectionDoor("PATH")
 ```
 
 **Example output**:
 ```python
-print response.door_angle
->> 0.83
-print response.error
->> ""
+print response
+>> {'door_angle': 6, 'error': u''}
 ```
 
 ***
@@ -205,13 +175,12 @@ print response.error
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Hazard-Detection)
 
-**Request object: HazardDetectionLight.Request**
-```python
-# System path to the image file
-String imageFilepath
-```
+**Sample call** ```hazardDetectionLights(imageFilepath)```
 
-**Response object: HazardDetectionLight.Response**
+**Input arguments**
+- ```String imageFilepath```: System path to the image file
+
+**Return values**
 ```python
 # The, detected on the image frame, light level.
 Float light_level
@@ -222,24 +191,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import HazardDetectionLight
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = HazardDetectionLight()
-
-# System path to the image file
-msg.req.imageFilepath = "PATH"
-
-response = svc.call(msg)
+response = ch.hazardDetectionLights("PATH")
 ```
 
 **Example output**:
 ```python
-print response.light_level
->> 100
-print response.error
->> ""
+print response
+>> {'light_level': 100, 'error': u''}
 ```
 
 ***
@@ -248,13 +209,12 @@ print response.error
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Caffe-Wrapper)
 
-**Request object: ObjectRecognitionCaffe.Request**
-```python
-# System path to the image file
-String imageFilepath
-```
+**Sample call** ```objectRecognitionCaffe(imageFilepath)```
 
-**Response object: ObjectRecognitionCaffe.Response**
+**Input arguments**
+- ```String imageFilepath```: System path to the image file
+
+**Return values**
 ```python
 # Recognized object class
 String object_class
@@ -265,24 +225,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import ObjectRecognitionCaffe
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = ObjectRecognitionCaffe()
-
-# System path to the image file
-msg.req.imageFilepath = "PATH"
-
-response = svc.call(msg)
+response = ch.objectRecognitionCaffe("PATH")
 ```
 
 **Example output**:
 ```python
-print response.object_class
->> "television"
-print response.error
->> ""
+print response
+>> {'object_class': u'boa constrictor, Constrictor constrictor', 'error': u''}
 ```
 
 ***
@@ -291,16 +243,13 @@ print response.error
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Audio-Processing)
 
-**Request object: SetNoiseProfile.Request**
-```python
-# System path to the audio file
-String audiofile
+**Sample call** ```setNoiseProfile(audiofile, audio_source)```
 
-# Audio source type/format. e.g. "nao_wav_1_ch"
-String audio_source
-```
+**Input arguments**
+- ```String audiofile```: System path to the audio file
+- ```String audio_source```: Audio source type/format. e.g. "nao_wav_1_ch"
 
-**Response object: SetNoiseProfile.Response**
+**Return values**
 ```python
 # Error message
 String error
@@ -308,24 +257,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import SetNoiseProfile
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = SetNoiseProfile()
-
-# System path to the image file
-msg.req.audiofile = "PATH"
-# Audio source type/format. e.g. "nao_wav_1_ch"
-msg.req.audio_source = "nao_wav_1_ch"
-
-response = svc.call(msg)
+response = ch.objectRecognitionCaffe("PATH", "nao_wav_1_ch")
 ```
 
 **Example output**:
 ```python
-print response.error
->> ""
+print response
+>> {"error": ""}
 ```
 
 ***
