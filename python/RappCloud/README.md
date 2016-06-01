@@ -275,29 +275,17 @@ print response
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Speech-Detection-using-Sphinx4)
 
-**Request object: SpeechRecognitionSphinx.Request**
+**Sample call** ```speechRecognitionSphinx(audiofile, audio_source, language, words, sentences, grammar)```
 
-```python
-# System path to the audio file
-String audiofile
+**Input arguments**
+- ```String audiofile```: System path to the audio file
+- ```String audio_source```: Audio source type/format. e.g. "nao_wav_1_ch"
+- ```String language```: Language to use for speech recognition
+- ```Array words```: Array of words to recognize
+- ```Array sentences```: Under consideration sentences
+- ```Array grammar```: Grammar to use
 
-# Audio source type/format. e.g. "nao_wav_1_ch"
-String audio_source
-
-# Language to use for speech recognition
-String language
-
-# Array of words to recognize
-Array words
-
-# Under consideration sentences
-Array sentences
-
-# Grammar to use
-Array grammar
-```
-
-**Response object: SpeechRecognitionSphinx.Response**
+**Return values**
 ```python
 # Recognized words
 Array words
@@ -308,34 +296,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import SpeechRecognitionSphinx
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = SpeechRecognitionSphinx()
-
-# System path to the image file
-msg.req.audiofile = "PATH"
-# Audio source type/format. e.g. "nao_wav_1_ch"
-msg.req.audio_source = "nao_wav_1_ch"
-# Language to use for speech recognition
-msg.req.language = 'en'
-# Array of words to recognize
-msg.req.words = ['yes', 'no']
-# Under consideration sentences
-msg.req.sentences = msg.req.words
-# Grammar to use
-msg.req.grammar = []
-
-response = svc.call(msg)
+response = ch.speechRecognitionSphinx("PATH", "nao_wav_1_ch", 'en', ['yes', 'no'], ['yes', 'no'], [])
 ```
 
 **Example output**:
 ```python
-print response.words
->> ['yes']
-print response.error
->> ""
+print response
+>> {'words': [u'no', u'no', u'yes'], 'error': u''}
 ```
 
 ***
@@ -344,21 +314,14 @@ print response.error
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Speech-Detection-using-Google-API)
 
-**Request object: SpeechRecognitionGoogle.Request**
+**Sample call** ```speechRecognitionGoogle(audiofile, audio_source, language)```
 
+**Input arguments**
+- ```String audiofile```: System path to the audio file
+- ```String audio_source```: Audio source type/format. e.g. "nao_wav_1_ch"
+- ```String language```: Language to use for speech recognition
 
-```py
-# System path to the audio file
-String audiofile
-
-# Audio source type/format. e.g. "nao_wav_1_ch"
-String audio_source
-
-# Language to use for speech recognition
-String language
-```
-
-**Response object: SpeechRecognitionGoogle.Response**
+**Return values**
 
 ```py
 # Recognized words with highest confidence
@@ -373,30 +336,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import SpeechRecognitionGoogle
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = SpeechRecognitionGoogle()
-
-# System path to the image file
-msg.req.audiofile = "PATH"
-# Audio source type/format. e.g. "nao_wav_1_ch"
-msg.req.audio_source = "nao_wav_1_ch"
-# Language to use for speech recognition
-msg.req.language = 'en'
-
-response = svc.call(msg)
+response = ch.speechRecognitionGoogle("PATH", "nao_wav_1_ch", 'en')
 ```
 
 **Example output**:
 ```python
-print response.words
->> ['I', 'want', 'to', 'go', 'out']
-print response.alternatives
->> [['I', 'want', 'to', 'go', 'up'], ['I', 'want', 'to', 'grow', 'up']]
-print response.error
->> ""
+print response
+>> {'error': u'', 'words': [u'map'], 'sentences': [[u'math'], [u'mark'], [u'Mass']]}
 ```
 
 ***
@@ -405,16 +354,13 @@ print response.error
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper)
 
-**Request object: OntologySubclasses.Request**
+**Sample call** ```ontologySubclasses(ontology_class, recursive)```
 
-```py
-# The query to the ontology database
-String ontology_class
-# Recursive search
-Bool recursive
-```
+**Input arguments**
+- ```String ontology_class```: The query to the ontology database
+- ```Bool recursive```: Recursive search
 
-**Response object: OntologySubclasses.Response**
+**Return values**
 
 ```py
 # Ontology query results.
@@ -426,25 +372,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import OntologySubclasses
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = OntologySubclasses()
-# Ontology subclasses of Oven query
-msg.req.ontology_class = 'Oven'
-msg.req.recursive = False
-
-response = svc.call(msg)
+response = ch.ontologySubclasses("Oven", False)
 ```
-
 
 **Example output**:
 ```python
-print response.results
->> [u'http://knowrob.org/kb/knowrob.owl#MicrowaveOven', u'http://knowrob.org/kb/knowrob.owl#RegularOven', u'http://knowrob.org/kb/knowrob.owl#ToasterOven']
-print response.error
->> ""
+print response
+>> {'results': [u'http://knowrob.org/kb/knowrob.owl#MicrowaveOven', u'http://knowrob.org/kb/knowrob.owl#RegularOven', u'http://knowrob.org/kb/knowrob.owl#ToasterOven'], 'error': u''}
 ```
 
 ***
@@ -453,16 +390,13 @@ print response.error
 
 **Description [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper)**
 
-**Request object: OntologySuperclasses.Request**
+**Sample call** ```ontologySuperclasses(ontology_class, recursive)```
 
-```python
-# The query to the ontology database
-String ontology_class
-# Recursive search
-Bool recursive
-```
+**Input arguments**
+- ```String ontology_class```: The query to the ontology database
+- ```Bool recursive```: Recursive search
 
-**Response object: OntologySuperclasses.Response**
+**Return values**
 
 ```python
 # Ontology query results.
@@ -474,25 +408,16 @@ String error
 
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import OntologySuperclasses
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = OntologySuperclasses()
-# Ontology superclasses of Oven query
-msg.req.ontology_class = 'Oven'
-msg.req.recursive = False
-
-response = svc.call(msg)
+response = ch.ontologySuperclasses("Oven", False)
 ```
-
 
 **Example output**:
 ```python
-print response.results
->> [u'http://knowrob.org/kb/knowrob.owl#Box-Container', u'http://knowrob.org/kb/knowrob.owl#FurniturePiece', u'http://knowrob.org/kb/knowrob.owl#HeatingDevice', u'http://knowrob.org/kb/knowrob.owl#HouseholdAppliance']
-print response.error
->> ""
+print response
+>> {'results': [u'http://knowrob.org/kb/knowrob.owl#Box-Container', u'http://knowrob.org/kb/knowrob.owl#FurniturePiece', u'http://knowrob.org/kb/knowrob.owl#HeatingDevice', u'http://knowrob.org/kb/knowrob.owl#HouseholdAppliance'], 'error': u''}
 ```
 
 ***
@@ -501,20 +426,14 @@ print response.error
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Knowrob-wrapper)
 
-**Request object: OntologyIsSubsuperclass.Request**
+**Sample call** ```ontologyIsSubsuperclass(parent_class, child_class, recursive)```
 
-```python
-# The parent class
-String parent_class
+**Input arguments**
+- ```String parent_class```: The parent class
+- ```String child_class```: The child class
+- ```Bool recursive```: Recursive search
 
-# The child class
-String child_class
-
-# Recursive search
-Bool recursive
-```
-
-**Response object: OntologyIsSubsuperclass.Response**
+**Return values**
 
 ```python
 # Ontology query result.
@@ -524,34 +443,21 @@ Bool result
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import OntologyIsSubsuperclass
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = OntologyIsSubsuperclass()
-# Parent class
-msg.req.parent_class = 'Oven'
-# Child class
-msg.req.child_class = 'Microwave'
-
-response = svc.call(msg)
+response = ch.ontologyIsSubsuperclass("Oven", "Microwave", False)
 ```
-
 
 **Example output**:
 ```python
-print response.result
->> True
-print response.error
->> ""
+print response
+>> {'result': False, 'error': u''}
 ```
 
-
 ***
-
 
 ## Cognitive Exercises - Test Selector
 
