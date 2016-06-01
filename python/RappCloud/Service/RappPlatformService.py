@@ -158,12 +158,11 @@ class RappPlatformService(object):
 
     def __load_platform_cfg(self):
         _filepath = path.expanduser(
-            '~/.config/rapp_platform_python_api/config')
+            '~/.config/rapp_platform/python_platform_api/config')
 
         try:
             f = open(_filepath, 'r')
             _params = yaml.load(f)
-
         except (IOError, yaml.YAMLError) as exc:
             print str(exc)
             print "Using default parameters:"

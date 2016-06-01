@@ -14,12 +14,24 @@ Otherwise it falls back to use TLSv1.1 adapter.
 
 ## Installation
 
-You can install the Python Rapp API package either in global system scope or under User's score.
+You can install the Python Rapp API package either in system global space or in user's space:
 
-We recommend installing the package on development mode. This way, editing the source code the changes will be available directly without having to reinstall every time that you make minor changes.
+To install in user's space simply execute:
+
+```bash
+$ python setup.py install --user
+```
+
+Root permissions are required in order to install system-wise:
+
+```bash
+$ sudo python setup.py install
+```
 
 
-```shell
+If you indent to contribute, it is recommended to install in development mode. This way, editing the source code the changes will be available directly without having to reinstall every time that you make minor changes.
+
+```bash
 python setup.py develop --user
 ```
 
@@ -34,13 +46,13 @@ User's receive a token on registration to the RAPP Platform.
 
 Tokens are stored under:
 
-```shell
+```bash
 ${HOME}/.config/rapp_platform/tokens
 ```
 
 Place the, received from the RAPP Platform, under the aforementioned directory (the file has to be named to **app**):
 
-```shell
+```bash
 ${HOME}/.config/rapp_platform/tokens/app
 ```
 
@@ -54,8 +66,8 @@ The API allows to set default parameters, for the RAPP Platform to connect to, t
 
 Parameters are imported from the configuration file:
 
-```
-~/.config/rapp_platform_python_api/config
+```bash
+~/.config/rapp_platform/python_platform_api/config
 ```
 
 Below is a sample of the file that configures the API to connect to `http://localhost:9001`:
@@ -79,7 +91,7 @@ The `RappPlatformService` class is used to establish connections to the RAPP-Pla
 - `Response` object. RAPP-Platform Service specific Response message
 
 
-```py
+```python
 from RappCloud import RappPlatformService
 
 svcClient = RappPlatformService(persistent=True, timeout=30000)
