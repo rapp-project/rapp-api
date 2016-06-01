@@ -7,5 +7,5 @@
 import CloudMsgs
 import Objects
 from Service import RappPlatformService
-import RappPlatformApi
-__all__ = ["CloudMsgs", "RappPlatformService", "Objects", "RappPlatformApi"]
+from RappPlatformApi import RappPlatformAPI
+__all__ = ["CloudMsgs", "RappPlatformService", "Objects", "RappPlatformAPI"]
