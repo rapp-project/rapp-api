@@ -26,33 +26,33 @@
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
-from RappCloud.CloudMsgs import FaceDetection
-from RappCloud.CloudMsgs import QrDetection
-from RappCloud.CloudMsgs import HumanDetection
-from RappCloud.CloudMsgs import HazardDetectionDoor
-from RappCloud.CloudMsgs import HazardDetectionLight
-from RappCloud.CloudMsgs import ObjectRecognitionCaffe
-from RappCloud.CloudMsgs import SetNoiseProfile
-from RappCloud.CloudMsgs import SpeechRecognitionSphinx
-from RappCloud.CloudMsgs import SpeechRecognitionGoogle
-from RappCloud.CloudMsgs import OntologySubclasses
-from RappCloud.CloudMsgs import OntologySuperclasses
-from RappCloud.CloudMsgs import OntologyIsSubsuperclass
-from RappCloud.CloudMsgs import CognitiveExerciseSelect
-from RappCloud.CloudMsgs import CognitiveGetHistory
-from RappCloud.CloudMsgs import CognitiveGetScores
-from RappCloud.CloudMsgs import CognitiveRecordPerformance
-from RappCloud.CloudMsgs import EmailFetch
-from RappCloud.CloudMsgs import EmailSend
-from RappCloud.CloudMsgs import WeatherReportCurrent
-from RappCloud.CloudMsgs import WeatherReportForecast
-from RappCloud.CloudMsgs import PathPlanningPlan2D
-from RappCloud.CloudMsgs import PathPlanningUploadMap
-from RappCloud.CloudMsgs import TextToSpeech
-from RappCloud.CloudMsgs import NewsExplore
-from RappCloud.CloudMsgs import Geolocation
+from CloudMsgs import FaceDetection
+from CloudMsgs import QrDetection
+from CloudMsgs import HumanDetection
+from CloudMsgs import HazardDetectionDoor
+from CloudMsgs import HazardDetectionLight
+from CloudMsgs import ObjectRecognitionCaffe
+from CloudMsgs import SetNoiseProfile
+from CloudMsgs import SpeechRecognitionSphinx
+from CloudMsgs import SpeechRecognitionGoogle
+from CloudMsgs import OntologySubclasses
+from CloudMsgs import OntologySuperclasses
+from CloudMsgs import OntologyIsSubsuperclass
+from CloudMsgs import CognitiveExerciseSelect
+from CloudMsgs import CognitiveGetHistory
+from CloudMsgs import CognitiveGetScores
+from CloudMsgs import CognitiveRecordPerformance
+from CloudMsgs import EmailFetch
+from CloudMsgs import EmailSend
+from CloudMsgs import WeatherReportCurrent
+from CloudMsgs import WeatherReportForecast
+from CloudMsgs import PathPlanningPlan2D
+from CloudMsgs import PathPlanningUploadMap
+from CloudMsgs import TextToSpeech
+from CloudMsgs import NewsExplore
+from CloudMsgs import Geolocation
 
-from RappCloud import RappPlatformService
+from Service import RappPlatformService
 
 class RappPlatformAPI():
     def __init__(self):
