@@ -550,7 +550,7 @@ String language
 Array words
 
 # Alternative sentences
-Array sentences
+Array alternatives
 
 # Error message
 String error
