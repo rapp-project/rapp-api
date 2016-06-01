@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+from os import path
 try:
     from setuptools import setup, find_packages
 except ImportError:
@@ -14,6 +15,7 @@ except ImportError:
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+cfgDestPath = path.expanduser('~/.config/rapp_platform/python_platform_api')
 
 setup(
     install_requires = [
@@ -23,18 +25,27 @@ setup(
       'pyasn1'
     ],
     name='RappCloud',
-    version='0.1.0',
+    version='0.6.0',
     description='Rapp Platform Python API',
     url='https://github.com/rapp-project/rapp-api/tree/master/python',
+    download_url='https://github.com/rapp-project/rapp-api/tree/master/python',
     author='Konstantinos Panayiotou',
     author_email='klpanagi@gmail.com',
     maintainer='Konstantinos Panayiotou',
     maintainer_email='klpanagi@gmail.com',
     license='Apache 2',
     include_package_data=True,
+    # A list naming all the packages you want to include
     packages=find_packages(),
+    # Package data to be added to packages
     package_data={
-        'RappCloud': ['config/*']
+        # 'RappCloud': ['']
     },
+    # Specify additional files needed by the module distribution: configuration files, message catalogs, data files
+    data_files=[
+        (cfgDestPath, ['RappCloud/config']),
+    ],
+    # A script(s) to be installed into standard locations like /usr/bin
+    scripts=[],
     long_description=read('README.md') if os.path.exists('README.md') else ""
 )
