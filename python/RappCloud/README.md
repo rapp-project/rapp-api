@@ -463,23 +463,15 @@ print response
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
 
-**Request object: CognitiveExerciseSelect.Request**
-```python
-# Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
-# https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise
-String test_type
+**Sample call** ```cognitiveExerciseSelect(test_type, test_subtype, test_diff, test_index)```
 
-# Force select exercise from this subtype. Depends on test_type value
-String test_subtype
+**Input arguments**
+- ```String test_type```: Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
+- ```String test_subtype```: Force select exercise from this subtype. Depends on test_type value
+- ```String test_diff```: Force select exercise from this difficulty. Depends on test_type and test_subtype values
+- ```String test_index```: Force select exercise index. Depends on test_type, test_subtype and test_diff values
 
-# Force select exercise from this difficulty. Depends on test_type and test_subtype values
-String test_diff
-
-# Force select exercise index. Depends on test_type, test_subtype and test_diff values
-String test_index
-```
-
-**Response object: CognitiveExerciseSelect.Response**
+**Return values**
 ```python
 # Set of questions for the exercise
 Array questions
@@ -503,70 +495,36 @@ String test_subtype
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import CognitiveExerciseSelect
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = CognitiveExerciseSelect()
-
-# Test type
-msg.req.test_type = 'ArithmeticCts'
-# Test subtype
-msg.req.test_subtype = 'TransactionChangeCts'
-# Test difficulty
-msg.req.test_diff = '1'
-# Test index
-msg.req.test_index = '1'
-
-response = svc.call(msg)
+response = ch.cognitiveExerciseSelect('ArithmeticCts', 'TransactionChangeCts', '1', '1')
 ```
-
 
 **Example output**:
 ```python
-print response.test_type
->> "ArithmeticCts"
-print response.test_subtype
->> "TransactionChangeCts"
-print response.test_instance
->> ArithmeticCts_stXqnGrc
-print response.questions
->> [ "Q1", "Q2", ... ]
-print response.possib_ans
->> [ ["Q1_PA1", "Q1_PA2", ...], ["Q2_PA1", "Q2_PA2", ...], ... ]
-print response.correct_ans
->> [ "Q1_CA", "Q2_CA", ... ]
-print response.error
->> ""
+print response
+>> {'error': u'', 'test_type': u'ArithmeticCts', 'possib_ans': [[u'\u03ad\u03bd\u03b1 \u03b5\u03c5\u03c1\u03ce \u03ba\u03b1\u03b9 \u03b5\u03af\u03ba\u03bf\u03c3\u03b9 \u03bb\u03b5\u03c0\u03c4\u03ac', u'\u03b4\u03cd\u03bf \u03b5\u03c5\u03c1\u03ce \u03ba\u03b1\u03b9 \u03b4\u03ad\u03ba\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac', u'\u03ad\u03bd\u03b1 \u03b5\u03c5\u03c1\u03ce \u03ba\u03b1\u03b9 \u03c3\u03b1\u03c1\u03ac\u03bd\u03c4\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac', u'\u03b5\u03be\u03ae\u03bd\u03c4\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac'], [u'\u03ad\u03bd\u03b1 \u03b5\u03c5\u03c1\u03ce \u03ba\u03b1\u03b9 \u03c0\u03ad\u03bd\u03c4\u03b5 \u03bb\u03b5\u03c0\u03c4\u03ac', u'\u03b4\u03cd\u03bf \u03b5\u03c5\u03c1\u03ce \u03ba\u03b1\u03b9 \u03b5\u03bd\u03b5\u03bd\u03ae\u03bd\u03c4\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac', u'\u03ad\u03bd\u03b1 \u03b5\u03c5\u03c1\u03ce \u03ba\u03b1\u03b9 \u03b5\u03bd\u03b5\u03bd\u03ae\u03bd\u03c4\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac', u'\u03b5\u03bd\u03b5\u03bd\u03ae\u03bd\u03c4\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac']], 'test_subtype': u'TransactionChangeCts', 'correct_ans': [u'\u03ad\u03bd\u03b1 \u03b5\u03c5\u03c1\u03ce \u03ba\u03b1\u03b9 \u03c3\u03b1\u03c1\u03ac\u03bd\u03c4\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac', u'\u03b5\u03bd\u03b5\u03bd\u03ae\u03bd\u03c4\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac'], 'questions': [u'\u0391\u03b3\u03bf\u03c1\u03ac\u03b6\u03bf\u03c5\u03bc\u03b5 \u03ad\u03bd\u03b1 \u03c8\u03c9\u03bc\u03af \u03c0\u03bf\u03c5 \u03ba\u03ac\u03bd\u03b5\u03b9 \u03b5\u03be\u03ae\u03bd\u03c4\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac; \u03ba\u03b1\u03b9 \u03b4\u03af\u03bd\u03bf\u03c5\u03bc\u03b5; \u03ad\u03bd\u03b1 \u03ba\u03ad\u03c1\u03bc\u03b1 \u03c4\u03c9\u03bd \u03b4\u03cd\u03bf \u03b5\u03c5\u03c1\u03ce. \u03a0\u03cc\u03c3\u03b1 \u03c1\u03ad\u03c3\u03c4\u03b1 \u03b8\u03b1 \u03bc\u03b1\u03c2 \u03b4\u03ce\u03c3\u03b5\u03b9 \u03bf \u03c6\u03bf\u03cd\u03c1\u03bd\u03b1\u03c1\u03b7\u03c2;', u'\u0391\u03b3\u03bf\u03c1\u03ac\u03b6\u03bf\u03c5\u03bc\u03b5 \u03ad\u03bd\u03b1 \u03b3\u03ac\u03bb\u03b1 \u03c0\u03bf\u03c5 \u03ba\u03ac\u03bd\u03b5\u03b9 \u03ad\u03bd\u03b1 \u03b5\u03c5\u03c1\u03ce \u03ba\u03b1\u03b9 \u03b4\u03ad\u03ba\u03b1 \u03bb\u03b5\u03c0\u03c4\u03ac; \u03ba\u03b1\u03b9 \u03b4\u03af\u03bd\u03bf\u03c5\u03bc\u03b5; \u03ad\u03bd\u03b1 \u03ba\u03ad\u03c1\u03bc\u03b1 \u03c4\u03c9\u03bd \u03b4\u03cd\u03bf \u03b5\u03c5\u03c1\u03ce. \u03a0\u03cc\u03c3\u03b1 \u03c1\u03ad\u03c3\u03c4\u03b1 \u03b8\u03b1 \u03c0\u03ac\u03c1\u03bf\u03c5\u03bc\u03b5 \u03c0\u03af\u03c3\u03c9;'], 'test_instance': u'ArithmeticCts_rMsqkRjP'}
 ```
 
+(This response is in Greek)
 
 ***
-
 
 ## Cognitive Exercises - Get History Records
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
 
+**Sample call** ```cognitiveGetHistory(test_type, time_from, time_to)```
 
-**Request object: CognitiveGetHistory.Request**
-```python
-# Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
-# https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise
-String test_type
+**Input arguments**
+- ```String test_type```: Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
+- ```Int time_from```: Unix timestamp
+- ```Int time_to```: Unix timestamp
 
-# Unix timestamp
-Int time_from
-
-# Unix timestamp
-Int time_to
-```
-
-
-**Response object: CognitiveGetHistory.Response**
+**Return values**
 ```python
 # History records
 Dict records
@@ -575,54 +533,33 @@ Dict records
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import CognitiveGetHistory
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = CognitiveGetHistory()
-
-# Test type ('' == ALL)
-msg.req.test_type = ''
-# Time from value
-msg.req.time_from = 0
-# Time to value
-msg.req.time_to = 100000000
-
-response = svc.call(msg)
+response = ch.cognitiveGetHistory('ArithmeticCts', 0, 1000000000000)
 ```
-
 
 **Example output**:
 ```python
-print response.records
->> {u'reasoningcts': [], u'arithmeticcts': [], u'awarenesscts': []}
-print response.error
->> ""
+print response
+>> {'records': {u'arithmeticcts': [{u'difficulty': u'1', u'timestamp': 1462879489, u'subtype': u'BasicArithmeticCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_bneXbLGX', u'type': u'ArithmeticCts'}, {u'difficulty': u'1', u'timestamp': 1462013618, u'subtype': u'BasicArithmeticCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_bneXbLGX', u'type': u'ArithmeticCts'}, {u'difficulty': u'1', u'timestamp': 1462013549, u'subtype': u'BasicArithmeticCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_bneXbLGX', u'type': u'ArithmeticCts'}, {u'difficulty': u'1', u'timestamp': 1462013438, u'subtype': u'BasicArithmeticCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_bneXbLGX', u'type': u'ArithmeticCts'}, {u'difficulty': u'1', u'timestamp': 1462013368, u'subtype': u'BasicArithmeticCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_bneXbLGX', u'type': u'ArithmeticCts'}, {u'difficulty': u'1', u'timestamp': 1462013331, u'subtype': u'BasicArithmeticCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_bneXbLGX', u'type': u'ArithmeticCts'}, {u'difficulty': u'1', u'timestamp': 1461861426, u'subtype': u'BasicArithmeticCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_bneXbLGX', u'type': u'ArithmeticCts'}, {u'difficulty': u'1', u'timestamp': 1461861382, u'subtype': u'BasicArithmeticCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_bneXbLGX', u'type': u'ArithmeticCts'}, {u'difficulty': u'2', u'timestamp': 1461861365, u'subtype': u'TimeDifferenceCts', u'score': 10, u'meanScoreForTypeUpToNow': 10.0, u'test': u'ArithmeticCts_ThPDDeBB', u'type': u'ArithmeticCts'}]}, 'error': u''}
 ```
 
-
 ***
-
 
 ## Cognitive Exercises - Get Scores
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
 
-**Request object: CognitiveGetScores.Request**
-```python
-# Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
-# https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise
-String test_type
+**Sample call** ```cognitiveGetScores(test_type, time_to)```
 
-# Unix timestamp
-Int time_to
-```
+**Input arguments**
+- ```String test_type```: Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
+- ```Int time_to```: Unix timestamp
 
-
-**Response object: CognitiveGetScores.Response**
+**Return values**
 ```python
 # Test classes indexes
 Array test_classes
@@ -634,53 +571,33 @@ Array scores
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import CognitiveGetScores
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = CognitiveGetScores()
-
-# Test type ('' == ALL)
-msg.req.test_type = ''
-# Time to value
-msg.req.time_to = 100000000
-
-response = svc.call(msg)
+response = ch.cognitiveGetScores('ArithmeticCts', 1000000000000)
 ```
-
 
 **Example output**:
 ```python
-print response.test_classes
->> [u'ArithmeticCts', u'ReasoningCts', u'AwarenessCts']
-print response.scores
->> [0.0, 0.0, 0.0]
-print response.error
->> ""
+print response
+>> {'error': u'', 'test_classes': [u'ArithmeticCts'], 'scores': [10.0]}
 ```
 
-
 ***
-
 
 ## Cognitive Exercises - Record Performance
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Cognitive-Exercise)
 
+**Sample call** ```cognitiveGetScores(test_type, time_to)```
 
-**Request object: CognitiveRecordPerformance.Request**
-```python
-# The exercise test instance name (Returned by CognitiveExerciseSelect)
-String test_instance
+**Input arguments**
+- ```String test_instance```: The exercise test instance name (Returned by CognitiveExerciseSelect)
+- ```Int score```: The score (from 0.0 - 10.0)
 
-# Performance score to record
-Int score
-```
-
-**Response object: CognitiveRecordPerformance.Response**
+**Return values**
 
 ```
 # Cognitive exercise performance entry in ontology.
@@ -690,40 +607,25 @@ String performance_entry
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import CognitiveRecordPerformance
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = CognitiveRecordPerformance()
-
-# Test instance (Returned by calling CognitiveExerciseSelect)
-msg.req.test_instance = 'ArithmeticCts_stXqnGrc'
-# Performance score to record
-msg.req.score = 40
-
-response = svc.call(msg)
+response = ch.cognitiveRecordPerformance('ArithmeticCts_rMsqkRjP', 10.0)
 ```
-
 
 **Example output**:
 ```python
-print response.performance_entry
->> "http://knowrob.org/kb/knowrob.owl#CognitiveTestPerformed_gaOpMBqF"
-print response.error
->> ""
+print response
+>> {'performance_entry': u'http://knowrob.org/kb/knowrob.owl#CognitiveTestPerformed_MewmmEsP', 'error': u''}
 ```
 
-
 ***
-
 
 ## Email - Fetch Received Emails
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Email)
-
 
 **Request object: EmailFetch.Request**
 ```python
