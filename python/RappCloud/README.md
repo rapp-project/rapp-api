@@ -598,7 +598,6 @@ print response
 - ```Int score```: The score (from 0.0 - 10.0)
 
 **Return values**
-
 ```
 # Cognitive exercise performance entry in ontology.
 String performance_entry
@@ -627,35 +626,19 @@ print response
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Email)
 
-**Request object: EmailFetch.Request**
-```python
-# Email account username
-String email
+**Sample call** ```emailFetch(email, password, server, port, date_from, date_to, email_status, num_emails)```
 
-# Email account password
-String password
+**Input arguments**
+- ```String email```: Email account username
+- ```String password```: Email account password
+- ```String server```: The email server imap address, i.e. 'imap.gmail.com'.
+- ```String port```: The email server imap port. Leave empty to use default value.
+- ```Int date_from```: Emails since date. Unix timestamp.
+- ```Int date_do```: Emails until date. Unix timestamp.
+- ```String email_status```: Define which mails the users requests. Values: ALL, UNSEEN(DEFAULT)
+- ```Int num_emails```: Number of emails to fetch.
 
-# The email server imap address, i.e. 'imap.gmail.com'.
-String server
-
-# The email server imap port. Leave empty to use default value.
-String port
-
-# Emails since date. Unix timestamp.
-Int date_from
-
-# Emails until date. Unix timestamp.
-Int date_to
-
-# Define which mails the users requests. Values: ALL, UNSEEN(DEFAULT)
-String email_status
-
-# Number of emails to fetch.
-Int num_emails
-```
-
-
-**Response object: EmailFetch.Response**
+**Return values**
 ```python
 # Array of emailEntry objects, where emailEntry is of structure:
 # { sender: '', receivers: [], date: '', body: '', attachments: [] }
@@ -665,139 +648,73 @@ Array emails
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import EmailFetch 
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = EmailFetch()
-
-# Email account name
-msg.req.email = "EMAIL_ACCOUNT_NAME"
-# Email account password
-msg.req.password = "EMAIL_PASSWORD"
-# The imap address of the email server/provider
-msg.req.server = "imap.gmail.com"
-# The listening port number of the imap server/providrer
-msg.req.port = ""
-# Fetch received emails from this date value.
-msg.req.date_from = "0"
-# Fetch emails up to this date value.
-# Max number of emails to fetch
-msg.req.num_emails = 5
-
-response = svc.call(msg)
+response = ch.emailFetch('your.mail@gmail.com', 'your-password', 'imap.gmail.com', '993', 0, 100000000, 'ALL', 1)
 ```
-
 
 **Example output**:
 ```python
-print response.emails
->> { sender: 'SENDER_EMAIL', receivers: ["R1", "R2"], body: 'Body of the email', date: '', attachments: [] }
-print response.error
->> ""
+print response
+>> 
 ```
 
-
-
 ***
-
 
 ## Email - Send
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Email)
 
+**Sample call** ```emailSend(email, password, server, port, recipients, body, subject, attach_file)```
 
-**Request object: EmailSend.Request**
-```python
-# Email account username
-String email
+**Input arguments**
+- ```String email```: Email account username
+- ```String password```: Email account password
+- ```String server```: The email server imap address, i.e. 'imap.gmail.com'.
+- ```String port```: The email server imap port. Leave empty to use default value.
+- ```Array recipients```: Email addresses of the recipients
+- ```String body```: Email body content
+- ```String subject```: Email subject
+- ```String attach_file```: Attachment file path. Can be a .zip file that will be decompressed on the server.
 
-# Email account password
-String password
-
-# The email server imap address, i.e. 'imap.gmail.com'.
-String server
-
-# The email server imap port. Leave empty to use default value.
-String port
-
-# Email addresses of the recipients
-Array recipients
-
-# Email body content
-String body
-
-# Email subject
-String subject
-
-# Attachment file path. Can be a .zip file that will be decompressed on the server.
-String attach_file
-```
-
-**Response object: EmailSend.Response**
+**Return values**
 
 ```python
 # Error message
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import EmailSend
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = EmailSend()
-
-# Email account name
-msg.req.email = "EMAIL_ACCOUNT_NAME"
-# Email account password
-msg.req.password = "EMAIL_PASSWORD"
-# The imap address of the email server/provider
-msg.req.server = "imap.gmail.com"
-# The listening port number of the imap server/providrer
-msg.req.port = ""
-msg.req.body = "Test sending email"
-msg.req.subject = "Test sending email"
-msg.req.recipients = ["RECIPIENT_1", "RECIPIENT_2"]
-
-response = svc.call(msg)
+response = ch.emailSend('your.mail@gmail.com', 'your-password', 'imap.gmail.com', '993', ['another.mail@gmail.com'], 'This is the body', 'This is the subject', '~/attachment.zip')
 ```
-
 
 **Example output**:
 ```python
-print response.error
->> ""
+print response
+>> {'error': u''}
 ```
 
-
 ***
-
 
 ## Weather Reporter - Current Weather
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Weather-Reporter)
 
+**Sample call** ```weatherReportCurrent(city, weather_reporter, metric)```
 
-**Request object: WeatherReportCurrent.Request**
-```python
-# The desired city
-String city
+**Input arguments**
+- ```String city```: The desired city
+- ```String weather_reporter```: The weather API to use. Defaults to "forecast.io" .
+- ```Int metric```: The return value units (0 for metric, 1 for US units)
 
-# The weather API to use. Defaults to "yweather" .
-String weather_reporter
-
-# The return value units.
-Int metric
-```
-
-
-**Response object: WeatherReportCurrent.Response**
+**Return values**
 ```python
 # Current date
 String date
@@ -830,50 +747,32 @@ String wind_direction
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import WeatherReportCurrent
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = WeatherReportCurrent()
-
-msg.req.city = "Athens"
-
-response = svc.call(msg)
+response = ch.weatherReportCurrent('Athens', 'forecast.io', 0)
 ```
-
 
 **Example output**:
 ```python
-print response.temperature
->> 21
-print response.error
->> ""
+print response
+>>
 ```
-
-
 
 ## Weather Reporter - Forecast
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Weather-Reporter)
 
+**Sample call** ```weatherReportForecast(city, weather_reporter, metric)```
 
-**Request object: WeatherReportForecast.Request**
-```python
-# The desired city
-String city
+**Input arguments**
+- ```String city```: The desired city
+- ```String weather_reporter```: The weather API to use. Defaults to "forecast.io" .
+- ```Int metric```: The return value units (0 for metric, 1 for US units)
 
-# The weather API to use. Defaults to "yweather" .
-String weather_reporter
-
-# The return value units.
-Int metric
-```
-
-**Response object: WeatherReportForecast.Response**
-
+**Return values**
 ```
 # Array of forecastEntry objects, where forecastEntry is of structure:
 # { high_temp: '', low_temp: '', description: '', date: '' }
@@ -883,57 +782,36 @@ Array forecast
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import WeatherReportForecast
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = WeatherReportForecast()
-
-msg.req.city = "Athens"
-
-response = svc.call(msg)
+response = ch.weatherReportForecast('Athens', 'forecast.io', 0)
 ```
-
 
 **Example output**:
 ```python
-print response.forecast
->> [ {FORECAST_ENTRY_1}, {FORECAST_ENTRY_2} ]
-print response.error
->> ""
+print response
+>> 
 ```
 
-
 ***
-
 
 ## Path Planning - Plan Path 2D
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Path-planner)
 
+**Sample call** ```pathPlanningPlan2D(map_name, robot_type, algorithm, pose_start, pose_goal)```
 
-**Request object: PathPlanningPlan2D.Request**
-```python
-# The name of the, stored to the Platform, map
-String map_name
+**Input arguments**
+- ```String map_name```: The name of the, stored to the Platform, map
+- ```String robot_type```: The robot type. It is required to determine it's parameters (footprint etc.)
+- ```String algorithm```: The path planning algorithm to apply.
+- ```Dict pose_start```: Start pose of the robot. Same structure to ROS-GeometryMsgs/PoseStamped
+- ```Dict pose_goal```: Goal pose of the robot. Same structure to ROS-GeometryMsgs/PoseStamped
 
-# The robot type. It is required to determine it's parameters (footprint etc.)
-String robot_type
-
-# The path planning algorithm to apply.
-String algorithm
-
-# Start pose of the robot. Same structure to ROS-GeometryMsgs/PoseStamped
-Dict pose_start
-
-# Goal pose of the robot. Same structure to ROS-GeometryMsgs/PoseStamped
-Dict pose_goal
-```
-
-**Response object: PathPlanningPlan2D.Response**
+**Return values**
 ```python
 # Plan status: https://github.com/rapp-project/rapp-platform/wiki/RAPP-Path-planner
 Int plan_found
@@ -945,109 +823,54 @@ Array path
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import PathPlanningPlan2D 
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = PathPlanningPlan2D()
-
-# The map name as previously upload to the Platform (look at [PathPlanningUploadMap](#path-planning-upload-map))
-msg.req.map_name = "MAP_NAME"
-# The type of robot executing path planning. In this case NAO robot.
-msg.req.robot_type = "NAO"
-# Use DIJKSTRA algorithm
-msg.req.algorithm = "dijkstra"
-
-msg.req.pose_start = { 
-    'header': {'seq': 0, 'stamp':{'sec': 0, 'nsecs': 0}, 'frame_id': '' },
-    'pose': {
-        'position': {'x': 10, 'y': 10, 'z': 20},
-        'orientation': {'x': 0, 'y': 0, 'z': 0, 'w': 0}
-    }
-}
-
-msg.req.pose_goal = { 
-    'header': {'seq': 0, 'stamp':{'sec': 0, 'nsecs': 0}, 'frame_id': '' },
-    'pose': {
-        'position': {'x': 30, 'y': 10, 'z': 20},
-        'orientation': {'x': 0, 'y': 0, 'z': 0, 'w': 0}
-    }
-}
-
-response = svc.call(msg)
+response = ch.pathPlanningPlan2D('Map_Name', "NAO", "dijkstra", {'pose': {'position': {'x': 10, 'y': 10, 'z': 20}, 'orientation': {'x': 0, 'y': 0, 'z': 0, 'w': 0}}}, {'pose': {'position': {'x': 50, 'y': 10, 'z': 20}, 'orientation': {'x': 0, 'y': 0, 'z': 0, 'w': 0}}})
 ```
-
 
 **Example output**:
 ```python
-print response.plan_found
->> 0
-print response.path
->> [ {POSE_1}, {POSE_2}, ... ]
-print response.error
->> ""
+print response
+>> 
 ```
 
-
 ***
-
 
 ## Path Planning - Upload Map
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Path-planner)
 
+**Sample call** ```pathPlanningPlan2D(map_name, robot_type, algorithm, pose_start, pose_goal)```
 
-**Request object: PathPlanningUploadMap.Request**
-```python
-# The name of the map to store on the Platform
-String map_name
+**Input arguments**
+- ```String map_name```: The name of the map to store on the Platform
+- ```String png_file```: Path to the map image png file.
+- ```String yaml_file```: Path to the map description yaml file.
 
-# Path to the map image png file.
-String png_file
-
-# Path to the map description yaml file.
-String yaml_file
-```
-
-
-**Response object: PathPlanningUploadMap.Response**
+**Return values**
 ```python
 # Error message
 String error
 ```
 
-
 **Call example**:
 ```python
-from RappCloud.CloudMsgs import PathPlanningUploadMap
-from RappCloud import RappPlatformService
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
 
-svc = RappPlatformService()
-msg = PathPlanningUploadMap()
-
-# The map name
-msg.req.map_name = "MAP_NAME"
-# Path to the map png image gile
-msg.req.png_file = "PATH"
-# Path to the map yaml descriptor file
-msg.req.yaml_file = "PATH"
-
-response = svc.call(msg)
+response = ch.pathPlanningUploadMap('Map_Name', '~/map.png', '~/map_yaml.yaml')
 ```
-
 
 **Example output**:
 ```python
-print response.error
->> ""
+print response
+>> {'error': u''}
 ```
 
-
 ***
-
 
 ## Text To Speech
 
