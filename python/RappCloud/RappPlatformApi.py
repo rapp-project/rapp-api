@@ -58,7 +58,7 @@ class RappPlatformAPI():
     def __init__(self):
         self.svc_caller = RappPlatformService()
 
-    def faceDetection(self, imageFilepath, fast):
+    def faceDetection(self, imageFilepath, fast = False):
         msg = FaceDetection()
         msg.req.imageFilepath = imageFilepath
         response = self.svc_caller.call(msg)
@@ -96,7 +96,7 @@ class RappPlatformAPI():
                 }
 
     def hazardDetectionLights(self, imageFilepath):
-        msg = HazardDetectionLights()
+        msg = HazardDetectionLight()
         msg.req.imageFilepath = imageFilepath
         response = self.svc_caller.call(msg)
         return {\
@@ -123,13 +123,15 @@ class RappPlatformAPI():
                 }
 
     def speechRecognitionSphinx(self, audiofile, audio_source, language, words, \
-            sentences, grammar):
+            sentences = [], grammar = []):
         msg = SpeechRecognitionSphinx()
         msg.req.audiofile = audiofile
         msg.req.audio_source = audio_source
         msg.req.language = language
         msg.req.words = words
         msg.req.sentences = sentences
+        if sentences == []:
+            msg.req.sentences = words
         msg.req.grammar = grammar
         response = self.svc_caller.call(msg)
         return {\
@@ -145,11 +147,11 @@ class RappPlatformAPI():
         response = self.svc_caller.call(msg)
         return {\
                 'words': response.words,\
-                'sentences': response.alternatives,\
+                'alternatives': response.alternatives,\
                 'error': response.error\
                 }
 
-    def ontologySubclasses(self, ontology_class, recursive):
+    def ontologySubclasses(self, ontology_class, recursive = False):
         msg = OntologySubclasses()
         msg.req.ontology_class = ontology_class
         msg.req.recursive = recursive
@@ -159,7 +161,7 @@ class RappPlatformAPI():
                 'error': response.error\
                 }
 
-    def ontologySuperclasses(self, ontology_class, recursive):
+    def ontologySuperclasses(self, ontology_class, recursive = False):
         msg = OntologySuperclasses()
         msg.req.ontology_class = ontology_class
         msg.req.recursive = recursive
@@ -169,7 +171,7 @@ class RappPlatformAPI():
                 'error': response.error\
                 }
 
-    def ontologyIsSubsuperclass(self, parent_class, child_class, recursive):
+    def ontologyIsSubsuperclass(self, parent_class, child_class, recursive = False):
         msg = OntologyIsSubsuperclass()
         msg.req.parent_class = parent_class
         msg.req.child_class = child_class
@@ -180,12 +182,16 @@ class RappPlatformAPI():
                 'error': response.error\
                 }
 
-    def cognitiveExerciseSelect(self, test_type, test_subtype, test_diff, test_index):
+    def cognitiveExerciseSelect(self, test_type = '', test_subtype = '', test_diff = -1, test_index = -1):
         msg = CognitiveExerciseSelect()
-        msg.req.test_type = test_type
-        msg.req.test_subtype = test_subtype
-        msg.req.test_diff = test_diff
-        msg.req.test_index = test_index
+        if test_type != '':
+            msg.req.test_type = test_type
+        if test_subtype != '':
+            msg.req.test_subtype = test_subtype
+        if test_diff != -1:
+            msg.req.test_diff = test_diff
+        if test_index != -1:
+            msg.req.test_index = test_index
         response = self.svc_caller.call(msg)
         return {\
                 'test_type': response.test_type,\
@@ -197,18 +203,21 @@ class RappPlatformAPI():
                 'error': response.error\
                 }
 
-    def cognitiveGetHistory(self, test_type, time_from, time_to):
+    def cognitiveGetHistory(self, test_type = '', time_from = -1, time_to = -1):
         msg = CognitiveGetHistory()
-        msg.req.test_type = test_type
-        msg.req.time_from = time_from
-        msg.req.time_to = time_to
+        if test_type != '':
+            msg.req.test_type = test_type
+        if time_from != -1:
+            msg.req.time_from = time_from
+        if time_to != -1:
+            msg.req.time_to = time_to
         response = self.svc_caller.call(msg)
         return {\
                 'records': response.records,\
                 'error': response.error\
                 }
 
-    def cognitiveGetScores(self, test_type, time_to):
+    def cognitiveGetScores(self, test_type = '' , time_to = -1):
         msg = CognitiveGetScores()
         msg.req.test_type = test_type
         msg.req.time_to = time_to
