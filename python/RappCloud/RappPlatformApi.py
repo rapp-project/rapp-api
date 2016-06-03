@@ -219,8 +219,10 @@ class RappPlatformAPI():
 
     def cognitiveGetScores(self, test_type = '' , time_to = -1):
         msg = CognitiveGetScores()
-        msg.req.test_type = test_type
-        msg.req.time_to = time_to
+        if test_type != '':
+            msg.req.test_type = test_type
+        if time_to != -1:
+            msg.req.time_to = time_to
         response = self.svc_caller.call(msg)
         return {\
                 'test_classes': response.test_classes,\
