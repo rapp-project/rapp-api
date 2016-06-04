@@ -33,7 +33,7 @@
 
 **Input arguments**
 - ```String imageFilepath```: System path to the image file
-- ```Bool fast```: If true, detection will take less time but it will be less accurate
+- ```Bool fast```: If true, detection will take less time but it will be less accurate. The default value is False
 
 **Return values**
 ```python
@@ -282,8 +282,8 @@ print response
 - ```String audio_source```: Audio source type/format. e.g. "nao_wav_1_ch"
 - ```String language```: Language to use for speech recognition
 - ```Array words```: Array of words to recognize
-- ```Array sentences```: Under consideration sentences
-- ```Array grammar```: Grammar to use
+- ```Array sentences```: Under consideration sentences. Default value is ```[]```, meaning that it will take the same values as ```words```
+- ```Array grammar```: Grammar to use. Default value is ```[]```
 
 **Return values**
 ```python
@@ -299,7 +299,7 @@ String error
 from RappCloud import RappPlatformAPI
 ch = RappPlatformAPI()
 
-response = ch.speechRecognitionSphinx("PATH", "nao_wav_1_ch", 'en', ['yes', 'no'], ['yes', 'no'], [])
+response = ch.speechRecognitionSphinx("PATH", "nao_wav_1_ch", 'en', ['yes', 'no'])
 ```
 
 **Example output**:
@@ -358,7 +358,7 @@ print response
 
 **Input arguments**
 - ```String ontology_class```: The query to the ontology database
-- ```Bool recursive```: Recursive search
+- ```Bool recursive```: Recursive search. Default value is ```False```
 
 **Return values**
 
@@ -375,7 +375,7 @@ String error
 from RappCloud import RappPlatformAPI
 ch = RappPlatformAPI()
 
-response = ch.ontologySubclasses("Oven", False)
+response = ch.ontologySubclasses("Oven")
 ```
 
 **Example output**:
@@ -394,7 +394,7 @@ print response
 
 **Input arguments**
 - ```String ontology_class```: The query to the ontology database
-- ```Bool recursive```: Recursive search
+- ```Bool recursive```: Recursive search. Default value is ```False```
 
 **Return values**
 
@@ -411,7 +411,7 @@ String error
 from RappCloud import RappPlatformAPI
 ch = RappPlatformAPI()
 
-response = ch.ontologySuperclasses("Oven", False)
+response = ch.ontologySuperclasses("Oven")
 ```
 
 **Example output**:
@@ -431,7 +431,7 @@ print response
 **Input arguments**
 - ```String parent_class```: The parent class
 - ```String child_class```: The child class
-- ```Bool recursive```: Recursive search
+- ```Bool recursive```: Recursive search. Default value is ```False```
 
 **Return values**
 
@@ -471,6 +471,8 @@ print response
 - ```String test_diff```: Force select exercise from this difficulty. Depends on test_type and test_subtype values
 - ```String test_index```: Force select exercise index. Depends on test_type, test_subtype and test_diff values
 
+If any of the parameters is not provided, the algorithm will select a test among all the available values of this parameter.
+
 **Return values**
 ```python
 # Set of questions for the exercise
@@ -501,6 +503,7 @@ from RappCloud import RappPlatformAPI
 ch = RappPlatformAPI()
 
 response = ch.cognitiveExerciseSelect('ArithmeticCts', 'TransactionChangeCts', '1', '1')
+# Alternatively: response = ch.cognitiveExerciseSelect()
 ```
 
 **Example output**:
@@ -520,9 +523,11 @@ print response
 **Sample call** ```cognitiveGetHistory(test_type, time_from, time_to)```
 
 **Input arguments**
-- ```String test_type```: Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
+- ```String test_type```: Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts'). If not provided history from all classes is returned
 - ```Int time_from```: Unix timestamp
 - ```Int time_to```: Unix timestamp
+
+If no times are provided all recorded history values are returned.
 
 **Return values**
 ```python
@@ -556,8 +561,8 @@ print response
 **Sample call** ```cognitiveGetScores(test_type, time_to)```
 
 **Input arguments**
-- ```String test_type```: Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts')
-- ```Int time_to```: Unix timestamp
+- ```String test_type```: Cognitive Exercise type. ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts'). If this parameter is not provided, scores from all types are returned.
+- ```Int time_to```: Unix timestamp. If this parameter is not provided, scores till the present time are returned.
 
 **Return values**
 ```python
@@ -635,8 +640,8 @@ print response
 - ```String port```: The email server imap port. Leave empty to use default value.
 - ```Int date_from```: Emails since date. Unix timestamp.
 - ```Int date_do```: Emails until date. Unix timestamp.
-- ```String email_status```: Define which mails the users requests. Values: ALL, UNSEEN(DEFAULT)
-- ```Int num_emails```: Number of emails to fetch.
+- ```String email_status```: Define which mails the users requests. Values: ALL, UNSEEN. If not given, default value is UNSEEN
+- ```Int num_emails```: Number of emails to fetch. If not provided, default number is 1.
 
 **Return values**
 ```python
@@ -678,7 +683,7 @@ print response
 - ```Array recipients```: Email addresses of the recipients
 - ```String body```: Email body content
 - ```String subject```: Email subject
-- ```String attach_file```: Attachment file path. Can be a .zip file that will be decompressed on the server.
+- ```String attach_file```: Attachment file path. Can be a .zip file that will be decompressed on the server. If not set, no attachment is included.
 
 **Return values**
 
@@ -712,7 +717,7 @@ print response
 **Input arguments**
 - ```String city```: The desired city
 - ```String weather_reporter```: The weather API to use. Defaults to "forecast.io" .
-- ```Int metric```: The return value units (0 for metric, 1 for US units)
+- ```Int metric```: The return value units (0 for metric [default], 1 for US units)
 
 **Return values**
 ```python
@@ -753,6 +758,7 @@ from RappCloud import RappPlatformAPI
 ch = RappPlatformAPI()
 
 response = ch.weatherReportCurrent('Athens', '', 0)
+# Alternatively response = ch.weatherReportCurrent('Athens')
 ```
 
 **Example output**:
@@ -770,7 +776,7 @@ print response
 **Input arguments**
 - ```String city```: The desired city
 - ```String weather_reporter```: The weather API to use. Defaults to "forecast.io" .
-- ```Int metric```: The return value units (0 for metric, 1 for US units)
+- ```Int metric```: The return value units (0 for metric [default], 1 for US units)
 
 **Return values**
 ```
@@ -788,6 +794,7 @@ from RappCloud import RappPlatformAPI
 ch = RappPlatformAPI()
 
 response = ch.weatherReportForecast('Athens', 'forecast.io', 0)
+# Alternatively response = ch.weatherReportForecast('Athens')
 ```
 
 **Example output**:
@@ -802,14 +809,14 @@ print response
 
 **Description** [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Path-planner)
 
-**Sample call** ```pathPlanningPlan2D(map_name, robot_type, algorithm, pose_start, pose_goal)```
+**Sample call** ```pathPlanningPlan2D(map_name, robot_type, pose_start, pose_goal, algorithm)```
 
 **Input arguments**
 - ```String map_name```: The name of the, stored to the Platform, map
 - ```String robot_type```: The robot type. It is required to determine it's parameters (footprint etc.)
-- ```String algorithm```: The path planning algorithm to apply.
 - ```Dict pose_start```: Start pose of the robot. Same structure to ROS-GeometryMsgs/PoseStamped
 - ```Dict pose_goal```: Goal pose of the robot. Same structure to ROS-GeometryMsgs/PoseStamped
+- ```String algorithm```: The path planning algorithm to apply. If not set, default value is ```dijkstra```
 
 **Return values**
 ```python
@@ -918,12 +925,12 @@ print response
 **Sample call** ```newsExplore(news_engine, keywords, exclude_titles, region, topic, num_news)```
 
 **Input arguments**
-- ```String news_engine```: The news search engine to use.
 - ```Array keywords```: Desired keywords. Required!
-- ```Array exclude_titles```: Reject list of previously read articles, in order to avoid duplicates.
-- ```String region```: Region.
-- ```String topic```: Main topics, i.e. sports, politics, etc.
-- ```Int num_news```: Number of news stories.
+- ```String region```: Region (not required - empty by default).
+- ```String topic```: Main topics, i.e. sports, politics, etc (not required - empty by default)
+- ```String news_engine```: The news search engine to use. If not set, default value is ```eventregistry```
+- ```Int num_news```: Number of news stories. If not set, default value is 1.
+- ```Array exclude_titles```: Reject list of previously read articles, in order to avoid duplicates. If not set, default value is ```[]```.
 
 **Return values**
 ```python
@@ -941,6 +948,7 @@ from RappCloud import RappPlatformAPI
 ch = RappPlatformAPI()
 
 response = ch.newsExplore('', ['Greece', 'football'], '', '', 1)
+# Alternatively response = ch.newsExplore(['Greece', 'football'])
 ```
 
 **Example output**:
@@ -997,7 +1005,7 @@ String error
 from RappCloud import RappPlatformAPI
 ch = RappPlatformAPI()
 
-response = ch.geolocation('155.207.33.163', '')
+response = ch.geolocation('155.207.33.163')
 ```
 
 **Example output**:

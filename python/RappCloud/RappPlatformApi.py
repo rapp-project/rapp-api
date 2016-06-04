@@ -241,7 +241,7 @@ class RappPlatformAPI():
                 }
 
     def emailFetch(self, email, password, server, port, date_from, date_to,\
-            email_status, num_emails):
+            email_status = 'UNSEEN', num_emails = 1):
         msg = EmailFetch()
         msg.req.email = email
         msg.req.password = password
@@ -258,7 +258,7 @@ class RappPlatformAPI():
                 }
 
     def emailSend(self, email, password, server, port, recipients, body,\
-            subject, attach_file):
+            subject, attach_file = ''):
         msg = EmailSend()
         msg.req.email = email
         msg.req.password = password
@@ -267,13 +267,14 @@ class RappPlatformAPI():
         msg.req.recipients = recipients
         msg.req.body = body
         msg.req.subject = subject
-        msg.req.attach_file = attach_file
+        if attach_file != '':
+            msg.req.attach_file = attach_file
         response = self.svc_caller.call(msg)
         return {\
                 'error': response.error\
                 }
 
-    def weatherReportCurrent(self, city, weather_reporter, metric):
+    def weatherReportCurrent(self, city, weather_reporter = 'forecast.io', metric = 0):
         msg = WeatherReportCurrent()
         msg.req.city = city
         msg.req.weather_reporter = weather_reporter
@@ -292,7 +293,7 @@ class RappPlatformAPI():
                 'error': response.error\
                 }
 
-    def weatherReportForecast(self, city, weather_reporter, metric):
+    def weatherReportForecast(self, city, weather_reporter = 'forecast.io', metric = 0):
         msg = WeatherReportForecast()
         msg.req.city = city
         msg.req.weather_reporter = weather_reporter
@@ -303,8 +304,8 @@ class RappPlatformAPI():
                 'error': response.error\
                 }
 
-    def pathPlanningPlan2D(self, map_name, robot_type, algorithm, pose_start, \
-            pose_goal):
+    def pathPlanningPlan2D(self, map_name, robot_type, pose_start, \
+            pose_goal, algorithm = 'dijkstra'):
         msg = PathPlanningPlan2D()
         msg.req.map_name = map_name
         msg.req.robot_type = robot_type
@@ -334,7 +335,7 @@ class RappPlatformAPI():
         msg.req.language = language
         response = self.svc_caller.call(msg)
 
-        if response.error is "":
+        if response.error == u"":
             response.store_audio(audio_file)
 
         return {\
@@ -343,8 +344,8 @@ class RappPlatformAPI():
                 'error': response.error\
                 }
 
-    def newsExplore(self, news_engine, keywords, exclude_titles, region, \
-            topic, num_news):
+    def newsExplore(self, keywords, region = '', \
+            topic = '', news_engine = '', num_news = 1, exclude_titles = []):
         msg = NewsExplore()
         msg.req.news_engine = news_engine
         msg.req.keywords = keywords
@@ -358,7 +359,7 @@ class RappPlatformAPI():
                 'error': response.error\
                 }
 
-    def geolocation(self, ipaddr, engine):
+    def geolocation(self, ipaddr, engine = 'ip-api'):
         msg = Geolocation()
         msg.req.ipaddr = ipaddr
         msg.req.engine = engine
