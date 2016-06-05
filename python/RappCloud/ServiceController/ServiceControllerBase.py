@@ -47,8 +47,6 @@ class ServiceControllerBase(object):
     ## Cloud Service instance.
     self._service = service
 
-    self.__cfgDir = path.join(path.dirname(__file__), '../config')
-
 
   def is_json(self, obj):
     """! Check if it is a json string.

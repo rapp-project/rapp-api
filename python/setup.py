@@ -47,5 +47,6 @@ setup(
     ],
     # A script(s) to be installed into standard locations like /usr/bin
     scripts=[],
+    zip_safe=True,
     long_description=read('README.md') if os.path.exists('README.md') else ""
 )
