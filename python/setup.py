@@ -19,10 +19,11 @@ cfgDestPath = path.expanduser('~/.config/rapp_platform/python_platform_api')
 
 setup(
     install_requires = [
-      'requests>=2.9.1',
-      'ndg-httpsclient',
-      'pyopenssl',
-      'pyasn1'
+        'requests>=2.9.1',
+        'ndg-httpsclient',
+        'pyopenssl',
+        'pyasn1',
+        'futures>=3.0.5'
     ],
     name='RappCloud',
     version='0.6.0',
