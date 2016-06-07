@@ -28,6 +28,7 @@
 import yaml
 from os import path
 from RappCloud.ServiceController import ServiceControllerSync
+from RappCloud.ServiceController import ServiceControllerAsync
 
 
 class RappPlatformService(object):
@@ -75,6 +76,7 @@ class RappPlatformService(object):
         # A Cloud Service holds a ServiceController instance.
         ## Service Controller
         self.__controller = ServiceControllerSync(self)
+        self.__controllerAsync = ServiceControllerAsync(self)
 
 
     @property
@@ -150,10 +152,24 @@ class RappPlatformService(object):
             self.__urlpath = self._make_url(msg.svcname)
         if self.__cloudObj is None:
             raise AttributeError('Missing Cloud Message object!')
-        cloudResponseDic = self.__controller.run_job()
+        cloudResponseDic = self.__controller.run_job(self.__urlpath)
         for key, val in cloudResponseDic.iteritems():
             self.resp.set(key, val)
         return self.resp
+
+
+    def call_async(self, clb, msg):
+        """! Call the RAPP Platform Service """
+        if msg is not None:
+            _url = self._make_url(msg.svcname)
+        else:
+            _url = self._make_url(self.__cloudObj)
+            # TODO: Copy self.__cloudObject and pass to controller
+            # Use copy.deepcopy()
+        if self.__cloudObj is None:
+            raise AttributeError('Missing Cloud Message object!')
+        self.__controllerAsync.run_job(clb, self.__cloudObj,
+                                       self.__urlpath)
 
 
     def __load_platform_cfg(self):
