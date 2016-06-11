@@ -35,6 +35,7 @@ setup(
     maintainer='Konstantinos Panayiotou',
     maintainer_email='klpanagi@gmail.com',
     license='Apache 2',
+    test_suite='tests',
     include_package_data=True,
     # A list naming all the packages you want to include
     packages=find_packages(),
