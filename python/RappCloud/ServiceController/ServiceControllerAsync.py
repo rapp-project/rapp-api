@@ -30,7 +30,7 @@
 from ServiceControllerBase import *
 
 # high-level interface for asynchronously executing callables.
-from concurrent import futures
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 
@@ -44,19 +44,25 @@ class ServiceControllerAsync(ServiceControllerBase):
         @param max_workers - Number of maximum workers to spawn
         """
         # Create a thread pool manager
-        self.__threadPool = futures.ThreadPoolExecutor(max_workers=max_workers)
+        self.__threadPool = ThreadPoolExecutor(max_workers=max_workers)
 
         super(ServiceControllerAsync, self).__init__(service)
 
 
-    def run_job(self, clb, msg, url):
-        """! Run the service"""
-        _future = self.__threadPool.submit(self._worker_exec, clb, msg, url)
+    def run_job(self, msg, url, clb=None):
+        """! Run the service
+
+        Submit callback function to the worker thread and return the future.
+        @param clb Function - Callback function to execute on arrival of
+            the response.
+
+        @returns _future - The future.
+        """
+        _future = self.__threadPool.submit(self._worker_exec, msg, url, clb=clb)
+        return _future
 
 
-
-    def _worker_exec(self, clb, msg, url):
-        print "_worker execution function here!"
+    def _worker_exec(self, msg, url, clb=None):
         # Unpack payload and file objects from cloud service object
         payload = msg.req.make_payload()
         files = msg.req.make_files()
@@ -68,4 +74,6 @@ class ServiceControllerAsync(ServiceControllerBase):
 
         for key, val in resp.iteritems():
             msg.resp.set(key, val)
-        clb(msg.resp)
+        if clb is not None:
+            clb(msg.resp)
+        return msg.resp
