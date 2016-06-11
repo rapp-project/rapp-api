@@ -15,18 +15,31 @@ from RappCloud.Objects import (
     File)
 
 
+global testdatadir
+testdatadir = path.realpath(
+    path.join(path.dirname(path.realpath(__file__)), '../../testdata')
+    )
+
+
+
 class FaceDetectionTest(unittest.TestCase):
     # Overwrite
     def setUp(self):
         self.msg = FaceDetection()
-        self.msg.req.imageFilepath = '../../testdata/Lenna.png'
+        self.msg.req.imageFilepath = path.join(testdatadir, 'Lenna.png')
         self.msg.req.fast = True
         self.startTime = time.time()
 
 
+    def tearDown(self):
+        t = time.time() - self.startTime
+        print "%s: %.3f" % (self.id(), t)
+
+
     def test_request_object(self):
         self.assertIsInstance(self.msg.req, FaceDetection.Request)
-        self.assertEqual(self.msg.req.imageFilepath, '../../testdata/Lenna.png')
+        self.assertEqual(self.msg.req.imageFilepath,
+                         path.join(testdatadir, 'Lenna.png'))
         self.assertEqual(self.msg.req.fast, True)
 
 
@@ -37,7 +50,7 @@ class FaceDetectionTest(unittest.TestCase):
 
     def test_request_serialize(self):
         _expected = {
-            'imageFilepath': '../../testdata/Lenna.png',
+            'imageFilepath': path.join(testdatadir, 'Lenna.png'),
             'fast': True
         }
         self.assertEqual(self.msg.req.serialize(), _expected)
@@ -56,13 +69,14 @@ class QrDetectionTest(unittest.TestCase):
     # Overwrite
     def setUp(self):
         self.msg = QrDetection()
-        self.msg.req.imageFilepath = '../../testdata/qrcode.png'
+        self.msg.req.imageFilepath = path.join(testdatadir, 'qrcode.png')
         self.startTime = time.time()
 
 
     def test_request_object(self):
         self.assertIsInstance(self.msg.req, QrDetection.Request)
-        self.assertEqual(self.msg.req.imageFilepath, '../../testdata/qrcode.png')
+        self.assertEqual(self.msg.req.imageFilepath,
+                         path.join(testdatadir, 'qrcode.png'))
 
 
     @unittest.expectedFailure
@@ -72,7 +86,7 @@ class QrDetectionTest(unittest.TestCase):
 
     def test_request_serialize(self):
         _expected = {
-            'imageFilepath': '../../testdata/qrcode.png'
+            'imageFilepath': path.join(testdatadir, 'qrcode.png')
         }
         self.assertEqual(self.msg.req.serialize(), _expected)
 
@@ -95,7 +109,7 @@ class SpeechRecognitionSphinxTest(unittest.TestCase):
         self.msg.req.sentences = ['test', 'testing']
         self.msg.req.language = 'el'
         self.msg.req.audio_source = 'nao_wav_1_ch'
-        self.msg.req.audiofile = '../../testdata/silence_sample.wav'
+        self.msg.req.audiofile = path.join(testdatadir, 'silence_sample.wav')
         self.startTime = time.time()
 
 
@@ -106,12 +120,12 @@ class SpeechRecognitionSphinxTest(unittest.TestCase):
     @unittest.expectedFailure
     def test_attribute_error(self):
         _msg = SpeechRecognitionSphinx(
-            filepath='../../testdata/qrcode.png', fast=True)
+            filepath=path.join(testdatadir, 'qrcode.png', fast=True))
 
 
     def test_request_serialize(self):
         _expected = {
-            'audiofile': '../../testdata/silence_sample.wav',
+            'audiofile': path.join(testdatadir, 'silence_sample.wav'),
             'words': ['test', 'testing'],
             'grammar': [],
             'sentences': ['test', 'testing'],
@@ -137,6 +151,6 @@ class SpeechRecognitionSphinxTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main(verbosity=2)
-    # suite = unittest.TestLoader().loadTestsFromTestCase(FaceDetectionTest)
-    # unittest.TextTestRunner(verbosity=2).run(suite)
+    # unittest.main(verbosity=2)
+    suite = unittest.TestLoader().loadTestsFromTestCase(FaceDetectionTest)
+    unittest.TextTestRunner(verbosity=2).run(suite)
