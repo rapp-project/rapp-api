@@ -41,26 +41,20 @@ def datatypeassert(*decargs, **deckwargs):
         def wrapper(*args, **kwargs):
             # Bind *args and **kwargs to the input function
             _boundFn = inspect.getcallargs(fn, *args, **kwargs)
+            # Map decorators *args and **kwargs to the function declaration *args
+            # and **kwargs.
+            _boundDec = inspect.getcallargs(fn, *decargs, **deckwargs)
 
-            # Iterate through *args
-            for index, value in enumerate(decargs):
-                # print "{0} {1}".format(index, value)
-                if index + 1 > len(args):
-                    # End loop if exceeds number of function args (*args)
-                    break
-                if type(args[index]) is not value:
-                    raise TypeError(
-                        'Argument {0} must be of data type {1}'.format(index, value)
-                        )
-
-            # Iterate through **kwargs
-            for key, value in deckwargs.iteritems():
-                # print "{0} {1}".format(key, value)
-                if key not in kwargs:
+            # Iterate through _boundDec: Decorators arguments
+            for key, value in _boundDec.iteritems():
+                if key not in _boundFn:
                     # If keyword decorador argument does not exist in
                     # function kwargs, skip.
                     continue
-                if type(_boundFn[key]) is not value:
+                if not isinstance(_boundFn[key], value):
+                    # Raise TypeError Exception if passed argument type
+                    # does not correspond to the value forced by the
+                    # decorator
                     raise TypeError(
                         'Argument {0} must be of data type {1}'.format(key, value)
                         )
