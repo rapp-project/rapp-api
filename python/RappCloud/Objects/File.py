@@ -39,11 +39,15 @@ class File(object):
         @param string httpField - The post field name.
         """
 
-        self.__boundarySize = 30
-        self.__path = path.expanduser(path.realpath(filepath))
+        if filepath is not "":
+            self.__path = path.expanduser(path.normpath(filepath))
+        else:
+            self.__path = ""
+
         if postfield is not "":
             self.__postfield = postfield
         else:
+            # Default data post field name.
             self.__postfield = "file"
 
 
@@ -62,12 +66,13 @@ class File(object):
 
 
     @path.setter
-    def path(self, path):
+    def path(self, filepath):
         """! file path setter
 
         @param path (String) - The file path.
         """
-        self.__path = path
+        absPath = path.expanduser(path.normpath(filepath))
+        self.__path = absPath
 
 
     @property
@@ -93,14 +98,11 @@ class File(object):
 
 
     def make_tuple(self):
+        # Raise Exception if the file does not exist
+        if not path.isfile(self.__path):
+            raise Exception('File not found "%s"' %absPath)
         randStr = RandStrGen.create(self.__boundarySize)
-        name, ext = path.splitext(self.basename(self.__path))
+        name, ext = path.splitext(path.basename(self.__path))
         filename = '.'.join((''.join((name, '-', randStr)), ext))
         return (self.__postfield, (filename, open(self.__path)))
-
-
-    def basename(self, filepath):
-        """! Return the basename of input filepath. """
-        return path.basename(filepath)
-
 
