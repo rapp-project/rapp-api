@@ -18,7 +18,7 @@ testdatadir = path.realpath(
 
 
 
-class CoreObjects(unittest.TestCase):
+class TestFile(unittest.TestCase):
     # Overwrite
     def setUp(self):
         self.startTime = time.time()
@@ -38,6 +38,10 @@ class CoreObjects(unittest.TestCase):
         self.assertEqual(f.path, '../../testdata/Lenna.png')
 
 
+    def test_make_tuple(self):
+        f = File(filepath=path.join(testdatadir, 'Lenna.png'))
+        f.make_tuple()
+
     @unittest.expectedFailure
     def test_wrong_filepath_constructor(self):
         f = File(filepath='/non-exist-file')
@@ -54,5 +58,5 @@ class CoreObjects(unittest.TestCase):
 
 if __name__ == '__main__':
     # unittest.main(verbosity=2)
-    suite = unittest.TestLoader().loadTestsFromTestCase(CoreObjects)
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFile)
     unittest.TextTestRunner(verbosity=2).run(suite)
