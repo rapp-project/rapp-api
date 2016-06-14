@@ -346,6 +346,67 @@ class DatatypeAssert(unittest.TestCase):
            g=dict(), h=list(), i=tuple(), j=set())
 
 
+    def test_with_self_named_argument(self):
+        class mockClass(object):
+            def __init__(self):
+                self.__mock = ''
+
+            @property
+            def mock(self):
+                return self.__mock
+
+
+            @mock.setter
+            @typeassert(val=str)
+            def mock(self, val):
+                self.__mock = val
+
+        mockObj = mockClass()
+        mockObj.mock = 'test'
+        self.assertEqual(mockObj.mock, 'test')
+
+
+    def test_with_self_unnamed_argument(self):
+        class mockClass(object):
+            def __init__(self):
+                self.__mock = ''
+
+            @property
+            def mock(self):
+                return self.__mock
+
+
+            @mock.setter
+            @typeassert(str)
+            def mock(self, val):
+                self.__mock = val
+
+        mockObj = mockClass()
+        mockObj.mock = 'test'
+        self.assertEqual(mockObj.mock, 'test')
+
+
+    @unittest.expectedFailure
+    def test_with_self_wrong_datatype(self):
+        class mockClass(object):
+            def __init__(self):
+                self.__mock = ''
+
+            @property
+            def mock(self):
+                return self.__mock
+
+
+            @mock.setter
+            @typeassert(str)
+            def mock(self, val):
+                self.__mock = val
+
+        mockObj = mockClass()
+        mockObj.mock = 5
+
+
+
 
 
 if __name__ == '__main__':

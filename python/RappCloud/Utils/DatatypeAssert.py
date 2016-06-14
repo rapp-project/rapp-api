@@ -32,18 +32,52 @@ from functools import wraps
 import inspect
 
 
+def add_to_args(*args):
+    """! Add values to *args
+
+    Returns the updated *args
+    """
+    return args
+
+
+def add_to_kwargs(**kwargs):
+    """! Add values to **kwargs
+
+    Returns the updated **kwargs
+    """
+    return kwargs
+
+
 def datatypeassert(*decargs, **deckwargs):
+    """! Data type assertion decorator implementation.
+
+    Check and assert on function input arguments.
+
+    @param *args - Data types for the function to assert.
+    @param **kwargs - Data types for the function to assert.
+    """
 
     def decorador(fn):
-
 
         @wraps(fn)
         def wrapper(*args, **kwargs):
             # Bind *args and **kwargs to the input function
             _boundFn = inspect.getcallargs(fn, *args, **kwargs)
+            if 'self' in _boundFn:
+                # decorKwargs = add_to_kwargs(self=_boundFn['self'], **deckwargs)
+                # Add self to the decorator arguments so it can be bound to the
+                # calling function. Will be remove after binding (hacky!)
+                decorArgs = add_to_args(_boundFn['self'], *decargs)
+            else:
+                # decorKwargs = deckwargs
+                decorArgs = decargs
+
             # Map decorators *args and **kwargs to the function declaration *args
             # and **kwargs.
-            _boundDec = inspect.getcallargs(fn, *decargs, **deckwargs)
+            _boundDec = inspect.getcallargs(fn, *decorArgs, **deckwargs)
+            if 'self' in _boundDec:
+                # Remove 'self' from bound arguments
+                del _boundDec['self']
 
             # Iterate through _boundDec: Decorators arguments
             for key, value in _boundDec.iteritems():
