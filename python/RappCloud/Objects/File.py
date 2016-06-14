@@ -32,13 +32,16 @@ from os import path
 class File(object):
     """ File object class """
 
-    def __init__(self, filepath="", postfield=""):
+    def __init__(self, filepath="", postfield="", boundary_size=30):
         """! Constructor
 
-        @param string path -The filepath
-        @param string httpField - The post field name.
+        @param path str -The filepath
+        @param postField str - The post field name.
+        @param boundary_size int - Size of random boundary string for the
+            filename to add on the post field.
         """
 
+        self.__boundarySize = boundary_size
         if filepath is not "":
             self.__path = path.expanduser(path.normpath(filepath))
         else:
