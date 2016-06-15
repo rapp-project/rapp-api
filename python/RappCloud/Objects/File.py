@@ -103,7 +103,7 @@ class File(object):
     def make_tuple(self):
         # Raise Exception if the file does not exist
         if not path.isfile(self.__path):
-            raise Exception('File not found "%s"' %absPath)
+            raise Exception('File not found: {0}'.format(self.__path))
         randStr = RandStrGen.create(self.__boundarySize)
         name, ext = path.splitext(path.basename(self.__path))
         filename = '.'.join((''.join((name, '-', randStr)), ext))
