@@ -66,7 +66,10 @@ class EmailSend(CloudMsg):
 
         def make_files(self):
             """ Create and return Array of File objects of the Request. """
-            return [File(self.attach_file, 'file')]
+            # Check if attachment file has been defined as it is optional
+            if self.attach_file != '':
+                return [File(self.attach_file, 'file')]
+            return []
 
 
     class Response(CloudResponse):
