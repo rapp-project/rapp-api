@@ -84,12 +84,8 @@ class TextToSpeech(CloudMsg):
 
         def get_audio_raw(self):
             """! Get audio raw data from response """
-            try:
-                b64Data = self.payload
-                rawData = base64.b64decode(b64Data)
-            except TypeError as e:
-                print str(e)
-                return None
+            b64Data = self.payload
+            rawData = base64.b64decode(b64Data)
             return rawData
 
 
@@ -99,15 +95,16 @@ class TextToSpeech(CloudMsg):
             @param destfile - Destination file path.
             """
 
-            destfile = path.expanduser(path.realpath(destfile))
+            if destfile == '' or destfile == u'':
+                raise ValueError('Empty destination file path {destfile} given')
+
+            destAbs = path.expanduser(path.realpath(destfile))
+            if not path.isfile(destAbs):
+                raise Exception('File not found: {0}'.format(destAbs))
+
             rawData = self.get_audio_raw()
-            try:
-                with open(destfile, 'wb') as f:
-                    f.write(rawData)
-            except IOError as e:
-                print str(e)
-                return False
-            return True
+            with open(destAbs, 'wb') as f:
+                f.write(rawData)
 
 
 
