@@ -99,9 +99,6 @@ class TextToSpeech(CloudMsg):
                 raise ValueError('Empty destination file path {destfile} given')
 
             destAbs = path.expanduser(path.realpath(destfile))
-            if not path.isfile(destAbs):
-                raise Exception('File not found: {0}'.format(destAbs))
-
             rawData = self.get_audio_raw()
             with open(destAbs, 'wb') as f:
                 f.write(rawData)
