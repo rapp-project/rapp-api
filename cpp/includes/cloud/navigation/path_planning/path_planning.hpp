@@ -4,7 +4,7 @@
 namespace rapp {
 namespace cloud {
 /**
- * \class plan_path2d
+ * \class plan_path_2d
  * \brief plan a 2D path
  * \version 0.6.0
  * \date May 2016
@@ -13,70 +13,57 @@ namespace cloud {
 class plan_path_2d : public asio_service_http
 {
 public:
-    typedef rapp::object::microphone_wav wav_file;
 	/**
 	 * \param 
 	 * \param 
 	 * \callback will receive the speech audio object
 	 */
-	plan_path_d2(
+	plan_path_2d(
 				  const std::string map_name,
 				  const std::string robot_type,
                   const std::string algorithm,
-                  // TODO: ROS-PoseStampes must be somehow Wrapped/Translated
-				  std::function<void(std::unique_ptr<wav_file>)> callback,
+				  rapp::object::pose_stamped start,
+				  rapp::object::pose_stamped goal,
+				  std::function<void(rapp::object::planned_path)> callback,
                   const std::string token
 				)
 	: asio_service_http(token), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
-        tree.put("text", text);
-        tree.put("language", language);
+        tree.put("map_name", map_name);
+        tree.put("robot_type", robot_type);
+		tree.put("algorithm", algorithm);
+
+		// TODO: serialize start and goal
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/text_to_speech HTTP/1.1\r\n";
-        callback_ = std::bind(&text_to_speech::handle_reply, this, std::placeholders::_1);
+        header_ = "POST /hop/path_planning_plan_path_2d HTTP/1.1\r\n";
+        callback_ = std::bind(&plan_path_2d::handle_reply, this, std::placeholders::_1);
 	}
 private:
     /**
      * \brief handle platform's JSON reply
+	 * TODO: { plan_found: 0, path: [], error: '' } what is path ? (obviously its planned_path but whats the JSON?
      */
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
-        std::vector<rapp::types::byte> bytearray;
         try {
-            boost::property_tree::ptree tree;
-            boost::property_tree::read_json(ss, tree);
-
-		    // capture audio payload (base64-encoded)	
-            for (auto child : tree.get_child("payload")) {
-                // base64-encoded audio
-                std::string result = child.second.get_value<std::string>();
-                std::string decoded = decode64(result);
-                std::copy(decoded.begin(), decoded.end(), std::back_inserter(bytearray));
-            }
-            for (auto child : tree.get_child("error")) {
-                const std::string value = child.second.get_value<std::string>();
-                if (!value.empty()) {
-                    std::cerr << "text_to_speech JSON error: " << value << std::endl;
-                }
-            }
-	    }
+			// TODO            
+		}
         catch (boost::property_tree::json_parser::json_parser_error & je) {
-            std::cerr << "text_to_speech::handle_reply Error parsing: " << je.filename() 
+            std::cerr << "plan_path_2d::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
         // create wav file and move it to the delegate
         auto wav = std::unique_ptr<rapp::object::microphone_wav>(
                                             new rapp::object::microphone_wav(bytearray));
-        delegate_(std::move(wav));
     }
-
     /// 
-    std::function<void(std::unique_ptr<wav_file> wav)> delegate_;
+    std::function<void(rapp::object::planned_path path)> delegate_;
 };
 
 // TODO: path_upload_map
