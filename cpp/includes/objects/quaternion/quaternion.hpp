@@ -1,5 +1,6 @@
 #ifndef RAPP_OBJECT_QUATERNION
 #define RAPP_OBJECT_QUATERNION
+#include "includes.ihh"
 namespace rapp {
 namespace object {
 /**

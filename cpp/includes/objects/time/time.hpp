@@ -1,5 +1,6 @@
 #ifndef RAPP_OBJECT_TIME
 #define RAPP_OBJECT_TIME
+#include "includes.ihh"
 namespace rapp {
 namespace object {
 /**
@@ -21,6 +22,7 @@ struct time
     {}
     
     /// Allow Empty Consructor
+    /// \WARNING shouldn't this use system calls to set sec and nsec?
     time() = default;
     
     /// Copy Conatructor

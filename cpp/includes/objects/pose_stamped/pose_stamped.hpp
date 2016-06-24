@@ -18,8 +18,8 @@ struct pose_stamped
      * \param pose is robot pose definition (position & orientation)
      */
 	pose_stamped( 
-				  rapp::object::header header,
-				  rapp::object::pose pose
+				  const rapp::object::header header,
+				  const rapp::object::pose pose
 				)
     : header(header), pose(pose)
     {}
