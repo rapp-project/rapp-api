@@ -13,26 +13,30 @@ namespace cloud {
 class plan_path_2d : public asio_service_http
 {
 public:
+    
 	/**
 	 * \param 
 	 * \param 
 	 * \callback will receive the speech audio object
 	 */
 	plan_path_2d(
-				  const std::string map_name,
-				  const std::string robot_type,
+                  const std::string map_name,
+                  const std::string robot_type,
                   const std::string algorithm,
-				  rapp::object::pose_stamped start,
-				  rapp::object::pose_stamped goal,
-				  std::function<void(rapp::object::planned_path)> callback,
+                  const rapp::object::pose_stamped start,
+                  const rapp::object::pose_stamped goal,
+                  std::function<void(rapp::object::planned_path)> callback,
                   const std::string token
-				)
+                )
 	: asio_service_http(token), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
+        // TODO: Test serialization here
         tree.put("map_name", map_name);
         tree.put("robot_type", robot_type);
 		tree.put("algorithm", algorithm);
+        tree.add_child("", start.treefy());
+        tree.add_child("", end.treefy());
 
 		// TODO: serialize start and goal
 
