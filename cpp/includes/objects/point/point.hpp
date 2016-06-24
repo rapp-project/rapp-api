@@ -1,5 +1,6 @@
 #ifndef RAPP_OBJECT_POINT
 #define RAPP_OBJECT_POINT
+#include "includes.ihh"
 namespace rapp {
 namespace object {
 /**
