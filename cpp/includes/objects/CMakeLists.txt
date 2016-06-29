@@ -12,4 +12,4 @@ add_subdirectory(quaternion)
 add_subdirectory(qr_code)
 add_subdirectory(time)
 add_subdirectory(qr_code_3d)
-
+add_subdirectory(qr_code_map)
