@@ -83,6 +83,20 @@ protocol: 'http'
 
 ## Calling RAPP Platform Services - API usage.
 
+API users are able to select from 2 API implementations:
+
+- **High level API**
+- **Advanced API**
+
+The first one allow API users to easily call RAPP PLatform Services through simple function calls.
+The second one is for advanced usage, delivered for expert developers. This is an object-oriented implementation. As we will later describe, the advanced API usage allow creation of Cloud Messages. Both Platform requests and responses
+are described by static objects.
+
+**Note**: The High Level API actually wraps the Advanced API.
+
+
+### Advanced API usage
+
 `RappPlatformService` is the RAPP term for an established connection to the RAPP-Platform Services, over the www (World-Wide-Web).
 Each Platform Service has it's own unique Response and Request message.
 
@@ -241,6 +255,24 @@ print "Found %s QRs: %s" %(len(qrResp.qr_centers), qrResp.qr_messages)
 
 ```
 
+### High Level API usage
+
+Like previously mentioned, API users can also use the High Level implementation of the RAPP Platform API. Benefits from using this implementation is lack of knowledge of how Cloud Messages and RappPlatformService are used.
+Calls to the RAPP Platform are done through simple function calls, under the RappPlatformAPI module.
+
+Below is an example of performing a query to the ontologyi, hosted on the RAPP Platform, using the High Level API implementation:
+
+```python
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
+
+response = ch.ontologySubclasses("Oven")
+
+print response
+>> {'results': [u'http://knowrob.org/kb/knowrob.owl#MicrowaveOven', u'http://knowrob.org/kb/knowrob.owl#RegularOven', u'http://knowrob.org/kb/knowrob.owl#ToasterOven'], 'error': u''}
+```
+
+The RappPlatformAPI usage and calls are fully documented [here](https://github.com/rapp-project/rapp-api/tree/master/python/RappCloud), also with examples of usage.
 
 
 ## Directories
@@ -269,20 +301,20 @@ RAPP Platform's integration tests, use the python rapp-platform-api. Those are l
 This package is documented using doxygen documentation generator. You can locally generate the documentation by executing the **gen_doc_python_api.sh** script located under rapp-api/documentation/scripts directory.
 Just navigate through this directory and execute:
 
-```shell
+```bash
 ./gen_doc_python_api.sh
 ```
 
 This script will generate source code documentation and store them under the
 
-```shell
+```bash
 ${HOME}/rapp_platform_files/documentation/rapp-api/python
 ```
 directory
 
 You can change the default output directory by passing the directory path as an input for the **gen_doc_python_api.sh** script:
 
-```shell
+```bash
 ./gen_doc_python_api.sh <out_dir>
 ```
 
