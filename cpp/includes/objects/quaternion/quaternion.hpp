@@ -17,7 +17,7 @@ struct quaternion
      * \param x is quaternion x component
      * \param y is quaternion y component
      * \param z is quaternion z component
-     * \param w is quaternion w component
+     * \param w is quaternion w (NOTE: angle theta?)
      */
 	quaternion(float x, float y, float z, float w)
     : x(x), y(y), z(z), w(w)

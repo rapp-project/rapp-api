@@ -9,7 +9,10 @@ namespace object {
  * \version 0.6.0
  * \date 10-May-2016
  * \author Wojciech Dudek <dudekwa@gmail.com>
+ *
  * TODO: rename to `metadata` header is misleading and used in asio.
+ * WARNING: frameid is set to "/map" and then is overwritten by parameter
+ *          therefore it will be empty and reset to "/map" only when using non-parametrised ctor
  */
 struct header
 {
@@ -57,7 +60,7 @@ struct header
 	/// members
 	int seq = 0;
 	rapp::object::time stamp;
-    const std::string frameid = "/map";
+    std::string frameid = "/map";
 };
 }
 }

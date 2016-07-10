@@ -9,6 +9,9 @@ namespace object {
  * \version 0.6.0
  * \date 10-May-2016
  * \author Wojciech Dudek <dudekwa@gmail.com>
+ *
+ * NOTE: shouldn't this be called "coordinate" or "cartesian"
+ *       "point" is not a clear description
  */
 struct point
 {
