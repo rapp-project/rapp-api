@@ -9,15 +9,20 @@ namespace cloud {
  * \version 0.6.0
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ *
+ * WARNING: serious logic flaw: pose_stamp assumes a timestamp (header) which is uknown for goal
+ * BUG:     JSON does not have keys for "start" and "end"
+ *
  */
 class plan_path_2d : public asio_service_http
 {
 public:
     
 	/**
-	 * \param 
-	 * \param 
-	 * \callback will receive the speech audio object
+	 * \param map_name ?
+	 * \param robot_type ?
+     * \param algorithm ?
+	 * \callback will receive the ?
 	 */
 	plan_path_2d(
                   const std::string map_name,
@@ -31,15 +36,11 @@ public:
 	: asio_service_http(token), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
-        // TODO: Test serialization here
         tree.put("map_name", map_name);
         tree.put("robot_type", robot_type);
 		tree.put("algorithm", algorithm);
         tree.add_child("", start.treefy());
         tree.add_child("", end.treefy());
-
-		// TODO: serialize start and goal
-
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
@@ -55,7 +56,7 @@ private:
     {
         std::stringstream ss(json);
         try {
-			// TODO            
+			// TODO: I require keys for 'start' and 'end'
 		}
         catch (boost::property_tree::json_parser::json_parser_error & je) {
             std::cerr << "plan_path_2d::handle_reply Error parsing: " << je.filename() 

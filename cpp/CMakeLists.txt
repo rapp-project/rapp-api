@@ -110,7 +110,6 @@ if (${BUILD_EXAMPLES})
     add_executable(picture          ${EXAMPLES}/picture_example.cpp)
     add_executable(asio_tls         ${EXAMPLES}/asio_tls.cpp)
     add_executable(text_to_speech   ${EXAMPLES}/text_to_speech.cpp)
-
     target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(speech_recog      ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
@@ -129,14 +128,19 @@ if (${BUILD_TESTS})
     enable_testing ()
     add_executable(object_test           ${TESTS}/object_test.cpp)
     add_executable(service_test          ${TESTS}/service_test.cpp)
+    add_executable(serialise_test        ${TESTS}/serialise.cpp)
+
     add_test(unit_object_test            object_test) 
     add_test(unit_service_test           service_test)
+    add_test(json_serialise_test         serialise_test)
+
     target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
                                          ${Boost_SYSTEM_LIBRARY}
                                          ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(serialise_test rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     message(STATUS "Building tests, they will be placed in the `${CMAKE_CURRENT_BINARY_DIR}`")
 else()
     message(STATUS "Not Building tests - enable with `-DBUILD_TESTS=ON`")
@@ -171,6 +175,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC")
     endif()
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+
     # TODO: can somebody with a NAO test this?
     if (${OPEN_NAO})
         set(CMAKE_EXE_LINKER_FLAGS "-lc++ -lcxxrt")
