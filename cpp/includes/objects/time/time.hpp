@@ -9,6 +9,17 @@ namespace object {
  * \version 0.6.0
  * \date 10-May-2016
  * \author Wojciech Dudek <dudekwa@gmail.com>
+ *
+ * NOTE: this struct is not needed, we can use std::chrono or boost::posix_time
+ *       furthemore, what is the logic behind using both seconds and nanoseconds?
+ *       if this is a timestamp, then simply a unix timestamp with millisecond resolution
+ *       should suffice.
+ *       Last but not least, how do we construct this?
+ *       using c++11, all we need is: std::chrono::system_clock::time_point
+ *       which can be cast to nanoseconds, milliseconds, seconds, etc.
+ *
+ * TODO: suggest we provide a simple wrapper around std::chrono
+ *       which enables json parsing/serialization
  */
 struct time
 {

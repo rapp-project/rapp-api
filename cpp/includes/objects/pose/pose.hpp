@@ -13,13 +13,13 @@ namespace object {
 struct pose
 {
     /**
-     * \brief Consruct using position and orientation components
+     * \brief consruct using position and orientation components
      * \param position is vector of position coordinates
      * \param orientation is vector of orientation (quaternion) coordinates
      */
     pose(
-           point position,
-           quaternion orientation
+           rapp::object::point position,
+           rapp::object::quaternion orientation
 		)
     : position(position), orientation(orientation)
     {}
