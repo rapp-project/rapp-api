@@ -1,6 +1,24 @@
+## Contents
+
+- [Synopsis](#synopsis)
+- [Dependencies](#dependencies)
+- [Install](#installation)
+- [Configuration](#configuration)
+  - [Authentication](#authentication)
+  - [RAPP Platform parameters](#rapp-platform-parameters)
+- [Calling RAPP Platform Services - API usage](#calling-rapp-platform-services)
+  - [Advanced API](#advanced-api)
+  - [Hight Level API](#high-level-api)
+- [Examples](#examples)
+- [Tests](#tests)
+- [Documentation](#documentation)
+- [Contributors](#contributors)
+- [Contact](#contact)
+
+
 ## Synopsis
 
-The python implementation of the rapp-platform-api.
+The python implementation of the rapp-platform-api. The API allow for calling RAPP Platform Services.
 
 By default the api creates and holds a session for each Service instance (that is used until the service instance has been deleted or the Platfrom terminates it),
 enabling this way, persistent connections to the Platfrorm.
@@ -11,6 +29,7 @@ TLSv1.2 requires either python-2.7.9+ or pyopenssl.
 If pyopenssl is installed on the system it is used to apply proper tlsv1.2 adapter.
 Otherwise it falls back to use TLSv1.1 adapter.
 
+- pyopenssl
 
 ## Installation
 
@@ -36,9 +55,9 @@ python setup.py develop --user
 ```
 
 
-##  Configure
+##  Configuration
 
-### Authentication/Tokens
+### Authentication
 The RAPP Platform uses token-based authentication mechanisms to authenticate user's use it's resources.
 User's receive a token on registration to the RAPP Platform.
 
@@ -81,7 +100,7 @@ protocol: 'http'
 **Note**: In the next Section, we will indroduce the `Service` object and explain how we can connect to different RAPP Platform hosts, in a single application implementation.
 
 
-## Calling RAPP Platform Services - API usage.
+## Calling RAPP Platform Services
 
 API users are able to select from 2 API implementations:
 
@@ -95,7 +114,7 @@ are described by static objects.
 **Note**: The High Level API actually wraps the Advanced API.
 
 
-### Advanced API usage
+### Advanced API
 
 `RappPlatformService` is the RAPP term for an established connection to the RAPP-Platform Services, over the www (World-Wide-Web).
 Each Platform Service has it's own unique Response and Request message.
@@ -221,7 +240,7 @@ msg = FaceDetection(imageFilepath='/tmp/face-sample.png')
 response = svcClient.call(msg)
 ```
 
-`CloudMsg` objects can also be passed to the constructor of the `RappPlatformService` class:
+`CloudMsg` objects can also be passed to the constructor of `RappPlatformService`:
 
 ```py
 faceMsg = FaceDetection(imageFilepath='/tmp/face-sample.png')
@@ -255,7 +274,7 @@ print "Found %s QRs: %s" %(len(qrResp.qr_centers), qrResp.qr_messages)
 
 ```
 
-### High Level API usage
+### High Level API
 
 Like previously mentioned, API users can also use the High Level implementation of the RAPP Platform API. Benefits from using this implementation is lack of knowledge of how Cloud Messages and RappPlatformService are used.
 Calls to the RAPP Platform are done through simple function calls, under the RappPlatformAPI module.
@@ -275,30 +294,23 @@ print response
 The RappPlatformAPI usage and calls are fully documented [here](https://github.com/rapp-project/rapp-api/tree/master/python/RappCloud), also with examples of usage.
 
 
-## Directories
-
-- **RappCloud**: The RappCloud python module directory.
-- **RappCloud/CloudMsgs**: Cloud Message classes.
-- **RappCloud/Service**: Service submodule that includes the `RappPlatformService` implementation.
-
 
 ## Examples
 
-Examples can be found in the `examples` directory.
+Examples of using the Advanced API can be found [here](https://github.com/rapp-project/rapp-api/tree/master/python/RappCloud/CloudMsgs/README.md) while examples of the [High Level API here](https://github.com/rapp-project/rapp-api/blob/master/python/RappCloud/README.md)
 
 
 ## Tests
 Functional/Unit tests are stored under the **tests** directory.
 
 
-RAPP Platform's integration tests, use the python rapp-platform-api. Those are located under the rapp-platform repository:
-
- [rapp_testing_tools](https://github.com/rapp-project/rapp-platform/tree/devel/rapp_testing_tools)
+RAPP Platform's integration tests, use the python rapp-platform-api. For more information head to the
+[rapp_testing_tools](https://github.com/rapp-project/rapp-platform/tree/devel/rapp_testing_tools) package, of the rapp-platform repository.
 
 
 ## Documentation
 
-This package is documented using doxygen documentation generator. You can locally generate the documentation by executing the **gen_doc_python_api.sh** script located under rapp-api/documentation/scripts directory.
+This package is documented using doxygen generator. You can locally generate the documentation by executing the **gen_doc_python_api.sh** script located under rapp-api/documentation/scripts directory.
 Just navigate through this directory and execute:
 
 ```bash
@@ -319,7 +331,21 @@ You can change the default output directory by passing the directory path as an 
 ```
 
 
+## Directories
+
+- **RappCloud**: The RappCloud python module directory.
+- **RappCloud/CloudMsgs**: Cloud Message classes.
+- **RappCloud/Service**: Service submodule that includes the `RappPlatformService` implementation.
+
+
 ## Contributors
 
-- Konstaninos Panayiotou, **[klpanagi@gmail.com]**
-- Manos Tsardoulias, **[etsardou@gmail.com]**
+- Konstaninos Panayiotou, **klpanagi@gmail.com**
+- Manos Tsardoulias, **etsardou@gmail.com**
+
+
+## Contact
+
+An active gitter chat room is available:
+
+[![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
