@@ -43,7 +43,12 @@ class ServiceControllerSync(ServiceControllerBase):
 
 
     def run_job(self, msg, url):
-        """! Run the service"""
+        """! Run service job. Call RAPP Platform Web Service
+
+        @param msg - The CloudMsg to send
+        @param url - The Web Service urlpath
+
+        """
         # Unpack payload and file objects from cloud service object
         payload = msg.req.make_payload()
         files = msg.req.make_files()

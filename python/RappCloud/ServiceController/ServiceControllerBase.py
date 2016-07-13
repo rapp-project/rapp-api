@@ -56,15 +56,14 @@ class ServiceControllerBase(object):
 
         if self._service.persistent:
             # Hold a session for keep-alive connections.
-            self.session_ = requests.Session()
-            self.__mount_adapters(self.session_)
+            self.__session = requests.Session()
+            self.__mount_adapters(self.__session)
 
         self.__auth = RAPPAuth()
 
         self.__customHeaders = {
             'user-agent': 'rapp-platform-api/python'
         }
-
 
 
     def is_json(self, obj):
@@ -87,7 +86,6 @@ class ServiceControllerBase(object):
     def basename(self, filepath):
         """! Return the basename of input filepath. """
         return path.basename(filepath)
-
 
 
     def post_request(self, session, url, payload={}, files=[]):
@@ -113,16 +111,11 @@ class ServiceControllerBase(object):
         response = {'error': ''}
 
         try:
-            resp = session.post(
-            url=url,
-            data=_payload,
-            files=_files,
-            headers=self.__customHeaders,
-            timeout=self._service.timeout,
-            verify=False,
-            auth=self.__auth)
+            resp = session.post(url=url, data=_payload, files=_files,
+                                headers=self.__customHeaders,
+                                timeout=self._service.timeout,
+                                verify=False, auth=self.__auth)
 
-            header = resp.headers
             # Raise Exception for response status code.
             resp.raise_for_status()
         except Exception as e:
@@ -155,7 +148,7 @@ class ServiceControllerBase(object):
         @param files Array - Array of serialized File objects to send.
         """
         with requests.Session() as session:
-            self.__mount_adapters(self.session_)
+            self.__mount_adapters(self.__session)
             resp = self.post_request(session, url, data, files)
             return resp
 
@@ -166,7 +159,7 @@ class ServiceControllerBase(object):
         @param data dictionary - the data payload to send.
         @param files Array - Array of serialized File objects to send.
         """
-        return self.post_request(self.session_, url, data, files)
+        return self.post_request(self.__session, url, data, files)
 
 
     def __mount_adapters(self, session):
