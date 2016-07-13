@@ -33,7 +33,7 @@ from RappCloud.ServiceController.AsyncHandler import AsyncHandler
 
 
 class RappPlatformService(object):
-    """ Service class """
+    """ Service Client """
 
     def __init__(self, msg=None, persistent=True, timeout=None,
                  address=None, port=None,
@@ -125,7 +125,11 @@ class RappPlatformService(object):
 
 
     def call(self, msg=None):
-        """! Call the RAPP Platform Service """
+        """! Call the RAPP Platform Service
+
+        @param msg [optional] - Cloud Mesasge to send to the RAPP Platform
+
+        """
         if msg is not None:
             self.__cloudObj = msg
         elif self.__cloudObj is None:
@@ -136,17 +140,23 @@ class RappPlatformService(object):
         urlpath = self._make_url(msg.svcname)
 
         cloudResponseDic = self.__controller.run_job(msg, urlpath)
+
         for key, val in cloudResponseDic.iteritems():
             msg.resp.set(key, val)
         return msg.resp
 
 
     def call_async(self, msg, clb=None):
-        """! Call the RAPP Platform Service """
-        _url = self._make_url(msg.svcname)
-        # TODO: Copy self.__cloudObject and pass to controller
-        # Use copy.deepcopy()
-        _future = self.__controllerAsync.run_job(msg, _url, clb=clb)
+        """! Call the RAPP Platform Service
+
+        @param msg - Cloud Mesasge to send to the RAPP Platform
+        @param clb - Callback function to execute on response arrival.
+        """
+        urlpath = self._make_url(msg.svcname)
+
+        # Run job and return future object
+        _future = self.__controllerAsync.run_job(msg, urlpath, clb=clb)
+        # Return an AsyncHandler
         return AsyncHandler(_future)
 
 
