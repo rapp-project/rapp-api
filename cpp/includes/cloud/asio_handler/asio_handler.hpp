@@ -4,6 +4,19 @@
 namespace rapp {
 namespace cloud {
 /**
+ * \struct platform_info
+ * \version 0.6.0
+ * \date July 2016
+ * \brief use to construct a service controller with correct params
+ */
+struct platform_info
+{
+    std::string address;
+    std::string port;
+    std::string token;
+};
+
+/**
  * \class asio_handler
  * \version 0.6.0
  * \date April 2016
@@ -18,6 +31,11 @@ public:
     /// ctor
     asio_handler(const std::string token)
     : token_(token)
+    {}
+
+    /// ctor
+    asio_handler(rapp::cloud::platform_info info)
+    : token_(info.token), address_(info.address), port_(info.port)
     {}
 
     /// Handle an Error \param error is the raised error from the client
@@ -52,7 +70,6 @@ public:
     std::string encode64(const std::string &val);
     
 protected:
-
     /// Header that will be used
     std::string header_;
     /// Actual post Data
@@ -74,8 +91,11 @@ protected:
     std::size_t bytes_transferred_ = 0;
     /// JSON reply
     std::string json_;
+
     /// user authentication token
 	const std::string token_;
+    const std::string address_;
+    const std::string port_;
 };
 }
 }

@@ -6,29 +6,25 @@
 ///
 int main(int argc, char* argv[])
 {
-    // service controler
-    rapp::cloud::service_controller ctrl;
-    std::vector<std::shared_ptr<rapp::cloud::asio_socket>> queue;
+    if (argc > 1) {
+        // service controler
+        rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
+        rapp::cloud::service_controller ctrl(info);
 
-    // load the image from argv[1]
-    auto callback = [&](std::unique_ptr<rapp::object::microphone_wav> audio)
-                    { 
-                        if(audio){
-                            audio->save("audio.wav");
-                        }
-                        std::cout << "got reply\r\n";
-                    };
+        // load audio from file
+        auto callback = [&](std::unique_ptr<rapp::object::microphone_wav> audio)
+                        { 
+                            if(audio){
+                                audio->save("audio.wav");
+                            }
+                            std::cout << "got reply\r\n";
+                        };
 
-    for (int i = 0; i < 10; i++){
-        //ctrl.run_job(fdetect);
-        auto fdetect = std::make_shared<rapp::cloud::text_to_speech>("hello kids", 
-                                                                     "en_US", 
-                                                                     "my_token",
-                                                                     callback);
-        queue.push_back(fdetect);
+        ctrl.make_call<rapp::cloud::text_to_speech>("hello kids", "en_US", callback);
+        return 0;
     }
-    ctrl.run_jobs(queue);
-    ctrl.stop();
-
-    return 0;
+    else {
+        std::cerr << "missing param\r\n";
+        return 1;
+    }
 }

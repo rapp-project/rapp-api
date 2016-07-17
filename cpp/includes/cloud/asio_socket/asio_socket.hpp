@@ -3,13 +3,6 @@
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
-///
-/// api.rapp.cloud - 
-constexpr char address[] = "localhost";
-/// api.rapp.cloud - HOP server port
-constexpr char port[] = "9001";    
-
-
 /**
  * \brief Abstract Base ASIO Socket class
  * Use for passing around to the service controller, various types of cloud handlers.
@@ -33,21 +26,6 @@ public:
                              boost::asio::ip::tcp::resolver & ,
                              boost::asio::io_service &
                          ) = 0;
-    /** 
-     * schedule this object as a job for ASIO execution
-     * \param query defines the actual URL/URI
-     * \param resolver is the URL/URI resolver reference
-     * \param io_service is the service queue on which this job will be scheduled to run
-     * \param error is the received time-out error when scheduling *this* job
-     */
-    /*
-    virtual void schedule(
-                             boost::asio::ip::tcp::resolver::query & ,
-                             boost::asio::ip::tcp::resolver & ,
-                             boost::asio::io_service &,
-                             const boost::system::error_code &
-                         ) = 0;
-     */
 };
 }
 }

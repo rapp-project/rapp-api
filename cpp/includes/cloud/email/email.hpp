@@ -22,7 +22,6 @@ public:
      * \param from_date: fetch emails since date (unix timestamp)
      * \param to_date: fetch emails to date (unix timestamp)
      * \param num_emails: number of emails requested
-     * \param token: rapp platform auth token
      * \param callback will receive a JSON string with acquired email(s)
      */
      email_fetch(
@@ -34,10 +33,10 @@ public:
                  const unsigned int from_date,
                  const unsigned int to_date,
                  const unsigned int num_emails,
-                 const std::string token,
-                 std::function<void(std::string)> callback
+                 std::function<void(std::string)> callback,
+                 rapp::cloud::platform_info info
                 )
-	: asio_service_http(token), delegate_(callback)
+	: asio_service_http(info), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("email", email);
@@ -55,7 +54,6 @@ public:
                 + "Content-Type: application/x-www-form-urlencoded\r\n";
         callback_ = std::bind(&email_fetch::handle_reply, this, std::placeholders::_1);
 	}
-
 private:
     /**
      * \brief handle platform's JSON reply
@@ -65,7 +63,6 @@ private:
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
-
     /// 
     std::function<void(std::string)> delegate_;
 };
@@ -89,7 +86,6 @@ public:
      * \param body: email body
      * \param subject: email subject
      * \param data: data attached to the email
-     * \param token: rapp platform auth token
      * \param callback may receive a JSON reply of error(s)
      */
      email_send(
@@ -101,10 +97,10 @@ public:
                  const std::string body,
                  const std::string subject,
                  const std::vector<rapp::types::byte> data,
-                 const std::string token,
-                 std::function<void(std::string)> callback
+                 std::function<void(std::string)> callback,
+                 rapp::cloud::platform_info info
                )
-	: asio_service_http(token), delegate_(callback)
+	: asio_service_http(info), delegate_(callback)
 	{
         std::string boundary = random_boundary();
         std::string fname = random_boundary();
@@ -137,7 +133,6 @@ public:
                 + "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
         callback_ = std::bind(&email_send::handle_reply, this, std::placeholders::_1);
     }
-
 private:
     /**
      * \brief handle platform's JSON reply
@@ -147,7 +142,6 @@ private:
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
-
     /// 
     std::function<void(std::string)> delegate_;
 };

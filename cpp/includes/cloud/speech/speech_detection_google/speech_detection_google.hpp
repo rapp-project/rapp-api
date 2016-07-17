@@ -26,9 +26,10 @@ public:
 							  const std::string language,
 							  const std::string user,
 							  std::function<void(std::vector<std::string>,
-                                                 std::vector<std::string>)> callback
+                                                 std::vector<std::string>)> callback,
+                              rapp::cloud::platform_info info
 						   )
-	: rapp::services::asio_service_http (), delegate_(callback)
+	: asio_service_http(info), delegate_(callback)
     {
         assert(file);
         std::string boundary = random_boundary();

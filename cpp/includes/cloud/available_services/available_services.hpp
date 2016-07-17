@@ -18,10 +18,10 @@ public:
      * \param callback will receive a vector of services strings
      */
     available_services(
-                        const std::string token,
-                        std::function<void(std::vector<std::string>)> callback
+                        std::function<void(std::vector<std::string>)> callback,
+                        rapp::cloud::platform_info info
                       )
-    : asio_service_http(token), delegate_(callback)
+    : asio_service_http(info), delegate_(callback)
     {
         header_ = "GET /hop/available_services HTTP/1.1\r\n";
         callback_ = std::bind(&available_services::handle_reply, this, std::placeholders::_1);

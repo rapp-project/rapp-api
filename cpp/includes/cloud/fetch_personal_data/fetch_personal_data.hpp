@@ -13,7 +13,6 @@ namespace cloud {
 class fetch_personal_data : public rapp::services::asio_service_http
 {
 public:
-    
     /**
      * \brief Constructor for obtained personal (JSON) data for a specific user
      * \param user is the string username as stored in the database
@@ -22,9 +21,10 @@ public:
      */
     fetch_personal_data(
                           const std::string user,
-                          std::function < void( const std::string ) > callback
+                          std::function<void(const std::string)> callback,
+                          rapp::cloud::platform_info info
                        )
-    : rapp::services::asio_service_http(), delegate__(callback)
+    : asio_service_http(info), delegate__(callback)
     {
         // Form the POST string - simple argument
         post_ = "user="+user+"\r\n";
@@ -39,16 +39,13 @@ public:
         // bind the base class callback, to our handle_reply
         callback_ = std::bind(&fetchPersonalData::handle_reply, this, std::placeholders::_1);
     }
-    
 private:
-      
     /// Get reply and send it directly to delegate
     /// \note we do not do any parsing at all here 
     void handle_reply(std::string json)
     {
         delegate__(json);
     }
-    
     /// The callback called upon completion of receiving the detected faces
     std::function<void(const std::string)> delegate__;
 };

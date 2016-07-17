@@ -126,25 +126,26 @@ int main(int argc, char* argv[])
                 throw std::runtime_error("uknown audio source");
 
             assert(audio);
-            if (!jsgf.empty())
+            if (!jsgf.empty()) {
                 gram.push_back(load_jsgf(jsgf));
-
+            }
             if (audio) {
+                // the callback
                 auto callback = [&](std::vector<std::string> words)
                                 {
                                     for (const auto & str : words)
                                         std::cout << str << " ";
                                     std::cout << std::endl;
                                 };
-                auto sphinx4_call = std::make_shared<rapp::cloud::speech_detection_sphinx4>(audio,        // audio file
-                                                                                            lang,         // Language
-                                                                                            user,         // user
-                                                                                            gram,         // grammar
-                                                                                            words,        // words
-                                                                                            sentences,    // sentences
-                                                                                            callback,
-																							token);
-                ctrl.run_job(sphinx4_call);
+
+                // make the call
+                ctrl.make_call<rapp::cloud::speech_detection_sphinx4>(audio,
+                                                                      lang,
+                                                                      user,
+                                                                      gram,
+                                                                      words,      
+                                                                      sentences,
+                                                                      callback);
             }
         }
         else {

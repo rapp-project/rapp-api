@@ -22,6 +22,10 @@ public:
 	: asio_handler(token)
     {}
 
+    asio_service_http(rapp::cloud::platform_info info)
+    : asio_handler(info)
+    {}
+
     /** 
      * schedule this client as a job for execution using
      * \param query defines the actual URL/URI

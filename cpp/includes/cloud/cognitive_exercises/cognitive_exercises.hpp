@@ -22,15 +22,15 @@ public:
 	cognitive_test_selector(
 							const std::string user,
 							const std::string test_type,
-                            const std::string token,
                             std::function<void(std::vector<std::string>,
                                                std::vector<std::string>,
                                                std::vector<std::string>,
                                                std::string,
                                                std::string,
-                                               std::string)> callback
+                                               std::string)> callback,
+                            rapp::cloud::platform_info info
 						   )
-	: asio_service_http(token), delegate_(callback)
+	: asio_service_http(info), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("test_type", test_type);
@@ -41,7 +41,6 @@ public:
                 + "Content-Type: application/x-www-form-urlencoded\r\n";
         callback_ = std::bind(&cognitive_test_selector::handle_reply, this, std::placeholders::_1);
 	}
-
 private:
     /**
      * \brief handle platform's JSON reply
@@ -119,16 +118,15 @@ public:
      * \brief record performance for a cognitive test
      * \param test_instance sets the actual test
      * \param score is the recorded score
-     * \param token is the rapp authentication token
      * \param callback receives the platform's response
      */
      cognitive_record_performance(
                                     const std::string test_instance,
                                     const float score,
-                                    const std::string token,
-                                    std::function<void(std::string)> callback
+                                    std::function<void(std::string)> callback,
+                                    rapp::cloud::platform_info info
                                  )
-    : asio_service_http(token), delegate_(callback)
+    : asio_service_http(info), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("test_instance", test_instance);
@@ -189,17 +187,16 @@ public:
      * \param from_time is a unix timestamp
      * \param to_time is a unix timestamp
      * \param test_type is the cognitive test
-     * \param token is the rapp authentication token
      * \param callback will receive a JSON reply
      */
     cognitive_get_history(
                             unsigned int from_time,
                             unsigned int to_time,
                             const std::string test_type,
-                            const std::string token,
-                            std::function<void(std::string)> callback
+                            std::function<void(std::string)> callback,
+                            rapp::cloud::platform_info info
                          )
-    : asio_service_http(token), delegate_(callback)
+    : asio_service_http(info), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("from_time", boost::lexical_cast<std::string>(from_time));
@@ -212,7 +209,6 @@ public:
                 + "Content-Type: application/x-www-form-urlencoded\r\n";
         callback_ = std::bind(&cognitive_get_history::handle_reply, this, std::placeholders::_1);
     }
-
 private:
     /**
      * \brief forward (don't parse) platform reply
@@ -239,17 +235,16 @@ public:
      * \brief get cognitive test scores
      * \param up_to_time defines scores queried up to that unix timestamp
      * \param test_type the test type
-     * \param token the rapp authentication token
      * \param callback will receive an array of test classes and respective scores
      */
     cognitive_get_scores(
                           unsigned int up_to_time,
                           const std::string test_type,
-                          const std::string token,
                           std::function<void(std::vector<unsigned int>,
-                                             std::vector<float>)> callback
+                                             std::vector<float>)> callback,
+                          rapp::cloud::platform_info info
                         )
-    : asio_service_http(token), delegate_(callback)
+    : asio_service_http(info), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("up_to_time", boost::lexical_cast<std::string>(from_time));
@@ -261,7 +256,6 @@ public:
                 + "Content-Type: application/x-www-form-urlencoded\r\n";
         callback_ = std::bind(&cognitive_get_scores::handle_reply, this, std::placeholders::_1);
     }
-
 private:
     /**
      * \brief handle platform's JSON reply
