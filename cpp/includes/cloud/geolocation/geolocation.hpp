@@ -15,16 +15,15 @@ public:
     /**
      * \param ipaddr: the machine's ip
      * \param engine: the API (default ip-api)
-     * \param token: the rapp auth token
      * \param callback: receives a JSON reply
      */
     geolocation(
                  const std::string ipaddr,
                  const std::string engine,
-                 const std::string token,
-                 std::function<void(std::string)> callback
+                 std::function<void(std::string)> callback,
+                 rapp::cloud::platform_info info
                )
-	: asio_service_http(token), delegate_(callback)
+	: asio_service_http(info), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("ipaddr", ipaddr);

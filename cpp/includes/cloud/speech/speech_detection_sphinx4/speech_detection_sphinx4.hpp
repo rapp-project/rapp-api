@@ -22,7 +22,6 @@ public:
      * \param words will be searched for in the audio
      * \param sentences will be under consideration
      * \param callback will be executed once the rapp cloud has responded
-     * \param token is the rapp authentication token
      */
     speech_detection_sphinx4(
 							  const std::shared_ptr<rapp::object::audio> file,
@@ -32,9 +31,9 @@ public:
 							  const std::vector<std::string> words,
 							  const std::vector<std::string> sentences,
 							  std::function<void(std::vector<std::string> words)> callback,
-							  std::string token
+							  rapp::cloud::platform_info info
 						    )
-	: asio_service_http(token), delegate_(callback)
+	: asio_service_http(info), delegate_(callback)
     {
         assert(file);
         // Create a new random boundary

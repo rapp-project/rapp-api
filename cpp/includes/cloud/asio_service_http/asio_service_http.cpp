@@ -10,8 +10,8 @@ void asio_service_http::schedule(
                                  )
 {
     auto content_length = post_.size() * sizeof(std::string::value_type);
-    header_ += "Host: " + std::string(rapp::cloud::address) + "\r\n"
-            + "Accept-Token: " + token_ + "\r\n"
+    header_ += "Host: " + asio_handler::address_ + "\r\n"
+            + "Accept-Token: " + asio_handler::token_ + "\r\n"
             + "Connection: close\r\n"
             + "Content-Length: " + boost::lexical_cast<std::string>(content_length)
             + "\r\n\r\n";

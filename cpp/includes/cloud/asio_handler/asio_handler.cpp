@@ -2,7 +2,6 @@
 namespace rapp {
 namespace cloud {
 
-
 void asio_handler::error_handler(const boost::system::error_code & error)
 {
     std::cerr << "error: " << error.message() << std::endl;

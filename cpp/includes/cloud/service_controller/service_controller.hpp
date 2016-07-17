@@ -6,8 +6,8 @@ namespace cloud {
 /**
  * \class service_controller
  * \brief Main class that controllers RAPP Services
- * \version 
- * \date January-2016
+ * \version 0.6.0
+ * \date July-2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * 
  * This class controls services (be it on cloud or robot). A service is a callable function
@@ -23,6 +23,27 @@ public:
 
 	/// no empty constructor
 	service_controller();
+
+    /// \brief construct a service controller using a rapp::cloud::platform_info object
+    service_controller(rapp::cloud::platform_info info);
+
+    /// \brief make_call will instantly run an asynchronous cloud job
+    /// \warning omit the `rapp::cloud::platform_info` param when using this function from the Args
+    template <typename T, typename... Args>
+    void make_call(Args... args)
+    {
+        const auto ptr = std::make_shared<T>(args..., cloud_);
+        this->run_job(ptr);
+    }
+
+    /// \brief make_job will create a cloud job which you must run using `run_job` or `run_jobs`
+    /// \warning omit the `rapp::cloud::platform_info` param when using this function from the Args
+    template <typename T, typename... Args>
+    std::unique_ptr<T> make_job(Args... args)
+    {
+        auto ptr = std::unique_ptr<T>(new T(args..., cloud_));
+        return std::move(ptr);
+    }
 
     /**
      * \brief Run one service job
@@ -44,6 +65,8 @@ public:
     void stop();
 
 private:
+    rapp::cloud::platform_info cloud_ = {"localhost", "9001", "mytoken"};
+
     /// resolution, query and io service
     boost::asio::ip::tcp::resolver::query query_;
     boost::asio::io_service io_;

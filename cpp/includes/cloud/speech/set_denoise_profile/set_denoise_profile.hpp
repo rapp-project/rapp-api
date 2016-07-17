@@ -18,14 +18,13 @@ public:
 	 * \note This class does not return something, it only captures an error
      * \param file is the noise audio file used for de-noising
      * \param user is the user denoise profile
-     * \param token is the rapp authentication token
      */
     set_denoise_profile(
 						 const std::shared_ptr<rapp::object::audio> file,
                          const std::string user,
-                         const std::string token
+                         rapp::cloud::platform_info info 
 					   )
-    : asio_service_http(token)
+    : asio_service_http(info)
     {
         assert(file);
         std::string boundary = random_boundary();

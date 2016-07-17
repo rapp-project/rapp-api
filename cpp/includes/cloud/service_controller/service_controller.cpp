@@ -3,7 +3,11 @@ namespace rapp {
 namespace cloud {
 
 service_controller::service_controller()
-: query_(address, port), io_(), resol_(io_)
+: query_(cloud_.address, cloud_.port), io_(), resol_(io_)
+{}
+
+service_controller::service_controller(rapp::cloud::platform_info info)
+: cloud_(info), query_(info.address, info.port), io_(), resol_(io_)
 {}
 
 void service_controller::run_job(const std::shared_ptr<asio_socket> job)

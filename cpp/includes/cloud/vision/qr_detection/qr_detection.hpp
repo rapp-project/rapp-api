@@ -21,10 +21,10 @@ public:
     */
     qr_detection(
                   const std::shared_ptr<rapp::object::picture> image,
-				  const std::string token,
-                  std::function<void(std::vector<rapp::object::qr_code>)> callback
+                  std::function<void(std::vector<rapp::object::qr_code>)> callback,
+                  rapp::cloud::platform_info info
                 )
-    : asio_service_http(token), delegate__(callback)
+    : asio_service_http(info), delegate__(callback)
     {
         assert(image);
         std::string boundary = random_boundary();
@@ -49,7 +49,6 @@ public:
         header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
         callback_ = std::bind(&qr_detection::handle_reply, this, std::placeholders::_1);   
     }
-
 private:
 	/**
 	 * \brief handle the rapp-platform JSON reply
