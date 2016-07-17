@@ -14,13 +14,11 @@ struct planned_path
 {
     /**
      * \brief construct using path header, definition of success/error code, vector of path points
-     * \param header defines path metadata (sequence, frame_id, stamp)
      * \param plan_found is success/error code
      * \param planning_error is error description
      * \param path is vector of path pose_stamped
      */
 	planned_path( 
-				   rapp::object::header header,
 				   uint8_t plan_found,
 				   std::string planning_error,
 				   std::vector<pose_stamped> path
@@ -45,7 +43,6 @@ struct planned_path
     }
 
 	/// members
-	rapp::object::header header;
     uint8_t plan_found;
     std::string planning_error;
     std::vector<rapp::object::pose_stamped> path;

@@ -24,10 +24,10 @@ public:
                             const std::string city,
                             const std::string weather_reporter,
                             const unsigned int metric,
-                            const std::string token,
-                            std::function<void(std::string)> callback
+                            std::function<void(std::string)> callback,
+                            rapp::cloud::platform_info info
                           )
-    : asio_service_http(token), delegate_(callback)
+    : asio_service_http(info), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("city", city);

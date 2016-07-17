@@ -9,11 +9,15 @@ int main(int argc, char* argv[])
     if (argc > 1) {
         std::cout << "scan for QR: " << argv[1] << std::endl;
         std::string file = argv[1];
-		std::string token = "my_token";
 
-        rapp::cloud::service_controller ctrl;
+        // Service Controller 
+        rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
+        rapp::cloud::service_controller ctrl(info);
 
-        if(auto pic = std::make_shared<rapp::object::picture>(file)) {
+        // test pic was loaded
+        if (auto pic = std::make_shared<rapp::object::picture>(file)) {
+
+            // callback lambda
             auto callback = [&](std::vector<rapp::object::qr_code> codes)
                             {
                                 std::cout << "found " << codes.size() 
@@ -21,8 +25,9 @@ int main(int argc, char* argv[])
                                 for (const auto code : codes)
                                     std::cout << code.label() << std::endl;
                             };
-            auto fdetect = std::make_shared<rapp::cloud::qr_detection>(pic, token, callback);
-            ctrl.run_job(fdetect);
+
+            // make call
+            ctrl.make_call<rapp::cloud::qr_detection>(pic, callback);
             return 0;
         }
         else {
