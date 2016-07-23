@@ -21,10 +21,9 @@ public:
     */
     hazard_detection_door_check(
                                   const std::shared_ptr<rapp::object::picture> image,
-                                  std::function<void(double door_angle)> callback,
-                                  rapp::cloud::platform_info info
+                                  std::function<void(double door_angle)> callback
                                 )
-    : asio_service_http(info), delegate__(callback)
+    : asio_service_http(), delegate__(callback)
     {
         assert(image);
         std::string boundary = random_boundary();
@@ -102,10 +101,9 @@ public:
     */
     hazard_detection_light_check(
                                   const std::shared_ptr<rapp::object::picture> image,
-                                  std::function<void(double light_level)> callback,
-                                  std::string token
+                                  std::function<void(double light_level)> callback
                                 )
-    : asio_service_http(token), delegate__(callback)
+    : asio_service_http(), delegate__(callback)
     {
         assert(image);
         std::string boundary = random_boundary();

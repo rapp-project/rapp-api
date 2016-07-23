@@ -9,7 +9,9 @@ int main(int argc, char* argv[])
         std::string file  = argv[1];
 
         // service controler
-        rapp::cloud::service_controller ctrl;
+		rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
+        rapp::cloud::service_controller ctrl(info);
+
         auto callback = [&](std::vector<rapp::object::face> faces)
                         {std::cout << "found " << faces.size() << " faces!" << std::endl;};
 

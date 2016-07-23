@@ -18,8 +18,7 @@ public:
      * \param callback will receive a vector of services strings
      */
     available_services(
-                        std::function<void(std::vector<std::string>)> callback,
-                        rapp::cloud::platform_info info
+                        std::function<void(std::vector<std::string>)> callback
                       )
     : asio_service_http(info), delegate_(callback)
     {

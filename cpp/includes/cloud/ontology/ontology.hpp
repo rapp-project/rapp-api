@@ -22,10 +22,9 @@ public:
     ontology_subclasses_of(
                             std::string ontology_class,
                             bool recursive,
-                            std::function<void(std::vector<std::string>)> callback,
-							rapp::cloud::platform_info info
+                            std::function<void(std::vector<std::string>)> callback
                           )
-    : asio_service_http(info), delegate__(callback)
+    : asio_service_http(), delegate__(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
@@ -87,10 +86,9 @@ public:
     ontology_superclasses_of(
                               const std::string ontology_class,
                               bool recursive,
-                              std::function<void(std::vector<std::string>)> callback,
-							  rapp::cloud::platform_info info
+                              std::function<void(std::vector<std::string>)> callback
                             )
-    : asio_service_http(info), delegate__(callback)
+    : asio_service_http(), delegate__(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
@@ -156,10 +154,9 @@ public:
                                    const std::string parent_class,
                                    const std::string child_class,
                                    bool recursive,
-                                   std::function<void(bool result)> callback,
-                                   rapp::cloud::platform_info info
+                                   std::function<void(bool result)> callback
                                 )
-    : asio_service_http(info), delegate__(callback)
+    : asio_service_http(), delegate__(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("parent_class", parent_class);
