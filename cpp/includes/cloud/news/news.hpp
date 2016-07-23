@@ -28,10 +28,9 @@ public:
                   const std::string region,
                   const std::string topic,
                   const unsigned int num_news,
-                  std::function<void(std::string)> callback,
-                  rapp::cloud::platform_info info
+                  std::function<void(std::string)> callback
                 )
-    : asio_service_http(info), delegate_(callback)
+    : asio_service_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("news_engine", email);

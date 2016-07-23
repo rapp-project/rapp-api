@@ -2,6 +2,16 @@
 namespace rapp {
 namespace cloud {
 
+std::string asio_handler::make_header(rapp::cloud::platform_info info, unsigned int length)
+{
+	std::string header = "Host: " + info.address + "\r\n"
+				+ "Accept-Token: " + info.token + "\r\n"
+				+ "Connection: close\r\n"
+				+ "Content-Length: " + boost::lexical_cast<std::string>(length)
+				+ "\r\n\r\n";
+	return header;
+}
+
 void asio_handler::error_handler(const boost::system::error_code & error)
 {
     std::cerr << "error: " << error.message() << std::endl;

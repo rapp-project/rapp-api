@@ -33,10 +33,9 @@ public:
                  const unsigned int from_date,
                  const unsigned int to_date,
                  const unsigned int num_emails,
-                 std::function<void(std::string)> callback,
-                 rapp::cloud::platform_info info
+                 std::function<void(std::string)> callback
                 )
-	: asio_service_http(info), delegate_(callback)
+	: asio_service_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("email", email);
@@ -97,10 +96,9 @@ public:
                  const std::string body,
                  const std::string subject,
                  const std::vector<rapp::types::byte> data,
-                 std::function<void(std::string)> callback,
-                 rapp::cloud::platform_info info
+                 std::function<void(std::string)> callback
                )
-	: asio_service_http(info), delegate_(callback)
+	: asio_service_http(), delegate_(callback)
 	{
         std::string boundary = random_boundary();
         std::string fname = random_boundary();

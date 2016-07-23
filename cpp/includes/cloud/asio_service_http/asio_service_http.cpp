@@ -6,31 +6,29 @@ namespace cloud {
 void asio_service_http::schedule( 
                                    boost::asio::ip::tcp::resolver::query & query,
                                    boost::asio::ip::tcp::resolver & resolver,
-                                   boost::asio::io_service & io_service
+                                   boost::asio::io_service & io_service,
+								   rapp::cloud::platform_info info
                                  )
 {
+	// calculate HTTP POST size
     auto content_length = post_.size() * sizeof(std::string::value_type);
-    header_ += "Host: " + asio_handler::address_ + "\r\n"
-            + "Accept-Token: " + asio_handler::token_ + "\r\n"
-            + "Connection: close\r\n"
-            + "Content-Length: " + boost::lexical_cast<std::string>(content_length)
-            + "\r\n\r\n";
-
+	// create the HTTP header
+    header_ = make_header(info, content_length);
     std::ostream request_stream(&request_);
+	// append HTTP header and HTTP POST data
     request_stream << header_ << post_ << "\r\n";
-
-    // init timer
+    // init tiemeout timer
     if (!timer_) {
         timer_ = std::unique_ptr<boost::asio::deadline_timer>(
                                  new boost::asio::deadline_timer(io_service));
     }
     timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
-
     // init socket
     if (!socket_) {
         socket_ = std::unique_ptr<boost::asio::ip::tcp::socket>(
                                   new boost::asio::ip::tcp::socket(io_service));
     }
+	// resolve the address and chain the callbacks
     resolver.async_resolve(query,
                            boost::bind(&asio_service_http::handle_resolve,
                                        this,

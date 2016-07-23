@@ -21,8 +21,8 @@ public:
      * \param token: authentication token
      * \param user: rapp.cloud username
 	 */
-	asio_socket_https(const std::string token)
-  	: asio_handler(token), ctx_(boost::asio::ssl::context::tlsv12_client)
+	asio_socket_https()
+  	: asio_handler(), ctx_(boost::asio::ssl::context::tlsv12_client)
 	{
         // TODO: using this only for TEST
         header_ =  "POST / HTTP/1.1\r\n";
@@ -37,7 +37,8 @@ public:
 	void schedule(
 				   boost::asio::ip::tcp::resolver::query & query,
 				   boost::asio::ip::tcp::resolver & resolver,
-				   boost::asio::io_service & io_service
+				   boost::asio::io_service & io_service,
+				   rapp::cloud::platform_info info
 				 );
 
 protected:

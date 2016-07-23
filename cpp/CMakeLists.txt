@@ -34,7 +34,7 @@ set(CMAKE_MACOSX_RPATH 1)
 include_directories("includes")
 
 # Library-only Executables -
-set (SOURCES ${SOURCES} ${INCLUDES}/cloud/service_controller/service_controller.cpp
+set (SOURCES ${SOURCES} 
                         ${INCLUDES}/cloud/asio_service_http/asio_service_http.cpp
                         ${INCLUDES}/cloud/asio_handler/asio_handler.cpp
                         ${INCLUDES}/cloud/asio_socket_https/asio_socket_https.cpp)

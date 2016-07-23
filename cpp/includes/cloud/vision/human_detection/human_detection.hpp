@@ -21,10 +21,9 @@ public:
     */
     human_detection(
                       const std::shared_ptr<rapp::object::picture> image,
-                      std::function<void(std::vector<rapp::object::human>)> callback,
-                      rapp::cloud::platform_info info
+                      std::function<void(std::vector<rapp::object::human>)> callback
                     )
-    : asio_service_http(info), delegate__(callback)
+    : asio_service_http(), delegate__(callback)
     {
         assert(image);
         std::string boundary = random_boundary();

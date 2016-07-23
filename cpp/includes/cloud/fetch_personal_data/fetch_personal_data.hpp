@@ -21,10 +21,9 @@ public:
      */
     fetch_personal_data(
                           const std::string user,
-                          std::function<void(const std::string)> callback,
-                          rapp::cloud::platform_info info
+                          std::function<void(const std::string)> callback
                        )
-    : asio_service_http(info), delegate__(callback)
+    : asio_service_http(), delegate__(callback)
     {
         // Form the POST string - simple argument
         post_ = "user="+user+"\r\n";

@@ -65,7 +65,6 @@ int main(int argc, char* argv[])
         po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
         po::notify(vm);
 
-		std::string token = "my_token";
         int checks = 0;
         std::string audio_file, audio_source, lang, user, jsgf = "";
         std::vector<std::string> words = {}, sentences = {};
@@ -110,7 +109,9 @@ int main(int argc, char* argv[])
 
         // we have the required params set
         if (checks == 4) {
-            rapp::cloud::service_controller ctrl;
+			rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
+			rapp::cloud::service_controller ctrl(info);
+
             std::shared_ptr<rapp::object::audio> audio;
             std::vector<std::string> gram;
 

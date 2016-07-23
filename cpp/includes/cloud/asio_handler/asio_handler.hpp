@@ -4,19 +4,6 @@
 namespace rapp {
 namespace cloud {
 /**
- * \struct platform_info
- * \version 0.6.0
- * \date July 2016
- * \brief use to construct a service controller with correct params
- */
-struct platform_info
-{
-    std::string address;
-    std::string port;
-    std::string token;
-};
-
-/**
  * \class asio_handler
  * \version 0.6.0
  * \date April 2016
@@ -27,21 +14,13 @@ struct platform_info
 class asio_handler
 {
 public:
+	/// \brief create an HTTP header using the \param info
+	std::string make_header(rapp::cloud::platform_info info, unsigned int length);
 
-    /// ctor
-    asio_handler(const std::string token)
-    : token_(token)
-    {}
-
-    /// ctor
-    asio_handler(rapp::cloud::platform_info info)
-    : token_(info.token), address_(info.address), port_(info.port)
-    {}
-
-    /// Handle an Error \param error is the raised error from the client
+    /// \brief Handle an Error \param error is the raised error from the client
     void error_handler(const boost::system::error_code & error);
 
-    /// Handle Invalid Query - e.g.: response which states our query was invalid 
+    /// \brief Handle Invalid Query - e.g.: response which states our query was invalid 
     void invalid_request(const std::string message);
     
     /// \brief get the content leangth from \param header
@@ -70,7 +49,6 @@ public:
     std::string encode64(const std::string &val);
     
 protected:
-    /// Header that will be used
     std::string header_;
     /// Actual post Data
     std::string post_;
@@ -91,11 +69,6 @@ protected:
     std::size_t bytes_transferred_ = 0;
     /// JSON reply
     std::string json_;
-
-    /// user authentication token
-	const std::string token_;
-    const std::string address_;
-    const std::string port_;
 };
 }
 }

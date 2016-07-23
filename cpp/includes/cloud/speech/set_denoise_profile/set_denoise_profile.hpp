@@ -21,10 +21,9 @@ public:
      */
     set_denoise_profile(
 						 const std::shared_ptr<rapp::object::audio> file,
-                         const std::string user,
-                         rapp::cloud::platform_info info 
+                         const std::string user
 					   )
-    : asio_service_http(info)
+    : asio_service_http()
     {
         assert(file);
         std::string boundary = random_boundary();

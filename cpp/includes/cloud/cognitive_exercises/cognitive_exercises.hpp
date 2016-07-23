@@ -13,6 +13,15 @@ namespace cloud {
 class cognitive_test_selector : public asio_service_http
 {
 public:
+
+	/// callback functor
+	typedef std::function<void(std::vector<std::string>,
+                               std::vector<std::string>,
+                               std::vector<std::string>,
+                               std::string,
+                               std::string,
+                               std::string)> functor;
+
 	/**
 	 * \brief handler obtains a cognitive test from cloud.rapp
 	 * \param user set the user
@@ -22,15 +31,9 @@ public:
 	cognitive_test_selector(
 							const std::string user,
 							const std::string test_type,
-                            std::function<void(std::vector<std::string>,
-                                               std::vector<std::string>,
-                                               std::vector<std::string>,
-                                               std::string,
-                                               std::string,
-                                               std::string)> callback,
-                            rapp::cloud::platform_info info
+                            functor callback,
 						   )
-	: asio_service_http(info), delegate_(callback)
+	: asio_service_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("test_type", test_type);
@@ -123,10 +126,9 @@ public:
      cognitive_record_performance(
                                     const std::string test_instance,
                                     const float score,
-                                    std::function<void(std::string)> callback,
-                                    rapp::cloud::platform_info info
+                                    std::function<void(std::string)> callback
                                  )
-    : asio_service_http(info), delegate_(callback)
+    : asio_service_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("test_instance", test_instance);
@@ -193,10 +195,9 @@ public:
                             unsigned int from_time,
                             unsigned int to_time,
                             const std::string test_type,
-                            std::function<void(std::string)> callback,
-                            rapp::cloud::platform_info info
+                            std::function<void(std::string)> callback
                          )
-    : asio_service_http(info), delegate_(callback)
+    : asio_service_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("from_time", boost::lexical_cast<std::string>(from_time));
@@ -240,11 +241,9 @@ public:
     cognitive_get_scores(
                           unsigned int up_to_time,
                           const std::string test_type,
-                          std::function<void(std::vector<unsigned int>,
-                                             std::vector<float>)> callback,
-                          rapp::cloud::platform_info info
+                          std::function<void(std::vector<unsigned int>, std::vector<float>)> callback
                         )
-    : asio_service_http(info), delegate_(callback)
+    : asio_service_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("up_to_time", boost::lexical_cast<std::string>(from_time));
