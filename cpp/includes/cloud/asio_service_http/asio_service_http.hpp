@@ -14,18 +14,6 @@ namespace cloud {
 class asio_service_http : public asio_socket, protected asio_handler
 {
 public:
-	/**
-	 * Construct the asio http service
-	 * \param token is the rapp.cloud authentication token
-	 */
-	asio_service_http(const std::string token)
-	: asio_handler(token)
-    {}
-
-    asio_service_http(rapp::cloud::platform_info info)
-    : asio_handler(info)
-    {}
-
     /** 
      * schedule this client as a job for execution using
      * \param query defines the actual URL/URI
@@ -35,7 +23,8 @@ public:
     void schedule( 
 				   boost::asio::ip::tcp::resolver::query & query,
 				   boost::asio::ip::tcp::resolver & resolver,
-				   boost::asio::io_service & io_service
+				   boost::asio::io_service & io_service,
+				   rapp::cloud::platform_info info
                  );
     
 protected:

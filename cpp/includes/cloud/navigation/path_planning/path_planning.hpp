@@ -25,10 +25,9 @@ public:
                   const std::string algorithm,
                   const rapp::object::pose_stamped start,
                   const rapp::object::pose_stamped goal,
-                  std::function<void(rapp::object::planned_path)> callback,
-                  rapp::cloud::platform_info info
+                  std::function<void(rapp::object::planned_path)> callback
                 )
-	: asio_service_http(info), delegate_(callback)
+	: asio_service_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("map_name", map_name);
@@ -70,10 +69,8 @@ private:
 
             // iterate array `path` objects
             for (auto child : tree.get_child("path")) {
-
                 // iterate each anonymous object's members
                 for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
-
                     // header + time stamp
                     rapp::objects::header meta;
                     rapp::object::time t;
@@ -106,7 +103,6 @@ private:
                             }
                         }
                     }
-
                     // second member is `pose` TODO: add methods for all objects: `load_from_json` and implement logic there.
                     else if (iter->first == "pose") {
                         //
@@ -126,7 +122,6 @@ private:
                                     }
                                 }
                             }
-                            
                             // quaternion
                             else if (it.first == "orientation") {
                                 for (auto it2 : it.second.begin(); it2 != it.second.end(); ++it2) {
@@ -146,7 +141,6 @@ private:
                             }
                         }
                     }
-
                     rapp::object::pose pose(position, orientation);
                     rapp::object::pose_stamped ps(meta, pose);
                     path.push_back(ps); 
@@ -158,7 +152,6 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-
         delegate_(std::move(rapp::object::planned_path(plan_found, plan_error, path)));
     }
     /// 
@@ -177,21 +170,33 @@ public:
      * \note callback only receives an error if one occurs
      */
      path_upload_map(
-                      const rapp::object::picture png_file,
-                      const std::string yaml_file,
+                      std::pair<rapp::object::picture, std::string> png_file,
+					  std::pair<rapp::object::yaml, std::string> yaml_file,
                       const std::string map_name,
-                      std::function<void(std::string)> callback,
-                      rapp::cloud::platform_info info
+                      std::function<void(std::string)> callback
                     )
-    : asio_service_http(info), delegate_(callback)
+    : asio_service_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
-        tree.put("", map_name);
-        tree.put("yaml_file", yaml_file);
+        tree.put("png_file", png_file.second);
+        tree.put("yaml_file", yaml_file.second);
 		tree.put("map_name", map_name);
+		std::string boundary = random_boundary();
+        std::stringstream ss;
+        boost::property_tree::write_json(ss, tree, false);
+		// multipart/form-data append JSON first
+		post_  = "--" + boundary + "\r\n"
+			   + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+			   + ss.str() + "\r\n";
+		// write the PNG file binary data
+		post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"png_file\"; filename\"" + png_file.second + "\"\r\n"
+              + "Content-Transfer-Encoding: binary\r\n\r\n";
+        // Append binary data
+        auto imagebytes = png_file.first.bytearray();
+        post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
 
-        // TODO: is the yaml a file or a string?
-        // TODO: is the png_file a file, or a filename?
+
     }
 private:
     /**

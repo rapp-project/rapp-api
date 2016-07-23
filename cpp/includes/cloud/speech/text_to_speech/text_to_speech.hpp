@@ -23,10 +23,9 @@ public:
 	text_to_speech(
 					 const std::string text,
 					 const std::string language,
-					 std::function<void(std::unique_ptr<wav_file>)> callback,
-                     rapp::cloud::platform_info info
+					 std::function<void(std::unique_ptr<wav_file>)> callback
 				  )
-	: asio_service_http(info), delegate_(callback)
+	: asio_service_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("text", text);

@@ -6,23 +6,20 @@ namespace cloud {
 void asio_socket_https::schedule(
                                    boost::asio::ip::tcp::resolver::query & query,
                                    boost::asio::ip::tcp::resolver & resolver,
-                                   boost::asio::io_service & io_service
+                                   boost::asio::io_service & io_service,
+								   rapp::cloud::platform_info info
                                  )
 {
+	// calculate HTTP POST size
     auto content_length = post_.size() * sizeof(std::string::value_type);
-    header_ += "Host: " + std::string(asio_handler::address_) + "\r\n"
-            + "Accept-Token: " + asio_handler::token_ + "\r\n"
-            + "Connection: close\r\n"
-            + "Content-Length: " + boost::lexical_cast<std::string>(content_length) 
-            + "\r\n\r\n";
-
-    // init timer
+	// create the HTTP header
+    header_ = make_header(info, content_length);
+    // init timeout timer
     if (!timer_) {
         timer_ = std::unique_ptr<boost::asio::deadline_timer>(
                                  new boost::asio::deadline_timer(io_service));
     }
     timer_->async_wait(boost::bind(&asio_socket_https::check_timeout, this));
-
     // init tls socket wrapper
     if (!tls_socket_) {
         tls_socket_ = std::unique_ptr<boost_tls_socket>(

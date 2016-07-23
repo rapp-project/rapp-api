@@ -30,10 +30,9 @@ public:
 							  const std::vector<std::string> grammar,
 							  const std::vector<std::string> words,
 							  const std::vector<std::string> sentences,
-							  std::function<void(std::vector<std::string> words)> callback,
-							  rapp::cloud::platform_info info
+							  std::function<void(std::vector<std::string> words)> callback
 						    )
-	: asio_service_http(info), delegate_(callback)
+	: asio_service_http(), delegate_(callback)
     {
         assert(file);
         // Create a new random boundary
@@ -66,11 +65,14 @@ public:
         tree.add_child("sentences", sentence_array);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+		post_  = "--" + boundary + "\r\n"
+			   + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+			   + ss.str() + "\r\n";
         post_ += "--" + boundary + "\r\n"
-            + "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n"
-            + "Content-Transfer-Encoding: binary\r\n\r\n";
+              + "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n"
+              + "Content-Transfer-Encoding: binary\r\n\r\n";
         auto bytes = file->bytearray();
-        post_.insert( post_.end(), bytes.begin(), bytes.end() );
+        post_.insert(post_.end(), bytes.begin(), bytes.end());
         post_ += "\r\n--" + boundary + "--";
         header_ =  "POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n";
         header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";

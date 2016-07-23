@@ -11,15 +11,15 @@ int main(int argc, char* argv[])
         std::string file  = argv[1];
 
         // service controler
-        rapp::cloud::service_controller ctrl;
         rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
+		rapp::cloud::service_controller ctrl(info);
 
         // load the image from argv[1]
         if (auto pic = std::make_shared<rapp::object::picture>(file)) {
             auto callback = [&](std::vector<rapp::object::face> faces)
                             {std::cout << "found " << faces.size() << " faces!" << std::endl;};
 
-            auto fdetect = std::make_shared<rapp::cloud::face_detection>(pic, false, callback, info);
+            auto fdetect = std::make_shared<rapp::cloud::face_detection>(pic, false, callback);
             if (fdetect) {
                 ctrl.run_job(fdetect);
             }

@@ -20,10 +20,9 @@ public:
     geolocation(
                  const std::string ipaddr,
                  const std::string engine,
-                 std::function<void(std::string)> callback,
-                 rapp::cloud::platform_info info
+                 std::function<void(std::string)> callback
                )
-	: asio_service_http(info), delegate_(callback)
+	: asio_service_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("ipaddr", ipaddr);

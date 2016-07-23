@@ -22,10 +22,9 @@ public:
     face_detection(
                     const std::shared_ptr<rapp::object::picture> image,
                     bool fast,
-                    std::function<void(std::vector<rapp::object::face>)> callback,
-                    rapp::cloud::platform_info info
+                    std::function<void(std::vector<rapp::object::face>)> callback
                   )
-    : asio_service_http(info), delegate_(callback)
+    : asio_service_http(), delegate_(callback)
     {
         assert(image);
         std::string boundary = random_boundary();
