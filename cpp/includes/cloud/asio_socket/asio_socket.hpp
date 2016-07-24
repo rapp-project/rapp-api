@@ -14,6 +14,7 @@ struct platform_info
     std::string address;
     std::string port;
     std::string token;
+	std::string protocol;
 };
 /**
  * \brief Abstract Base ASIO Socket class

@@ -15,23 +15,19 @@ int main(int argc, char* argv[])
         rapp::cloud::service_controller ctrl(info);
 
         // test pic was loaded
-        if (auto pic = std::make_shared<rapp::object::picture>(file)) {
+        auto pic = rapp::object::picture(file);
 
-            // callback lambda
-            auto callback = [&](std::vector<rapp::object::qr_code> codes)
-                            {
-                                std::cout << "found " << codes.size() 
-										  << " QR codes" << std::endl;
-                                for (const auto code : codes)
-                                    std::cout << code.label() << std::endl;
-                            };
+		// callback lambda: print the QR code label(s)
+		auto callback = [&](std::vector<rapp::object::qr_code> codes)
+						{
+							std::cout << "found " << codes.size() << " QR codes" << std::endl;
+							for (const auto code : codes) {
+								std::cout << code.label() << std::endl;
+							}
+						};
 
-            // make call
-            ctrl.make_call<rapp::cloud::qr_detection>(pic, callback);
-            return 0;
-        }
-        else {
-            throw std::runtime_error("can't load: "+file);
-        }
+		// detect QR code(s)
+		ctrl.make_call<rapp::cloud::qr_detection>(pic, callback);
+		return 0;
     }
 } 

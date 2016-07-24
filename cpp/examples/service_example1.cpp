@@ -12,16 +12,17 @@ int main(int argc, char* argv[])
 		rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
         rapp::cloud::service_controller ctrl(info);
 
+		// a callback which prints the number of faces found
         auto callback = [&](std::vector<rapp::object::face> faces)
                         {std::cout << "found " << faces.size() << " faces!" << std::endl;};
 
         // load the image from argv[1]
-        if (auto pic = std::make_shared<rapp::object::picture>(file)) {
-            ctrl.make_call<rapp::cloud::face_detection>(pic, false, callback);
-        }
-        else {
-            std::cerr << "Error loading image: " << argv[1] << std::endl;
-        }
+        auto pic = rapp::object::picture(file);
+
+		// make the cloud call
+        ctrl.make_call<rapp::cloud::face_detection>(pic, false, callback);  
+
+		// TODO: show other ways of using the service_controller (job, jobs, threads, etc)
         return 0;
     }
     else {

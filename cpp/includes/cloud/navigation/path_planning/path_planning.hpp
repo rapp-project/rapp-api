@@ -61,89 +61,25 @@ private:
             for (auto child : tree.get_child("error")) {
                 plan_error = child.second.get_value<std::string>();
             }
-
             // get `plan_found`
             for (auto child : tree.get_child("plan_found")) {
                 plan_found = child.second.get_value<std::string>();
             }
-
             // iterate array `path` objects
             for (auto child : tree.get_child("path")) {
-                // iterate each anonymous object's members
-                for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
+				for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
                     // header + time stamp
-                    rapp::objects::header meta;
-                    rapp::object::time t;
-                    rapp::object::point position;
-                    rapp::object::quaternion orientation;
-
-                    // first member is `header` TODO: add methods for all objects: `load_from_json` and implement logic there.
+					std::unique_ptr<pose_metadata> meta;
                     if (iter->first == "header") {
-                        //
-                        for (auto it : iter->second) {
-                            // sequence
-                            if (it.first == "seq") {
-                                meta.seq = it.second.get_value<int>();
-							}
-                            // frame id
-                            else if (it.first == "frame_id") {
-                               meta.frameid = it.second.get_value<std::string>();
-							}
-                            // stamp
-                            else if (it.first == "stamp") {
-                                for (auto it2 : it.second.begin(); it2 != it.second.end(); ++it2) {
-                                    if (it2.first == "secs") {
-                                        t.sec = it2.second.get_value<uint32_t>();
-                                    }
-                                    else if (it2.first == "nsecs") {
-                                        t.nsec= it2.second.get_value<uint32_t>();
-                                    }
-                                }
-                                meta.stamp = t;
-                            }
-                        }
-                    }
-                    // second member is `pose` TODO: add methods for all objects: `load_from_json` and implement logic there.
+						meta = std::unique_ptr<pose_metadata>(new meta(iter));
+					}
+                    // pose + position + quaternion from JSON
+					std::unique_ptr<pose> pose;
                     else if (iter->first == "pose") {
-                        //
-                        for (auto it : iter->second) {
-                            // position
-                            if (it.first == "position") {
-                                // position object
-                                for (auto it2 : it.second.begin(); it2 != it.second.end(); ++it2) {
-                                    if (it2.first == "x") {
-                                        position.x = it2.second.get_value<uint32_t>();
-                                    }
-                                    else if (it2.first == "y") {
-                                        position.y = it2.second.get_value<uint32_t>();
-                                    }
-                                    else if (it2.first == "z") {
-                                        position.z = it2.second.get_value<uint32_t>();
-                                    }
-                                }
-                            }
-                            // quaternion
-                            else if (it.first == "orientation") {
-                                for (auto it2 : it.second.begin(); it2 != it.second.end(); ++it2) {
-                                    if (it2.first == "x") {
-                                        orientation.x = it2.second.get_value<uint32_t>();
-                                    }
-                                    else if (it2.first == "y") {
-                                        orientation.y = it2.second.get_value<uint32_t>();
-                                    }
-                                    else if (it2.first == "z") {
-                                        orientation.y = it2.second.get_value<uint32_t>();
-                                    }
-                                    else if (it2.first == "w") {
-                                        orientation.y = it2.second.get_value<uint32_t>();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    rapp::object::pose pose(position, orientation);
-                    rapp::object::pose_stamped ps(meta, pose);
-                    path.push_back(ps); 
+						pose = std::unique_ptr<pose>(new pose(iter));   
+					}
+                    rapp::object::pose_stamped ps(*meta, *pose);
+                    path.push_back(std:move(ps));
                 }
             }
 		}
@@ -170,16 +106,14 @@ public:
      * \note callback only receives an error if one occurs
      */
      path_upload_map(
-                      std::pair<rapp::object::picture, std::string> png_file,
-					  std::pair<rapp::object::yaml, std::string> yaml_file,
+                      const rapp::object::picture & png_file,
+					  const rapp::object::yaml & yaml_file,
                       const std::string map_name,
                       std::function<void(std::string)> callback
                     )
     : asio_service_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
-        tree.put("png_file", png_file.second);
-        tree.put("yaml_file", yaml_file.second);
 		tree.put("map_name", map_name);
 		std::string boundary = random_boundary();
         std::stringstream ss;
@@ -189,14 +123,25 @@ public:
 			   + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
 			   + ss.str() + "\r\n";
 		// write the PNG file binary data
+		std::string png_fname = random_boundary() + ".png";
 		post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"png_file\"; filename\"" + png_file.second + "\"\r\n"
+              + "Content-Disposition: form-data; name=\"png_file\"; filename\"" + png_fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
         // Append binary data
-        auto imagebytes = png_file.first.bytearray();
+        auto imagebytes = png_file.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
-
-
+		// write the YAML file data
+		std::string yaml_fname = random_boundary() + ".yaml";
+		post_ += "--" + boundary + "\r\n"
+			  + "Content-Disposition: form-data; name=\"yaml_file\"; filename\"" + yaml_fname + "\"\r\n"
+              + "Content-Transfer-Encoding: binary\r\n\r\n";
+		post_.append(yaml_file.get_string());
+        post_ += "\r\n--" + boundary + "--";
+		// init the header
+        header_ = "POST /hop/path_upload_map HTTP/1.1\r\n";
+                + "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+        // bind the base class callback, to our handle_reply
+        callback_ = std::bind(&path_upload_map::handle_reply, this, std::placeholders::_1);
     }
 private:
     /**
@@ -204,8 +149,23 @@ private:
      */
      void handle_reply(std::string json)
      {
-
+		std::stringstream ss(json);
+		std::string error;
+        try {
+            boost::property_tree::ptree tree;
+            boost::property_tree::read_json(ss, tree);
+			for (auto child : tree.get_child("error")) {
+                error = child.second.get_value<std::string>();
+            }
+	    }
+        catch (boost::property_tree::json_parser::json_parser_error & je) {
+            std::cerr << "available_services::handle_reply Error parsing: " << je.filename() 
+                      << " on line: " << je.line() << std::endl;
+            std::cerr << je.message() << std::endl;
+        }
+        delegate_(error);
      }
+
      ///
      std::function<void(std::string>)> delegate_;
 };

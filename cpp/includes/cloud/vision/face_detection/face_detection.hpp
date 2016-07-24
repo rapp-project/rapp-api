@@ -20,15 +20,14 @@ public:
      * \param callback is the function that will receive a vector of detected face(s) 
      */
     face_detection(
-                    const std::shared_ptr<rapp::object::picture> image,
+                    const rapp::object::picture & image,
                     bool fast,
                     std::function<void(std::vector<rapp::object::face>)> callback
                   )
     : asio_service_http(), delegate_(callback)
     {
-        assert(image);
         std::string boundary = random_boundary();
-        std::string fname = random_boundary()+"."+image->type();
+        std::string fname = random_boundary()+"."+image.type();
         boost::property_tree::ptree tree;
         tree.put("file", fname);
         tree.put("fast", boost::lexical_cast<std::string>(fast));
@@ -43,7 +42,7 @@ public:
               + "Content-Disposition: form-data; name=\"file_uri\"; filename\"" + fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
         // Append binary data
-        auto imagebytes = image->bytearray();
+        auto imagebytes = image.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
         post_ += "\r\n--" + boundary + "--";
         // Form the Header
