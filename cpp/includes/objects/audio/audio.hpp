@@ -9,6 +9,11 @@ namespace object {
  * \version 2
  * \date January-2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ *
+ * TODO: instead of making `audio` polymorphic we can request as ctor param
+ *		 the audio_source (instead of infering it)
+ *		 and we can extract the extension, and use it as audio type (instead of hardcoding it)
+ *		 thus reducing the number of classes and the usage of pointers.
  */
 class audio
 {
@@ -16,10 +21,7 @@ public:
     /// Construct from a file on disk
     audio(const std::string filepath)
     {
-        std::ifstream bytestream(filepath, 
-                                 std::ios::in | 
-                                 std::ios::binary | 
-                                 std::ios::ate);
+        std::ifstream bytestream(filepath, std::ios::in | std::ios::binary | std::ios::ate);
         if (!bytestream.is_open()) {
             throw std::runtime_error("could not open bytestream for "+filepath);
         }

@@ -6,23 +6,23 @@ namespace object {
 /**
  * \class picture
  * \brief class which wraps around raw bytes of a picture
- * \version 3
- * \date January 2016
+ * \version 0.6.0
+ * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class picture
 {
 public:
-
     /// Construct from a file-path
     picture(const std::string filepath)
     {
-        std::ifstream bytestream(filepath, 
-                                 std::ios::in | std::ios::binary | std::ios::ate);
-        if (!bytestream.is_open())
+        std::ifstream bytestream(filepath, std::ios::in | std::ios::binary | std::ios::ate);
+        if (!bytestream.is_open()) {
             throw std::runtime_error("could not open bytestream for "+filepath);
-        else 
+		}
+        else { 
             opencb_(bytestream);
+		}
     }
 
     /// Construct using an open file stream

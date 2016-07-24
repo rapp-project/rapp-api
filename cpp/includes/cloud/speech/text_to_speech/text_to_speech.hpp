@@ -23,7 +23,7 @@ public:
 	text_to_speech(
 					 const std::string text,
 					 const std::string language,
-					 std::function<void(std::unique_ptr<wav_file>)> callback
+					 std::function<void(std::unique_ptr<rapp::object::microphone_wav>)> callback
 				  )
 	: asio_service_http(), delegate_(callback)
 	{

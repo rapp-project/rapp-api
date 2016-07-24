@@ -7,8 +7,8 @@ namespace object {
  * \struct pose
  * \brief encapsulates robot pose vectors (position & orientation)
  * \version 0.6.0
- * \date 10-May-2016
- * \author Wojciech Dudek <dudekwa@gmail.com>
+ * \date 24-July-2016
+ * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 struct pose
 {
@@ -29,6 +29,19 @@ struct pose
     
     /// \brief copy constructor
     pose(const rapp::object::pose &) = default;
+
+	/// \brief construct using a boost propetry JSON tree
+	pose(boost::property_tree::ptree::const_iterator json)
+	{
+		for (auto it : json->second) {
+			if (it.first == "position") {
+				this->position = rapp::object::point(it);
+			}
+			else if (it.first == "orientation") {
+				this->orientation = rapp::object::quaternion(it); 
+			}
+		}
+	}
     
     /// \brief Equality operator
     bool operator==(const pose & rhs) const

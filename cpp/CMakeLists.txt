@@ -2,8 +2,8 @@
 # @author Alex Giokas <a.gkiokas@ortelio.co.uk>
 # 
 # Command line arguments you can use:
-#       -DBUILD_RAPP_SHARED_LIBS=ON (Default: compile a shared librapp)
-#       -DBUILD_RAPP_STATIC_LIBS=ON (Optional: compile a static librapp)
+#       -DBUILD_RAPP_SHARED=ON		(Default: compile a shared librapp)
+#       -DBUILD_RAPP_STATIC=ON		(Optional: compile a static librapp)
 #       -DBUILD_TESTS=ON            (Optional: compile various tests - run with `make test`)
 #       -DBUILD_EXAMPLES=ON         (Optional: compile various examples)
 #       -DCMAKE_BUILD_TYPE=Debug    (Optional: enable debug symbols)
@@ -37,14 +37,21 @@ include_directories("includes")
 set (SOURCES ${SOURCES} 
                         ${INCLUDES}/cloud/asio_service_http/asio_service_http.cpp
                         ${INCLUDES}/cloud/asio_handler/asio_handler.cpp
-                        ${INCLUDES}/cloud/asio_socket_https/asio_socket_https.cpp)
+                        ${INCLUDES}/cloud/asio_socket_https/asio_socket_https.cpp
+						${INCLUDES}/config/config.cpp)
 
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
 
+
 # Find Boost
-find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex REQUIRED)
+find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex filesystem REQUIRED)
 if (Boost_FOUND)
+	if (${RAPP_STATIC})
+		set(Boost_USE_STATIC_LIBS ON)
+	else()
+		set(Boost_USE_STATIC_LIBS OFF)
+	endif()
     include_directories(${Boost_INCLUDE_DIR})
     message(STATUS "Using Boost Version: ${Boost_VERSION}")
     message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
@@ -84,7 +91,7 @@ endif()
 if ((${RAPP_SHARED}) OR (NOT (${RAPP_STATIC})))
 	message(STATUS "Building Shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
     add_library(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
-    target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+    target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
 	install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.so librapp.so WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
@@ -111,6 +118,7 @@ if (${BUILD_EXAMPLES})
     add_executable(asio_tls         ${EXAMPLES}/asio_tls.cpp)
     add_executable(text_to_speech   ${EXAMPLES}/text_to_speech.cpp)
     add_executable(service_example  ${EXAMPLES}/service_example1.cpp)
+	add_executable(config_example	${EXAMPLES}/config.cpp)
     target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(speech_recog      ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
@@ -119,6 +127,7 @@ if (${BUILD_EXAMPLES})
 	target_link_libraries(asio_tls	        ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(text_to_speech    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(service_example   ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+	target_link_libraries(config_example	${LIBOBJ})
     message(STATUS "Building examples, they will be placed in `${CMAKE_CURRENT_BINARY_DIR}`")
 else()
     message(STATUS "Not Building examples - enable with `-DBUILD_EXAMPLES=ON`")

@@ -4,22 +4,11 @@
 namespace rapp {
 namespace object {
 /**
- * \class time
- * \brief ??
+ * \struct time
+ * \brief wraps around a time-stamp (UNIX Epoch)
  * \version 0.6.0
- * \date 10-May-2016
- * \author Wojciech Dudek <dudekwa@gmail.com>
- *
- * NOTE: this struct is not needed, we can use std::chrono or boost::posix_time
- *       furthemore, what is the logic behind using both seconds and nanoseconds?
- *       if this is a timestamp, then simply a unix timestamp with millisecond resolution
- *       should suffice.
- *       Last but not least, how do we construct this?
- *       using c++11, all we need is: std::chrono::system_clock::time_point
- *       which can be cast to nanoseconds, milliseconds, seconds, etc.
- *
- * TODO: suggest we provide a simple wrapper around std::chrono
- *       which enables json parsing/serialization
+ * \date 24-7-2016
+ * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 struct time
 {
@@ -28,12 +17,11 @@ struct time
      * \param sec is system second
      * \param nsec is system nanosecond
      */
-    time(int32_t sec, int32_t nsec)
-    : sec(sec), nsec(nsec)
+    time(std::chrono::nanoseconds timepoint)
+	: timepoint_(timepoint)
     {}
     
     /// Allow Empty Consructor
-    /// \WARNING shouldn't this use system calls to set sec and nsec?
     time() = default;
     
     /// Copy Conatructor
@@ -42,22 +30,33 @@ struct time
     /// \brief Equality operator
     bool operator==(const rapp::object::time & rhs) const
     {
-		return (this->sec == rhs.sec) &&
-			   (this->nsec == rhs.nsec);
+		return (this->timepoint_ == rhs.timepoint_);
     }
+
+	/// \brief return seconds elapsed since UNIX Epoch
+	uint32_t sec() const
+	{
+		return std::chrono::duration_cast<std::chrono::seconds>(timepoint_).count();
+	}
+
+	/// \brief return nanoseconds elapsed since UNIX Epoch
+	uint64_t nanosec() const
+	{
+		return std::chrono::duration_cast<std::chrono::nanoseconds>(timepoint_).count();
+	}
 
 	/// \brief convert *this* into a boost tree
 	boost::property_tree::ptree treefy() const
 	{
 		boost::property_tree::ptree tree;
-        tree.put("sec", sec);
-        tree.put("nsec", nsec);
+        tree.put("sec", std::chrono::duration_cast<std::chrono::seconds>(timepoint_).count());
+        tree.put("nsec", std::chrono::duration_cast<std::chrono::nanoseconds>(timepoint_).count());
 		return tree;
 	}
 
+private:
 	/// members
-	uint32_t sec = 0;
-    uint32_t nsec = 0;
+	std::chrono::nanoseconds timepoint_;
 };
 }
 }

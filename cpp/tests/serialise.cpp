@@ -14,15 +14,14 @@ int main(int argc, char * argv[])
 {
     /// we need a class/factory for timestamps
     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
-    auto eta = now.time_since_epoch();
+	auto eta = now.time_since_epoch();
+	std::chrono::nanoseconds nanosec(std::chrono::duration_cast<std::chrono::nanoseconds>(eta).count());
 
-    /// a time stamp (why both seconds and nanoseconds)
-    /// WARNING implicit casting is VERY DANGEROUS
-    rapp::object::time t(std::chrono::duration_cast<std::chrono::seconds>(eta).count(),
-                         std::chrono::duration_cast<std::chrono::nanoseconds>(eta).count());
+    /// a time point 
+    rapp::object::time t(nanosec);
 
     /// a header: sequence, timestap, frameid
-    rapp::object::header meta(0, t, "/map/blahblah");
+    rapp::object::pose_metadata meta(0, t, "/map/blahblah");
     /// robot position
     rapp::object::point position(0.0, 0.0, 1.0);
     /// robot quaternion (orientation)
@@ -32,7 +31,7 @@ int main(int argc, char * argv[])
     /// robot pose_stamped
     rapp::object::pose_stamped ps(meta, pose);
 
-    std::cout << t.sec << " - " << t.nsec << "\r\n";
+    std::cout << t.sec() << " - " << t.nanosec() << "\r\n";
 
     //TEST JSON serialisation
     boost::property_tree::ptree tree;
