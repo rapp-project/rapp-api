@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
         rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
         rapp::cloud::service_controller ctrl(info);
 
-        // Subclass Ontologies callback
+        // sub-class callback - print each sub-class
         auto sb_cb = [](std::vector<std::string> classes)
                      { 
                         for (const auto & str : classes) {
@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
                         }
                      };
 
-        // Superclass Ontologies
+        // super-class callback - print each super-class
         auto sp_cb = [](std::vector<std::string> classes)
                      {
                         for (const auto & str : classes) {
@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
                         }
                      };
 
+		// make two asyncrhonous calls
         ctrl.make_call<rapp::cloud::ontology_subclasses_of>(query, false, sb_cb);
         ctrl.make_call<rapp::cloud::ontology_superclasses_of>(query, false, sp_cb);
 

@@ -7,8 +7,8 @@ namespace object {
  * \struct quaternion
  * \brief class which encapsulate quaternion vector
  * \version 0.6.0
- * \date 10-May-2016
- * \author Wojciech Dudek <dudekwa@gmail.com>
+ * \date July-24-2016
+ * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 struct quaternion
 {
@@ -26,10 +26,29 @@ struct quaternion
     /// \brief empty consructor
     quaternion() = default;
     
-    /// \briefcopy constructor
+    /// \brief copy constructor
     quaternion(const rapp::object::quaternion &) = default;
+
+	/// \brief construct from a boost JSON ptree::value_type
+	quaternion(const boost::property_tree::ptree::value_type json)
+	{
+		for (auto it = json.second.begin(); it != json.second.end(); ++it) {
+			if (it->first == "x") {
+				this->x = it->second.get_value<uint32_t>();
+			}
+			else if (it->first == "y") {
+				this->y = it->second.get_value<uint32_t>();
+			}
+			else if (it->first == "z") {
+				this->y = it->second.get_value<uint32_t>();
+			}
+			else if (it->first == "w") {
+				this->y = it->second.get_value<uint32_t>();
+			}
+		}
+	}
     
-    /// \brief equality operator
+    /// \brief equalit-> operator
     bool operator==(const rapp::object::quaternion & rhs) const
     {
 		return (this->x == rhs.x) &&

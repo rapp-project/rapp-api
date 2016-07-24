@@ -15,18 +15,14 @@ int main(int argc, char* argv[])
 		rapp::cloud::service_controller ctrl(info);
 
         // load the image from argv[1]
-        if (auto pic = std::make_shared<rapp::object::picture>(file)) {
-            auto callback = [&](std::vector<rapp::object::face> faces)
-                            {std::cout << "found " << faces.size() << " faces!" << std::endl;};
+        auto pic = rapp::object::picture(file);
 
-            auto fdetect = std::make_shared<rapp::cloud::face_detection>(pic, false, callback);
-            if (fdetect) {
-                ctrl.run_job(fdetect);
-            }
-        }
-        else {
-            std::cerr << "Error loading image: " << argv[1] << std::endl;
-        }
-        return 0;
+		// callback lambda
+		auto callback = [&](std::vector<rapp::object::face> faces)
+						{std::cout << "found " << faces.size() << " faces!" << std::endl;};
+
+		// detect faces
+		ctrl.make_call<rapp::cloud::face_detection>(pic, false, callback);
+	    return 0;
     }
 }

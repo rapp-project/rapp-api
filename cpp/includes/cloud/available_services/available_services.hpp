@@ -17,9 +17,7 @@ public:
      * \brief construct without any special parameters
      * \param callback will receive a vector of services strings
      */
-    available_services(
-                        std::function<void(std::vector<std::string>)> callback
-                      )
+    available_services(std::function<void(std::vector<std::string>)> callback)
     : asio_service_http(info), delegate_(callback)
     {
         header_ = "GET /hop/available_services HTTP/1.1\r\n";

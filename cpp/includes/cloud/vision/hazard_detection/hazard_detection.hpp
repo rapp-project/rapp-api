@@ -20,14 +20,13 @@ public:
     * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
     */
     hazard_detection_door_check(
-                                  const std::shared_ptr<rapp::object::picture> image,
+                                  const rapp::object::picture & image,
                                   std::function<void(double door_angle)> callback
                                 )
     : asio_service_http(), delegate__(callback)
     {
-        assert(image);
         std::string boundary = random_boundary();
-        std::string fname = random_boundary()+"."+image->type();
+        std::string fname = random_boundary() + "." + image.type();
         boost::property_tree::ptree tree;
         tree.put("file", fname);
         std::stringstream ss;
@@ -40,7 +39,7 @@ public:
               + "Content-Type: image/"+image->type()+"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
         // Append binary data
-        auto imagebytes = image->bytearray();
+        auto imagebytes = image.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
         post_ += "\r\n";
         post_ += "--"+boundary+"--";
@@ -100,14 +99,13 @@ public:
     * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
     */
     hazard_detection_light_check(
-                                  const std::shared_ptr<rapp::object::picture> image,
+                                  const rapp::object::picture & image,
                                   std::function<void(double light_level)> callback
                                 )
     : asio_service_http(), delegate__(callback)
     {
-        assert(image);
         std::string boundary = random_boundary();
-        std::string fname = random_boundary()+"."+image->type();
+        std::string fname = random_boundary() + "." + image.type();
         boost::property_tree::ptree tree;
         tree.put("file", fname);
         std::stringstream ss;
@@ -120,7 +118,7 @@ public:
               + "Content-Type: image/"+image->type()+"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
         // Append binary data
-        auto imagebytes = image->bytearray();
+        auto imagebytes = image.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
         post_ += "\r\n";
         post_ += "--"+boundary+"--";

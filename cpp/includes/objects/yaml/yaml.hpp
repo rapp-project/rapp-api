@@ -13,16 +13,7 @@ namespace object {
 class yaml
 {
 public:
-
-	/// \brief a yaml key/value mapping
-	template <typename T, typename C>
-	struct mapping
-	{
-		std::string key;
-		T value;
-		std::vector<C> children;
-	}
-
+	
 	/// construct with a filename
     yaml() = default;
 
@@ -31,12 +22,6 @@ public:
 	: data_(data)
 	{}
 
-	/// \brief add a mapping
-	void add_key_value(const mapping)
-	{
-		// TODO: add entry
-	}
-    
     /// copy constructor
     yaml(const rapp::object::yaml &) = default;
     
@@ -46,19 +31,19 @@ public:
 		return (this->data_ == rhs.data_);
     }
 
-	/// \brief convert *this* into a boost tree
-	boost::property_tree::ptree treefy() const
+	/// get as std::string 
+	// TODO: serialize mapping items to a single std::string
+	// Boost may be useful here.
+	std::string get_string() const
 	{
-		boost::property_tree::ptree tree;
-		// TODO: translate the YAML into a boost tree?
-        return tree;
+		return data_;
 	}
 
 private:
 	/// raw yaml text
 	std::string data_;
-	/// list of mappings
-	std::vector<mapping> items;
+	/// actual YAML tree
+	boost::property_tree::ptree tree_;
 };
 }
 }

@@ -5,13 +5,16 @@
 ///
 int main(int argc, char * argv[])
 {
-    if (argc == 2)
-    {
+    if (argc == 2) {
         std::string file(argv[1]);
         // Open picture.
         auto pic = rapp::object::picture(file);
         pic.save("copy_of_"+file);
         std::cout << "Picture is a " << pic.type() << std::endl;
+		return 0;
     }
-    return 0;
+	else {
+		std::cerr << "incorrect params\r\n";
+		return 1;
+	}
 }
