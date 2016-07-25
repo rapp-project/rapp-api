@@ -52,6 +52,9 @@ from CloudMsgs import TextToSpeech
 from CloudMsgs import NewsExplore
 from CloudMsgs import Geolocation
 from CloudMsgs import ObjectDetectionFindObjects
+from CloudMsgs import ObjectDetectionClearModels
+from CloudMsgs import ObjectDetectionLoadModels
+from CloudMsgs import ObjectDetectionLearnObject
 
 from Service import RappPlatformService
 

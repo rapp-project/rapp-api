@@ -32,3 +32,6 @@ from HazardDetectionLight import HazardDetectionLight
 from PathPlanningUploadMap import PathPlanningUploadMap
 from PathPlanningPlan2D import PathPlanningPlan2D
 from ObjectDetectionFindObjects import ObjectDetectionFindObjects
+from ObjectDetectionClearModels import ObjectDetectionClearModels
+from ObjectDetectionLoadModels import ObjectDetectionLoadModels
+from ObjectDetectionLearnObject import ObjectDetectionLearnObject
