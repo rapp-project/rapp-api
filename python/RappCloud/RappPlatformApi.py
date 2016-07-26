@@ -51,6 +51,7 @@ from CloudMsgs import PathPlanningUploadMap
 from CloudMsgs import TextToSpeech
 from CloudMsgs import NewsExplore
 from CloudMsgs import Geolocation
+from CloudMsgs import ObjectDetectionFindObjects
 
 from Service import RappPlatformService
 
@@ -835,5 +836,35 @@ class RappPlatformAPI():
             'region': response.region,
             'timezone': response.timezone,
             'zip': response.zip,
+            'error': response.error
+        }
+        
+    def objectDetectionFindObjects(self, fname, limit = 1, user = 'rapp'):
+        """! Face detection API service call.
+
+        @type fname: string
+        @param fname: Path to the image file.
+
+        @type limit: int
+        @param limit: Limit results to this number of objects
+        
+        @type user: string
+        @param user: Username
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+            {'found_names': [], 'found_centers': [], 'found_scores': [], 'result': 0, 'error': ''}
+        """
+        msg = ObjectDetectionFindObjects()
+        try:
+            msg.req.fname = fname
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = ObjectDetectionFindObjects.Response(error=str(e))
+        return {
+            'found_names': response.found_names,
+            'found_centers': response.found_centers,
+            'found_scores': response.found_scores,
+            'result': response.result,
             'error': response.error
         }

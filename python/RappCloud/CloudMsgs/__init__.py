@@ -31,3 +31,4 @@ from HazardDetectionDoor import HazardDetectionDoor
 from HazardDetectionLight import HazardDetectionLight
 from PathPlanningUploadMap import PathPlanningUploadMap
 from PathPlanningPlan2D import PathPlanningPlan2D
+from ObjectDetectionFindObjects import ObjectDetectionFindObjects
