@@ -10,9 +10,9 @@ int main(int argc, char* argv[])
         std::cout << "query sub/super classes of: " << argv[1] << std::endl;
         std::string query = argv[1];
 
-        // Service Controller 
-        rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
-        rapp::cloud::service_controller ctrl(info);
+        // service controler
+        rapp::cloud::platform_info info = {"155.207.19.229", "9001", "rapp_token"}; 
+		rapp::cloud::service_controller ctrl(info);
 
         // sub-class callback - print each sub-class
         auto sb_cb = [](std::vector<std::string> classes)

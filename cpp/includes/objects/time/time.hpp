@@ -33,6 +33,12 @@ struct time
 		return (this->timepoint_ == rhs.timepoint_);
     }
 
+	/// \brief get the actual timepoint
+	std::chrono::nanoseconds timepoint() const
+	{
+		return timepoint_;
+	}
+
 	/// \brief return seconds elapsed since UNIX Epoch
 	uint32_t sec() const
 	{
@@ -42,15 +48,17 @@ struct time
 	/// \brief return nanoseconds elapsed since UNIX Epoch
 	uint64_t nanosec() const
 	{
-		return std::chrono::duration_cast<std::chrono::nanoseconds>(timepoint_).count();
+		auto sec = std::chrono::duration_cast<std::chrono::seconds>(timepoint_);
+		auto nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(timepoint_);
+		return std::chrono::duration_cast<std::chrono::nanoseconds>(nsec - sec).count();
 	}
 
 	/// \brief convert *this* into a boost tree
 	boost::property_tree::ptree treefy() const
 	{
 		boost::property_tree::ptree tree;
-        tree.put("sec", std::chrono::duration_cast<std::chrono::seconds>(timepoint_).count());
-        tree.put("nsec", std::chrono::duration_cast<std::chrono::nanoseconds>(timepoint_).count());
+        tree.put("sec", time::sec());
+        tree.put("nsec", time::nanosec());
 		return tree;
 	}
 

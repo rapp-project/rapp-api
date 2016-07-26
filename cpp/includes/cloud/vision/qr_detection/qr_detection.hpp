@@ -27,24 +27,34 @@ public:
     {
         std::string boundary = random_boundary();
         std::string fname = random_boundary() + "." + image.type();
+
         boost::property_tree::ptree tree;
         tree.put("file", fname);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
                + ss.str() + "\r\n";
+
         post_ += "--"+boundary+"\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename=\""+fname+"\"\r\n"
               + "Content-Type: image/" + image.type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
+
+		std::cout << post_ << std::endl;
+
         // Append binary data
         auto imagebytes = image.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
         post_ += "\r\n";
         post_ += "--"+boundary+"--";
-        header_ =  "POST /hop/qr_detection HTTP/1.1\r\n";
-        header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
+		
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/qr_detection HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary="+boundary;
+
+		// bind the base class callback to our virtual handle_reply
         callback_ = std::bind(&qr_detection::handle_reply, this, std::placeholders::_1);   
     }
 private:

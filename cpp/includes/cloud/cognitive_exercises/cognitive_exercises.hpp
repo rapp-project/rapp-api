@@ -40,8 +40,11 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/cognitive_test_selector HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/cognitive_test_selector HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+
         callback_ = std::bind(&cognitive_test_selector::handle_reply, this, std::placeholders::_1);
 	}
 private:
@@ -136,8 +139,11 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/cognitive_record_performance HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/cognitive_record_performance HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+
         callback_ = std::bind(&cognitive_record_performance::handle_reply, this, std::placeholders::_1);
     }
 
@@ -206,8 +212,11 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/cognitive_get_history HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/cognitive_get_history HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+
         callback_ = std::bind(&cognitive_get_history::handle_reply, this, std::placeholders::_1);
     }
 private:
@@ -251,8 +260,11 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/cognitive_get_scores HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/cognitive_get_scores HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+
         callback_ = std::bind(&cognitive_get_scores::handle_reply, this, std::placeholders::_1);
     }
 private:

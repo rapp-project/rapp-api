@@ -46,11 +46,15 @@ public:
         tree.put("from_date", boost::lexical_cast<std::string>(from_date));
         tree.put("to_date", boost::lexical_cast<std::string>(to_date));
         tree.put("num_emails", boost::lexical_cast<std::string>(num_emails));
-        std::stringstream ss;
+        
+		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/email_fetch HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/email_fetch HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+
         callback_ = std::bind(&email_fetch::handle_reply, this, std::placeholders::_1);
 	}
 private:
@@ -115,20 +119,26 @@ public:
         }
         tree.add_child("recipients", array);
         tree.put("file", fname);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
                + ss.str() + "\r\n";
+
         // new multipart - append binary data 
         post_ += "--" + boundary + "\r\n"
               + "Content-Disposition: form-data; name=\"file_uri\"; filename\"" + fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
+
         post_.insert(post_.end(), data.begin(), data.end());
         post_ += "\r\n--" + boundary + "--";
-        // form the Header
-        header_ = "POST /hop/email_send HTTP/1.1\r\n";
-                + "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/email_send HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&email_send::handle_reply, this, std::placeholders::_1);
     }
 private:

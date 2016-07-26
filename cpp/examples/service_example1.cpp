@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
         std::string file  = argv[1];
 
         // service controler
-		rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
+		rapp::cloud::platform_info info = {"155.207.19.229", "9001", "rapp_token"}; 
         rapp::cloud::service_controller ctrl(info);
 
 		// a callback which prints the number of faces found
