@@ -22,7 +22,6 @@ std::string asio_handler::make_header(
 
 void asio_handler::error_handler(const boost::system::error_code & error)
 {
-    std::cerr << "error: " << error.message() << std::endl;
 	std::cerr << boost::system::system_error(error).what() << std::endl;
 }
 
@@ -72,6 +71,7 @@ bool asio_handler::has_content_length(std::string response)
 
 std::string asio_handler::strip_header(std::string response)
 {
+
     // find the "\r\n\r\n" double return after the header
     std::size_t i = response.find("\r\n\r\n");
     if (i != std::string::npos) {

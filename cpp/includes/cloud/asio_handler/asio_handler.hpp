@@ -14,6 +14,12 @@ namespace cloud {
 class asio_handler
 {
 public:
+
+
+	asio_handler()
+	: io_timer_()
+	{}
+
 	/// \brief create an HTTP header using the \param info
 	std::string make_header(
 							rapp::cloud::platform_info info,
@@ -67,6 +73,8 @@ protected:
     boost::asio::streambuf response_;
     /// time-out timer
     std::unique_ptr<boost::asio::deadline_timer> timer_;
+	/// time-out service (runs one timeout per class)
+	boost::asio::io_service io_timer_;
     /// flag used to extract header
     std::atomic<bool> flag_  = {false};
     /// Content-Length
