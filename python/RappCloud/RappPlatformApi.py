@@ -840,7 +840,7 @@ class RappPlatformAPI():
         }
         
     def objectDetectionFindObjects(self, fname, limit = 1, user = 'rapp'):
-        """! Face detection API service call.
+        """! Object detection API service call.
 
         @type fname: string
         @param fname: Path to the image file.
@@ -858,6 +858,7 @@ class RappPlatformAPI():
         msg = ObjectDetectionFindObjects()
         try:
             msg.req.fname = fname
+            msg.req.user = user
             response = self.svc_caller.call(msg)
         except Exception as e:
             response = ObjectDetectionFindObjects.Response(error=str(e))
@@ -865,6 +866,81 @@ class RappPlatformAPI():
             'found_names': response.found_names,
             'found_centers': response.found_centers,
             'found_scores': response.found_scores,
+            'result': response.result,
+            'error': response.error
+        }
+        
+    def objectDetectionClearModels(self, user = 'rapp'):
+        """! Object detection - clear models API service call.
+
+        @type user: string
+        @param user: Username
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+            {'result': 0, 'error': ''}
+        """
+        msg = ObjectDetectionClearModels()
+        try:
+            msg.req.user = user
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = ObjectDetectionClearModels.Response(error=str(e))
+        return {
+            'result': response.result,
+            'error': response.error
+        }
+        
+    def objectDetectionLoadModels(self, names = [], user = 'rapp'):
+        """! Object detection - load models API service call.
+
+        @type names: list
+        @param names: Model names to load
+
+        @type user: string
+        @param user: Username
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+            {'result': 0, 'error': ''}
+        """
+        msg = ObjectDetectionLoadModels()
+        try:
+            msg.req.names = names
+            msg.req.user = user
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = ObjectDetectionLoadModels.Response(error=str(e))
+        return {
+            'result': response.result,
+            'error': response.error
+        }
+
+    def objectDetectionLearnObject(self, fname, name = '', user = 'rapp'):
+        """! Object detection - load models API service call.
+
+        @type fname: string
+        @param fname: Path to the image file.
+        
+        @type name: string
+        @param name: Model name
+
+        @type user: string
+        @param user: Username
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+            {'result': 0, 'error': ''}
+        """
+        msg = ObjectDetectionLearnObject()
+        try:
+            msg.req.fname = fname
+            msg.req.name = name
+            msg.req.user = user
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = ObjectDetectionLearnObject.Response(error=str(e))
+        return {
             'result': response.result,
             'error': response.error
         }
