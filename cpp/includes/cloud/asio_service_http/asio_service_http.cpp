@@ -25,13 +25,15 @@ void asio_service_http::schedule(
 
     // init tiemeout timer
     if (!timer_) {
-        timer_ = std::make_unique<boost::asio::deadline_timer>(io_service);
+        timer_ = std::make_unique<boost::asio::deadline_timer>(io_timer_);
     }
     timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
+
     // init socket
     if (!socket_) {
         socket_ = std::make_unique<boost::asio::ip::tcp::socket>(io_service);
     }
+
 	// resolve the address and chain the callbacks
     resolver.async_resolve(query,
                            boost::bind(&asio_service_http::handle_resolve,
@@ -68,7 +70,7 @@ void asio_service_http::handle_connect(
     assert(socket_);
     if (!err) {
 		// set timeout now
-        timer_->expires_from_now(boost::posix_time::seconds(60));
+        timer_->expires_from_now(boost::posix_time::seconds(10));
 
 		// begin the connect
         boost::asio::async_write(*socket_.get(),
@@ -77,6 +79,7 @@ void asio_service_http::handle_connect(
                                              this,
                                              boost::asio::placeholders::error));
     }
+	// do we need this ? we won't be connecting to another endpoint, will we?
     else if (endpoint_iterator != boost::asio::ip::tcp::resolver::iterator()) {
         socket_->close();   
         auto endpoint = *endpoint_iterator;
@@ -97,7 +100,7 @@ void asio_service_http::handle_write_request(boost::system::error_code err)
 {
     assert(socket_ && timer_);
     if (!err) {
-        timer_->expires_from_now(boost::posix_time::seconds(30));
+        timer_->expires_from_now(boost::posix_time::seconds(10));
 
         // Read the response status line - Callback handler is ::handle_read_status_line
         boost::asio::async_read_until(*socket_.get(),
@@ -134,7 +137,7 @@ void asio_service_http::handle_read_status_line(boost::system::error_code err)
             invalid_request(std::to_string(status_code));
             return;
         }
-        timer_->expires_from_now(boost::posix_time::seconds(30));
+        timer_->expires_from_now(boost::posix_time::seconds(10));
         // Read the response headers, which are terminated by a blank line. 
         // This is HTTP Protocol 1.0 & 1.1
         boost::asio::async_read_until(*socket_.get(),
@@ -155,7 +158,7 @@ void asio_service_http::handle_read_headers(boost::system::error_code err)
 {
     assert(socket_ && timer_);
     if (!err) {
-        timer_->expires_from_now(boost::posix_time::seconds(30));
+        timer_->expires_from_now(boost::posix_time::seconds(10));
 
         // Start reading Content data until EOF (see handle_read_content)
         boost::asio::async_read_until(*socket_.get(),
@@ -177,7 +180,7 @@ void asio_service_http::handle_read_content(boost::system::error_code err, std::
 {
     assert(socket_ && timer_);
     if (!err) {
-        timer_->expires_from_now(boost::posix_time::seconds(30));
+        timer_->expires_from_now(boost::posix_time::seconds(10));
 
         // Continue reading remaining data until EOF - It reccursively calls its self
         boost::asio::async_read(*socket_.get(),
@@ -212,19 +215,20 @@ void asio_service_http::handle_read_content(boost::system::error_code err, std::
 
 			// have received and EOF
             if (bytes_transferred_ >= content_length_) {
-				// cancel timer
+				// cancel timer & stop timer service
+				io_timer_.stop();
 				timer_->cancel();
-                assert(callback_);
-
 				// call the virtual inherited handle_reply callback
 				std::cout << json_ << std::endl;
-                
+				assert(callback_);
 				callback_(json_);
+				return;
             }
         }
     }
     // Received end of file
     else if (err == boost::asio::error::eof) {
+		socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
         if (bytes_transferred_ != content_length_){
             std::cerr << "connection dropped unexpectedly" << std::endl;
             return;
@@ -234,6 +238,7 @@ void asio_service_http::handle_read_content(boost::system::error_code err, std::
     else {
         error_handler(err);
 		socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
+		return;
 	}
 }
 
@@ -256,9 +261,12 @@ void asio_service_http::check_timeout()
     if (timer_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
         std::cerr << "connection time-out" << std::endl;
         reset();
+		return;
     }
-    // Put the actor back to sleep.
-    timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
+	else {
+		// Put the actor back to sleep.
+		timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
+	}
 }
 
 

@@ -35,14 +35,12 @@ public:
 
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str() + "\r\n";
+               + ss.str();
 
         post_ += "--"+boundary+"\r\n"
               + "Content-Disposition: form-data; name=\"file\"; filename=\""+fname+"\"\r\n"
               + "Content-Type: image/" + image.type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
-
-		std::cout << post_ << std::endl;
 
         // Append binary data
         auto imagebytes = image.bytearray();
