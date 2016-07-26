@@ -29,10 +29,14 @@ public:
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
         tree.put("recursive", boost::lexical_cast<std::string>(recursive));
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
+
         callback_ = std::bind(&ontology_subclasses_of::handle_reply, this, std::placeholders::_1);
      }
 private:
@@ -93,10 +97,14 @@ public:
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
         tree.put("recursive", boost::lexical_cast<std::string>(recursive));
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
+        
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
+
         callback_ = std::bind(&ontology_superclasses_of::handle_reply, this, std::placeholders::_1);
      }
 private:
@@ -162,10 +170,14 @@ public:
         tree.put("parent_class", parent_class);
         tree.put("child_class", child_class);
         tree.put("recursive", boost::lexical_cast<std::string>(recursive));
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
+
         callback_ = std::bind(&ontology_is_subsuperclass_of::handle_reply, this, std::placeholders::_1);
      }
 private:

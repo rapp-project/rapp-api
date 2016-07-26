@@ -31,12 +31,14 @@ int main(int argc, char * argv[])
     /// robot pose_stamped
     rapp::object::pose_stamped ps(meta, pose);
 
-    std::cout << t.sec() << " - " << t.nanosec() << "\r\n";
-
+	std::cout << t.sec() << "|" << t.nanosec() << std::endl;
+	
     //TEST JSON serialisation
     boost::property_tree::ptree tree;
     tree.add_child("start", ps.treefy());
-    boost::property_tree::json_parser::write_json("test_serialise.json", tree);
+	std::stringstream ss;
+	boost::property_tree::write_json(ss, tree, false);
+	std::cout << ss.str();
 
     return 0;
 }

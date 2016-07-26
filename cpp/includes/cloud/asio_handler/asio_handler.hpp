@@ -15,7 +15,11 @@ class asio_handler
 {
 public:
 	/// \brief create an HTTP header using the \param info
-	std::string make_header(rapp::cloud::platform_info info, unsigned int length);
+	std::string make_header(
+							rapp::cloud::platform_info info,
+							rapp::cloud::header head,
+							unsigned int post_length
+						   );
 
     /// \brief Handle an Error \param error is the raised error from the client
     void error_handler(const boost::system::error_code & error);
@@ -49,7 +53,10 @@ public:
     std::string encode64(const std::string &val);
     
 protected:
-    std::string header_;
+	/// ...
+	rapp::cloud::header head_preamble_;
+	/// DEPRECATE
+	std::string header_;
     /// Actual post Data
     std::string post_;
     /// Callback Handler - use with std::bind or boost variant
@@ -58,7 +65,6 @@ protected:
     boost::asio::streambuf request_;
     /// Response Container
     boost::asio::streambuf response_;
-
     /// time-out timer
     std::unique_ptr<boost::asio::deadline_timer> timer_;
     /// flag used to extract header
@@ -69,7 +75,22 @@ protected:
     std::size_t bytes_transferred_ = 0;
     /// JSON reply
     std::string json_;
+	/// time-out in seconds
+	const unsigned int timeout_ = 120;
 };
 }
 }
+/// convenience function `std::make_unique` for non c++14 compilers
+#if __cplusplus==201402L
+// c++14 - nothing here
+#elif __cplusplus==201103L
+// c++11 - 
+namespace std {
+template<typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args)
+{
+	return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+}
+#endif
 #endif
