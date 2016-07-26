@@ -16,6 +16,24 @@ struct platform_info
     std::string token;
 	std::string protocol;
 };
+
+/**
+ * \struct header
+ * \version 0.6.0
+ * \date July 2016
+ * \brief use to construct an HTTP Header for service calls
+ */
+struct header
+{
+	std::string host;
+	std::string uri;
+	std::string user_agent;
+	std::string accept_token;
+	std::string connection;
+	std::string content_length;
+	std::string content_type;
+};
+
 /**
  * \brief Abstract Base ASIO Socket class
  * Use for passing around to the service controller, various types of cloud handlers.

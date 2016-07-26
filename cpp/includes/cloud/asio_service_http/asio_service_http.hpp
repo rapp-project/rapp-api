@@ -34,7 +34,7 @@ protected:
      * \param endpoint_iterator is boost's hostname address handler
      */
     void handle_resolve( 
-                         const boost::system::error_code & err,
+                         boost::system::error_code err,
                          boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                        );
 
@@ -44,21 +44,21 @@ protected:
      * \param endpoint_iterator is boosts' hostname address handler
      */
     void handle_connect( 
-                          const boost::system::error_code & err,
+                          boost::system::error_code err,
                           boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                        );
 
     /// Callback for handling request and waiting for response \param err is a possible error
-    void handle_write_request(const boost::system::error_code & err);
+    void handle_write_request(boost::system::error_code err);
     
     /// Callback for handling HTTP Header Response Data \param err is a possible error message
-    void handle_read_status_line(const boost::system::error_code & err);
+    void handle_read_status_line(boost::system::error_code err);
 
     /// Callback for Handling Headers \param err is a possible error message
-    void handle_read_headers(const boost::system::error_code & err);
+    void handle_read_headers(boost::system::error_code err);
     
     /// Callback for Handling Actual Data Contents \param err is a possible error message
-    void handle_read_content(const boost::system::error_code & err, std::size_t bytes);
+    void handle_read_content(boost::system::error_code err, std::size_t bytes);
 
     /// \brief reset handler (clear data, bytes, etc) and stop connection
     void reset();

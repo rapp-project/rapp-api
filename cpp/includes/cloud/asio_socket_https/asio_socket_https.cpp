@@ -13,9 +13,7 @@ void asio_socket_https::schedule(
 	// calculate HTTP POST size
     auto content_length = post_.size() * sizeof(std::string::value_type);
 	// append the HTTP header to the previous craft (POST and content type)
-	header_ += make_header(info, content_length);
-	// NOTE: header is crafted in each inheriting cloud class - we just append the basic info here
-	//		 ideally for safety it should be in each class, its just less typing done here.
+	header_= make_header(info, head_preamble_, content_length);
 
     // init timeout timer
     if (!timer_) {

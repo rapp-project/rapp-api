@@ -2,19 +2,28 @@
 namespace rapp {
 namespace cloud {
 
-std::string asio_handler::make_header(rapp::cloud::platform_info info, unsigned int length)
+std::string asio_handler::make_header(
+									  rapp::cloud::platform_info info,
+									  rapp::cloud::header head,
+									  unsigned int post_length
+									 )
 {
-	std::string header = "Host: " + info.address + "\r\n"
-				+ "Accept-Token: " + info.token + "\r\n"
-				+ "Connection: close\r\n"
-				+ "Content-Length: " + boost::lexical_cast<std::string>(length)
-				+ "\r\n\r\n";
-	return header;
+	// craft the HTTP Header
+	head.host = "Host: " + info.address + "\r\n";
+	head.user_agent = "User-Agent: rapp_api_cpp-0.6.0\r\n";
+	head.accept_token = "Accept-Token: " + info.token + "\r\n";
+	head.connection = "Connection: close\r\n";
+	head.content_length = "Content-Length: " 
+						+ boost::lexical_cast<std::string>(post_length) +"\r\n";
+	// actually form the header
+	return head.uri + head.host + head.accept_token + head.connection
+		   + head.content_length + head.content_type + "\r\n\r\n";
 }
 
 void asio_handler::error_handler(const boost::system::error_code & error)
 {
     std::cerr << "error: " << error.message() << std::endl;
+	std::cerr << boost::system::system_error(error).what() << std::endl;
 }
 
 void asio_handler::invalid_request(const std::string message)
