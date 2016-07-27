@@ -7,7 +7,7 @@ namespace cloud {
  * \class text_to_speech
  * \brief request speech audio from text
  * \version 0.6.0
- * \date April 2016
+ * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class text_to_speech : public asio_service_http
@@ -33,7 +33,10 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/text_to_speech HTTP/1.1\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/text_to_speech HTTP/1.1\r\n";
+
         callback_ = std::bind(&text_to_speech::handle_reply, this, std::placeholders::_1);
 	}
 
@@ -53,9 +56,11 @@ private:
             for (auto child : tree.get_child("payload")) {
                 // base64-encoded audio
                 std::string result = child.second.get_value<std::string>();
-                std::string decoded = decode64(result);
+                std::string decoded = rapp::misc::decode64(result);
                 std::copy(decoded.begin(), decoded.end(), std::back_inserter(bytearray));
             }
+
+			// get platform errors
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
                 if (!value.empty()) {

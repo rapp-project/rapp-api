@@ -25,8 +25,8 @@ public:
                 )
     : asio_service_http(), delegate__(callback)
     {
-        std::string boundary = random_boundary();
-        std::string fname = random_boundary() + "." + image.type();
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname = rapp::misc::random_boundary() + "." + image.type();
 
         boost::property_tree::ptree tree;
         tree.put("file", fname);

@@ -21,7 +21,10 @@ public:
     available_services(std::function<void(std::vector<service>)> callback)
     : asio_service_http(), delegate_(callback)
     {
-        header_ = "GET /hop/available_services HTTP/1.1\r\n";
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "GET /hop/available_services HTTP/1.1\r\n";
+
+		// bind base downcasted virtual method
         callback_ = std::bind(&available_services::handle_reply, this, std::placeholders::_1);
     }
 private:

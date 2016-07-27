@@ -42,21 +42,7 @@ public:
     /// \brief remove/strip the HTTP header and \return the body
     std::string strip_header(std::string response);
     
-	/// \brief Create a random boundary for the multipart/form in HTTP
-    std::string random_boundary() const;
-    
-    /// \brief escape JSON strings when sending them over the socket
-    /// \param str will be escaped and returned
-    std::string escape_string(const std::string & str);
-    
-	/// \brief decode base64
-    /// \param val must be encoded using base64
-    std::string decode64(const std::string &val);
-    
-	/// \brief encode base64
-    /// \param val must be plain-text string
-    /// \return a base64 encoded string
-    std::string encode64(const std::string &val);
+       
     
 protected:
 	/// ...
@@ -88,17 +74,4 @@ protected:
 };
 }
 }
-/// convenience function `std::make_unique` for non c++14 compilers
-#if __cplusplus==201402L
-// c++14 - nothing here
-#elif __cplusplus==201103L
-// c++11 - 
-namespace std {
-template<typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args)
-{
-	return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-}
-}
-#endif
 #endif

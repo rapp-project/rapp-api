@@ -35,8 +35,11 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/weather_report_current HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/weather_report_current HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded\r\n";
+
         callback_ = std::bind(&weather_report_current::handle_reply, this, std::placeholders::_1);
     }
 private:
@@ -83,8 +86,11 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/weather_report_forecast HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/weather_report_forecast HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded\r\n";
+
         callback_ = std::bind(&weather_report_forecast::handle_reply, this, std::placeholders::_1);
     }
 private:

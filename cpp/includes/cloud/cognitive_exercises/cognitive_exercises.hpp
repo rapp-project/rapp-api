@@ -158,10 +158,12 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // NOTE: untested!
             for (auto child : tree.get_child("performance_entry")) {
                 performance_entry = second.get_value<std::string>();
             }
+
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
                 if (!value.empty()) {
@@ -279,13 +281,16 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // NOTE: untested!
             for (auto child : tree.get_child("test_classes")) {
                 test_classes.push_back(second.get_value<unsigned int>());
             }
+
             for (auto child : tree.get_child("scores")) {
                 scores.push_back(second.get_value<float>());
             }
+
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
                 if (!value.empty()) {
