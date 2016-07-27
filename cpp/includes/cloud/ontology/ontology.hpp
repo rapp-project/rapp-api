@@ -36,6 +36,7 @@ public:
 
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
 
         callback_ = std::bind(&ontology_subclasses_of::handle_reply, this, std::placeholders::_1);
      }
@@ -50,10 +51,12 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // JSON reply is: { results: [], error: '' }
             for (auto child : tree.get_child("results")) {
                 classes.push_back(child.second.get_value<std::string>());
             }
+
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
@@ -118,10 +121,12 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // JSON reply is: { results: [], error: '' }
             for (auto child : tree.get_child("results")) {
                 classes.push_back(child.second.get_value<std::string>());
             }
+
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
@@ -137,6 +142,7 @@ private:
         }
         delegate__(classes);
     }
+
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<std::string> classes)> delegate__;
 };
@@ -192,10 +198,12 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // JSON reply is: { results: [], trace: [], error: '' }
             for (auto child : tree.get_child( "result")) {
                 result = child.second.get_value<bool>();
             }
+
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
@@ -211,6 +219,7 @@ private:
         }
         delegate__(result);
     }
+
     /// The callback called upon completion of receiving the detected faces
     std::function<void(bool result)> delegate__;
 };

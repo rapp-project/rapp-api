@@ -30,8 +30,11 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/geolocation HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/geolocation HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded\r\n";
+
         callback_ = std::bind(&geolocation::handle_reply, this, std::placeholders::_1);
 	}
 private:
@@ -43,6 +46,7 @@ private:
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
+
     /// 
     std::function<void(std::string)> delegate_;
 };
