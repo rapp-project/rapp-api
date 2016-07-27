@@ -27,8 +27,8 @@ public:
     : asio_service_http(), delegate_(callback)
     {
 		// random boundary
-        std::string boundary = random_boundary();
-        std::string fname = random_boundary()+"."+image.type();
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname = rapp::misc::random_boundary()+"."+image.type();
 
 		// setup the POST preamble
         boost::property_tree::ptree tree;
@@ -73,9 +73,11 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             for (auto child : tree.get_child("faces")) {
                 std::pair<float,float> up_left;
                 std::pair<float,float> down_right;
+
                 for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
                     if (iter->first == "up_left_point") {
                         for (auto it : iter->second) {
@@ -103,6 +105,7 @@ private:
                                                    std::get<0>(down_right),
                                                    std::get<1>(down_right)));
             }
+
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();

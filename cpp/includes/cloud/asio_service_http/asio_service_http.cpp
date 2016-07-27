@@ -12,11 +12,10 @@ void asio_service_http::schedule(
 {
 	// calculate HTTP POST size
     auto content_length = post_.size() * sizeof(std::string::value_type);
-
 	// append the HTTP header to the previous craft (POST and content type)
 	std::string header = make_header(info, head_preamble_, content_length);
-
-	// append HTTP header and HTTP POST data
+	
+	// append HTTP header and HTTP POST data - place it in `request_`
     std::ostream request_stream(&request_);
     request_stream << header << post_ << "\r\n";
 
@@ -50,6 +49,8 @@ void asio_service_http::handle_resolve(
     assert(socket);
     if (!err){
         auto endpoint = * endpoint_iterator;
+
+		// connect to endpoint
         socket_->async_connect(endpoint,
                                boost::bind(&asio_service_http::handle_connect,
                                            this,
@@ -72,7 +73,7 @@ void asio_service_http::handle_connect(
 		// set timeout now
         timer_->expires_from_now(boost::posix_time::seconds(10));
 
-		// begin the connect
+		// write the request (see each class for what that request is)
         boost::asio::async_write(*socket_.get(),
                                  request_,
                                  boost::bind(&asio_service_http::handle_write_request, 
@@ -268,7 +269,6 @@ void asio_service_http::check_timeout()
 		timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
 	}
 }
-
 
 }
 }

@@ -9,6 +9,8 @@ namespace cloud {
  * \version 1
  * \date 18-April-2015
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ *
+ * DEPRECATED/REMOVE?
  */
 class fetch_personal_data : public rapp::services::asio_service_http
 {

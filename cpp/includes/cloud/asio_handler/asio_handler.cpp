@@ -9,15 +9,23 @@ std::string asio_handler::make_header(
 									 )
 {
 	// craft the HTTP Header
-	head.host = "Host: " + info.address + "\r\n";
-	head.user_agent = "User-Agent: rapp_api_cpp-0.6.0\r\n";
+	head.host = "Host: " + info.address + ":" + info.port + "\r\n";
+	head.user_agent = "User-Agent: rapp_api/cpp/0.6.0\r\n";
 	head.accept_token = "Accept-Token: " + info.token + "\r\n";
-	head.connection = "Connection: close\r\n";
+	head.connection = "Connection: Keep-Alive\r\n";
 	head.content_length = "Content-Length: " 
 						+ boost::lexical_cast<std::string>(post_length) +"\r\n";
-	// actually form the header
-	return head.uri + head.host + head.accept_token + head.connection
-		   + head.content_length + head.content_type + "\r\n\r\n";
+
+	// craft the header string
+	return head.uri 
+		   + head.host 
+		   + head.user_agent 
+		   + head.connection
+		   + "Accept: */*\r\n" 
+		   + head.accept_token
+		   + head.content_length 
+		   + head.content_type 
+		   + "\r\n\r\n";
 }
 
 void asio_handler::error_handler(const boost::system::error_code & error)
@@ -80,57 +88,6 @@ std::string asio_handler::strip_header(std::string response)
     else {
         throw std::runtime_error("no double return after header");
     }
-}
-
-std::string asio_handler::random_boundary() const
-{
-    std::string chars("abcdefghijklmnopqrstuvwxyz"
-                      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                      "1234567890");
-    boost::random::random_device rng;
-    std::string uid;
-    // Randomly chose 16 characters
-    boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
-    for (int i = 0; i < 16; ++i){
-        uid.push_back(chars[index_dist(rng)]);
-    }
-    return uid;
-}
-
-std::string asio_handler::escape_string(const std::string & str) 
-{
-    std::ostringstream ss;
-    for (auto iter = str.cbegin(); iter != str.cend(); iter++) {
-        switch (*iter) {
-            case '\\': ss << "\\\\"; break;
-            case '"': ss << "\\\""; break;
-            case '/': ss << "\\/"; break;
-            case '\b': ss << "\\b"; break;
-            case '\f': ss << "\\f"; break;
-            case '\n': ss << "\\n"; break;
-            case '\r': ss << "\\r"; break;
-            case '\t': ss << "\\t"; break;
-            default: ss << *iter; break;
-        }
-    }
-    return ss.str();
-} 
-
-std::string asio_handler::decode64(const std::string &val)
-{
-    using namespace boost::archive::iterators;
-    using It = transform_width<binary_from_base64<std::string::const_iterator>, 8, 6>;
-    return boost::algorithm::trim_right_copy_if(std::string(It(std::begin(val)), 
-                                                            It(std::end(val))), 
-                                                            [](char c) {return c == '\0';});
-}
-
-std::string asio_handler::encode64(const std::string &val)
-{
-    using namespace boost::archive::iterators;
-    using It = base64_from_binary<transform_width<std::string::const_iterator, 6, 8>>;
-    auto tmp = std::string(It(std::begin(val)), It(std::end(val)));
-    return tmp.append((3 - val.size() % 3) % 3, '=');
 }
 
 }

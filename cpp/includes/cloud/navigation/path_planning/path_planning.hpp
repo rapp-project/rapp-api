@@ -35,10 +35,14 @@ public:
 		tree.put("algorithm", algorithm);
         tree.add_child("", start.treefy());
         tree.add_child("", end.treefy());
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
-        header_ = "POST /hop/path_planning_plan_path_2d HTTP/1.1\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/path_planning_plan_path_2d HTTP/1.1\r\n";
+
         callback_ = std::bind(&plan_path_2d::handle_reply, this, std::placeholders::_1);
 	}
 private:
@@ -61,10 +65,12 @@ private:
             for (auto child : tree.get_child("error")) {
                 plan_error = child.second.get_value<std::string>();
             }
+
             // get `plan_found`
             for (auto child : tree.get_child("plan_found")) {
                 plan_found = child.second.get_value<std::string>();
             }
+
             // iterate array `path` objects
             for (auto child : tree.get_child("path")) {
 				for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
@@ -115,31 +121,38 @@ public:
     {
         boost::property_tree::ptree tree;
 		tree.put("map_name", map_name);
-		std::string boundary = random_boundary();
+		std::string boundary = rapp::misc::random_boundary();
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+
 		// multipart/form-data append JSON first
 		post_  = "--" + boundary + "\r\n"
 			   + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-			   + ss.str() + "\r\n";
+			   + ss.str();
+
 		// write the PNG file binary data
-		std::string png_fname = random_boundary() + ".png";
+		std::string png_fname = rapp::misc::random_boundary() + ".png";
 		post_ += "--" + boundary + "\r\n"
               + "Content-Disposition: form-data; name=\"png_file\"; filename\"" + png_fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
+
         // Append binary data
         auto imagebytes = png_file.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
+		
 		// write the YAML file data
-		std::string yaml_fname = random_boundary() + ".yaml";
+		std::string yaml_fname = rapp::misc::random_boundary() + ".yaml";
 		post_ += "--" + boundary + "\r\n"
 			  + "Content-Disposition: form-data; name=\"yaml_file\"; filename\"" + yaml_fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
+
 		post_.append(yaml_file.get_string());
         post_ += "\r\n--" + boundary + "--";
-		// init the header
-        header_ = "POST /hop/path_upload_map HTTP/1.1\r\n";
-                + "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/path_upload_map HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         // bind the base class callback, to our handle_reply
         callback_ = std::bind(&path_upload_map::handle_reply, this, std::placeholders::_1);
     }
@@ -154,6 +167,7 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
 			for (auto child : tree.get_child("error")) {
                 error = child.second.get_value<std::string>();
             }
@@ -166,7 +180,7 @@ private:
         delegate_(error);
      }
 
-     ///
+     /// delegate
      std::function<void(std::string>)> delegate_;
 };
 }

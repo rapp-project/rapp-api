@@ -104,8 +104,9 @@ public:
                )
 	: asio_service_http(), delegate_(callback)
 	{
-        std::string boundary = random_boundary();
-        std::string fname = random_boundary();
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname = rapp::misc::random_boundary();
+
         boost::property_tree::ptree tree;
         tree.put("email", email);
         tree.put("passwd", pwd);
@@ -113,6 +114,7 @@ public:
         tree.put("port", port);
         tree.put("body", body);
         tree.put("subject", subject);
+
         boost::property_tree::ptree array;
         for (const auto rec : recipients) {
             array.push_back(std::make_pair("", rec));

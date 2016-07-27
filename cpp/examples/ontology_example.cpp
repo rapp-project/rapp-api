@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
         std::string query = argv[1];
 
         // service controler
-        rapp::cloud::platform_info info = {"155.207.19.229", "9001", "rapp_token"}; 
+        rapp::cloud::platform_info info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
 		rapp::cloud::service_controller ctrl(info);
 
         // sub-class callback - print each sub-class
