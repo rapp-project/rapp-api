@@ -35,10 +35,10 @@ public:
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
                + ss.str();
-
-        post_ += "--"+boundary+"\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n"
-              + "Content-Type: image/"+image->type()+"\r\n"
+        
+		post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
+              + "Content-Type: image/" + image.type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
 
         // Append binary data

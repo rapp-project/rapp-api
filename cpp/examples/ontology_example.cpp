@@ -17,22 +17,13 @@ int main(int argc, char* argv[])
         // sub-class callback - print each sub-class
         auto sb_cb = [](std::vector<std::string> classes)
                      { 
-                        for (const auto & str : classes) {
-                            std::cout << str << std::endl;
-                        }
+                         for (const auto & str : classes) {
+							std::cout << str << std::endl;
+						 }
                      };
 
-        // super-class callback - print each super-class
-        auto sp_cb = [](std::vector<std::string> classes)
-                     {
-                        for (const auto & str : classes) {
-                            std::cout << str << std::endl;
-                        }
-                     };
-
-		// make two asyncrhonous calls
-        ctrl.make_call<rapp::cloud::ontology_subclasses_of>(query, false, sb_cb);
-        ctrl.make_call<rapp::cloud::ontology_superclasses_of>(query, false, sp_cb);
+		ctrl.make_call<rapp::cloud::ontology_subclasses_of>(query, true, sb_cb);
+		ctrl.make_call<rapp::cloud::ontology_superclasses_of>(query, false, sb_cb);
 
         return 0;
     }
