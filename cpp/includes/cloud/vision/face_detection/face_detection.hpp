@@ -40,11 +40,8 @@ public:
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
-		// remove quotes from `true` or `false`
-		std::string str = ss.str();
-		boost::replace_all(str, "\"false\"", "false");
-		boost::replace_all(str, "\"true\"", "true");
-		post_ += str;
+		// unquote JSON PDT values
+		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), fast);
 
         // Create the Multi-form POST field 
 		post_ += "--" + boundary + "\r\n"

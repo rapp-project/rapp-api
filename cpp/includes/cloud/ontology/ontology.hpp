@@ -36,11 +36,8 @@ public:
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
-		// remove quotes from `true` or `false`
-		std::string str = ss.str();
-		boost::replace_all(str, "\"false\"", "false");
-		boost::replace_all(str, "\"true\"", "true");
-		post_ += str;
+		// JSON PDT value unquote
+		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
 		
 		// close the multipart - no need for \r\n here, the json already has one
         post_ += "--" + boundary + "--";
@@ -118,11 +115,8 @@ public:
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
-		// remove quotes from `true` or `false`
-		std::string str = ss.str();
-		boost::replace_all(str, "\"false\"", "false");
-		boost::replace_all(str, "\"true\"", "true");
-		post_ += str;
+		// JSON PDT value unquote
+		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
 		post_ += "--" + boundary + "--";
 
 		// set the HTTP header URI pramble and the Content-Type
@@ -204,11 +198,8 @@ public:
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
-        // remove quotes from `true` or `false`
-		std::string str = ss.str();
-		boost::replace_all(str, "\"false\"", "false");
-		boost::replace_all(str, "\"true\"", "true");
-		post_ += str;
+        		// JSON PDT value unquote
+		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
 		post_ += "--" + boundary + "--";
 
 		// set the HTTP header URI pramble and the Content-Type
