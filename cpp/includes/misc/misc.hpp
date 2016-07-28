@@ -78,14 +78,39 @@ inline std::string escape_string(const std::string & str)
     return ss.str();
 } 
 
+/// \brief unquote JSON PDT values (int, float, double, uint32_t, etc)
+/// \warning no NULL specialisation, we can't unquote `null` - treat it as an std::string
+template <typename T>
+struct json_unquote_pdt_value
+{
+	std::string operator()(std::string str, T arg)
+	{
+		std::string key = boost::lexical_cast<std::string>(arg);
+		std::string hay = "\"" + key + "\"";
+		boost::replace_all(str, hay, key);
+		return str;
+	}
+};
+
+/// \brief specialisation of `json_unquote_pdt_value` for bool
+/// \note in C++ bool is translated to 0 or 1 (not `true` or `false`)
+template <>
+struct json_unquote_pdt_value<bool>
+{
+	std::string operator()(std::string str, bool arg)
+	{
+		std::string key = (arg == true? "true" : "false");
+		std::string hay = "\"" + key + "\"";
+		boost::replace_all(str, hay, key);
+		return str;
+	}
+};
+
 }
 }
 
-/// convenience function `std::make_unique` for non c++11 compilers
-#if __cplusplus==201402L
-// c++14 - nothing here
-#elif __cplusplus==201103L
-// c++11 - 
+// c++11 - add `std::make_unique`
+#if __cplusplus==201103L
 namespace std {
 template<typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
@@ -95,4 +120,5 @@ std::unique_ptr<T> make_unique(Args&&... args)
 }
 #endif
 
+//
 #endif

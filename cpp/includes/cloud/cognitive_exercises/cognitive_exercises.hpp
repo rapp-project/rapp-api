@@ -31,7 +31,7 @@ public:
 	cognitive_test_selector(
 							const std::string user,
 							const std::string test_type,
-                            functor callback,
+                            functor callback
 						   )
 	: asio_service_http(), delegate_(callback)
 	{
@@ -97,7 +97,7 @@ private:
         delegate_(questions,
                   possib_ans,
                   correct_ans,
-                  test_instance
+                  test_instance,
                   test_type,
                   test_subtype);
     }
@@ -133,16 +133,25 @@ public:
                                  )
     : asio_service_http(), delegate_(callback)
     {
+		std::string boundary = rapp::misc::random_boundary();
         boost::property_tree::ptree tree;
         tree.put("test_instance", test_instance);
-        tree.put("score", boost::lexical_cast<std::string>(score));
+        tree.put("score", score);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
+		post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// unquote JSON PDT values
+		post_ += rapp::misc::json_unquote_pdt_value<float>()(ss.str(), score);
+
+		// close the multipart - no need for \r\n here, the json already has one
+        post_ += "--" + boundary + "--";
 
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/cognitive_record_performance HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&cognitive_record_performance::handle_reply, this, std::placeholders::_1);
     }
@@ -161,7 +170,7 @@ private:
 
             // NOTE: untested!
             for (auto child : tree.get_child("performance_entry")) {
-                performance_entry = second.get_value<std::string>();
+                performance_entry = child.second.get_value<std::string>();
             }
 
             for (auto child : tree.get_child("error")) {
@@ -257,7 +266,7 @@ public:
     : asio_service_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
-        tree.put("up_to_time", boost::lexical_cast<std::string>(from_time));
+        tree.put("up_to_time", up_to_time);
         tree.put("test_type", test_type);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
@@ -284,11 +293,11 @@ private:
 
             // NOTE: untested!
             for (auto child : tree.get_child("test_classes")) {
-                test_classes.push_back(second.get_value<unsigned int>());
+                test_classes.push_back(child.second.get_value<unsigned int>());
             }
 
             for (auto child : tree.get_child("scores")) {
-                scores.push_back(second.get_value<float>());
+                scores.push_back(child.second.get_value<float>());
             }
 
             for (auto child : tree.get_child("error")) {
