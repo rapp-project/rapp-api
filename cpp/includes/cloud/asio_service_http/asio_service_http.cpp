@@ -10,6 +10,7 @@ void asio_service_http::schedule(
 								   rapp::cloud::platform_info info
                                  )
 {
+	post_ += "\r\n";
 	// calculate HTTP POST size
     auto content_length = post_.size() * sizeof(std::string::value_type);
 	// append the HTTP header to the previous craft (POST and content type)
@@ -17,10 +18,7 @@ void asio_service_http::schedule(
 	
 	// append HTTP header and HTTP POST data - place it in `request_`
     std::ostream request_stream(&request_);
-    request_stream << header << post_ << "\r\n";
-
-	// TEST
-	std::cout << header << post_;
+    request_stream << header << post_;
 
     // init tiemeout timer
     if (!timer_) {
@@ -181,7 +179,7 @@ void asio_service_http::handle_read_content(boost::system::error_code err, std::
 {
     assert(socket_ && timer_);
     if (!err) {
-        timer_->expires_from_now(boost::posix_time::seconds(10));
+        //timer_->expires_from_now(boost::posix_time::seconds(10));
 
         // Continue reading remaining data until EOF - It reccursively calls its self
         boost::asio::async_read(*socket_.get(),
@@ -216,20 +214,18 @@ void asio_service_http::handle_read_content(boost::system::error_code err, std::
 
 			// have received and EOF
             if (bytes_transferred_ >= content_length_) {
-				// cancel timer & stop timer service
-				io_timer_.stop();
-				timer_->cancel();
 				// call the virtual inherited handle_reply callback
-				std::cout << json_ << std::endl;
 				assert(callback_);
 				callback_(json_);
+				// cancel timer & stop timer service
+				reset(err);
 				return;
             }
         }
     }
     // Received end of file
     else if (err == boost::asio::error::eof) {
-		socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
+		reset(err);
         if (bytes_transferred_ != content_length_){
             std::cerr << "connection dropped unexpectedly" << std::endl;
             return;
@@ -243,7 +239,7 @@ void asio_service_http::handle_read_content(boost::system::error_code err, std::
 	}
 }
 
-void asio_service_http::reset()
+void asio_service_http::reset(boost::system::error_code err)
 {
     assert(timer_ && socket_);
     header_.clear();
@@ -252,8 +248,18 @@ void asio_service_http::reset()
     content_length_ = 0;
     bytes_transferred_ = 0;
     flag_ = false;
-    socket_->close();
+    socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
     timer_->expires_at(boost::posix_time::pos_infin);
+	io_timer_.stop();
+}
+
+void asio_service_http::stop(boost::system::error_code err)
+{
+	assert(timer_ && socket_);
+	socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
+    //socket_->close();
+	timer_->cancel();
+	io_timer_.stop();
 }
 
 void asio_service_http::check_timeout()
@@ -261,7 +267,8 @@ void asio_service_http::check_timeout()
     assert(timer_);
     if (timer_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
         std::cerr << "connection time-out" << std::endl;
-        reset();
+		boost::system::error_code ec = boost::asio::error::timed_out;
+        reset(ec);
 		return;
     }
 	else {

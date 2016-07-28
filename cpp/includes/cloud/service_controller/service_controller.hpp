@@ -23,6 +23,8 @@ public:
     template <typename T, typename... Args>
     void make_call(Args... args)
     {
+		// @BUG this will sequentially call the run_job, canceling (reseting) previous ones!!!
+		// This should be either (a) threaded, or (b) not reset.
         this->run_job(std::make_shared<T>(args...));
     }
 
