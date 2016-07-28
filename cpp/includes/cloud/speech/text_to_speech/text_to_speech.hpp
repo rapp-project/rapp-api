@@ -34,6 +34,8 @@ public:
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
 
+		// TODO: multipart/form-data
+
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/text_to_speech HTTP/1.1\r\n";
 

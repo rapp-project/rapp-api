@@ -61,7 +61,10 @@ protected:
     void handle_read_content(boost::system::error_code err, std::size_t bytes);
 
     /// \brief reset handler (clear data, bytes, etc) and stop connection
-    void reset();
+    void reset(boost::system::error_code err);
+
+	/// \brief stop
+	void stop(boost::system::error_code err);
 
     /// \brief check timed-out
     void check_timeout();

@@ -32,27 +32,33 @@ public:
 
 		// setup the POST preamble
         boost::property_tree::ptree tree;
-        tree.put("file", fname);
-        tree.put("fast", boost::lexical_cast<std::string>(fast));
+        tree.put("fast", fast);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 		
 		// set the `fast` param
         post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str();
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// remove quotes from `true` or `false`
+		std::string str = ss.str();
+		boost::replace_all(str, "\"false\"", "false");
+		boost::replace_all(str, "\"true\"", "true");
+		post_ += str;
 
         // Create the Multi-form POST field 
-        post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file\"; filename\"" 
-			  + fname + "\"\r\n"
-			  + "Content-Type: image/" + image.type() + "\r\n"
+		post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
+              + "Content-Type: image/" + image.type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
 
 		// Append binary data
         auto imagebytes = image.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
-        post_ += "\r\n--" + boundary + "--";
+
+		// close the multipart
+		post_ += "\r\n";
+        post_ += "--" + boundary + "--";
 		
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/face_detection HTTP/1.1\r\n";
