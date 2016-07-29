@@ -18,21 +18,18 @@ class ObjectDetectionLoadModels(CloudMsg):
             Constructor
 
             @param **kwargs - Keyword arguments. Apply values to the request attributes.
-                - @ref imageFilepath
-                - @ref fast
+                - @ref names
             """
 
             ## Model names to be loaded
             self.names = []
-            ## Username
-            self.user = 'rapp'
             # Apply passed keyword arguments to the Request object.
             super(ObjectDetectionLoadModels.Request, self).__init__(**kwargs)
 
 
         def make_payload(self):
             """ Create and return the Payload of the Request. """
-            return Payload(names=self.names,user=self.user)
+            return Payload(names=self.names)
 
         def make_files(self):
             """ Create and return Array of File objects of the Request. """
@@ -64,7 +61,6 @@ class ObjectDetectionLoadModels(CloudMsg):
 
         @param **kwargs - Keyword arguments. Apply values to the request attributes.
           - @ref Request.names
-          - @ref Request.user
         """
 
         # Create and hold the Request object for this CloudMsg

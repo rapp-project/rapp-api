@@ -842,7 +842,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def objectDetectionFindObjects(self, fname, limit = 1, user = 'rapp'):
+    def objectDetectionFindObjects(self, fname, limit = 1):
         """! Object detection API service call.
 
         @type fname: string
@@ -851,9 +851,6 @@ class RappPlatformAPI():
         @type limit: int
         @param limit: Limit results to this number of objects
 
-        @type user: string
-        @param user: Username
-
         @rtype: dict
         @return: Returns a dictionary of the service call response.
             {'found_names': [], 'found_centers': [], 'found_scores': [], 'result': 0, 'error': ''}
@@ -861,7 +858,6 @@ class RappPlatformAPI():
         msg = ObjectDetectionFindObjects()
         try:
             msg.req.fname = fname
-            msg.req.user = user
             response = self.svc_caller.call(msg)
         except Exception as e:
             response = ObjectDetectionFindObjects.Response(error=str(e))
@@ -873,11 +869,8 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def objectDetectionClearModels(self, user = 'rapp'):
+    def objectDetectionClearModels(self):
         """! Object detection - clear models API service call.
-
-        @type user: string
-        @param user: Username
 
         @rtype: dict
         @return: Returns a dictionary of the service call response.
@@ -885,7 +878,6 @@ class RappPlatformAPI():
         """
         msg = ObjectDetectionClearModels()
         try:
-            msg.req.user = user
             response = self.svc_caller.call(msg)
         except Exception as e:
             response = ObjectDetectionClearModels.Response(error=str(e))
@@ -894,14 +886,11 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def objectDetectionLoadModels(self, names = [], user = 'rapp'):
+    def objectDetectionLoadModels(self, names = []):
         """! Object detection - load models API service call.
 
         @type names: list
         @param names: Model names to load
-
-        @type user: string
-        @param user: Username
 
         @rtype: dict
         @return: Returns a dictionary of the service call response.
@@ -910,7 +899,6 @@ class RappPlatformAPI():
         msg = ObjectDetectionLoadModels()
         try:
             msg.req.names = names
-            msg.req.user = user
             response = self.svc_caller.call(msg)
         except Exception as e:
             response = ObjectDetectionLoadModels.Response(error=str(e))
@@ -919,7 +907,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def objectDetectionLearnObject(self, fname, name = '', user = 'rapp'):
+    def objectDetectionLearnObject(self, fname, name = ''):
         """! Object detection - load models API service call.
 
         @type fname: string
@@ -927,9 +915,6 @@ class RappPlatformAPI():
 
         @type name: string
         @param name: Model name
-
-        @type user: string
-        @param user: Username
 
         @rtype: dict
         @return: Returns a dictionary of the service call response.
@@ -939,7 +924,6 @@ class RappPlatformAPI():
         try:
             msg.req.fname = fname
             msg.req.name = name
-            msg.req.user = user
             response = self.svc_caller.call(msg)
         except Exception as e:
             response = ObjectDetectionLearnObject.Response(error=str(e))
