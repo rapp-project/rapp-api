@@ -4,14 +4,13 @@
 namespace rapp {
 namespace cloud {
 /**
- * \class asio_service_http
+ * \class asio_http
  * \brief base class for asynchronous http websockets used for connecting to cloud services
  * \version 0.6.0
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- * TODO: rename to `asio_socket_http`
  */
-class asio_service_http : public asio_socket, protected asio_handler
+class asio_http : public asio_socket, protected asio_handler
 {
 public:
     /** 

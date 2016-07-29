@@ -10,7 +10,7 @@ namespace cloud {
  * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speech_detection_google : public asio_service_http
+class speech_detection_google : public asio_http
 {
 public:
 	/**
@@ -27,7 +27,7 @@ public:
 							  const std::string user,
 							  std::function<void(std::vector<std::string>, std::vector<std::string>)> callback
 						   )
-	: asio_service_http(), delegate_(callback)
+	: asio_http(), delegate_(callback)
     {
         assert(file);
         std::string boundary = rapp::misc::random_boundary();
@@ -37,7 +37,8 @@ public:
         tree.put("language", language);
         tree.put("user", user);
         tree.put("audio_source", file->audio_source());
-        std::stringstream ss;
+        
+		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
 		post_ += "--" + boundary + "\r\n"

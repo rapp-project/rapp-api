@@ -4,13 +4,13 @@
 namespace rapp {
 namespace cloud {
 /**
- * \class asio_socket_https
+ * \class asio_https
  * \version 0.6.0
  * \date April 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * \brief wrapper for SSL/TLS secure HTTP communication
  */
-class asio_socket_https : public asio_socket, public asio_handler
+class asio_https : public asio_socket, public asio_handler
 {
 public:
     /// boost tls wraps around a tcp socket
@@ -21,7 +21,7 @@ public:
      * \param token: authentication token
      * \param user: rapp.cloud username
 	 */
-	asio_socket_https()
+	asio_https()
   	: asio_handler(), ctx_(boost::asio::ssl::context::tlsv12_client)
 	{
         // TODO: using this only for TEST
