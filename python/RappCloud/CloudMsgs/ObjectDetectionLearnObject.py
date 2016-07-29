@@ -20,22 +20,19 @@ class ObjectDetectionLearnObject(CloudMsg):
             @param **kwargs - Keyword arguments. Apply values to the request attributes.
                 - @ref fname
                 - @ref name
-                - @ref user
             """
 
             ## File path to the image to load. This is the sample object image.
             self.fname = ''
             ## Model name
             self.name = ''
-            ## Username 
-            self.user = 'rapp'
             # Apply passed keyword arguments to the Request object.
             super(ObjectDetectionLearnObject.Request, self).__init__(**kwargs)
 
 
         def make_payload(self):
             """ Create and return the Payload of the Request. """
-            return Payload(name=self.name,user=self.user)
+            return Payload(name=self.name)
 
         def make_files(self):
             """ Create and return Array of File objects of the Request. """
@@ -67,7 +64,6 @@ class ObjectDetectionLearnObject(CloudMsg):
         @param **kwargs - Keyword arguments. Apply values to the request attributes.
           - @ref Request.fname
           - @ref Request.name
-          - @ref Request.user
         """
 
         # Create and hold the Request object for this CloudMsg

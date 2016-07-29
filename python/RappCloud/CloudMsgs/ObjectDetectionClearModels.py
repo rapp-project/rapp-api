@@ -18,18 +18,15 @@ class ObjectDetectionClearModels(CloudMsg):
             Constructor
 
             @param **kwargs - Keyword arguments. Apply values to the request attributes.
-                - @ref user
             """
 
-            ## Username 
-            self.user = 'rapp'
             # Apply passed keyword arguments to the Request object.
             super(ObjectDetectionClearModels.Request, self).__init__(**kwargs)
 
 
         def make_payload(self):
             """ Create and return the Payload of the Request. """
-            return Payload(user=self.user)
+            return Payload()
 
         def make_files(self):
             """ Create and return Array of File objects of the Request. """
@@ -60,7 +57,6 @@ class ObjectDetectionClearModels(CloudMsg):
         Constructor
 
         @param **kwargs - Keyword arguments. Apply values to the request attributes.
-          - @ref Request.user
         """
 
         # Create and hold the Request object for this CloudMsg

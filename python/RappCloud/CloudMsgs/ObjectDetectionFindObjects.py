@@ -18,8 +18,8 @@ class ObjectDetectionFindObjects(CloudMsg):
             Constructor
 
             @param **kwargs - Keyword arguments. Apply values to the request attributes.
-                - @ref imageFilepath
-                - @ref fast
+                - @ref fname
+                - @ref limit
             """
 
             ## File path to the image to load. This is the image to perform
@@ -27,15 +27,13 @@ class ObjectDetectionFindObjects(CloudMsg):
             self.fname = ''
             ## Limit results to this number of objects
             self.limit = 1
-            ## Username 
-            self.user = 'rapp'
             # Apply passed keyword arguments to the Request object.
             super(ObjectDetectionFindObjects.Request, self).__init__(**kwargs)
 
 
         def make_payload(self):
             """ Create and return the Payload of the Request. """
-            return Payload(limit=self.limit,user=self.user)
+            return Payload(limit=self.limit)
 
         def make_files(self):
             """ Create and return Array of File objects of the Request. """
@@ -77,7 +75,6 @@ class ObjectDetectionFindObjects(CloudMsg):
         @param **kwargs - Keyword arguments. Apply values to the request attributes.
           - @ref Request.limit
           - @ref Request.fname
-          - @ref Request.user
         """
 
         # Create and hold the Request object for this CloudMsg
