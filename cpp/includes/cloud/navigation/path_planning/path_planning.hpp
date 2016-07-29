@@ -10,7 +10,7 @@ namespace cloud {
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class plan_path_2d : public asio_service_http
+class plan_path_2d : public asio_http
 {
 public:
 	/**
@@ -27,21 +27,27 @@ public:
                   const rapp::object::pose_stamped goal,
                   std::function<void(rapp::object::planned_path)> callback
                 )
-	: asio_service_http(), delegate_(callback)
+	: asio_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("map_name", map_name);
         tree.put("robot_type", robot_type);
 		tree.put("algorithm", algorithm);
+
         tree.add_child("", start.treefy());
         tree.add_child("", end.treefy());
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+			   + ss.str();
 
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/path_planning_plan_path_2d HTTP/1.1\r\n";
+		head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&plan_path_2d::handle_reply, this, std::placeholders::_1);
 	}
@@ -101,7 +107,7 @@ private:
 };
 
 // 
-class path_upload_map : public asio_service_http
+class path_upload_map : public asio_http
 {
 public:
     /**
@@ -117,10 +123,11 @@ public:
                       const std::string map_name,
                       std::function<void(std::string)> callback
                     )
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
 		tree.put("map_name", map_name);
+
 		std::string boundary = rapp::misc::random_boundary();
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);

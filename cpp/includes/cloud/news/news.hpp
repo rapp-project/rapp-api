@@ -9,7 +9,7 @@ namespace cloud {
  * \version 0.6.0
  * \date May 2016
  */
-class news_explore : public asio_service_http
+class news_explore : public asio_http
 {
 public:
     /**
@@ -30,7 +30,7 @@ public:
                   const unsigned int num_news,
                   std::function<void(std::string)> callback
                 )
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("news_engine", email);
@@ -53,12 +53,19 @@ public:
         tree.put("num_news", boost::lexical_cast<std::string>(num_news));
         std::stringstream ss;
 
+        std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote
+		post_ += rapp::misc::json_unquote_pdt_value<unsigned int>()(ss.str(), num_news);
 
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/email_fetch HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&email_fetch::handle_reply, this, std::placeholders::_1);
     }

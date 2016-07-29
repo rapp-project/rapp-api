@@ -10,7 +10,7 @@ namespace cloud {
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_subclasses_of : public asio_service_http
+class ontology_subclasses_of : public asio_http
 {
 public:
     /**
@@ -24,15 +24,16 @@ public:
                             bool recursive,
                             std::function<void(std::vector<std::string>)> callback
                           )
-    : asio_service_http(), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
-		std::string boundary = rapp::misc::random_boundary();
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
         tree.put("recursive", recursive);
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+
+		std::string boundary = rapp::misc::random_boundary();
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
@@ -90,7 +91,7 @@ private:
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_superclasses_of : public asio_service_http
+class ontology_superclasses_of : public asio_http
 {
 public:
     /**
@@ -103,7 +104,7 @@ public:
                               bool recursive,
                               std::function<void(std::vector<std::string>)> callback
                             )
-    : asio_service_http(), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
 		std::string boundary = rapp::misc::random_boundary();
         boost::property_tree::ptree tree;
@@ -168,7 +169,7 @@ private:
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_is_subsuperclass_of : public asio_service_http
+class ontology_is_subsuperclass_of : public asio_http
 {
 public:
     /**
@@ -185,9 +186,8 @@ public:
                                    bool recursive,
                                    std::function<void(bool result)> callback
                                 )
-    : asio_service_http(), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
-		std::string boundary = rapp::misc::random_boundary();
         boost::property_tree::ptree tree;
         tree.put("parent_class", parent_class);
         tree.put("child_class", child_class);
@@ -195,11 +195,13 @@ public:
 
 		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+
+		std::string boundary = rapp::misc::random_boundary();
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
-        		// JSON PDT value unquote
-		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
+		// JSON PDT value unquote
+		post_ += misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
 		post_ += "--" + boundary + "--";
 
 		// set the HTTP header URI pramble and the Content-Type

@@ -1,14 +1,14 @@
-#include "asio_service_http.hpp"
+#include "asio_http.hpp"
 
 namespace rapp {
 namespace cloud {
 
-void asio_service_http::schedule( 
-                                   boost::asio::ip::tcp::resolver::query & query,
-                                   boost::asio::ip::tcp::resolver & resolver,
-                                   boost::asio::io_service & io_service,
-								   rapp::cloud::platform_info info
-                                 )
+void asio_http::schedule(
+                            boost::asio::ip::tcp::resolver::query & query,
+                            boost::asio::ip::tcp::resolver & resolver,
+                            boost::asio::io_service & io_service,
+						    rapp::cloud::platform_info info
+                        )
 {
 	post_ += "\r\n";
 	// calculate HTTP POST size
@@ -24,7 +24,7 @@ void asio_service_http::schedule(
     if (!timer_) {
         timer_ = std::make_unique<boost::asio::deadline_timer>(io_timer_);
     }
-    timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
+    timer_->async_wait(boost::bind(&asio_http::check_timeout, this));
 
     // init socket
     if (!socket_) {
@@ -33,13 +33,13 @@ void asio_service_http::schedule(
 
 	// resolve the address and chain the callbacks
     resolver.async_resolve(query,
-                           boost::bind(&asio_service_http::handle_resolve,
+                           boost::bind(&asio_http::handle_resolve,
                                        this,
                                        boost::asio::placeholders::error,
                                        boost::asio::placeholders::iterator));
 }
 
-void asio_service_http::handle_resolve( 
+void asio_http::handle_resolve( 
                                          boost::system::error_code  err,
                                          boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                                        )
@@ -50,7 +50,7 @@ void asio_service_http::handle_resolve(
 
 		// connect to endpoint
         socket_->async_connect(endpoint,
-                               boost::bind(&asio_service_http::handle_connect,
+                               boost::bind(&asio_http::handle_connect,
                                            this,
                                            boost::asio::placeholders::error, 
                                            ++endpoint_iterator));
@@ -61,7 +61,7 @@ void asio_service_http::handle_resolve(
 	}
 }
 
-void asio_service_http::handle_connect(
+void asio_http::handle_connect(
                                         boost::system::error_code err,
                                         boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                                       )
@@ -74,7 +74,7 @@ void asio_service_http::handle_connect(
 		// write the request (see each class for what that request is)
         boost::asio::async_write(*socket_.get(),
                                  request_,
-                                 boost::bind(&asio_service_http::handle_write_request, 
+                                 boost::bind(&asio_http::handle_write_request, 
                                              this,
                                              boost::asio::placeholders::error));
     }
@@ -83,7 +83,7 @@ void asio_service_http::handle_connect(
         socket_->close();   
         auto endpoint = *endpoint_iterator;
         socket_->async_connect(endpoint,
-                               boost::bind(&asio_service_http::handle_connect, 
+                               boost::bind(&asio_http::handle_connect, 
                                            this,
                                            boost::asio::placeholders::error, 
                                            ++endpoint_iterator));
@@ -95,7 +95,7 @@ void asio_service_http::handle_connect(
 }
 
 /// Callback for handling request and waiting for response \param err is a possible error
-void asio_service_http::handle_write_request(boost::system::error_code err)
+void asio_http::handle_write_request(boost::system::error_code err)
 {
     assert(socket_ && timer_);
     if (!err) {
@@ -105,7 +105,7 @@ void asio_service_http::handle_write_request(boost::system::error_code err)
         boost::asio::async_read_until(*socket_.get(),
                                       response_, 
                                       "\r\n",
-                                      boost::bind(&asio_service_http::handle_read_status_line, 
+                                      boost::bind(&asio_http::handle_read_status_line, 
                                                   this,
                                                   boost::asio::placeholders::error));
     }
@@ -116,7 +116,7 @@ void asio_service_http::handle_write_request(boost::system::error_code err)
 }
 
 /// Callback for handling HTTP Header Response Data \param err is a possible error message
-void asio_service_http::handle_read_status_line(boost::system::error_code err)
+void asio_http::handle_read_status_line(boost::system::error_code err)
 {
     assert(socket_ && timer_);
     if (!err) {
@@ -142,7 +142,7 @@ void asio_service_http::handle_read_status_line(boost::system::error_code err)
         boost::asio::async_read_until(*socket_.get(),
                                       response_, 
                                       "\r\n\r\n",
-                                      boost::bind(&asio_service_http::handle_read_headers, 
+                                      boost::bind(&asio_http::handle_read_headers, 
                                                   this,
                                                   boost::asio::placeholders::error));
     }
@@ -153,7 +153,7 @@ void asio_service_http::handle_read_status_line(boost::system::error_code err)
 }
 
 /// Callback for Handling Headers \param err is a possible error message
-void asio_service_http::handle_read_headers(boost::system::error_code err)
+void asio_http::handle_read_headers(boost::system::error_code err)
 {
     assert(socket_ && timer_);
     if (!err) {
@@ -163,7 +163,7 @@ void asio_service_http::handle_read_headers(boost::system::error_code err)
         boost::asio::async_read_until(*socket_.get(),
                                       response_,
                                       "\r\n\r\n",
-                                      boost::bind(&asio_service_http::handle_read_content,
+                                      boost::bind(&asio_http::handle_read_content,
                                                   this,
                                                   boost::asio::placeholders::error,
                                                   boost::asio::placeholders::bytes_transferred));
@@ -175,7 +175,7 @@ void asio_service_http::handle_read_headers(boost::system::error_code err)
 }
 
 /// Callback for Handling Actual Data Contents \param err is a possible error message
-void asio_service_http::handle_read_content(boost::system::error_code err, std::size_t bytes)
+void asio_http::handle_read_content(boost::system::error_code err, std::size_t bytes)
 {
     assert(socket_ && timer_);
     if (!err) {
@@ -185,7 +185,7 @@ void asio_service_http::handle_read_content(boost::system::error_code err, std::
         boost::asio::async_read(*socket_.get(),
                                 response_,
                                 boost::asio::transfer_at_least(1),
-                                boost::bind(&asio_service_http::handle_read_content, 
+                                boost::bind(&asio_http::handle_read_content, 
                                             this,
                                             boost::asio::placeholders::error,
                                             boost::asio::placeholders::bytes_transferred));
@@ -239,7 +239,7 @@ void asio_service_http::handle_read_content(boost::system::error_code err, std::
 	}
 }
 
-void asio_service_http::reset(boost::system::error_code err)
+void asio_http::reset(boost::system::error_code err)
 {
     assert(timer_ && socket_);
     header_.clear();
@@ -253,7 +253,7 @@ void asio_service_http::reset(boost::system::error_code err)
 	io_timer_.stop();
 }
 
-void asio_service_http::stop(boost::system::error_code err)
+void asio_http::stop(boost::system::error_code err)
 {
 	assert(timer_ && socket_);
 	socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
@@ -262,7 +262,7 @@ void asio_service_http::stop(boost::system::error_code err)
 	io_timer_.stop();
 }
 
-void asio_service_http::check_timeout()
+void asio_http::check_timeout()
 {
     assert(timer_);
     if (timer_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
@@ -273,7 +273,7 @@ void asio_service_http::check_timeout()
     }
 	else {
 		// Put the actor back to sleep.
-		timer_->async_wait(boost::bind(&asio_service_http::check_timeout, this));
+		timer_->async_wait(boost::bind(&asio_http::check_timeout, this));
 	}
 }
 

@@ -10,7 +10,7 @@ namespace cloud {
  * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class object_recognition : public asio_service_http
+class object_recognition : public asio_http
 {
 public:
     /**
@@ -22,7 +22,7 @@ public:
                       const rapp::object::picture & image,
                       std::function<void(std::string)> callback
                     )
-    : asio_service_http(), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
         std::string boundary = rapp::misc::random_boundary();
         std::string fname = rapp::misc::random_boundary() + "." + image.type();

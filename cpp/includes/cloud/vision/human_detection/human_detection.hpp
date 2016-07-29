@@ -10,7 +10,7 @@ namespace cloud {
  * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class human_detection : public asio_service_http
+class human_detection : public asio_http
 {
 public:
     /**
@@ -23,7 +23,7 @@ public:
                       const rapp::object::picture & image,
                       std::function<void(std::vector<rapp::object::human>)> callback
                     )
-    : asio_service_http(), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
         std::string boundary = rapp::misc::random_boundary();
         std::string fname = rapp::misc::random_boundary() + "." + image.type();
