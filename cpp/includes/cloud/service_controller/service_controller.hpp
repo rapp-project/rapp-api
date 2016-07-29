@@ -10,10 +10,14 @@ namespace cloud {
  * \date July-2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  * TODO: rename to `cloud_endpoint` or `cloud_control`
+ * TODO: parametrize with ENUM so that we chose between `asio_http` and `asio_https`
+ *
+ * NOTE: running async jobs (e.g., `run_job_async` requires use of `io_service.poll()`
  */
 class service_controller
 {
 public:
+
     /// \brief construct a service controller using a rapp::cloud::platform_info object
 	service_controller(rapp::cloud::platform_info info)
 	: cloud_(info), query_(info.address, info.port), io_(), resol_(io_)
@@ -23,9 +27,8 @@ public:
     template <typename T, typename... Args>
     void make_call(Args... args)
     {
-		// @BUG this will sequentially call the run_job, canceling (reseting) previous ones!!!
-		// This should be either (a) threaded, or (b) not reset.
-        this->run_job(std::make_shared<T>(args...));
+		// this is sequentially blocked until the job has finished
+		this->run_job(std::make_shared<T>(args...));
     }
 
     /// \brief make_job will create a cloud job which you must run using `run_job` or `run_jobs`
@@ -38,14 +41,14 @@ public:
     /**
      * \brief run one service job
      * \param client is the actual object pointer that will be executed in a single operation
-     * \note upon completion, the object's handler will be invoked
-     * \note upon completion - scheduler is reset
      */
     void run_job(const std::shared_ptr<asio_socket> job)
 	{
+		// will block until this job is complete, then we reset the work queue
+		// in order to make it async, we need individual/scoped io_service objects.
+		// if that is feasible!
 		assert(job);
 		job->schedule(query_, resol_, io_, cloud_);
-		// will block until this job is complete, then we reset the work queue
 		io_.run();
 		io_.reset();
 	}

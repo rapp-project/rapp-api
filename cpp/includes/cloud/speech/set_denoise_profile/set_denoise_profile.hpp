@@ -10,7 +10,7 @@ namespace cloud {
  * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class set_denoise_profile : public asio_service_http
+class set_denoise_profile : public asio_http
 {
 public:
     /**
@@ -23,7 +23,7 @@ public:
 						 const std::shared_ptr<rapp::object::audio> file,
                          const std::string user
 					   )
-    : asio_service_http()
+    : asio_http()
     {
         assert(file);
         std::string boundary = rapp::misc::random_boundary();
@@ -33,6 +33,7 @@ public:
         tree.put("user", user);
         tree.put("audio_source", file->audio_source());
         tree.put("filename", fname + "." + file->extension());
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
@@ -43,7 +44,6 @@ public:
 		post_ += "--" + boundary + "\r\n"
               + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
-
 
         auto bytes = file->bytearray();
         post_.insert(post_.end(), bytes.begin(), bytes.end());

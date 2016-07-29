@@ -1,14 +1,14 @@
-#include "asio_socket_https.hpp"
+#include "asio_https.hpp"
 
 namespace rapp {
 namespace cloud {
 
-void asio_socket_https::schedule(
-                                   boost::asio::ip::tcp::resolver::query & query,
-                                   boost::asio::ip::tcp::resolver & resolver,
-                                   boost::asio::io_service & io_service,
-								   rapp::cloud::platform_info info
-                                 )
+void asio_https::schedule(
+                            boost::asio::ip::tcp::resolver::query & query,
+                            boost::asio::ip::tcp::resolver & resolver,
+                            boost::asio::io_service & io_service,
+						    rapp::cloud::platform_info info
+                          )
 {
 	// calculate HTTP POST size
     auto content_length = post_.size() * sizeof(std::string::value_type);
@@ -16,17 +16,18 @@ void asio_socket_https::schedule(
 	header_= make_header(info, head_preamble_, content_length);
 
     // init timeout timer
+	// TODO: add unique per-class timeout service
     if (!timer_) {
-        timer_ = std::unique_ptr<boost::asio::deadline_timer>(
-                                 new boost::asio::deadline_timer(io_service));
+        timer_ = std::make_unique<boost::asio::deadline_timer>(io_service);
     }
-    timer_->async_wait(boost::bind(&asio_socket_https::check_timeout, this));
+    timer_->async_wait(boost::bind(&asio_https::check_timeout, this));
+
     // init tls socket wrapper
     if (!tls_socket_) {
-        tls_socket_ = std::unique_ptr<boost_tls_socket>(
-                                      new boost_tls_socket(io_service, ctx_));
+        tls_socket_ = std::make_unique<boost_tls_socket>(io_service, ctx_);
     }
     assert(tls_socket_);
+
     // disable ssl v2 and ssl v3 (allow only tls)
     ctx_.set_options(boost::asio::ssl::context::default_workarounds
                     |boost::asio::ssl::context::no_sslv2
@@ -43,18 +44,18 @@ void asio_socket_https::schedule(
     tls_socket_->set_verify_mode(boost::asio::ssl::verify_peer 
                                 |boost::asio::ssl::verify_fail_if_no_peer_cert);
     // verify callback
-    tls_socket_->set_verify_callback(boost::bind(&asio_socket_https::verify_certificate, 
+    tls_socket_->set_verify_callback(boost::bind(&asio_https::verify_certificate, 
                                               this, _1, _2));
     // begin connect
     boost::asio::async_connect(tls_socket_->lowest_layer(), 
                                endpoint_iterator,
-                               boost::bind(&asio_socket_https::handle_connect, 
+                               boost::bind(&asio_https::handle_connect, 
                                            this,
                                            boost::asio::placeholders::error));
 }
 
 /// \brief verify TLS certificate - WARNING: is this proper verification?
-bool asio_socket_https::verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx)
+bool asio_https::verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx)
 {
     char subject_name[256];
     X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
@@ -63,13 +64,13 @@ bool asio_socket_https::verify_certificate(bool preverified, boost::asio::ssl::v
 }
 
 /// \brief begin connect
-void asio_socket_https::handle_connect(const boost::system::error_code& error)
+void asio_https::handle_connect(const boost::system::error_code& error)
 {
     assert(tls_socket_);
     if (!error) {
         timer_->expires_from_now(boost::posix_time::seconds(30));
         tls_socket_->async_handshake(boost::asio::ssl::stream_base::client,
-                                     boost::bind(&asio_socket_https::handle_handshake, 
+                                     boost::bind(&asio_https::handle_handshake, 
                                                  this,
                                                  boost::asio::placeholders::error));
     }
@@ -79,7 +80,7 @@ void asio_socket_https::handle_connect(const boost::system::error_code& error)
 }
 
 /// \brief handle handshake
-void asio_socket_https::handle_handshake(const boost::system::error_code& error)
+void asio_https::handle_handshake(const boost::system::error_code& error)
 {
     assert(tls_socket_ && timer_);
     if (!error) {
@@ -90,7 +91,7 @@ void asio_socket_https::handle_handshake(const boost::system::error_code& error)
         // write to the socket
         boost::asio::async_write(*tls_socket_,
                                  request_,
-                                 boost::bind(&asio_socket_https::handle_write, 
+                                 boost::bind(&asio_https::handle_write, 
                                              this,
                                              boost::asio::placeholders::error));
     }
@@ -100,7 +101,7 @@ void asio_socket_https::handle_handshake(const boost::system::error_code& error)
 }
 
 /// Callback for handling request and waiting for response \param err is a possible error
-void asio_socket_https::handle_write(const boost::system::error_code & err)
+void asio_https::handle_write(const boost::system::error_code & err)
 {
     assert(tls_socket_ && timer_);
     if (!err) {
@@ -109,7 +110,7 @@ void asio_socket_https::handle_write(const boost::system::error_code & err)
         boost::asio::async_read_until(*tls_socket_,
                                       response_, 
                                       "\r\n",
-                                      boost::bind(&asio_socket_https::handle_read_status_line, 
+                                      boost::bind(&asio_https::handle_read_status_line, 
                                                   this,
                                                   boost::asio::placeholders::error));
     }
@@ -119,7 +120,7 @@ void asio_socket_https::handle_write(const boost::system::error_code & err)
 }
 
 /// Callback for handling HTTP Header Response Data \param err is a possible error message
-void asio_socket_https::handle_read_status_line(const boost::system::error_code & err)
+void asio_https::handle_read_status_line(const boost::system::error_code & err)
 {
     assert(tls_socket_ && timer_);
     if (!err) {
@@ -145,7 +146,7 @@ void asio_socket_https::handle_read_status_line(const boost::system::error_code 
         boost::asio::async_read_until(*tls_socket_,
                                       response_, 
                                       "\r\n\r\n",
-                                      boost::bind(&asio_socket_https::handle_read_headers, 
+                                      boost::bind(&asio_https::handle_read_headers, 
                                                   this,
                                                   boost::asio::placeholders::error));
     }
@@ -155,7 +156,7 @@ void asio_socket_https::handle_read_status_line(const boost::system::error_code 
 }
 
 /// Callback for Handling Headers \param err is a possible error message
-void asio_socket_https::handle_read_headers(const boost::system::error_code & err)
+void asio_https::handle_read_headers(const boost::system::error_code & err)
 {
     assert(tls_socket_ && timer_);
     if (!err) {
@@ -164,7 +165,7 @@ void asio_socket_https::handle_read_headers(const boost::system::error_code & er
         boost::asio::async_read_until(*tls_socket_,
                                       response_,
                                       "\r\n\r\n",
-                                      boost::bind(&asio_socket_https::handle_read_content,
+                                      boost::bind(&asio_https::handle_read_content,
                                                   this,
                                                   boost::asio::placeholders::error));
     }
@@ -174,7 +175,7 @@ void asio_socket_https::handle_read_headers(const boost::system::error_code & er
 }
 
 /// Callback for Handling Actual Data Contents \param err is a possible error message
-void asio_socket_https::handle_read_content(const boost::system::error_code & err)
+void asio_https::handle_read_content(const boost::system::error_code & err)
 {
     assert(tls_socket_ && timer_);
     if (!err) {
@@ -183,7 +184,7 @@ void asio_socket_https::handle_read_content(const boost::system::error_code & er
         boost::asio::async_read(*tls_socket_,
                                 response_,
                                 boost::asio::transfer_at_least(1),
-                                boost::bind(&asio_socket_https::handle_read_content, 
+                                boost::bind(&asio_https::handle_read_content, 
                                             this,
                                             boost::asio::placeholders::error));
 
@@ -198,7 +199,7 @@ void asio_socket_https::handle_read_content(const boost::system::error_code & er
     }
 }
 
-void asio_socket_https::reset()
+void asio_https::reset()
 {
     assert(timer_ && tls_socket_);
     header_.clear();
@@ -211,7 +212,7 @@ void asio_socket_https::reset()
     timer_->expires_at(boost::posix_time::pos_infin);
 }
 
-void asio_socket_https::check_timeout()
+void asio_https::check_timeout()
 {
     assert(timer_);
     if (timer_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
@@ -219,7 +220,7 @@ void asio_socket_https::check_timeout()
         reset();
     }
     // Put the actor back to sleep.
-    timer_->async_wait(boost::bind(&asio_socket_https::check_timeout, this));
+    timer_->async_wait(boost::bind(&asio_https::check_timeout, this));
 }
 
 

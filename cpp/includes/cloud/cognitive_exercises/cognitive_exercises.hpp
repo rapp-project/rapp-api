@@ -9,8 +9,11 @@ namespace cloud {
  * \version 0.6.0
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ *
+ * \NOTE https://github.com/rapp-project/rapp-platform/tree/master/rapp_web_services/services#cognitive-test-selector
+ *		 has changed - will update in 0.7.0
  */
-class cognitive_test_selector : public asio_service_http
+class cognitive_test_selector : public asio_http
 {
 public:
 
@@ -33,17 +36,25 @@ public:
 							const std::string test_type,
                             functor callback
 						   )
-	: asio_service_http(), delegate_(callback)
+	: asio_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("test_type", test_type);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
         post_ = ss.str();
 
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote
+		post_ += ss.str();
+
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/cognitive_test_selector HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&cognitive_test_selector::handle_reply, this, std::placeholders::_1);
 	}
@@ -117,7 +128,7 @@ private:
  * \date May-2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_record_performance : public asio_service_http
+class cognitive_record_performance : public asio_http
 {
 public:
     /**
@@ -131,19 +142,20 @@ public:
                                     const float score,
                                     std::function<void(std::string)> callback
                                  )
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
-		std::string boundary = rapp::misc::random_boundary();
         boost::property_tree::ptree tree;
         tree.put("test_instance", test_instance);
         tree.put("score", score);
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-		post_  = "--" + boundary + "\r\n"
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
-		// unquote JSON PDT values
+		// JSON PDT value unquote
 		post_ += rapp::misc::json_unquote_pdt_value<float>()(ss.str(), score);
 
 		// close the multipart - no need for \r\n here, the json already has one
@@ -198,7 +210,7 @@ private:
  * \date May 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_get_history : public asio_service_http
+class cognitive_get_history : public asio_http
 {
 public:
     /**
@@ -214,19 +226,27 @@ public:
                             const std::string test_type,
                             std::function<void(std::string)> callback
                          )
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
-        tree.put("from_time", boost::lexical_cast<std::string>(from_time));
-        tree.put("to_time", boost::lexical_cast<std::string>(to_time));
+        tree.put("from_time", from_time);
+        tree.put("to_time", to_time);
         tree.put("test_type", test_type);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote (call twice!)
+		auto str = misc::json_unquote_pdt_value<unsigned int>()(ss.str(), from_time);
+		post_ += misc::json_unquote_pdt_value<unsigned int>()(str, to_time);
 
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/cognitive_get_history HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&cognitive_get_history::handle_reply, this, std::placeholders::_1);
     }
@@ -249,7 +269,7 @@ private:
  * \date May 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_get_scores : public asio_service_http
+class cognitive_get_scores : public asio_http
 {
 public:
     /**
@@ -263,21 +283,29 @@ public:
                           const std::string test_type,
                           std::function<void(std::vector<unsigned int>, std::vector<float>)> callback
                         )
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("up_to_time", up_to_time);
         tree.put("test_type", test_type);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote
+		post_ += rapp::misc::json_unquote_pdt_value<unsigned int>()(ss.str(), up_to_time);
 
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/cognitive_get_scores HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&cognitive_get_scores::handle_reply, this, std::placeholders::_1);
     }
+
 private:
     /**
      * \brief handle platform's JSON reply

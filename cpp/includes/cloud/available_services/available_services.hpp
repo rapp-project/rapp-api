@@ -10,7 +10,7 @@ namespace cloud {
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class available_services : public asio_service_http
+class available_services : public asio_http
 {
 public:
 	typedef std::pair<std::string, std::string> service;
@@ -19,7 +19,7 @@ public:
      * \param callback will receive a vector of services strings
      */
     available_services(std::function<void(std::vector<service>)> callback)
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "GET /hop/available_services HTTP/1.1\r\n";
@@ -27,6 +27,7 @@ public:
 		// bind base downcasted virtual method
         callback_ = std::bind(&available_services::handle_reply, this, std::placeholders::_1);
     }
+
 private:
     /**
      * \brief handle platform's JSON reply

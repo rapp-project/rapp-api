@@ -10,7 +10,7 @@ namespace cloud {
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class hazard_detection_door_check : public asio_service_http
+class hazard_detection_door_check : public asio_http
 {
 public:
     /**
@@ -23,7 +23,7 @@ public:
                                   const rapp::object::picture & image,
                                   std::function<void(double door_angle)> callback
                                 )
-    : asio_service_http(), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
         std::string boundary = rapp::misc::random_boundary();
         std::string fname = rapp::misc::random_boundary() + "." + image.type();
@@ -98,7 +98,7 @@ private:
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class hazard_detection_light_check : public asio_service_http
+class hazard_detection_light_check : public asio_http
 {
 public:
     /**
@@ -111,7 +111,7 @@ public:
                                   const rapp::object::picture & image,
                                   std::function<void(double light_level)> callback
                                 )
-    : asio_service_http(), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
         std::string boundary = rapp::misc::random_boundary();
         std::string fname = rapp::misc::random_boundary() + "." + image.type();

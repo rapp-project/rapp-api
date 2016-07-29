@@ -10,7 +10,7 @@ namespace cloud {
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face_detection : public asio_service_http
+class face_detection : public asio_http
 {
 public:
     /**
@@ -24,7 +24,7 @@ public:
                     bool fast,
                     std::function<void(std::vector<rapp::object::face>)> callback
                   )
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
 		// random boundary
         std::string boundary = rapp::misc::random_boundary();
@@ -41,7 +41,7 @@ public:
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
 		// unquote JSON PDT values
-		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), fast);
+		post_ += misc::json_unquote_pdt_value<bool>()(ss.str(), fast);
 
         // Create the Multi-form POST field 
 		post_ += "--" + boundary + "\r\n"

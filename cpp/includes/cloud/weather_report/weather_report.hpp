@@ -10,7 +10,7 @@ namespace cloud {
  * \version 0.6.0
  * \date May 2016
  */
-class weather_report_current : public asio_service_http
+class weather_report_current : public asio_http
 {
 public:
     /**
@@ -26,7 +26,7 @@ public:
                             const unsigned int metric,
                             std::function<void(std::string)> callback
                           )
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("city", city);
@@ -61,7 +61,7 @@ private:
  * \version 0.6.0
  * \date May 2016
  */
-class weather_report_forecast : public asio_service_http
+class weather_report_forecast : public asio_http
 {
 public:
     /**
@@ -77,19 +77,26 @@ public:
                               const unsigned int metric,
                               std::function<void(std::string)> callback
                             )
-    : asio_service_http(), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("city", city);
         tree.put("weather_reporter", weather_reporter);
         tree.put("metric", boost::lexical_cast<std::string>(metric));
-        std::stringstream ss;
+
+		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote
+		post_ += misc::json_unquote_pdt_value<unsigned int>()(ss.str(), metric);
 
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/weather_report_forecast HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: application/x-www-form-urlencoded\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&weather_report_forecast::handle_reply, this, std::placeholders::_1);
     }
