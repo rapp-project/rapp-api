@@ -2,14 +2,16 @@
 # @author Alex Giokas <a.gkiokas@ortelio.co.uk>
 # 
 # Command line arguments you can use:
-#       -DBUILD_RAPP_SHARED=ON		(Default: compile a shared librapp)
-#       -DBUILD_RAPP_STATIC=ON		(Optional: compile a static librapp)
-#       -DBUILD_TESTS=ON            (Optional: compile various tests - run with `make test`)
-#       -DBUILD_EXAMPLES=ON         (Optional: compile various examples)
-#       -DCMAKE_BUILD_TYPE=Debug    (Optional: enable debug symbols)
-#       -DSTATIC_LIBSTD=ON          (Optional: compile statically against libstdc++)
-#       -DOPEN_NAO=ON               (Optional: compiling on OpenNAO requires additional CXX flags)
-#		-DCMAKE_INSTALL_PREFIX=/usr	(Optional: specify the library install directory
+#       -DBUILD_RAPP_SHARED=ON		                    (Default: compile a shared librapp)
+#       -DBUILD_RAPP_STATIC=ON		                    (Optional: compile a static librapp)
+#       -DBUILD_TESTS=ON                                (Optional: compile various tests - run with `make test`)
+#       -DBUILD_EXAMPLES=ON                             (Optional: compile various examples)
+#       -DCMAKE_BUILD_TYPE=Debug                        (Optional: enable debug symbols)
+#       -DSTATIC_LIBSTD=ON                              (Optional: compile statically against libstdc++)
+#       -DOPEN_NAO=ON                                   (Optional: compiling on OpenNAO requires additional CXX flags)
+#		-DCMAKE_INSTALL_PREFIX=/usr	                    (Optional: specify the library install directory
+#       -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl       (Optional: specify OpenSSL root directory)
+#       -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/ (Optional: specify OpenSSL library directory)
 #
 # After succesfull compilation, run as su/sudo: `make install`
 # 
@@ -42,7 +44,6 @@ set (SOURCES ${SOURCES}
 
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
-
 
 # Find Boost
 find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex filesystem REQUIRED)
