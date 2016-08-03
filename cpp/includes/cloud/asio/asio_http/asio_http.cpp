@@ -3,6 +3,9 @@
 namespace rapp {
 namespace cloud {
 
+// TODO: remove error_handler, and accept as parameter
+//		 then set it to a local member
+
 void asio_http::schedule(
                             boost::asio::ip::tcp::resolver::query & query,
                             boost::asio::ip::tcp::resolver & resolver,
@@ -10,17 +13,19 @@ void asio_http::schedule(
 						    rapp::cloud::platform_info info
                         )
 {
+	// TODO: transform as virtual method post() ?
 	post_ += "\r\n";
+
 	// calculate HTTP POST size
     auto content_length = post_.size() * sizeof(std::string::value_type);
-	// append the HTTP header to the previous craft (POST and content type)
-	std::string header = make_header(info, head_preamble_, content_length);
 	
 	// append HTTP header and HTTP POST data - place it in `request_`
     std::ostream request_stream(&request_);
-    request_stream << header << post_;
+    request_stream << asio_handler::make_header(info, head_preamble_, content_length) 
+				   << post_;
 
-    // init tiemeout timer
+	// TODO: move timer (and io_timer_) into a seperate struct/class
+    // init timeout timer
     if (!timer_) {
         timer_ = std::make_unique<boost::asio::deadline_timer>(io_timer_);
     }
@@ -253,15 +258,7 @@ void asio_http::reset(boost::system::error_code err)
 	io_timer_.stop();
 }
 
-void asio_http::stop(boost::system::error_code err)
-{
-	assert(timer_ && socket_);
-	socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
-    //socket_->close();
-	timer_->cancel();
-	io_timer_.stop();
-}
-
+/// TODO: move to another struct/class
 void asio_http::check_timeout()
 {
     assert(timer_);

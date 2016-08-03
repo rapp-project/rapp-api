@@ -21,16 +21,18 @@ public:
 	{}
 
 	/// \brief create an HTTP header using the \param info
-	std::string make_header(
-							rapp::cloud::platform_info info,
-							rapp::cloud::header head,
-							unsigned int post_length
-						   );
+    std::string make_header(
+                             rapp::cloud::platform_info info,
+                             rapp::cloud::header head,
+                             unsigned int post_length
+                           );
 
+	/// DEPRECATE in 0.7.0
     /// \brief Handle an Error \param error is the raised error from the client
     void error_handler(const boost::system::error_code & error);
 
-    /// \brief Handle Invalid Query - e.g.: response which states our query was invalid 
+    /// \brief Handle Invalid Query 
+	/// DEPRECATE in 0.7.0
     void invalid_request(const std::string message);
     
     /// \brief get the content leangth from \param header
@@ -45,9 +47,10 @@ public:
        
     
 protected:
-	/// ...
+	/// HTTP Hedear request preamble
 	rapp::cloud::header head_preamble_;
-	/// DEPRECATE
+
+	/// DEPRECATE in 0.7.0 (after asio_https update)
 	std::string header_;
     /// Actual post Data
     std::string post_;
@@ -61,6 +64,8 @@ protected:
     std::unique_ptr<boost::asio::deadline_timer> timer_;
 	/// time-out service (runs one timeout per class)
 	boost::asio::io_service io_timer_;
+
+
     /// flag used to extract header
     std::atomic<bool> flag_  = {false};
     /// Content-Length
@@ -69,8 +74,6 @@ protected:
     std::size_t bytes_transferred_ = 0;
     /// JSON reply
     std::string json_;
-	/// time-out in seconds
-	const unsigned int timeout_ = 120;
 };
 }
 }

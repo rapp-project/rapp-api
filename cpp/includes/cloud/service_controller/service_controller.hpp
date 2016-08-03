@@ -9,10 +9,10 @@ namespace cloud {
  * \version 0.6.0
  * \date July-2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- * TODO: rename to `cloud_endpoint` or `cloud_control`
- * TODO: parametrize with ENUM so that we chose between `asio_http` and `asio_https`
  *
- * NOTE: running async jobs (e.g., `run_job_async` requires use of `io_service.poll()`
+ * TODO: rename to `cloud_endpoint` or `cloud_control`
+ * TODO (0.7.0) enable custom error handler 
+ *				enable setting time-out parameter
  */
 class service_controller
 {
@@ -21,6 +21,16 @@ public:
     /// \brief construct a service controller using a rapp::cloud::platform_info object
 	service_controller(rapp::cloud::platform_info info)
 	: cloud_(info), query_(info.address, info.port), io_(), resol_(io_)
+	{}
+
+	/// \brief construct a service controller using
+	/// \param info the cloud platform
+	/// \param error_handler the error callback which receives boost asio errors
+	service_controller(
+						rapp::cloud::platform_info info,
+						std::function<void(boost::system::error_code error)> error_handler
+					  )
+	: cloud_(info), query_(info.address, info.port), io_(), resol_(io_), error_(error_handler) 
 	{}
 
     /// \brief make_call will instantly run an asynchronous cloud job
@@ -39,14 +49,12 @@ public:
     }
 
     /**
-     * \brief run one service job
-     * \param client is the actual object pointer that will be executed in a single operation
+     * \brief run one cloud job
+     * \param job is the cloud call
+	 * \note subsequent calls will block in a FIFO queue
      */
     void run_job(const std::shared_ptr<asio_socket> job)
 	{
-		// will block until this job is complete, then we reset the work queue
-		// in order to make it async, we need individual/scoped io_service objects.
-		// if that is feasible!
 		assert(job);
 		job->schedule(query_, resol_, io_, cloud_);
 		io_.run();
@@ -54,18 +62,16 @@ public:
 	}
 
     /**
-     * \brief run a group of jobs in a batch
+     * \brief run a group of jobs asynchronously as a single batch
      * \param jobs is vector of constant pointers to client services
-     * \note upon completion, the each object's handler will be invoked
-     * \warning upon completion, the queue schedule will be reset.
+	 * \note subsequent calls of `run_job` or `run_jobs` will block in a FIFO queue
      */
-    void run_jobs(const std::vector<std::shared_ptr<asio_socket>> & jobs)
+    void run_jobs(const std::vector<std::shared_ptr<asio_socket>> jobs)
 	{
 		for (const std::shared_ptr<asio_socket> & job : jobs) {
 			assert(job);
 			job->schedule(query_, resol_, io_, cloud_);
 		}
-		// will block until all jobs posted are complete, then we reset the work queue
 		io_.run();
 		io_.reset();
 	}
@@ -76,13 +82,25 @@ public:
 		io_.stop();
 	}
 
+protected:
+
+	/// \brief handle asio errors
+	void default_error_handler(boost::system::error_code error) const
+	{
+
+	}
+
 private:
-	/// cloud params
+	// cloud params
     rapp::cloud::platform_info cloud_;
-    /// resolution, query and io service
+    // resolution, query and io service
     boost::asio::ip::tcp::resolver::query query_;
+	// service IO for TCP/IP control
     boost::asio::io_service io_;
+	// address resolver
     boost::asio::ip::tcp::resolver resol_;
+	// error handler
+	std::function<void(boost::system::error_code)> error_;
 };
 }
 }
