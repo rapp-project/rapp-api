@@ -62,9 +62,6 @@ protected:
     /// \brief reset handler (clear data, bytes, etc) and stop connection
     void reset(boost::system::error_code err);
 
-	/// \brief stop
-	void stop(boost::system::error_code err);
-
     /// \brief check timed-out
     void check_timeout();
 

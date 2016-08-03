@@ -35,6 +35,16 @@ struct header
 };
 
 /**
+ * \brief enum for error reporting
+ * \version TODO
+ */
+enum
+{
+	errors_warn = 0,
+	errors_ignore = 1
+};
+
+/**
  * \brief Abstract Base ASIO Socket class
  * Use for passing around to the service controller, various types of cloud handlers.
  * This Interface is needed so that different handlers can be passed to the scheduler transparently.
@@ -58,6 +68,7 @@ public:
                              boost::asio::ip::tcp::resolver & ,
                              boost::asio::io_service & ,
 							 rapp::cloud::platform_info
+							 //std::function<void(boost::system::error_code error)> 
                          ) = 0;
 };
 }
