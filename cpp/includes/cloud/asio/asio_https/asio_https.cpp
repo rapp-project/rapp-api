@@ -3,6 +3,12 @@
 namespace rapp {
 namespace cloud {
 
+/**
+ *	DO NOT USE -
+ *	TODO: timeouts not properly controlled
+ *	TODO: sockets reset not working
+ */
+
 void asio_https::schedule(
                             boost::asio::ip::tcp::resolver::query & query,
                             boost::asio::ip::tcp::resolver & resolver,
@@ -11,10 +17,13 @@ void asio_https::schedule(
                           )
 {
 	// calculate HTTP POST size
-    auto content_length = post_.size() * sizeof(std::string::value_type);
-	// append the HTTP header to the previous craft (POST and content type)
-	header_= make_header(info, head_preamble_, content_length);
+	auto content_length = post_.size() * sizeof(std::string::value_type);
 
+	// read stream = header + post body into request_
+	std::ostream request_stream(&request_);
+	request_stream << asio_handler::make_header(info, head_preamble_, content_length) 
+				   << post_ << "\r\n";
+	
     // init timeout timer
 	// TODO: add unique per-class timeout service
     if (!timer_) {
@@ -84,9 +93,8 @@ void asio_https::handle_handshake(const boost::system::error_code& error)
 {
     assert(tls_socket_ && timer_);
     if (!error) {
-        // read stream = header + post body into request_
-        std::ostream request_stream(&request_);
-        request_stream << header_ << post_ << "\r\n";
+
+		
         timer_->expires_from_now(boost::posix_time::seconds(30));
         // write to the socket
         boost::asio::async_write(*tls_socket_,
