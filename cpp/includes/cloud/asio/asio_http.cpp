@@ -13,17 +13,10 @@ void asio_http::schedule(
 						    rapp::cloud::platform_info info
                         )
 {
-	// TODO: transform as virtual method post() ?
-	post_ += "\r\n";
-
-	// calculate HTTP POST size
-    auto content_length = post_.size() * sizeof(std::string::value_type);
+	// craft the header and fill the request buffer
+	// altering the (boost::asio::streambuf) - member asio::handler::request_
+	asio_handler::make_request_buffer(info, header, post);
 	
-	// append HTTP header and HTTP POST data - place it in `request_`
-    std::ostream request_stream(&request_);
-    request_stream << asio_handler::make_header(info, head_preamble_, content_length) 
-				   << post_;
-
 	// TODO: move timer (and io_timer_) into a seperate struct/class
     // init timeout timer
     if (!timer_) {
@@ -220,8 +213,8 @@ void asio_http::handle_read_content(boost::system::error_code err, std::size_t b
 			// have received and EOF
             if (bytes_transferred_ >= content_length_) {
 				// call the virtual inherited handle_reply callback
-				assert(callback_);
-				callback_(json_);
+				assert(reply_callback);
+				reply_callback(json_);
 				// cancel timer & stop timer service
 				reset(err);
 				return;
@@ -247,8 +240,8 @@ void asio_http::handle_read_content(boost::system::error_code err, std::size_t b
 void asio_http::reset(boost::system::error_code err)
 {
     assert(timer_ && socket_);
-    header_.clear();
-    post_.clear();
+    //header.clear();
+    //post.clear();
     json_.clear();
     content_length_ = 0;
     bytes_transferred_ = 0;

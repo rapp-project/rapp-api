@@ -35,6 +35,24 @@ struct header
 };
 
 /**
+ * \struct post_data
+ * \version 0.6.1
+ * \date August 2016
+ * \brief use to store and pass POST data and related info
+ */
+struct post
+{
+	/// \brief actual POST data (may contain ASCII, UTF8, or BINARY)
+	std::string data;
+	
+	/// \brief calculate `content-length`
+	unsigned int size() const
+	{
+		return data.size() * sizeof(std::string::value_type);
+	}
+};
+
+/**
  * \brief enum for error reporting
  * \version TODO
  */

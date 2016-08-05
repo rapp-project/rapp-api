@@ -28,6 +28,17 @@ std::string asio_handler::make_header(
            + "\r\n\r\n";
 }
 
+void asio_handler::make_request_buffer(
+										  const rapp::cloud::platform_info info,
+										  const rapp::cloud::header header, 
+										  const rapp::cloud::post post
+									  )
+{
+	std::ostream request_stream(&request_);
+	request_stream << asio_handler::make_header(info, header, post.size()) 
+				   << post.data;
+}
+
 void asio_handler::error_handler(const boost::system::error_code & error)
 {
 	std::cerr << "asio error: " << boost::system::system_error(error).what() << std::endl;

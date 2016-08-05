@@ -1,5 +1,5 @@
 #include "cloud/service_controller/service_controller.hpp"
-#include "cloud/vision/face_detection/face_detection.hpp"
+#include "cloud/vision/face_detection.hpp"
 #include "objects/picture/picture.hpp"
 ///
 int main(int argc, char* argv[])

@@ -1,5 +1,6 @@
 #ifndef RAPP_MISC
 #define RAPP_MISC
+#include "includes.ihh"
 /**
  * \brief common misc helper functions
  * \version 0.6.0

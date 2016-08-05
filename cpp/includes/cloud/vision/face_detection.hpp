@@ -6,13 +6,15 @@ namespace cloud {
 /**
  * \class face_detection
  * \brief Asynchronous Service which will request the cloud to detect faces
- * \version 0.6.0
- * \date April 2016
+ * \version 0.6.1
+ * \date August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face_detection : public asio_http
+template <class socket_type>
+class face_detection : public socket_type
 {
 public:
+
     /**
      * \brief Constructor
      * \param image is the input image \see rapp::object::picture
@@ -24,7 +26,7 @@ public:
                     bool fast,
                     std::function<void(std::vector<rapp::object::face>)> callback
                   )
-    : asio_http(), delegate_(callback)
+    : socket_type(), delegate_(callback)
     {
 		// random boundary
         std::string boundary = rapp::misc::random_boundary();
@@ -37,32 +39,33 @@ public:
         boost::property_tree::write_json(ss, tree, false);
 		
 		// set the `fast` param
-        post_  = "--" + boundary + "\r\n"
+		socket_type::post.data  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
 
 		// unquote JSON PDT values
-		post_ += misc::json_unquote_pdt_value<bool>()(ss.str(), fast);
+		socket_type::post.data += misc::json_unquote_pdt_value<bool>()(ss.str(), fast);
 
         // Create the Multi-form POST field 
-		post_ += "--" + boundary + "\r\n"
+		socket_type::post.data += "--" + boundary + "\r\n"
               + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
               + "Content-Type: image/" + image.type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
 
 		// Append binary data
         auto imagebytes = image.bytearray();
-        post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
+        socket_type::post.data.insert(socket_type::post.data.end(), imagebytes.begin(), imagebytes.end());
 
 		// close the multipart
-		post_ += "\r\n";
-        post_ += "--" + boundary + "--";
+		socket_type::post.data += "\r\n";
+        socket_type::post.data += "--" + boundary + "--";
+		socket_type::post.data += "\r\n";
 		
 		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/face_detection HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+        socket_type::header.uri = "POST /hop/face_detection HTTP/1.1\r\n";
+        socket_type::header.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
 		// bind the base class callback, to our handle_reply
-        callback_ = std::bind(&face_detection::handle_reply, this, std::placeholders::_1);
+        socket_type::reply_callback = std::bind(&face_detection::handle_reply, this, std::placeholders::_1);
     }
 
 private:

@@ -1,6 +1,8 @@
 #ifndef RAPP_ASIO_SERVICE_HTTP
 #define RAPP_ASIO_SERVICE_HTTP
 #include "includes.ihh"
+#include "asio_socket.hpp"
+#include "asio_handler.hpp"
 namespace rapp {
 namespace cloud {
 /**

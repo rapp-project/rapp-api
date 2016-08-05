@@ -1,5 +1,2 @@
 cmake_minimum_required(VERSION 2.8)
-add_subdirectory(asio_handler)
-add_subdirectory(asio_http)
-add_subdirectory(asio_https)
-add_subdirectory(asio_socket)
+

@@ -1,6 +1,7 @@
 #ifndef RAPP_ASIO_HANDLER
 #define RAPP_ASIO_HANDLER
 #include "includes.ihh"
+#include "asio_socket.hpp"
 namespace rapp {
 namespace cloud {
 /**
@@ -15,9 +16,16 @@ class asio_handler
 {
 public:
 
+	/// HTTP Header request
+	rapp::cloud::header header;
+	/// HTTP POST request
+	rapp::cloud::post post;
+	/// JSON reply handler 
+    std::function<void(std::string)> reply_callback;
 
-	asio_handler()
-	: io_timer_()
+
+	/// \brief c'tor
+	asio_handler() : io_timer_()
 	{}
 
 	/// \brief create an HTTP header using the \param info
@@ -26,6 +34,13 @@ public:
                              rapp::cloud::header head,
                              unsigned int post_length
                            );
+
+	/// \brief fill a boost socket request streambuf
+	void make_request_buffer(
+							  const rapp::cloud::platform_info info,
+							  const rapp::cloud::header header, 
+							  const rapp::cloud::post post
+							);
 
 	/// DEPRECATE in 0.7.0
     /// \brief Handle an Error \param error is the raised error from the client
@@ -47,19 +62,13 @@ public:
        
     
 protected:
-	/// HTTP Hedear request preamble
-	rapp::cloud::header head_preamble_;
-
-	/// DEPRECATE in 0.7.0 (after asio_https update)
-	std::string header_;
-    /// Actual post Data
-    std::string post_;
-    /// Callback Handler - use with std::bind or boost variant
-    std::function<void(std::string)> callback_;
-    /// Request Container
+	
+	    /// Request Container
     boost::asio::streambuf request_;
     /// Response Container
     boost::asio::streambuf response_;
+
+	// TODO: move to another class
     /// time-out timer
     std::unique_ptr<boost::asio::deadline_timer> timer_;
 	/// time-out service (runs one timeout per class)

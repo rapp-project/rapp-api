@@ -93,9 +93,8 @@ void asio_https::handle_handshake(const boost::system::error_code& error)
 {
     assert(tls_socket_ && timer_);
     if (!error) {
-
-		
         timer_->expires_from_now(boost::posix_time::seconds(30));
+
         // write to the socket
         boost::asio::async_write(*tls_socket_,
                                  request_,

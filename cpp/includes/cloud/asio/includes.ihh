@@ -6,7 +6,6 @@
 
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 
-#include "cloud/asio/asio_socket/asio_socket.hpp"
-#include "cloud/asio/asio_handler/asio_handler.hpp"
 #include "misc/misc.hpp"
