@@ -35,7 +35,7 @@ public:
 		tree.put("algorithm", algorithm);
 
         tree.add_child("", start.treefy());
-        tree.add_child("", end.treefy());
+        tree.add_child("", goal.treefy());
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
@@ -81,17 +81,17 @@ private:
             for (auto child : tree.get_child("path")) {
 				for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
                     // header + time stamp
-					std::unique_ptr<pose_metadata> meta;
+					std::unique_ptr<rapp::object::pose_metadata> meta;
+					// pose + position + quaternion from JSON
+					std::unique_ptr<rapp::object::pose> pose;
                     if (iter->first == "header") {
-						meta = std::unique_ptr<pose_metadata>(new meta(iter));
+						meta = std::make_unique<rapp::object::pose_metadata>(iter);
 					}
-                    // pose + position + quaternion from JSON
-					std::unique_ptr<pose> pose;
-                    else if (iter->first == "pose") {
-						pose = std::unique_ptr<pose>(new pose(iter));   
+					else if (iter->first == "pose") {
+						pose = std::make_unique<rapp::object::pose>(iter);   
 					}
                     rapp::object::pose_stamped ps(*meta, *pose);
-                    path.push_back(std:move(ps));
+                    path.push_back(std::move(ps));
                 }
             }
 		}
@@ -100,7 +100,9 @@ private:
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        delegate_(std::move(rapp::object::planned_path(plan_found, plan_error, path)));
+        delegate_(rapp::object::planned_path(boost::lexical_cast<uint8_t>(plan_found), 
+											 plan_error, 
+											 path));
     }
     /// 
     std::function<void(rapp::object::planned_path path)> delegate_;
@@ -188,7 +190,7 @@ private:
      }
 
      /// delegate
-     std::function<void(std::string>)> delegate_;
+     std::function<void(std::string)> delegate_;
 };
 }
 }

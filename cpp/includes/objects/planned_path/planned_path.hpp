@@ -23,8 +23,9 @@ struct planned_path
 				   std::string planning_error,
 				   std::vector<pose_stamped> path
 				)
-    : header(header), plan_found(plan_found),
-      planning_error(planning_error), path(path)
+    : plan_found(plan_found),
+      planning_error(planning_error), 
+	  path(path)
     {}
     
     /// \brief empty constructor
@@ -36,8 +37,7 @@ struct planned_path
 	/// \brief equality operator
     bool operator==(const rapp::object::planned_path & rhs) const
     {
-		return (this->header == rhs.header) &&
-			   (this->plan_found == rhs.plan_found) &&
+		return (this->plan_found == rhs.plan_found) &&
 			   (this->planning_error == rhs.planning_error) &&
 			   (this->path == rhs.path);
     }
