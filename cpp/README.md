@@ -1,3 +1,5 @@
+WORK IN PROGRESS - use branch `master` or `cpp`.
+
 # RAPP API (C++11)
 
 The C++ API code is portable, since it relies on cross-platform libraries: 
