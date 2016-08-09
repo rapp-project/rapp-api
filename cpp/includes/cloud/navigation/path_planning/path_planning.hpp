@@ -79,11 +79,11 @@ private:
             for (auto child : tree.get_child("path")) {
 				for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
                     // header + time stamp
-					std::unique_ptr<rapp::object::pose_metadata> meta;
+					std::unique_ptr<rapp::object::msg_metadata> meta;
 					// pose + position + quaternion from JSON
 					std::unique_ptr<rapp::object::pose> pose;
                     if (iter->first == "header") {
-						meta = std::make_unique<rapp::object::pose_metadata>(iter);
+						meta = std::make_unique<rapp::object::msg_metadata>(iter);
 					}
 					else if (iter->first == "pose") {
 						pose = std::make_unique<rapp::object::pose>(iter);   

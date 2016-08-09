@@ -33,29 +33,9 @@ int main(int argc, char* argv[])
 		std::chrono::nanoseconds nanosec(10);
 		
 		// start pose
-		auto start = rapp::object::pose_stamped(rapp::object::pose_metadata(0,
-																			rapp::object::time(nanosec),
-																			"frame_x"),
-												rapp::object::pose(rapp::object::point((float) atof(argv[1]), 
-																					   (float) atof(argv[2]), 
-																					   (float) atof(argv[3])), 
-																   rapp::object::quaternion((float) atof(argv[4]), 
-																							(float) atof(argv[5]),
-																							(float) atof(argv[6]), 
-																						    (float) atof(argv[7])))
-											   );
+		auto start = rapp::object::pose_stamped(rapp::object::msg_metadata(0,rapp::object::time(nanosec),"frame_x"),rapp::object::pose(rapp::object::point((float) atof(argv[1]), (float) atof(argv[2]),  (float) atof(argv[3])), rapp::object::quaternion((float) atof(argv[4]), (float) atof(argv[5]),(float) atof(argv[6]),  (float) atof(argv[7]))) );
 
-		auto goal = rapp::object::pose_stamped(rapp::object::pose_metadata(1, 
-																		  rapp::object::time(nanosec),
-																		  "frame_x"),
-											   rapp::object::pose(rapp::object::point((float) atof(argv[8]), 
-																					  (float) atof(argv[9]), 
-																					  (float) atof(argv[10])), 
-											   					  rapp::object::quaternion((float) atof(argv[11]),
-																						   (float) atof(argv[12]),
-																						   (float) atof(argv[13]),
-																						   (float) atof(argv[14])))
-											   );
+		auto goal = rapp::object::pose_stamped(rapp::object::msg_metadata(1, rapp::object::time(nanosec), "frame_x"), rapp::object::pose(rapp::object::point((float) atof(argv[8]), (float) atof(argv[9]),  (float) atof(argv[10])), rapp::object::quaternion((float) atof(argv[11]), (float) atof(argv[12]), (float) atof(argv[13]), (float) atof(argv[14]))) );
 
 		// callback lambda PLAN_PATH_2D
 		auto callback = [&](rapp::object::planned_path path)
