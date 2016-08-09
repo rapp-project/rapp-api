@@ -1,0 +1,18 @@
+# - Config file for the Rapp package
+# It defines the following variables
+#  RAPP_INCLUDE_DIRS     - include directories for Rapp API
+#  RAPP_LIBRARIES        - shared libraries to link against
+#  RAPP_LIBRARIES_STATIC - static libraries to link against
+ 
+# Include directories
+set(RAPP_INCLUDE_DIRS "@CMAKE_INSTALL_PREFIX@/include")
+ 
+# Libraries
+set(RAPP_LIBRARIES @RAPP_SHARED_LIBS@)
+
+set(RAPP_LIBRARIES_STATIC @RAPP_STATIC_LIBS@)
+
+set(RAPP_LIBRARY_DIRS "@CMAKE_INSTALL_PREFIX@/lib")
+
+# Required compiler flags
+set(RAPP_CXX_FLAGS "@RAPP_CXX_FLAGS@")

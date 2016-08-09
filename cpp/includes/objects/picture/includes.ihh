@@ -4,5 +4,6 @@
 #include <fstream>
 #include <vector> 
 #include <stdexcept>
+#include <memory>
 
-#include "objects/globals.hpp"
+#include "rapp/objects/globals.hpp"

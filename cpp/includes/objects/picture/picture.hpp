@@ -6,23 +6,34 @@ namespace object {
 /**
  * \class picture
  * \brief class which wraps around raw bytes of a picture
- * \version 0.6.0
- * \date July 2016
+ * \version 3
+ * \date January 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class picture
 {
 public:
+
+    typedef std::shared_ptr<rapp::object::picture> Ptr;
+
     /// Construct from a file-path
-    picture(const std::string filepath)
+    picture(const std::string & filepath)
     {
-        std::ifstream bytestream(filepath, std::ios::in | std::ios::binary | std::ios::ate);
-        if (!bytestream.is_open()) {
+        std::ifstream bytestream(filepath, 
+                                 std::ios::in | std::ios::binary | std::ios::ate);
+        if (!bytestream.is_open())
             throw std::runtime_error("could not open bytestream for "+filepath);
-		}
-        else { 
+        else 
+        {
             opencb_(bytestream);
-		}
+        }
+    }
+
+    picture(const std::vector<rapp::types::byte> & bytes)
+    {
+        bytearray_ = bytes;
+
+        opencb_();
     }
 
     /// Construct using an open file stream
@@ -76,7 +87,6 @@ private:
     // Delete empty constructor    
     picture() = delete;
 
-    // Parse the bytestream into the bytearray
     void opencb_(std::ifstream & bytestream)
     {
         // copy byte by byte
@@ -85,6 +95,12 @@ private:
         bytearray_.resize(fileSize);
         bytestream.seekg(0, std::ios_base::beg);
         bytestream.read(&bytearray_[0], fileSize);
+
+        opencb_();
+    }
+
+    void opencb_()
+    {
         // Check Magic Number to find picture format
         if ((unsigned int)bytearray_[0] == 0xFFFFFF89 
             && (unsigned int)bytearray_[1] == 0x00000050)
@@ -92,6 +108,7 @@ private:
         if ((unsigned int)bytearray_[0] == 0xFFFFFFFF 
             && (unsigned int)bytearray_[1] == 0xFFFFFFD8)
             imgtype_ = "jpg";
+
     }
 
     std::vector<rapp::types::byte> bytearray_;
