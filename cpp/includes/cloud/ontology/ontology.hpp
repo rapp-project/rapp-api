@@ -45,6 +45,7 @@ public:
 
 		// set the HTTP header URI pramble and the Content-Type
         head_preamble_.uri = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
+
         head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&ontology_subclasses_of::handle_reply, this, std::placeholders::_1);

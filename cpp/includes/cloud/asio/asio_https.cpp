@@ -16,21 +16,6 @@ void asio_https::schedule(
 						    rapp::cloud::platform_info info
                           )
 {
-	// calculate HTTP POST size
-	auto content_length = post_.size() * sizeof(std::string::value_type);
-
-	// read stream = header + post body into request_
-	std::ostream request_stream(&request_);
-	request_stream << asio_handler::make_header(info, head_preamble_, content_length) 
-				   << post_ << "\r\n";
-	
-    // init timeout timer
-	// TODO: add unique per-class timeout service
-    if (!timer_) {
-        timer_ = std::make_unique<boost::asio::deadline_timer>(io_service);
-    }
-    timer_->async_wait(boost::bind(&asio_https::check_timeout, this));
-
     // init tls socket wrapper
     if (!tls_socket_) {
         tls_socket_ = std::make_unique<boost_tls_socket>(io_service, ctx_);
@@ -47,14 +32,17 @@ void asio_https::schedule(
     // if using a self-signed certificate the only way to pass verification
     // is to "install" it locally and use it for comparison
     ctx_.load_verify_file("ca.pem");
-    // resolve iterator
-    boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-    // set TLS verify mode
+
+        // set TLS verify mode
     tls_socket_->set_verify_mode(boost::asio::ssl::verify_peer 
                                 |boost::asio::ssl::verify_fail_if_no_peer_cert);
     // verify callback
     tls_socket_->set_verify_callback(boost::bind(&asio_https::verify_certificate, 
                                               this, _1, _2));
+
+    // resolve iterator
+    boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+
     // begin connect
     boost::asio::async_connect(tls_socket_->lowest_layer(), 
                                endpoint_iterator,
@@ -98,7 +86,7 @@ void asio_https::handle_handshake(const boost::system::error_code& error)
         // write to the socket
         boost::asio::async_write(*tls_socket_,
                                  request_,
-                                 boost::bind(&asio_https::handle_write, 
+                                 bogtost::bind(&asio_https::handle_write, 
                                              this,
                                              boost::asio::placeholders::error));
     }

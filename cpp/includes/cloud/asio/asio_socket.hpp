@@ -1,56 +1,9 @@
 #ifndef RAPP_ASIO_SOCKET_
 #define RAPP_ASIO_SOCKET_
 #include "includes.ihh"
+#include "response.hpp"
 namespace rapp {
 namespace cloud {
-/**
- * \struct platform_info
- * \version 0.6.0
- * \date July 2016
- * \brief use to construct a service controller with correct params
- */
-struct platform_info
-{
-    std::string address;
-    std::string port;
-    std::string token;
-	std::string protocol;
-};
-
-/**
- * \struct header
- * \version 0.6.0
- * \date July 2016
- * \brief use to construct an HTTP Header for service calls
- */
-struct header
-{
-	std::string host;
-	std::string uri;
-	std::string user_agent;
-	std::string accept_token;
-	std::string connection;
-	std::string content_length;
-	std::string content_type;
-};
-
-/**
- * \struct post_data
- * \version 0.6.1
- * \date August 2016
- * \brief use to store and pass POST data and related info
- */
-struct post
-{
-	/// \brief actual POST data (may contain ASCII, UTF8, or BINARY)
-	std::string data;
-	
-	/// \brief calculate `content-length`
-	unsigned int size() const
-	{
-		return data.size() * sizeof(std::string::value_type);
-	}
-};
 
 /**
  * \brief enum for error reporting
@@ -62,33 +15,113 @@ enum
 	errors_ignore = 1
 };
 
+typedef boost::asio::ip::tcp::socket http_socket;
+typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> tls_socket;
+typedef boost::system::error_code error_code;
+
 /**
- * \brief Abstract Base ASIO Socket class
- * Use for passing around to the service controller, various types of cloud handlers.
- * This Interface is needed so that different handlers can be passed to the scheduler transparently.
- * \class asio_socket
- * \version 2
- * \date 26-April-2015
- * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class asio_socket
+template <class T>
+class asio_socket : public response 
 {
 public:
-    /** 
-     * schedule this object as a job for ASIO execution
-     * \param query defines the actual URL/URI
-     * \param resolver is the URL/URI resolver reference
-     * \param io_service is the service queue on which this job will be scheduled to run,
-	 * \param platform_info contains the IP address, Auth Token and Port to be used.
-     */
-    virtual void schedule(
-                             boost::asio::ip::tcp::resolver::query & ,
-                             boost::asio::ip::tcp::resolver & ,
-                             boost::asio::io_service & ,
-							 rapp::cloud::platform_info
-							 //std::function<void(boost::system::error_code error)> 
-                         ) = 0;
+
+    /// \brief construct by passing an error callback 
+    /// \param callback will receive errors
+    asio_socket(
+                std::function<void(error_code error)> callback,
+                std::unique_ptr<T> socket  
+               )
+    : user_callback_(callback), socket_(socket)
+    {
+        timer_ = rapp::cloud::timer(boost::bind(&asio_socket::has_timed_out, this)); 
+        // do NOT setup the socket here - it will be done by inheriting classes
+    }
+
+
+protected:
+    /// our socket T pointer
+    std::unique_ptr<T> socket_;
+    
+    /// JSON reply from platform
+    std::string json_;
+    
+    /// amount of bytes received
+    unsigned int bytes_transfered_;
+
+    /// still reading data into streambuf
+    std::atomic<bool> read_flag_;
+    
+    /// the user-defined error handling callback
+    std::function<void(boost::system::error_code)> handle_callback;
+
+private:
+
+  //  void has_timed_out()
+  //  {
+  //      boost::system::error_code ec = boost::asio::error::timed_out;
+  //      user_callback_(ec);
+
+        // TODO: call "reset" or "stop"
+  //  }
+
+    
+    /// time-out handler
+ //   rapp::cloud::timer timer_;
+    /// user's error callback
+ //   std::function<void(error_code)> user_callback_;
+ 
+    /// \brief
+    void handle_write_request(error_code err)
+    {
+        rapp::cloud::timer timer = rapp::cloud::timer(handle_callback); // is it fine???
+        assert(socket_);
+        if (!err) {
+            timer.set_timeout(10);
+            
+            //Read the response status line
+            boost::asio::async_read_until(*socket_.get(),
+                                          response_,
+                                          "\r\n",
+                                          boost::bind(&asio_socket::handle_read_status_line,
+                                                      this,
+                                                      boost::asio::placeholders::error));
+        }
+        else {
+           handle_callback(err);
+           socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
+	 
+        }
+
+
+    }
+
+    ///\brief
+    void handle_read_status_line()
+    {
+        assert(socket_);
+        if (!err){
+            std::string http_version;
+            rapp::cloud::response(http_version);
+        }
+
+    }
+
+    ///\brief
+    void handle_read_headers()
+    {
+
+    }
+
+    /// \brief
+    void handle_read_content()
+    {
+
+    }
+
+
 };
+
 }
 }
 #endif

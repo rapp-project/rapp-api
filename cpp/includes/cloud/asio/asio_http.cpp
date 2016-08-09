@@ -67,7 +67,7 @@ void asio_http::handle_connect(
     assert(socket_);
     if (!err) {
 		// set timeout now
-        timer_->expires_from_now(boost::posix_time::seconds(10));
+        set_timeout(10);
 
 		// write the request (see each class for what that request is)
         boost::asio::async_write(*socket_.get(),
@@ -188,16 +188,14 @@ void asio_http::handle_read_content(boost::system::error_code err, std::size_t b
                                             boost::asio::placeholders::error,
                                             boost::asio::placeholders::bytes_transferred));
 
-        // Parse HTTP Content.
-        std::string buffer((std::istreambuf_iterator<char>(&response_)), 
-                            std::istreambuf_iterator<char>());
+        // get string received in response streambuf
+        std::string buffer = response::to_string();
 
-        // extract content length once and strip header
+        // strip the header & append data to buffer
         if (!flag_) {
-            if (has_content_length(buffer)) {
-                content_length(buffer, content_length_);
+            if (has_content_length() > 0) {
                 std::string tmp = buffer;
-                buffer = strip_header(tmp);
+                buffer = strip_http_header(tmp);
             }
             else {
                 throw std::runtime_error("no `Content-Length` in header response");

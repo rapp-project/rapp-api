@@ -10,19 +10,21 @@ namespace cloud {
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  * \brief wrapper for SSL/TLS secure HTTP communication
  */
-class asio_https : public asio_socket, public asio_handler
+class asio_https : private asio_socket<tls_socket> 
 {
 public:
-    /// boost tls wraps around a tcp socket
-	typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> boost_tls_socket;
-
+    
 	/**
      * \brief construct using:
      * \param token: authentication token
      * \param user: rapp.cloud username
 	 */
-	asio_https()
-  	: asio_handler(), ctx_(boost::asio::ssl::context::tlsv12_client)
+	asio_https(
+                std::function<void(error_code error)> callback,
+                boost::asio::io_service & io_service 
+              )
+  	: ctx_(boost::asio::ssl::context::tlsv12_client), 
+      asio_socket<tls_socket>(callback, std::move(std::make_unique<tls_socket>(io_service, ctx_))) 
 	{
         // TODO: using this only for TEST
         header_ =  "POST / HTTP/1.1\r\n";

@@ -8,13 +8,21 @@ namespace cloud {
 /**
  * \class asio_http
  * \brief base class for asynchronous http websockets used for connecting to cloud services
- * \version 0.6.0
+ * \version 0.7.0
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class asio_http : public asio_socket, protected asio_handler
+class asio_http : private asio_socket<http_socket>
 {
 public:
+
+    asio_http(
+                std::function<void(error_code error)> callback,
+                boost::asio::io_service & io_service 
+            )
+    : asio_socket<http_socket>(callback, std::move(std::make_unique<http_socket>(io_service))) 
+    {}
+
     /** 
      * schedule this client as a job for execution using
      * \param query defines the actual URL/URI
