@@ -136,7 +136,7 @@ public:
 
 		// multipart/form-data append JSON first
 		post_  = "--" + boundary + "\r\n"
-	    + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+	    + "Content-Disposition: form-data; name=\"map_name\"\r\n\r\n"
 	    + ss.str();
 
 		// write the PNG file binary data
