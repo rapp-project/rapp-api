@@ -127,17 +127,10 @@ public:
                     )
     : asio_http(), delegate_(callback)
     {
-        boost::property_tree::ptree tree;
-		tree.put("map_name", map_name);
-
-		std::string boundary = rapp::misc::random_boundary();
-        std::stringstream ss;
-        boost::property_tree::write_json(ss, tree, false);
-
 		// multipart/form-data append JSON first
 		post_  = "--" + boundary + "\r\n"
 	    + "Content-Disposition: form-data; name=\"map_name\"\r\n\r\n"
-	    + ss.str();
+	    + map_name + "\r\n";
 
 		// write the PNG file binary data
 		std::string png = rapp::misc::random_boundary() + ".png";
