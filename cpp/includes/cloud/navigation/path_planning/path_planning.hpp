@@ -136,25 +136,21 @@ public:
 
 		// multipart/form-data append JSON first
 		post_  = "--" + boundary + "\r\n"
-			   + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-			   + ss.str();
+	    + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+	    + ss.str();
 
 		// write the PNG file binary data
-		std::string png_fname = rapp::misc::random_boundary() + ".png";
+		std::string png = rapp::misc::random_boundary() + ".png";
 		post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"png_file\"; filename\"" + png_fname + "\"\r\n"
-              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
+		+ "Content-Disposition: form-data; name=\"png_file\"; filename=\"" + png + "\"\r\n";
         // Append binary data
         auto imagebytes = png_file.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
 		
 		// write the YAML file data
-		std::string yaml_fname = rapp::misc::random_boundary() + ".yaml";
+		std::string yaml = rapp::misc::random_boundary() + ".yaml";
 		post_ += "--" + boundary + "\r\n"
-			  + "Content-Disposition: form-data; name=\"yaml_file\"; filename\"" + yaml_fname + "\"\r\n"
-              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
+		+ "Content-Disposition: form-data; name=\"yaml_file\"; filename=\"" + yaml + "\"\r\n";
 		post_.append(yaml_file.get_string());
         post_ += "\r\n--" + boundary + "--";
 
