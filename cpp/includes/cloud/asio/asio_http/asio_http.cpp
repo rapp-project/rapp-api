@@ -24,6 +24,10 @@ void asio_http::schedule(
     request_stream << asio_handler::make_header(info, head_preamble_, content_length) 
 				   << post_;
 
+	std::cout << asio_handler::make_header(info, head_preamble_, content_length) 
+			   << post_;
+
+
 	// TODO: move timer (and io_timer_) into a seperate struct/class
     // init timeout timer
     if (!timer_) {
