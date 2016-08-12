@@ -25,13 +25,12 @@ public:
       
     {
         socket_ = std::make_shared<tls_socket>(io_service, ctx_);
-        hadler_ = asio_socket<tls_socket>(std::bind(&asio_https<tls_socket>::connect, this, std::placeholders::_1),
-                                          callback, 
-                                          socket_);
+        hadler_ = asio_socket<tls_socket>(callback, socket_);
+		assert(socket_ && handler_);
     }
 
 	/**
-	 * schedule this as a job for execution
+	 * \brief begin connection
 	 * \param query defines the URL/URI
 	 * \param resolver resolves the URL/URI address
      * \param io_service is the queue on which jobs are scheduled
@@ -66,7 +65,7 @@ public:
 												   boost::asio::placeholders::error));
 		}
 		if (error) {
-		 	error_cb_(error); 	
+			handler_->end(error);
 		}
 	}
 
@@ -84,33 +83,29 @@ protected:
 	/// \brief begin connection
 	void connect(const boost::system::errc err)
     {
-        assert(socket_);
-        if (!err) {
-            socket_->async_handshake(boost::asio::ssl::stream_base::client,
-                                     boost::bind(&asio_https::handshake, 
-                                                 this,
-                                                 boost::asio::placeholders::err));
-        }
-        else {
-            error_cb_(boost::system::errc::not_connected);
-        }
+		if (erro) {
+            handler_->end(boost::system::errc::not_connected);
+			return;
+		}
+		socket_->async_handshake(boost::asio::ssl::stream_base::client,
+								 boost::bind(&asio_https::handshake, 
+											 this,
+											 boost::asio::placeholders::err));
     }
 
 	/// \brief handle handshake
   	void handshake(const boost::system::errc err)
     {
-        assert(socket_);
-        if (!err) {
-            // write to the socket
-            boost::asio::async_write(*socket_,
-                                     request_,
-                                     boost::bind(&asio_socket::write_request, 
-                                                 this->handler_,
-                                                 boost::asio::placeholders::err));
-        }
-        else {
+        if (err) {
+			handler_->end(error);
             std::cerr << "Handshake failed: " << err.message() << "\n";
-        }   
+			return;
+		}
+		boost::asio::async_write(*socket_,
+								 request_,
+								 boost::bind(&asio_socket::write_request, 
+											 this->handler_,
+											 boost::asio::placeholders::err));
     }
 
 private: 

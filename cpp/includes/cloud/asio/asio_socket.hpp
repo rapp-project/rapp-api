@@ -26,14 +26,6 @@ typedef boost::asio::ip::tcp::resolver resolver;
  * \date August 2016 
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  * \brief class for the implementation of the communication protocol
- * \      it could be used with http or https 
- * 
- * The possible errors range but a few specific ones are:
- *      - boost::asio::error::eof implies the connection was dropped/aborted by the platform
- *      - 
- * Other errors received are inherited from \class rapp::cloud::response
- *
- * TODO - change name of class from asio_socket, to asio_handler
  */
 template <class T>
 class asio_socket : public rapp::cloud::response 
@@ -43,7 +35,6 @@ public:
     /// \brief construct by passing an error callback 
     /// \param callback will receive errors
     asio_socket(
-                std::function<void(error_code)> connect_cb
                 std::function<void(error_code)> error_cb,
                 std::shared_ptr<T> 
                );
@@ -60,8 +51,8 @@ public:
     /// \brief strip the header and read the data
     void read_content(error_code err);
 
-    /// \brief clean the variables and shutdown the socket
-    void reset(error_code err);
+    /// \brief close socket and cleanup members
+    void end(error_code err);
 
     /// \brief receives timeout
     void has_timed_out() const;
@@ -69,8 +60,6 @@ public:
 private:
     /// our socket T pointer
     std::shared_ptr<T> socket_;
-    /// inheriting classes must set this connector properly
-    std::function<void(error_code)> connect_cb_;
     /// error handler callback
     std::function<void(error_code)> error_cb_;
     /// json_callback
@@ -88,109 +77,108 @@ private:
 ///
 template <class T> 
 asio_socket<T>::asio_socket(
-                            std::function<void(error_code, resolver::iterator)> connect_cb_
                             std::function<void(error_code)> error_cb,
                             std::unique_ptr<T> socket  
                           )
-: connect_cb_(connect_cb), user_callback_(error_cb), socket_(socket)
+: user_callback_(error_cb), socket_(socket)
 {
     timer_ = rapp::cloud::timer(boost::bind(&asio_socket<T>::has_timed_out, this)); 
+	assert(timer_ && socket_);
 }
 
 template <class T> 
 void asio_socket<T>::write_request(error_code err)
 {       
-    
-    assert(socket_ && timer_);
     if (!err) {
-        boost::asio::async_read_until(*socket_,
-                                      buffer_,
-                                      rn_,
-                                      boost::bind(&asio_socket<T>::read_status_line,
-                                                  this,
-                                                  boost::asio::placeholders::error));
-    }
-    else {
-        reset(err);       
-    }
+        end(err);       
+		return;
+	}
+	// read until first newline (HTTP 1.1\r\n)
+	boost::asio::async_read_until(*socket_,
+								  buffer_,
+								  rn_,
+								  boost::bind(&asio_socket<T>::read_status_line,
+											  this,
+											  boost::asio::placeholders::error));
 }
 
 template <class T>
 void asio_socket<T>::read_status_line(error_code err)
 {
-    assert(socket_ && timer_);
-    if (!err & check_http_header() == true) {
-        // Read the response headers, which are terminated by a blank line. 
-        // This is HTTP Protocol 1.0 & 1.1
-        boost::asio::async_read_until(*socket_,
-                                      buffer_, 
-                                      double_rn_,
-                                      boost::bind(&asio_socket<T>::read_headers, 
-                                                  this,
-                                                  boost::asio::placeholders::error));
-    }
-    else {
-        reset(err);
+    if (err & !check_http_header()) {
+        end(err);
+		return;
 	}
+	// read entire header (double newlines denote end of HTTP header)
+	boost::asio::async_read_until(*socket_,
+								  buffer_, 
+								  double_rn_,
+								  boost::bind(&asio_socket<T>::read_headers, 
+											  this,
+											  boost::asio::placeholders::error));
 }
 
 template <class T>
 void asio_socket<T>::read_headers(error_code err)
 {
-    assert(socket_ && timer_);
-    if (!err) {
-        // Start reading Content data until EOF (see handle_read_content)
-        boost::asio::async_read_until(*socket_,
-                                      buffer_,
-                                      double_rn_,
-                                      boost::bind(&asio_socket<T>::read_content,
-                                                  this,
-                                                  boost::asio::placeholders::error,
-                                                  boost::asio::placeholders::bytes_transferred));
-    }
-    else {
-        reset(err);
+    if (err) {
+        end(err);
+		return;
+	}
+ 	unsigned int c_len = has_content_length();	
+	if (c_len > 0) {
+		// remove HTTP header and keep only POST data
+		response::json_ = strip_http_header(to_string());
+		// read as much as the Content-Length
+		boost::asio::async_read(*socket_,
+								buffer_,
+								boost::asio::transfer_at_least(c_len),
+								boost::bind(&asio_socket<T>::read_content,
+											this,
+											boost::asio::placeholders::error,
+											boost::asio::placeholders::bytes_transferred));
+	}
+	else {
+		end(boost::system::errc::bad_message);
 	}
 }
 
 template <class T>
 void asio_socket<T>::read_content(error_code err)
 {
-    assert(socket_ && timer_);
-    if (!err) {
-        // Continue reading remaining data until EOF - It reccursively calls its self
-        boost::asio::async_read(*socket_,
-                                buffer_,
-                                boost::asio::transfer_at_least(1),
-                                boost::bind(&asio_socket<T>::read_content, 
-                                            this,
-                                            boost::asio::placeholders::error,
-                                            boost::asio::placeholders::bytes_transferred));
-        // keep consuming data - if EOF - reset 
-        if (response::take_data(json_cb_)) {
-            reset(boost::system:errc::success);
-        }
-    }
-    else {
-		reset(err);
+    if (err) {
+        end(err);
+		return;
 	}
+	// consume buffer - if transferred bytes >= Content-Length then = EOF && end 
+	if (response::consume_buffer(json_cb_)) {
+		end(boost::system:errc::success);
+	}
+	// Continue reading remaining data until EOF - It reccursively calls its self
+	boost::asio::async_read(*socket_,
+							buffer_,
+							boost::asio::transfer_at_least(1),
+							boost::bind(&asio_socket<T>::read_content, 
+										this,
+										boost::asio::placeholders::error,
+										boost::asio::placeholders::bytes_transferred));
 }
 
 template<class T>
 void asio_socket<T>::has_timed_out() const
 {
    if (timer->check_timeout()){
-       reset(boost::asio::error::timed_out);
+       end(boost::asio::error::timed_out);
    }
 }
 
 template <class T>
-void asio_socket<T>::reset(error_code err)
+void asio_socket<T>::end(error_code err)
 {
     if (err) {
         error_cb_(err);
     }
-    response::reset();
+    response::end();
     socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
     timer_->reset();
 }

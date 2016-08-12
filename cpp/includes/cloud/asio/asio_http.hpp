@@ -27,9 +27,7 @@ public:
     : error_cb_(callback)
     {
         socket_  = std::make_shared<http_socket>(io_service);
-        handler_ = asio_socket<http_socket>(std::bind(&asio_http<http_socket>::connect, this, std::placeholders::_1),
-                                           callback, 
-                                           socket_);
+        handler_ = asio_socket<http_socket>(callback, socket_);
     }
 
     /** 
@@ -43,8 +41,20 @@ public:
                 resolver & resolver
               )
     {
-        //start the communication
-        handler_->start(query, resolver);
+         // resolve and connect
+		 boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+		 boost::system::error_code error = boost::asio::error::host_not_found;
+		 while (error && endpoint_iterator != end) {
+			 socket_->close();
+			 boost::asio::async_connect(*socket_, 
+									    endpoint_iterator,
+									    boost::bind(&asio_http::connect, 
+												    this,
+												    boost::asio::placeholders::error));
+		 }
+		 if (error) {
+		 	 error_cb_(error); 	
+		 }
     }
     
     /**
@@ -54,19 +64,16 @@ public:
      */
      void connect(boost::system::errc err)
      {
-        assert(asio_socket::socket_);
-        if (!err) {
-    		// write the request (see each class for what that request is)
-            boost::asio::async_write(*socket_,
-                                     request_,
-                                     boost::bind(&asio_socket<http_socket>::write_request, 
-                                                 this->handler_,
-                                                 boost::asio::placeholders::err));
-        }
-        else {
-	       error_cb_(err); 
-        }   
-     };
+        if (err) {
+			error_cb_(err); 
+			return;
+		}
+		boost::asio::async_write(*socket_,
+								 request_,
+								 boost::bind(&asio_socket<http_socket>::write_request, 
+											 this->handler_,
+											 boost::asio::placeholders::err));
+     }
 
 private:
      /// error callback

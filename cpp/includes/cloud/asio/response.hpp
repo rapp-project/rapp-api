@@ -23,7 +23,7 @@ class response
 {
 public:
     
-
+	
     /// \brief constructor by passing an error callback
     response(std::function<void(error_code error)> callback)
     : callback_(callback)
@@ -59,8 +59,8 @@ public:
             }
         }
         return length;
-     }
-
+    }
+	
     /// \brief remove/strip the HTTP header and \return the body
     std::string strip_http_header(const std::string & data) const
     {
@@ -82,7 +82,7 @@ public:
                             std::istreambuf_iterator<char>());
         return buffer;
     }
- 
+
     /// \brief check if http response is 200
     /// \param error handler will receive error if response is invalid
     bool check_http_header() const
@@ -113,62 +113,38 @@ public:
         return true;
     }
       
-   /// \brief take data from the response and save it in JSON
-   bool take_data(std::function<void(std::string)> callback)
-   {
-        assert(callback);
-         // get string received in response streambuf
-        std::string data = to_string();
-        // Check there is a Content-Length and Remove HTTP header from string response.
-        // strip the header & append data to response
-        if (!flag_) {
-            // verify there is `Content-Length`
-            if (has_content_length() > 0) {
-                std::string tmp = data;
-                data = strip_http_header(tmp);
-            }
-            else {
-                error_cb_(boost::systemm::errc::bad_message);
-               // throw std::runtime_error("no `Content-Length` in header response");
-            }
-            flag_ = true;
-        }
-        // append response and count bytes
-        json_ += data;
-        bytes_transferred_ += response.size();
+	/// \brief take data from the response and save it in JSON
+	bool consume_buffer(std::function<void(std::string)> callback)
+	{
+		assert(callback);
+		json_ += to_string();
+		bytes_transferred_ += response.size();
+		// have received the data correctly
+		if (bytes_transferred_ >= content_length_) {
+			callback(json_); 
+			return true;
+		}
+		return false;
+	}
 
-        // have received the data correctly
-        if (bytes_transferred_ >= content_length_) {
-            callback(json_); 
-            return true;
-        }
-        return false;
-   }
-
-   /// \brief clean the variables
-   void reset()
-   {
-
-        json_.clear();
-        content_length_ = 0;
-        bytes_transferred_ = 0;
-        flag_ = false;
-
-   }
+	/// \brief clean the variables
+	void end()
+	{
+		json_.clear();
+		content_length_ = 0;
+		bytes_transferred_ = 0;
+	}
 
 protected:
     ///Response Container
     boost::asio::streambuf buffer_;
     /// JSON reply from platform
     std::string json_;
-
 private:
     /// error callback_
     std::function<void(error_code error)> error_cb_;
     /// amount of bytes received
     unsigned int bytes_transferred_;
-    /// still reading data into streambuf
-    std::atomic<bool> read_flag_;
 };
 }
 }
