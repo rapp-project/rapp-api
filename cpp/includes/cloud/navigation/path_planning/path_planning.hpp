@@ -148,7 +148,7 @@ public:
         post_ += "\r\n--" + boundary + "--";
 
 		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/path_upload_map HTTP/1.1\r\n";
+        head_preamble_.uri = "POST /hop/path_planning_upload_map HTTP/1.1\r\n";
         head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         // bind the base class callback, to our handle_reply
