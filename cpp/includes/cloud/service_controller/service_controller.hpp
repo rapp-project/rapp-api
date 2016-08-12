@@ -37,8 +37,12 @@ public:
     template <typename T, typename... Args>
     void make_call(Args... args)
     {
-		// this is sequentially blocked until the job has finished
-		this->run_job(std::make_shared<T>(args...));
+        auto def_err_cb = [](boost::system::errc err)
+                         { std::cout << err.what() << std::endl;};
+
+        std::shared_ptr<T> cloud_obj = std::make_shared<T>(args...);
+        std::shared_ptr<asio_http> asio = std::make_shared<asio_http>(def_err_cb, io_, obj->fill_buffer(cloud_)); 
+        run_job(asio);
     }
 
     /// \brief make_job will create a cloud job which you must run using `run_job` or `run_jobs`
@@ -53,10 +57,11 @@ public:
      * \param job is the cloud call
 	 * \note subsequent calls will block in a FIFO queue
      */
-    void run_job(const std::shared_ptr<asio_socket> job)
+    template <typename T>
+    void run_job(std::shared_ptr<T> job)
 	{
 		assert(job);
-		job->schedule(query_, resol_, io_, cloud_);
+		job->begin(query_, resol_);
 		io_.run();
 		io_.reset();
 	}

@@ -5,29 +5,27 @@ namespace rapp {
 namespace cloud {
 /**
  * \class asio_https
- * \version 0.6.0
- * \date April 2016
- * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
+ * \version 0.7.0
+ * \date August 2016
+ * \author Maria Ramos  <m.ramos@ortelio.co.uk>
  * \brief wrapper for SSL/TLS secure HTTP communication
  */
 class asio_https : private asio_socket<tls_socket> 
 {
 public:
-    
-	/**
-     * \brief construct using:
-     * \param token: authentication token
-     * \param user: rapp.cloud username
-	 */
-	asio_https(
+
+    asio_https(
                 std::function<void(error_code error)> callback,
-                boost::asio::io_service & io_service 
-              )
-  	: ctx_(boost::asio::ssl::context::tlsv12_client), 
-      asio_socket<tls_socket>(callback, std::move(std::make_unique<tls_socket>(io_service, ctx_))) 
-	{
-        // TODO: using this only for TEST
-        header_ =  "POST / HTTP/1.1\r\n";
+                boost::asio::io_service & io_service,
+                boost::asio::streambuf request
+             )
+    : ctx_(boost::asio::ssl::context::tlsv12_client), 
+      
+    {
+        socket_ = std::make_shared<tls_socket>(io_service, ctx_);
+        hadler_ = asio_socket<tls_socket>(std::bind(&asio_https<tls_socket>::connect, this, std::placeholders::_1),
+                                          callback, 
+                                          socket_);
     }
 
 	/**
@@ -36,47 +34,51 @@ public:
 	 * \param resolver resolves the URL/URI address
      * \param io_service is the queue on which jobs are scheduled
 	 */
-	void schedule(
-				   boost::asio::ip::tcp::resolver::query & query,
-				   boost::asio::ip::tcp::resolver & resolver,
-				   boost::asio::io_service & io_service,
-				   rapp::cloud::platform_info info
-				 );
+	void begin(
+			    boost::asio::ip::tcp::resolver::query & query,
+			    boost::asio::ip::tcp::resolver & resolver
+             );
 
 protected:
+
 	/// \brief verify TLS certificate
-	bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx);
+	bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx)
+    {
+        char subject_name[256];
+        X509* cert = X509_STORE_CTX_get_current_cert(ctx.native_handle());
+        X509_NAME_oneline(X509_get_subject_name(cert), subject_name, 256);
+        return preverified;
+    }
 
 	/// \brief begin connect
-	void handle_connect(const boost::system::error_code& error);
+	void connect(const boost::system::error_code& error);
 
 	/// \brief handle handshake
-  	void handle_handshake(const boost::system::error_code& error);
-
-    /// Callback for handling request and waiting for response \param err is a possible error
-    void handle_write(const boost::system::error_code & err);
-    
-    /// Callback for handling HTTP Header Response Data \param err is a possible error message
-    void handle_read_status_line(const boost::system::error_code & err);
-
-    /// Callback for Handling Headers \param err is a possible error message
-    void handle_read_headers(const boost::system::error_code & err);
-    
-    /// Callback for Handling Actual Data Contents \param err is a possible error message
-    void handle_read_content(const boost::system::error_code & err);
-
-    /// \brief reset handler (clear data, bytes, etc) and stop connection
-    void reset();
-
-    /// \brief check timed-out
-    void check_timeout();
-
+  	void handshake(const boost::system::error_code& error)
+    {
+         assert(socket_;
+        if (!error) {
+            // write to the socket
+            boost::asio::async_write(*socket_,
+                                     request_,
+                                     boost::bind(&asio_socket::handle_write, 
+                                                 this->handler_,
+                                                 boost::asio::placeholders::error));
+        }
+        else {
+            std::cerr << "Handshake failed: " << error.message() << "\n";
+        }   
+    }
 
 private:
-    /// tls/ssl socket wrapper
-    std::unique_ptr<boost_tls_socket> tls_socket_;
 	/// tls context
 	boost::asio::ssl::context ctx_;
+    /// asio handler
+    rapp::cloud::asio_socket<tls_socket> handler_;
+    /// boost asio socket 
+    std::shared_ptr<tls_socket> socket_;
+    /// request object
+    boost::asio::streambuf request_;
 };
 }
 }

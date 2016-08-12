@@ -17,8 +17,8 @@ class timer
 public:
 
     /// \brief construct using \param error_handler which will receive time-outs
-    timer(std::function<void(void)> error_handler)
-    : callback_(error_handler), io_time_()
+    timer()
+    : io_time_()
     {
         timer_ = std::make_unique<boost::asio::deadline_timer>(io_time_);
         timer_->async_wait(boost::bind(&timer::check_timeout, this));
@@ -34,16 +34,17 @@ public:
 
     /// \brief
     /// \note if timed-out, callback `error_handler` will receive an error
-    void check_timeout() const 
+    bool check_timeout() const 
     {
         assert(timer_ && callback_);
         // timer has expired
         if (timer_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-            callback_();
+            return true;
         }
 	    else {
 		    // Put the actor back to sleep.
 		    timer_->async_wait(boost::bind(&timer::check_timeout, this));
+            return false;
 	    }
     }
 
@@ -61,8 +62,6 @@ private:
     std::unique_ptr<boost::asio::deadline_timer> timer_;
     /// Time-out service
     boost::asio::io_service io_time_;
-    /// notification callback
-    std::function<void(void)> callback_;
 };
 }
 }

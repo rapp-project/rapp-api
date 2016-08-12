@@ -2,26 +2,35 @@
 #define RAPP_ASIO_SERVICE_HTTP
 #include "includes.ihh"
 #include "asio_socket.hpp"
-#include "asio_handler.hpp"
 namespace rapp {
 namespace cloud {
+
+typedef boost::system::error_code error_code;
+typedef boost::asio::ip::tcp::resolver resolver;   
+typedef boost::asio::ip::tcp::socket http_socket;
 /**
  * \class asio_http
  * \brief base class for asynchronous http websockets used for connecting to cloud services
  * \version 0.7.0
- * \date May 2016
- * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ * \date August 2016
+ * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class asio_http : private asio_socket<http_socket>
+class asio_http 
 {
 public:
 
     asio_http(
                 std::function<void(error_code error)> callback,
-                boost::asio::io_service & io_service 
+                boost::asio::io_service & io_service,
+                boost::asio::streambuf request
             )
-    : asio_socket<http_socket>(callback, std::move(std::make_unique<http_socket>(io_service))) 
-    {}
+    : error_cb_(callback)
+    {
+        socket_  = std::make_shared<http_socket>(io_service);
+        handler_ = asio_socket<http_socket>(std::bind(&asio_http<http_socket>::connect, this, std::placeholders::_1),
+                                           callback, 
+                                           socket_);
+    }
 
     /** 
      * schedule this client as a job for execution using
@@ -29,55 +38,46 @@ public:
      * \param resolver is the URL/URI resolver reference
      * \param io_service is the queue on which jobs are scheduled
      */
-    void schedule( 
-				   boost::asio::ip::tcp::resolver::query & query,
-				   boost::asio::ip::tcp::resolver & resolver,
-				   boost::asio::io_service & io_service,
-				   rapp::cloud::platform_info info
-                 );
+    void begin( 
+                resolver::query & query,
+                resolver & resolver
+              )
+    {
+        //start the communication
+        handler->start(err);
+    }
     
-protected:
-    /** 
-     * \brief Callback for Handling Address Resolution
-     * \param err is a possible error
-     * \param endpoint_iterator is boost's hostname address handler
-     */
-    void handle_resolve( 
-                         boost::system::error_code err,
-                         boost::asio::ip::tcp::resolver::iterator endpoint_iterator
-                       );
-
     /**
-     * Callback for Handling Connection Events
+     * \brief connection handler
      * \param err is a possible error
      * \param endpoint_iterator is boosts' hostname address handler
      */
-    void handle_connect( 
-                          boost::system::error_code err,
-                          boost::asio::ip::tcp::resolver::iterator endpoint_iterator
-                       );
-
-    /// Callback for handling request and waiting for response \param err is a possible error
-    void handle_write_request(boost::system::error_code err);
-    
-    /// Callback for handling HTTP Header Response Data \param err is a possible error message
-    void handle_read_status_line(boost::system::error_code err);
-
-    /// Callback for Handling Headers \param err is a possible error message
-    void handle_read_headers(boost::system::error_code err);
-    
-    /// Callback for Handling Actual Data Contents \param err is a possible error message
-    void handle_read_content(boost::system::error_code err, std::size_t bytes);
-
-    /// \brief reset handler (clear data, bytes, etc) and stop connection
-    void reset(boost::system::error_code err);
-
-    /// \brief check timed-out
-    void check_timeout();
+     void connect(boost::system::errc err)
+     {
+        assert(asio_socket::socket_);
+        if (!err) {
+    		// write the request (see each class for what that request is)
+            boost::asio::async_write(*socket_,
+                                     request_,
+                                     boost::bind(&asio_socket<http_socket>::write_request, 
+                                                 this,
+                                                 boost::asio::placeholders::error));
+        }
+        else {
+	       error_cb_(err); 
+        }   
+     };
 
 private:
-    /// TCP Socket (plain-text)
-    std::unique_ptr<boost::asio::ip::tcp::socket> socket_;
+     /// error callback
+     std::function<void(boost::system::errc)> error_cb_;
+     /// socket ptr
+     std::shared_ptr<http_socket> socket_;
+     /// socket handler
+     rapp::cloud::asio_socket<http_socket> handler_;
+     /// buffer filled with request
+     boost::asio::streambuf request_;
+
 };
 }
 }
