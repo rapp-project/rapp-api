@@ -11,5 +11,5 @@
 
 #include "objects/face/face.hpp"
 #include "objects/picture/picture.hpp"
-#include "cloud/asio/asio_http/asio_http.hpp"
-
+#include "cloud/asio/request.hpp"
+#include "cloud/asio/json_parser.hpp"

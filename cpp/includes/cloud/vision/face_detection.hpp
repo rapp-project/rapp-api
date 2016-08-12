@@ -6,12 +6,11 @@ namespace cloud {
 /**
  * \class face_detection
  * \brief Asynchronous Service which will request the cloud to detect faces
- * \version 0.6.1
+ * \version 0.7.0
  * \date August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-template <class socket_type>
-class face_detection : public socket_type
+class face_detection : public json_parser, public request
 {
 public:
 
@@ -26,10 +25,10 @@ public:
                     bool fast,
                     std::function<void(std::vector<rapp::object::face>)> callback
                   )
-    : socket_type(), delegate_(callback)
+    : http_header("POST /hop/face_detection HTTP/1.1\r\n"),
+      http_post(http_header::get_boundary()),
+      delegate_(callback)
     {
-		// random boundary
-        std::string boundary = rapp::misc::random_boundary();
         std::string fname = rapp::misc::random_boundary()+"."+image.type();
 
 		// setup the POST preamble
@@ -38,41 +37,19 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 		
-		// set the `fast` param
-		socket_type::post.data  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
-
 		// unquote JSON PDT values
-		socket_type::post.data += misc::json_unquote_pdt_value<bool>()(ss.str(), fast);
+        std::string json = misc::json_unquote_pdt_value<bool>()(ss.str(), fast);
+        http_post::add_content("json", json, false);
 
-        // Create the Multi-form POST field 
-		socket_type::post.data += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
-              + "Content-Type: image/" + image.type() + "\r\n"
-              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
-		// Append binary data
-        auto imagebytes = image.bytearray();
-        socket_type::post.data.insert(socket_type::post.data.end(), imagebytes.begin(), imagebytes.end());
-
-		// close the multipart
-		socket_type::post.data += "\r\n";
-        socket_type::post.data += "--" + boundary + "--";
-		socket_type::post.data += "\r\n";
-		
-		// set the HTTP header URI pramble and the Content-Type
-        socket_type::header.uri = "POST /hop/face_detection HTTP/1.1\r\n";
-        socket_type::header.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-		// bind the base class callback, to our handle_reply
-        socket_type::reply_callback = std::bind(&face_detection::handle_reply, this, std::placeholders::_1);
+        // add picture bytes
+        http_post::add_content("file", fname, image.bytearray());
+        http_post::end();
     }
 
-private:
     /** 
 	 * \brief handle the rapp-platform JSON reply
 	 */
-    void handle_reply(std::string json)
+    void deserialise(std::string json) const
     {   
         std::stringstream ss(json);
         std::vector<rapp::object::face> faces;
@@ -126,7 +103,8 @@ private:
             std::cerr << je.message() << std::endl;
         }
         delegate_(faces);
-    }    
+    }
+private:
      
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<rapp::object::face>)> delegate_;

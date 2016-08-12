@@ -20,6 +20,7 @@ class asio_http
 public:
 
     asio_http(
+                std::function<void(std::string)> cloud_cb,
                 std::function<void(error_code error)> callback,
                 boost::asio::io_service & io_service,
                 boost::asio::streambuf request
@@ -27,7 +28,7 @@ public:
     : error_cb_(callback)
     {
         socket_  = std::make_shared<http_socket>(io_service);
-        handler_ = asio_socket<http_socket>(callback, socket_);
+        handler_ = asio_socket<http_socket>(cloud_cb, callback, socket_);
     }
 
     /** 

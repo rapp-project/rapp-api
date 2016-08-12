@@ -3,7 +3,6 @@
 #include "include.ihh"
 namespace rapp{
 namespace cloud{
-
 /**
  * \class request
  * \brief
@@ -11,18 +10,18 @@ namespace cloud{
  * \date August 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-class request
+class request : public http_header, public http_post
 {
 public:
-
-    request() = default;
-    
+    /// ... 
     request(
             const rapp::cloud::http_header header, 
             const rapp::cloud::http_post post
            )
     : header_(header), post_(post)
     {}
+
+    request() = default;
 
     /// \brief fill the socket streambuf with the request header and post data
     /// \param request is a reference to the socket streambuf being modified
@@ -36,11 +35,6 @@ public:
 		    		   << post_.to_string();
         return std::move(buffer);
     }
-
-protected:
-
-    rapp::cloud::http_header header_;
-    rapp::cloud::http_post   post_;
 };
 }
 }

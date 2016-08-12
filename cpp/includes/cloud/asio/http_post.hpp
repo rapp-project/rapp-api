@@ -18,6 +18,14 @@ public:
     : boundary_(boundary)
     {}
 
+    http_post() = default;
+
+    /// \brief set the boundary to \param boundary
+    void set_boundary(std::string boundary)
+    {
+        boundary_ = boundary;
+    }
+
     /// \brief adding content to the POST data
     /// \param name of the variable
     /// \param content is the value unquote
@@ -65,6 +73,11 @@ public:
         }
     }
 
+    bool is_open const
+    {
+        return open_;
+    }
+
     /// \brief get the POST
     std::string to_string() const
     {
@@ -77,9 +90,7 @@ public:
         return data_.size() * sizeof(std::string::value_type);
     }
 
-
 private:
-
     /// POST data
     std::string data_;
     /// Boundary

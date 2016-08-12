@@ -37,19 +37,17 @@ public:
     template <typename T, typename... Args>
     void make_call(Args... args)
     {
-        auto def_err_cb = [](boost::system::errc err)
-                         { std::cout << err.what() << std::endl;};
-
-        std::shared_ptr<T> cloud_obj = std::make_shared<T>(args...);
-        std::shared_ptr<asio_http> asio = std::make_shared<asio_http>(def_err_cb, io_, obj->fill_buffer(cloud_)); 
+        std::function<void(boost::system::errc)> def_cb = std::bind(&service_controller::default_error_handler,
+                                                                    this,
+                                                                    std::placeholders::_1);
+        std::shared_ptr<T> ptr = std::make_shared<T>(args...);
+        std::shared_ptr<asio_http> asio = std::make_shared<asio_http>(std::bind(&T::deserialise, 
+                                                                                ptr.get(), 
+                                                                                std::placeholders::_1),
+                                                                      def_cb, 
+                                                                      io_, 
+                                                                      ptr->fill_buffer(cloud_)); 
         run_job(asio);
-    }
-
-    /// \brief make_job will create a cloud job which you must run using `run_job` or `run_jobs`
-    template <typename T, typename... Args>
-    std::unique_ptr<T> make_job(Args... args)
-    {
-        return std::move(std::unique_ptr<T>(new T(args...)));
     }
 
     /**
@@ -57,8 +55,7 @@ public:
      * \param job is the cloud call
 	 * \note subsequent calls will block in a FIFO queue
      */
-    template <typename T>
-    void run_job(std::shared_ptr<T> job)
+    void run_call(std::shared_ptr<T> job)
 	{
 		assert(job);
 		job->begin(query_, resol_);
@@ -71,7 +68,8 @@ public:
      * \param jobs is vector of constant pointers to client services
 	 * \note subsequent calls of `run_job` or `run_jobs` will block in a FIFO queue
      */
-    void run_jobs(const std::vector<std::shared_ptr<asio_socket>> jobs)
+    /*
+    void run_calls(const std::vector<std::shared_ptr<>> jobs)
 	{
 		for (const std::shared_ptr<asio_socket> & job : jobs) {
 			assert(job);
@@ -80,6 +78,7 @@ public:
 		io_.run();
 		io_.reset();
 	}
+    */
 
     /// \brief stop the service controller
     void stop()
@@ -92,7 +91,7 @@ protected:
 	/// \brief handle asio errors
 	void default_error_handler(boost::system::error_code error) const
 	{
-
+        std::cerr << error.what() << std::endl;
 	}
 
 private:

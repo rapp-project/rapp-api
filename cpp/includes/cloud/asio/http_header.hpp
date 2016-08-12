@@ -3,7 +3,6 @@
 #include "includes.ihh"
 namespace rapp{
 namespace cloud{
-
 /**
  * \class http_header
  * \version 0.7.0
@@ -13,9 +12,10 @@ namespace cloud{
 class http_header
 {
 public:
-
     /// \brief constructor of the http_header
-    http_header()
+    /// \brief set the \param uri \warning requires newline
+    http_header(std::string uri)
+    : uri_(uri)
     {
         boundary_ = rapp::misc::random_boundary();
         contenty_type_ = "Content-Type: multipart/form-data; boundary=" + boundary_;
@@ -34,21 +34,8 @@ public:
         content_length_ = "Content-Length: " 
                           + boost::lexical_cast<std::string>(length) +"\r\n";
 
-        return uri_ 
-                   + host 
-                   + user_agent_ 
-                   + connection_
-                   + "Accept: */*\r\n" 
-                   + accept_token           
-                   + content_length_ 
-                   + content_type_ 
-                   + "\r\n\r\n"; 
-    }
-
-    /// \brief set the \param uri_ 
-    void set_uri(std::string uri)
-    {
-        uri_ = uri; 
+        return uri_ + host + user_agent_ + connection_ + accept_token           
+               + content_length_ + content_type_ + "\r\n\r\n"; 
     }
 
     /// \brief get boundary
@@ -59,7 +46,6 @@ public:
     
 
 private:    
-
     /// Uri
 	std::string uri_;
     /// User agent
@@ -70,13 +56,9 @@ private:
 	std::string content_length_;
     /// Content type
 	std::string content_type_;
-
     /// Boundary
     std::string boundary_;
 };
-
-
 }
 }
-
 #endif

@@ -35,6 +35,7 @@ public:
     /// \brief construct by passing an error callback 
     /// \param callback will receive errors
     asio_socket(
+                std::function<void(std::string)> cloud_cb,
                 std::function<void(error_code)> error_cb,
                 std::shared_ptr<T> 
                );
@@ -63,7 +64,7 @@ private:
     /// error handler callback
     std::function<void(error_code)> error_cb_;
     /// json_callback
-    std::function<void(std::string)> json_cb_;
+    std::function<void(std::string)> cloud_cb_;
     /// timer - asio_http and asio_https can't access timer
     rapp::cloud::timer timer_;
     /// newline
@@ -77,10 +78,11 @@ private:
 ///
 template <class T> 
 asio_socket<T>::asio_socket(
+                            std::function<void(std::string)> cloud_cb,
                             std::function<void(error_code)> error_cb,
                             std::unique_ptr<T> socket  
                           )
-: user_callback_(error_cb), socket_(socket)
+: cloud_cb_(cloud_cb), user_callback_(error_cb), socket_(socket)
 {
     timer_ = rapp::cloud::timer(boost::bind(&asio_socket<T>::has_timed_out, this)); 
 	assert(timer_ && socket_);
@@ -151,7 +153,7 @@ void asio_socket<T>::read_content(error_code err)
 		return;
 	}
 	// consume buffer - if transferred bytes >= Content-Length then = EOF && end 
-	if (response::consume_buffer(json_cb_)) {
+	if (response::consume_buffer(cloud_cb_)) {
 		end(boost::system:errc::success);
 	}
 	// Continue reading remaining data until EOF - It reccursively calls its self

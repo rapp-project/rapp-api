@@ -17,6 +17,7 @@ class asio_https
 public:
 
     asio_https(
+                std::function<void(std::string)> cloud_cb,
                 std::function<void(error_code error)> callback,
                 boost::asio::io_service & io_service,
                 boost::asio::streambuf request
@@ -25,7 +26,7 @@ public:
       
     {
         socket_ = std::make_shared<tls_socket>(io_service, ctx_);
-        hadler_ = asio_socket<tls_socket>(callback, socket_);
+        hadler_ = asio_socket<tls_socket>(cloud_cb, callback, socket_);
 		assert(socket_ && handler_);
     }
 

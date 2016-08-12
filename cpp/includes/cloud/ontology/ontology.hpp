@@ -6,11 +6,11 @@ namespace cloud {
 /**
  * \class ontology_subclasses_of
  * \brief get ontology subclass of a query
- * \version 0.6.1
- * \date May 2016
+ * \version 0.7.0
+ * \date August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_subclasses_of : public asio_http
+class ontology_subclasses_of : public json_parser, public request
 {
 public:
     /**
@@ -24,37 +24,25 @@ public:
                             bool recursive,
                             std::function<void(std::vector<std::string>)> callback
                           )
-    : asio_http(), delegate__(callback)
+    : http_header("POST /hop/ontology_subclasses_of HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()),
+      delegate__(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
         tree.put("recursive", recursive);
-
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
-
-		// JSON PDT value unquote
-		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
-		
-		// close the multipart - no need for \r\n here, the json already has one
-        post_ += "--" + boundary + "--";
-
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
-
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&ontology_subclasses_of::handle_reply, this, std::placeholders::_1);
+        std::string json = rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
+        http_post::add_content("json", json, false); 
+        http_post::end();
      }
-private:
+
     /**
      * \brief handle and parse JSON reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json)
     {
         std::vector<std::string> classes;
         std::stringstream ss(json);
@@ -82,9 +70,12 @@ private:
         }
         delegate__(classes);
     }
+
+private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<std::string> classes)> delegate__;
 };
+
 /**
  * \class ontology_superclasses_of
  * \brief get ontology super-classes of query
