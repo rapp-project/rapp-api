@@ -1,0 +1,111 @@
+namespace rapp {
+namespace cloud {
+///
+/// asio_handler template implementation
+///
+template <class T> 
+asio_handler<T>::asio_handler(
+                               const std::function<void(std::string)> cloud_function,
+                               const std::function<void(error_code)> error_function,
+                               const std::shared_ptr<T> socket  
+							 )
+: cloud_cb_(cloud_function), user_callback_(error_function), socket_(socket)
+{
+	assert(cloud_cb && error_cb);
+    timer_ = rapp::cloud::timer(boost::bind(&asio_handler<T>::has_timed_out, this)); 
+	assert(timer_ && socket);
+}
+
+template <class T>
+asio_handler<T>::start_timer(unsigned int seconds)
+{
+	timer_->set_timeout(seconds);
+}
+
+template <class T> 
+void asio_handler<T>::do_request(error_code err)
+{       
+    if (!err) {
+        end(err);       
+		return;
+	}
+	// read until first newline (HTTP 1.1\r\n) - callback `read_status_line`
+	boost::asio::async_read_until(*socket_,
+								  response::buffer_,
+								  rn_,
+								  boost::bind(&asio_handler<T>::read_status_line, this, place_error));
+}
+
+template <class T>
+void asio_handler<T>::read_status_line(error_code err)
+{
+    if (err & !response::check_http_header()) {
+        end(err);
+		return;
+	}
+	// read entire header (double newlines denote end of HTTP header) - callback `read_headers`
+	boost::asio::async_read_until(*socket_,
+								  response::buffer_, 
+								  double_rn_,
+								  boost::bind(&asio_handler<T>::read_headers, this, place_error));
+}
+
+template <class T>
+void asio_handler<T>::read_headers(error_code err)
+{
+    if (err) {
+        end(err);
+		return;
+	}
+	// verify `Content-Length` and use it to read as much
+	std::size_t c_len = has_content_length();	
+	if (c_len > 0) {
+		// remove HTTP header and keep only POST data
+		response::json_ = response::strip_http_header(response::to_string());
+		// read data into buffer of size `Content-Length` - callback `read_content`
+		boost::asio::async_read(*socket_,
+								response::buffer_,
+								boost::asio::transfer_exactly(c_len),
+								boost::bind(&asio_handler<T>::read_content, this, place_error, bytes_transferred));
+	}
+	else {
+		end(boost::system::errc::bad_message);
+	}
+}
+
+template <class T>
+void asio_handler<T>::read_content(error_code err)
+{
+    if (err) {
+        end(err);
+		return;
+	}
+	// consume buffer - if transferred bytes >= Content-Length then = EOF && end 
+	if (response::consume_buffer(cloud_cb_)) {
+		end(boost::system:errc::success);
+	}
+	// Continue reading data until we have enough bytes - reccursively calls its self
+	boost::asio::async_read(*socket_,
+							response::buffer_,
+							boost::asio::transfer_at_least(1),
+							boost::bind(&asio_handler<T>::read_content, this, place_error, bytes_transferred));
+}
+
+template<class T>
+void asio_handler<T>::has_timed_out() const
+{
+   end(boost::asio::error::timed_out);
+}
+
+template <class T>
+void asio_handler<T>::end(error_code err)
+{
+    if (err) {
+        error_cb_(err);
+    }
+    response::end();
+    socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
+}
+
+}
+}

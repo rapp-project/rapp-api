@@ -1,9 +1,11 @@
 #include <cstdlib>
+#include <string>
+#include <memory>
 #include <iostream>
+
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
-
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>

@@ -37,9 +37,13 @@ include_directories("includes")
 
 # Library-only Executables -
 set (SOURCES ${SOURCES} 
-                        ${INCLUDES}/cloud/asio/asio_handler.cpp
+						${INCLUDES}/cloud/asio/asio_timer.cpp
                         ${INCLUDES}/cloud/asio/asio_http.cpp
                         ${INCLUDES}/cloud/asio/asio_https.cpp
+						${INCLUDES}/cloud/asio/http_header.cpp
+						${INCLUDES}/cloud/asio/http_post.cpp
+						${INCLUDES}/cloud/asio/http_request.cpp
+						${INCLUDES}/cloud/asio/http_response.cpp
 						${INCLUDES}/config/config.cpp)
 
 # Find PThreads (needed by Boost)
@@ -110,7 +114,7 @@ install (FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAM
 
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
-    add_executable(face_detect      ${EXAMPLES}/face_detect.cpp)
+	#add_executable(face_detect      ${EXAMPLES}/face_detect.cpp)
 	#add_executable(qr_detect        ${EXAMPLES}/qr_detect.cpp)
 	#add_executable(speech_recog     ${EXAMPLES}/speech_to_text.cpp)
 	#add_executable(ontology         ${EXAMPLES}/ontology_example.cpp)
@@ -122,7 +126,7 @@ if (${BUILD_EXAMPLES})
 	#add_executable(available_services ${EXAMPLES}/available_services.cpp)
 	#add_executable(cognitive_example  ${EXAMPLES}/cognitive_example.cpp)
 
-    target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+	#target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(speech_recog      ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(ontology          ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})

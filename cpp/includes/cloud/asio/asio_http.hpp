@@ -1,36 +1,51 @@
-#ifndef RAPP_ASIO_SERVICE_HTTP
-#define RAPP_ASIO_SERVICE_HTTP
+#ifndef RAPP_ASIO_HTTP
+#define RAPP_ASIO_HTTP
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "includes.ihh"
 #include "asio_socket.hpp"
 namespace rapp {
 namespace cloud {
-
-typedef boost::system::error_code error_code;
-typedef boost::asio::ip::tcp::resolver resolver;   
-typedef boost::asio::ip::tcp::socket http_socket;
 /**
  * \class asio_http
- * \brief base class for asynchronous http websockets used for connecting to cloud services
+ * \brief ASIO socket controller for cloud service calls (plaintext)
  * \version 0.7.0
- * \date August 2016
- * \author Maria Ramos <m.ramos@ortelio.co.uk>
+ * \date 12 August 2016
+ * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
+ * \see asio_handler
+ * \see request
+ * \see response
  */
 class asio_http 
 {
 public:
-
+	/**
+	 * \brief construct a plaintext http socket type
+	 * \param cloud_function is the `json_parser::deserialise` virtual method
+	 * \param error_function is a the callback receiving errors
+	 * \param io_service will control the asio operation
+	 * \param request is the buffer containing the request data
+	 */
     asio_http(
-                std::function<void(std::string)> cloud_cb,
-                std::function<void(error_code error)> callback,
+                std::function<void(std::string)> cloud_function,
+                std::function<void(error_code error)> error_function,
                 boost::asio::io_service & io_service,
                 boost::asio::streambuf request
-            )
-    : error_cb_(callback)
-    {
-        socket_  = std::make_shared<http_socket>(io_service);
-        handler_ = asio_socket<http_socket>(cloud_cb, callback, socket_);
-    }
-
+             );
+    
     /** 
      * schedule this client as a job for execution using
      * \param query defines the actual URL/URI
@@ -38,43 +53,16 @@ public:
      * \param io_service is the queue on which jobs are scheduled
      */
     void begin( 
-                resolver::query & query,
-                resolver & resolver
-              )
-    {
-         // resolve and connect
-		 boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-		 boost::system::error_code error = boost::asio::error::host_not_found;
-		 while (error && endpoint_iterator != end) {
-			 socket_->close();
-			 boost::asio::async_connect(*socket_, 
-									    endpoint_iterator,
-									    boost::bind(&asio_http::connect, 
-												    this,
-												    boost::asio::placeholders::error));
-		 }
-		 if (error) {
-		 	 error_cb_(error); 	
-		 }
-    }
-    
+                boost::asio::ip::tcp::resolver::query & query,
+			    boost::asio::ip::tcp::resolver & resolver
+              );
+        
     /**
      * \brief connection handler
      * \param err is a possible error
      * \param endpoint_iterator is boosts' hostname address handler
      */
-     void connect(boost::system::errc err)
-     {
-        if (err) {
-			error_cb_(err); 
-			return;
-		}
-		boost::asio::async_write(*socket_,
-								 request_,
-								 boost::bind(&asio_socket<http_socket>::write_request, 
-											 this->handler_,
-											 boost::asio::placeholders::err));
-     }
+     void connect(boost::system::errc err);
 
 private:
      /// error callback
@@ -85,7 +73,6 @@ private:
      rapp::cloud::asio_socket<http_socket> handler_;
      /// buffer filled with request
      boost::asio::streambuf request_;
-
 };
 }
 }

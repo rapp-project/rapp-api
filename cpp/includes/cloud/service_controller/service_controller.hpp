@@ -1,33 +1,57 @@
 #ifndef RAPP_SERVICE_CONTROLLER
 #define RAPP_SERVICE_CONTROLLER
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "includes.ihh"
+#include "asio/platform.hpp"
+#include "asio/asio_http.hpp"
+#include "asio/asio_https.hpp"
+#include "asio/caller.hpp"
+
 namespace rapp {
 namespace cloud {
 /**
  * \class service_controller
  * \brief Main class that controllers RAPP Services
- * \version 0.6.0
- * \date July-2016
+ * \version 0.7.0
+ * \date 12 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  *
  * TODO: rename to `cloud_endpoint` or `cloud_control`
  * TODO (0.7.0) enable custom error handler 
  *				enable setting time-out parameter
+ *				enable choice of HTTP or TLS
+ *				enable choice of TLS CA.PEM file
  */
 class service_controller
 {
 public:
 
     /// \brief construct a service controller using a rapp::cloud::platform_info object
-	service_controller(rapp::cloud::platform_info info)
+	service_controller(rapp::cloud::platform info)
 	: cloud_(info), query_(info.address, info.port), io_(), resol_(io_)
-	{}
+	{
+		derr_cb_ = std::bind(&service_controller::default_error_handler, this, std::placeholders::_1);
+	}
 
 	/// \brief construct a service controller using
 	/// \param info the cloud platform
 	/// \param error_handler the error callback which receives boost asio errors
 	service_controller(
-						rapp::cloud::platform_info info,
+						rapp::cloud::platform info,
 						std::function<void(boost::system::error_code error)> error_handler
 					  )
 	: cloud_(info), query_(info.address, info.port), io_(), resol_(io_), error_(error_handler) 
@@ -37,28 +61,24 @@ public:
     template <typename T, typename... Args>
     void make_call(Args... args)
     {
-        std::function<void(boost::system::errc)> def_cb = std::bind(&service_controller::default_error_handler,
-                                                                    this,
-                                                                    std::placeholders::_1);
-        std::shared_ptr<T> ptr = std::make_shared<T>(args...);
-        std::shared_ptr<asio_http> asio = std::make_shared<asio_http>(std::bind(&T::deserialise, 
-                                                                                ptr.get(), 
-                                                                                std::placeholders::_1),
-                                                                      def_cb, 
-                                                                      io_, 
-                                                                      ptr->fill_buffer(cloud_)); 
-        run_job(asio);
+		std::shared_ptr<T> ptr = std::make_shared<T>(args...);
+        run_call(asio);
     }
 
     /**
-     * \brief run one cloud job
-     * \param job is the cloud call
+     * \brief run one cloud call
+     * \param ptr is ?
 	 * \note subsequent calls will block in a FIFO queue
      */
-    void run_call(std::shared_ptr<T> job)
+    void run_call(const std::shared_ptr<rapp::cloud::caller> ptr)
 	{
-		assert(job);
-		job->begin(query_, resol_);
+		assert(ptr);
+		// TODO: chose type of socket?
+        auto asio = asio_http(std::bind(&T::deserialise, ptr.get(), std::placeholders::_1),
+							  def_cb, 
+							  io_, 
+							  ptr->fill_buffer(cloud_)); 
+		asio.begin(query_, resol_);
 		io_.run();
 		io_.reset();
 	}
@@ -105,6 +125,8 @@ private:
     boost::asio::ip::tcp::resolver resol_;
 	// error handler
 	std::function<void(boost::system::error_code)> error_;
+	// default error handler
+	std::function<void(boost::system::errc)> derr_cb_;
 };
 }
 }
