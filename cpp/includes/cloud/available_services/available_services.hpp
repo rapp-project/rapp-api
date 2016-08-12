@@ -6,11 +6,11 @@ namespace cloud {
 /**
  * \class available_services
  * \brief requests available services from platform
- * \version 0.6.0
- * \date May 2016
+ * \version 0.7.0
+ * \date August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class available_services : public asio_http
+class available_services : public json_parser, public request
 {
 public:
 	typedef std::pair<std::string, std::string> service;
@@ -19,20 +19,15 @@ public:
      * \param callback will receive a vector of services strings
      */
     available_services(std::function<void(std::vector<service>)> callback)
-    : asio_http(), delegate_(callback)
-    {
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "GET /hop/available_services HTTP/1.1\r\n";
+    :http_header("GET /hop/available_services HTTP/1.1\r\n"),
+     http_post(http_header::get_boundary()),
+     delegate_(callback)
+    {}
 
-		// bind base downcasted virtual method
-        callback_ = std::bind(&available_services::handle_reply, this, std::placeholders::_1);
-    }
-
-private:
     /**
      * \brief handle platform's JSON reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json)
     {
         std::stringstream ss(json);
         std::vector<service> services;
@@ -66,6 +61,8 @@ private:
         }
         delegate_(std::move(services));
     }
+
+private:
     /// 
     std::function<void(std::vector<service> services)> delegate_;
 };

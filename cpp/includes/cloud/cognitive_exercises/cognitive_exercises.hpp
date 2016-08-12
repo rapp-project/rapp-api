@@ -6,14 +6,14 @@ namespace cloud {
 /**
  * \class cognitive_test_selector
  * \brief chose a congitive game to play 
- * \version 0.6.0
- * \date April 2016
+ * \version 0.7.0
+ * \date August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  *
  * \NOTE https://github.com/rapp-project/rapp-platform/tree/master/rapp_web_services/services#cognitive-test-selector
  *		 has changed - will update in 0.7.0
  */
-class cognitive_test_selector : public asio_http
+class cognitive_test_selector : public json_parser, public request
 {
 public:
 
@@ -36,33 +36,25 @@ public:
 							const std::string test_type,
                             functor callback
 						   )
-	: asio_http(), delegate_(callback)
+	:http_header("POST /hop/cognitive_test_selector HTTP/1.1\r\n"), 
+     http_post(http_header::get_boundary()), 
+     delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("test_type", test_type);
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+        std::string json = rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
+        http_post::add_content("json", json, false);
 
-		// JSON PDT value unquote
-		post_ += ss.str();
-
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/cognitive_test_selector HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&cognitive_test_selector::handle_reply, this, std::placeholders::_1);
 	}
-private:
+
     /**
      * \brief handle platform's JSON reply
      */
-	void handle_reply(std::string json)
+	void deserialise(std::string json)
     {
         std::stringstream ss(json);
         std::vector<std::string> questions;
@@ -113,6 +105,7 @@ private:
                   test_subtype);
     }
 
+private:
     /// 
     std::function<void(std::vector<std::string>,
                        std::vector<std::string>,
@@ -124,11 +117,11 @@ private:
 
 /**
  * \class cognitive_record_performance
- * \version 0.6.0
- * \date May-2016
+ * \version 0.7.0
+ * \date August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_record_performance : public asio_http
+class cognitive_record_performance : public json_parser, public request
 {
 public:
     /**
@@ -142,7 +135,9 @@ public:
                                     const float score,
                                     std::function<void(std::string)> callback
                                  )
-    : asio_http(), delegate_(callback)
+    : http_header("POST /hop/cognitive_record_performance HTTP/1.1\r\n"),
+      http_post(http_header::get_boundary()),
+      delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("test_instance", test_instance);
@@ -151,28 +146,16 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
-
-		// JSON PDT value unquote
-		post_ += rapp::misc::json_unquote_pdt_value<float>()(ss.str(), score);
-
-		// close the multipart - no need for \r\n here, the json already has one
-        post_ += "--" + boundary + "--";
-
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/cognitive_record_performance HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&cognitive_record_performance::handle_reply, this, std::placeholders::_1);
+        std::string json = rapp::misc::json_unquote_pdt_value<float>()(ss.str(), score);
+        http_post::add_content("json", json, false); 
+        http_post::end();
+ 
     }
 
-private:
     /**
      * \brief handle platform's JSON reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json)
     {
         std::stringstream ss(json);
         std::string performance_entry;
@@ -200,17 +183,18 @@ private:
         delegate_(performance_entry);
     }
 
+private:
     ///
     std::function<void(std::string)> delegate_;
 };
 
 /**
  * \class cognitive_get_history
- * \version 0.6.0
- * \date May 2016
+ * \version 0.7.0
+ * \date August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_get_history : public asio_http
+class cognitive_get_history : public json_parser, public request
 {
 public:
     /**
@@ -226,7 +210,9 @@ public:
                             const std::string test_type,
                             std::function<void(std::string)> callback
                          )
-    : asio_http(), delegate_(callback)
+    : http_header("POST /hop/cognitive_get_history HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()),
+      delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("from_time", from_time);
@@ -236,40 +222,33 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
-
 		// JSON PDT value unquote (call twice!)
 		auto str = misc::json_unquote_pdt_value<unsigned int>()(ss.str(), from_time);
-		post_ += misc::json_unquote_pdt_value<unsigned int>()(str, to_time);
+        std::string json= misc::json_unquote_pdt_value<unsigned int>()(str, to_time);
+        http_post::add_content("json", json, false); 
+        http_post::end();
 
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/cognitive_get_history HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&cognitive_get_history::handle_reply, this, std::placeholders::_1);
     }
-private:
     /**
      * \brief forward (don't parse) platform reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json)
     {
         delegate_(std::move(json));
     }
 
-    ///
+private:
+
     std::function<void(std::string)> delegate_;
 };
 
 /**
  * \class cognitive_get_scores
- * \version 0.6.0
- * \date May 2016
+ * \version 0.7.0
+ * \date August  2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_get_scores : public asio_http
+class cognitive_get_scores :  public json_parser, public request
 {
 public:
     /**
@@ -283,7 +262,9 @@ public:
                           const std::string test_type,
                           std::function<void(std::vector<unsigned int>, std::vector<float>)> callback
                         )
-    : asio_http(), delegate_(callback)
+    : http_header("POST /hop/cognitive_get_scores HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()),
+      delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("up_to_time", up_to_time);
@@ -292,25 +273,16 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
-
 		// JSON PDT value unquote
-		post_ += rapp::misc::json_unquote_pdt_value<unsigned int>()(ss.str(), up_to_time);
-
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/cognitive_get_scores HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&cognitive_get_scores::handle_reply, this, std::placeholders::_1);
+        std::string json = rapp::misc::json_unquote_pdt_value<unsigned int>()(ss.str(), up_to_time);
+        http_post::add_content("json", json, false); 
+        http_post::end();
     }
 
-private:
     /**
      * \brief handle platform's JSON reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json)
     {
         std::stringstream ss(json);
         std::vector<unsigned int> test_classes;
@@ -343,6 +315,8 @@ private:
         delegate_(test_classes, scores);
     }
 
+
+private:
     ///
     std::function<void(std::vector<unsigned int>,
                        std::vector<float>)> delegate_;

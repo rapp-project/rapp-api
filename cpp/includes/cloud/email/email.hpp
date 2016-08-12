@@ -6,10 +6,10 @@ namespace cloud {
 /**
  * \brief fetch email(s)
  * \class email_fetch
- * \version 0.6.0
- * \date May 2016
+ * \version 0.7.0
+ * \date August 2016
  */
-class email_fetch : public asio_http
+class email_fetch :  public json_parser, public request
 {
 public:
     /** 
@@ -35,7 +35,9 @@ public:
                  const unsigned int num_emails,
                  std::function<void(std::string)> callback
                 )
-	: asio_http(), delegate_(callback)
+	: http_header("POST /hop/email_fetch HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), 
+      delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("email", email);
@@ -50,43 +52,39 @@ public:
 		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
-
 		// JSON PDT value unquote `from_date`
 		auto str = misc::json_unquote_pdt_value<unsigned int>()(ss.str(), from_date);
 		// JSON PDT value unquote `to_date`
 		str = misc::json_unquote_pdt_value<unsigned int>()(str, to_date);
 		// JSON PDT value unquote `num_emails`
-		post += misc::json_unquote_pdt_value<unsigned int>()(str, num_emails);
+        std::string json = misc::json_unquote_pdt_value<unsigned int>()(str, num_emails);
 
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/email_fetch HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&email_fetch::handle_reply, this, std::placeholders::_1);
+        http_post::add_content("json", json, false); 
+        http_post::end();
+     
 	}
-private:
+
     /**
      * \brief handle platform's JSON reply
      */
-	void handle_reply(std::string json)
+	void deserialise(std::string json)
     {
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
-    /// 
+    
+private:
+    // 
     std::function<void(std::string)> delegate_;
 };
 
 /**
  * \brief send an email
  * \class email_send
- * \version 0.6.0
- * \date May 2016
+ * \version 0.7.0
+ * \date August 2016
  */
-class email_send : public asio_http
+class email_send :  public json_parser, public request
 {
 public:
     /** 
@@ -112,9 +110,10 @@ public:
                  const std::vector<rapp::types::byte> data,
                  std::function<void(std::string)> callback
                )
-	: asio_http(), delegate_(callback)
+	: http_header("POST /hop/email_send HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), 
+      delegate_(callback)
 	{
-        std::string boundary = rapp::misc::random_boundary();
         std::string fname = rapp::misc::random_boundary();
 
         boost::property_tree::ptree tree;
@@ -135,34 +134,22 @@ public:
 		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-		post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str();
-
-        // new multipart - append binary data 
-        post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file\"; filename\"" + fname + "\"\r\n"
-              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
-        post_.insert(post_.end(), data.begin(), data.end());
-        post_ += "\r\n--" + boundary + "--";
-
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/email_send HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&email_send::handle_reply, this, std::placeholders::_1);
+        std::string json =ss.str();
+		http_post::add_content("json", json, false); 
+        http_post::add_content("file", fname, data); 
+        http_post::end();
     }
-private:
     /**
      * \brief handle platform's JSON reply
      */
-	void handle_reply(std::string json)
+	void deserialise(std::string json)
     {
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
+   
+   
+private:
     /// 
     std::function<void(std::string)> delegate_;
 };

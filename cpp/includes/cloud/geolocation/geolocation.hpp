@@ -6,10 +6,11 @@ namespace cloud {
 /**
  * \brief geolocation service
  * \class geolocation
- * \version 0.6.0
- * \date May 2016
+ * \version 0.7.0
+ * \date August 2016
+ * \author Alex Gkiokas ,a.gkiokas@ortelio.co.uk>
  */
-class geolocation : public asio_http
+class geolocation :  public json_parser, public request
 {
 public:
     /**
@@ -22,7 +23,9 @@ public:
                  const std::string engine,
                  std::function<void(std::string)> callback
                )
-	: asio_http(), delegate_(callback)
+	: http_header("POST /hop/geolocation HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), 
+      delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("ipaddr", ipaddr);
@@ -31,27 +34,22 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-			   + ss.str();
-		
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/geolocation HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+        std::string json = ss.str();
+        http_post::add_content("json", json, false); 
+        http_post::end();
+     
+    }
 
-        callback_ = std::bind(&geolocation::handle_reply, this, std::placeholders::_1);
-	}
-private:
     /**
      * \brief handle platform's JSON reply
      */
-	void handle_reply(std::string json)
+	void deserialise(std::string json)
     {
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
 
+private:   
     /// 
     std::function<void(std::string)> delegate_;
 };

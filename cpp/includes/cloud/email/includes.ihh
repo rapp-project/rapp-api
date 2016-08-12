@@ -9,4 +9,5 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
-#include "cloud/asio/asio_http/asio_http.hpp"
+#include "cloud/asio/request.hpp"
+#include "cloud/asio/json_parser.hpp"

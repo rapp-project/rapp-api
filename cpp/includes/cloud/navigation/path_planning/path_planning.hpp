@@ -6,11 +6,11 @@ namespace cloud {
 /**
  * \class plan_path_2d
  * \brief plan a 2D path
- * \version 0.6.0
- * \date May 2016
+ * \version 0.7.0
+ * \date August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class plan_path_2d : public asio_http
+class plan_path_2d :  public json_parser, public request
 {
 public:
 	/**
@@ -27,7 +27,9 @@ public:
                   const rapp::object::pose_stamped goal,
                   std::function<void(rapp::object::planned_path)> callback
                 )
-	: asio_http(), delegate_(callback)
+	: http_header("POST /hop/path_planning_plan_path_2d HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), 
+      delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("map_name", map_name);
@@ -40,22 +42,16 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-			   + ss.str();
+        std::string json = ss.str();
+        http_post::add_content("json", json, false); 
+        http_post::end();
+     
+    }
 
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/path_planning_plan_path_2d HTTP/1.1\r\n";
-		head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&plan_path_2d::handle_reply, this, std::placeholders::_1);
-	}
-private:
     /**
      * \brief handle platform's JSON reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json)
     {
         std::stringstream ss(json);
         std::vector<rapp::object::pose_stamped> path;
@@ -102,12 +98,13 @@ private:
         }
         delegate_(std::move(rapp::object::planned_path(plan_found, plan_error, path)));
     }
-    /// 
+private:
+    // 
     std::function<void(rapp::object::planned_path path)> delegate_;
 };
 
 // 
-class path_upload_map : public asio_http
+class path_upload_map :  public json_parser, public request
 {
 public:
     /**
@@ -123,19 +120,23 @@ public:
                       const std::string map_name,
                       std::function<void(std::string)> callback
                     )
-    : asio_http(), delegate_(callback)
+    : http_header("POST /hop/path_upload_map HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), delegate_(callback)
     {
-        boost::property_tree::ptree tree;
-		tree.put("map_name", map_name);
+        http_post::add_content("map_name", map_name, true);
+        http_post::add_content("png_file", png_fname, imagebytes);
 
-		std::string boundary = rapp::misc::random_boundary();
-        std::stringstream ss;
-        boost::property_tree::write_json(ss, tree, false);
-
+        //ymal file
+        //
+        //-------
+        //http_post::add_content("yaml_file", yaml_fname, sth);
+        http_post::end();
+        
+        
 		// multipart/form-data append JSON first
 		post_  = "--" + boundary + "\r\n"
-			   + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-			   + ss.str();
+			   + "Content-Disposition: form-data; name=\"map_name\"\r\n\r\n"
+			   + map_name;
 
 		// write the PNG file binary data
 		std::string png_fname = rapp::misc::random_boundary() + ".png";
