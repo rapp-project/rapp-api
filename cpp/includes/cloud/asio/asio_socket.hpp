@@ -48,21 +48,7 @@ public:
                 std::shared_ptr<T> 
                );
     
-private:
- 
-    ///\brief resolve the address and chain the callbacks
-    void start( 
-               resolver::query & query,
-               resolver & resolver
-              );
- 
-    ///brief connect the endpoint 
-    void resolve (
-                   error_code  err,
-                   resolver::iterator endpoint_iterator
-                 );
-
-    /// \brief it's the first step to start communication
+     /// \brief it's the first step to start communication
     void write_request(error_code err);
     
     ///\brief method to check the status of the message 
@@ -79,8 +65,8 @@ private:
 
     /// \brief receives timeout
     void has_timed_out() const;
- 
 
+private:
     /// our socket T pointer
     std::shared_ptr<T> socket_;
     /// inheriting classes must set this connector properly
@@ -89,7 +75,6 @@ private:
     std::function<void(error_code)> error_cb_;
     /// json_callback
     std::function<void(std::string)> json_cb_;
-
     /// timer - asio_http and asio_https can't access timer
     rapp::cloud::timer timer_;
     /// newline
@@ -110,41 +95,6 @@ asio_socket<T>::asio_socket(
 : connect_cb_(connect_cb), user_callback_(error_cb), socket_(socket)
 {
     timer_ = rapp::cloud::timer(boost::bind(&asio_socket<T>::has_timed_out, this)); 
-}
-
-///
-template<class T>
-void asio_socket<T>::start( 
-                            resolver::query & query,
-                            resolver & resolver
-                          )
-{
-    timer_->set_timeout(30);
-    resolver.async_resolve(query,
-                           boost::bind(&asio_socket<T>::resolve,
-                                       this,
-                                       boost::asio::placeholders::error,
-                                       boost::asio::placeholders::iterator));
-}
-
-///
-template <class T>
-void asio_socket<T>::resolve( 
-                             error_code  err,
-                             resolver::iterator endpoint_iterator
-                            )
-{
-    assert(socket);
-    if (!err){
-        auto endpoint = * endpoint_iterator;
-        socket_->async_connect(endpoint,
-                               boost::bind(&this->connect_cb_, 
-                                           this,
-                                           boost::asio::placeholders::error));
-    }
-    else {
-        reset(err);
-    }
 }
 
 template <class T> 

@@ -10,7 +10,9 @@ namespace cloud {
  * \author Maria Ramos  <m.ramos@ortelio.co.uk>
  * \brief wrapper for SSL/TLS secure HTTP communication
  */
-class asio_https : private asio_socket<tls_socket> 
+typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> tls_socket;
+
+class asio_https  
 {
 public:
 
@@ -19,7 +21,7 @@ public:
                 boost::asio::io_service & io_service,
                 boost::asio::streambuf request
              )
-    : ctx_(boost::asio::ssl::context::tlsv12_client), 
+    : ctx_(boost::asio::ssl::context::tlsv12_client), error_cb_(callback) 
       
     {
         socket_ = std::make_shared<tls_socket>(io_service, ctx_);
@@ -33,11 +35,40 @@ public:
 	 * \param query defines the URL/URI
 	 * \param resolver resolves the URL/URI address
      * \param io_service is the queue on which jobs are scheduled
+     * \warning disable ssl v2 and ssl v3 (allow only tls)
 	 */
 	void begin(
 			    boost::asio::ip::tcp::resolver::query & query,
 			    boost::asio::ip::tcp::resolver & resolver
-             );
+              )
+    {
+        ctx_.set_options(boost::asio::ssl::context::default_workarounds
+                        |boost::asio::ssl::context::no_sslv2
+                        |boost::asio::ssl::context::no_sslv3
+                        |boost::asio::ssl::context::no_tlsv1
+                        |boost::asio::ssl::context::single_dh_use);
+        // if using a self-signed certificate the only way to pass verification
+        // is to "install" it locally and use it for comparison
+        ctx_.load_verify_file("ca.pem");
+        socket_->set_verify_mode(boost::asio::ssl::verify_peer 
+                                |boost::asio::ssl::verify_fail_if_no_peer_cert);
+        socket_->set_verify_callback(boost::bind(verify_certificate, 
+                                                 this, _1, _2));
+        // resolve and connect
+		boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+		boost::system::error_code error = boost::asio::error::host_not_found;
+		while (error && endpoint_iterator != end) {
+			socket_->close();
+			boost::asio::async_connect(socket_->lowest_layer(), 
+									   endpoint_iterator,
+									   boost::bind(&asio_https::connect, 
+												   this,
+												   boost::asio::placeholders::error));
+		}
+		if (error) {
+		 	error_cb_(error); 	
+		}
+	}
 
 protected:
 
@@ -50,27 +81,42 @@ protected:
         return preverified;
     }
 
-	/// \brief begin connect
-	void connect(const boost::system::error_code& error);
+	/// \brief begin connection
+	void connect(const boost::system::errc err)
+    {
+        assert(socket_);
+        if (!err) {
+            socket_->async_handshake(boost::asio::ssl::stream_base::client,
+                                     boost::bind(&asio_https::handshake, 
+                                                 this,
+                                                 boost::asio::placeholders::err));
+        }
+        else {
+            error_cb_(boost::system::errc::not_connected);
+        }
+    }
 
 	/// \brief handle handshake
-  	void handshake(const boost::system::error_code& error)
+  	void handshake(const boost::system::errc err)
     {
-         assert(socket_;
-        if (!error) {
+        assert(socket_);
+        if (!err) {
             // write to the socket
             boost::asio::async_write(*socket_,
                                      request_,
-                                     boost::bind(&asio_socket::handle_write, 
+                                     boost::bind(&asio_socket::write_request, 
                                                  this->handler_,
-                                                 boost::asio::placeholders::error));
+                                                 boost::asio::placeholders::err));
         }
         else {
-            std::cerr << "Handshake failed: " << error.message() << "\n";
+            std::cerr << "Handshake failed: " << err.message() << "\n";
         }   
     }
 
-private:
+private: 
+
+    /// error callback
+    std::function<void(boost::system::errc)> error_cb_;
 	/// tls context
 	boost::asio::ssl::context ctx_;
     /// asio handler

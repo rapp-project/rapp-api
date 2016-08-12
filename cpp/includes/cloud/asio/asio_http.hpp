@@ -44,7 +44,7 @@ public:
               )
     {
         //start the communication
-        handler->start(err);
+        handler_->start(query, resolver);
     }
     
     /**
@@ -60,8 +60,8 @@ public:
             boost::asio::async_write(*socket_,
                                      request_,
                                      boost::bind(&asio_socket<http_socket>::write_request, 
-                                                 this,
-                                                 boost::asio::placeholders::error));
+                                                 this->handler_,
+                                                 boost::asio::placeholders::err));
         }
         else {
 	       error_cb_(err); 
