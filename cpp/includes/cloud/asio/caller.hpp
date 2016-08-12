@@ -30,7 +30,6 @@ namespace cloud {
 class caller
 {
 public:
-
     /// \brief JSON deserialisation interface
     virtual void deserialise(std::string) const = 0;
 
