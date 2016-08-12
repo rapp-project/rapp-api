@@ -63,8 +63,8 @@ struct quaternion
 		boost::property_tree::ptree tree;
         tree.put("x", x);
         tree.put("y", y);
-		tree.put("z", y);
-		tree.put("w", z);
+		tree.put("z", z);
+		tree.put("w", w);
 		return tree;
 	}
 
