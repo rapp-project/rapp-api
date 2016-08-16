@@ -56,7 +56,7 @@ void asio_handler<T>::read_status_line(const boost::system::error_code & err)
 	boost::asio::async_read_until(*socket_,
 								  http_response::buffer_, 
 								  double_rn_,
-								  boost::bind(&asio_handler::read_headers, 
+								  boost::bind(&asio_handler<T>::read_headers, 
                                               this, 
                                               boost::asio::placeholders::error));
 }
@@ -77,7 +77,7 @@ void asio_handler<T>::read_headers(const boost::system::error_code & err)
 		boost::asio::async_read(*socket_,
 								http_response::buffer_,
 								boost::asio::transfer_exactly(c_len),
-								boost::bind(&asio_handler::read_content, 
+								boost::bind(&asio_handler<T>::read_content, 
                                             this, 
                                             boost::asio::placeholders::error, 
                                             boost::asio::placeholders::bytes_transferred));
@@ -102,7 +102,7 @@ void asio_handler<T>::read_content(const boost::system::error_code & err)
 	boost::asio::async_read(*socket_,
 							http_response::buffer_,
 							boost::asio::transfer_at_least(1),
-							boost::bind(&asio_handler::read_content, 
+							boost::bind(&asio_handler<T>::read_content, 
                                         this, 
                                         boost::asio::placeholders::error, 
                                         boost::asio::placeholders::bytes_transferred));

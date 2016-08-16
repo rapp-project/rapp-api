@@ -53,7 +53,7 @@ void asio_http::connect(const boost::system::error_code err)
 	boost::asio::async_write(*socket_,
 							 request_,
 							 boost::bind(&asio_handler<http_socket>::do_request, 
-                                         this, 
+                                         this,
                                          boost::asio::placeholders::error));
 }
 
