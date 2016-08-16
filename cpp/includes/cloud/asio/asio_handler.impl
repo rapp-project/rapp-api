@@ -83,12 +83,15 @@ void asio_handler<T>::read_headers(const boost::system::error_code & err)
                                             boost::asio::placeholders::bytes_transferred));
 	}
 	else {
-		end(boost::system::errc::bad_message);
+		//end(boost::system::errc::bad_message);
 	}
 }
 
 template <class T>
-void asio_handler<T>::read_content(const boost::system::error_code & err)
+void asio_handler<T>::read_content(
+                                    const boost::system::error_code & err,
+                                    const std::size_t bytes
+                                  )
 {
     if (err) {
         end(err);

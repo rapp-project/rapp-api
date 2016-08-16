@@ -72,7 +72,10 @@ public:
 
     /// \brief strip the header and read the POST data
 	/// \param err is propagated from boost asio
-    void read_content(const boost::system::error_code & err);
+    void read_content(
+                      const boost::system::error_code & err,
+                      const std::size_t bytes
+                     );
 
     /// \brief close socket and cleanup members
 	/// \param err is propagated from boost asio
@@ -81,7 +84,7 @@ public:
     /// \brief socket operation timed out
     void has_timed_out();
 
-private:
+protected:
     /// our socket T pointer
     std::shared_ptr<T> socket_;
         /// json_callback
