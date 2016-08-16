@@ -7,10 +7,10 @@ namespace cloud {
  * \class plan_path_2d
  * \brief plan a 2D path
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class plan_path_2d :  public json_parser, public request
+class plan_path_2d :  public caller, public http_request
 {
 public:
 	/**
@@ -51,7 +51,7 @@ public:
     /**
      * \brief handle platform's JSON reply
      */
-    void deserialise(std::string json)
+    void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         std::vector<rapp::object::pose_stamped> path;
@@ -98,13 +98,23 @@ public:
         }
         delegate_(std::move(rapp::object::planned_path(plan_found, plan_error, path)));
     }
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
 private:
     // 
     std::function<void(rapp::object::planned_path path)> delegate_;
 };
 
 // 
-class path_upload_map :  public json_parser, public request
+class path_upload_map :  public caller, public http_request
 {
 public:
     /**
@@ -124,51 +134,23 @@ public:
       http_post(http_header::get_boundary()), delegate_(callback)
     {
         http_post::add_content("map_name", map_name, true);
+        auto imagebytes = png_file.bytearray();
         http_post::add_content("png_file", png_fname, imagebytes);
 
         //ymal file
-        //
-        //-------
-        //http_post::add_content("yaml_file", yaml_fname, sth);
+        std::string png_fname = rapp::misc::random_boundary() + ".png";
+        //passing string into bytes
+        std::string yaml_data = yaml_file.get_string();
+        vector<rapp::types::byte> yaml_bytes(yaml_data.begin(), yaml_data.end());
+        http_post::add_content("yaml_file", yaml_fname, yaml_bytes);
         http_post::end();
-        
-        
-		// multipart/form-data append JSON first
-		post_  = "--" + boundary + "\r\n"
-			   + "Content-Disposition: form-data; name=\"map_name\"\r\n\r\n"
-			   + map_name;
 
-		// write the PNG file binary data
-		std::string png_fname = rapp::misc::random_boundary() + ".png";
-		post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"png_file\"; filename\"" + png_fname + "\"\r\n"
-              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
-        // Append binary data
-        auto imagebytes = png_file.bytearray();
-        post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
-		
-		// write the YAML file data
-		std::string yaml_fname = rapp::misc::random_boundary() + ".yaml";
-		post_ += "--" + boundary + "\r\n"
-			  + "Content-Disposition: form-data; name=\"yaml_file\"; filename\"" + yaml_fname + "\"\r\n"
-              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
-		post_.append(yaml_file.get_string());
-        post_ += "\r\n--" + boundary + "--";
-
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/path_upload_map HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        // bind the base class callback, to our handle_reply
-        callback_ = std::bind(&path_upload_map::handle_reply, this, std::placeholders::_1);
     }
-private:
+
     /**
      * \brief handle platform's JSON reply
      */
-     void handle_reply(std::string json)
+     void deserialise(std::string json) const
      {
 		std::stringstream ss(json);
 		std::string error;
@@ -187,7 +169,18 @@ private:
         }
         delegate_(error);
      }
+    
+     /**
+     * \brief method to fill the buffer with http_post and http_header information
+     * \param info is the data of the platform    
+     */
+     boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+     {
+            return std::move(http_request::fill_buffer(info));
+     }
 
+
+private:
      /// delegate
      std::function<void(std::string>)> delegate_;
 };

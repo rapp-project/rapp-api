@@ -5,5 +5,5 @@
 #include <sstream>
 #include <tuple>
 #include <boost/property_tree/ptree.hpp>
-#include "cloud/asio/asio_http/asio_http.hpp"
-
+#include "cloud/asio/caller.hpp"
+#include "cloud/asio/http_request.hpp"

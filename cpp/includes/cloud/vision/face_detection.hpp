@@ -7,15 +7,15 @@ namespace cloud {
  * \class face_detection
  * \brief Asynchronous Service which will request the cloud to detect faces
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face_detection : public json_parser, public request
+class face_detection : public caller, public http_request
 {
 public:
 
     /**
-     * \brief Constructor
+     * \brief constructor
      * \param image is the input image \see rapp::object::picture
      * \param fast defines if this will be a fast call or not.
      * \param callback is the function that will receive a vector of detected face(s) 
@@ -104,6 +104,16 @@ public:
         }
         delegate_(faces);
     }
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
 private:
      
     /// The callback called upon completion of receiving the detected faces

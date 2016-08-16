@@ -7,10 +7,10 @@ namespace cloud {
  * \class available_services
  * \brief requests available services from platform
  * \version 0.7.0
- * \date August 2016
+ * \date 14 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class available_services : public json_parser, public request
+class available_services : public caller, public http_request
 {
 public:
 	typedef std::pair<std::string, std::string> service;
@@ -27,7 +27,7 @@ public:
     /**
      * \brief handle platform's JSON reply
      */
-    void deserialise(std::string json)
+    void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         std::vector<service> services;
@@ -60,6 +60,15 @@ public:
             std::cerr << je.message() << std::endl;
         }
         delegate_(std::move(services));
+    }
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
     }
 
 private:

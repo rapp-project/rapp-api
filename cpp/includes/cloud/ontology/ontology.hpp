@@ -7,10 +7,10 @@ namespace cloud {
  * \class ontology_subclasses_of
  * \brief get ontology subclass of a query
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_subclasses_of : public json_parser, public request
+class ontology_subclasses_of : public caller, public http_request
 {
 public:
     /**
@@ -42,7 +42,7 @@ public:
     /**
      * \brief handle and parse JSON reply
      */
-    void deserialise(std::string json)
+    void deserialise(std::string json) const
     {
         std::vector<std::string> classes;
         std::stringstream ss(json);
@@ -71,6 +71,15 @@ public:
         delegate__(classes);
     }
 
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
 private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<std::string> classes)> delegate__;
@@ -79,11 +88,11 @@ private:
 /**
  * \class ontology_superclasses_of
  * \brief get ontology super-classes of query
- * \version 0.6.1
- * \date May 2016
+ * \version 0.7.0
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_superclasses_of : public asio_http
+class ontology_superclasses_of : public caller, public http_request
 {
 public:
     /**
@@ -96,33 +105,27 @@ public:
                               bool recursive,
                               std::function<void(std::vector<std::string>)> callback
                             )
-    : asio_http(), delegate__(callback)
+    : http_header("POST /hop/ontology_superclasses_of HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), 
+      delegate__(callback)
     {
-		std::string boundary = rapp::misc::random_boundary();
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
         tree.put("recursive", recursive);
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+       	// JSON PDT value unquote
+        std::string json = rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
 
-		// JSON PDT value unquote
-		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
-		post_ += "--" + boundary + "--";
+        http_post::add_content("json", json, false); 
+        http_post::end();
+     }   
 
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
-		head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&ontology_superclasses_of::handle_reply, this, std::placeholders::_1);
-     }
-private:
     /**
      * \brief handle and parse JSON reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json) const
     {
         std::vector<std::string> classes;
         std::stringstream ss(json);
@@ -151,17 +154,28 @@ private:
         delegate__(classes);
     }
 
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
+private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<std::string> classes)> delegate__;
 };
+
 /**
  * \class ontology_is_subsuperclass_of
  * \brief query if sub class is a super class of param 
- * \version 0.6.0
- * \date April 2016
+ * \version 0.7.0
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_is_subsuperclass_of : public asio_http
+class ontology_is_subsuperclass_of : public caller, public http_request
 {
 public:
     /**
@@ -178,7 +192,9 @@ public:
                                    bool recursive,
                                    std::function<void(bool result)> callback
                                 )
-    : asio_http(), delegate__(callback)
+    : http_header("POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), 
+      delegate__(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("parent_class", parent_class);
@@ -188,25 +204,16 @@ public:
 		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
-
 		// JSON PDT value unquote
-		post_ += misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
-		post_ += "--" + boundary + "--";
-
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
-		head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&ontology_is_subsuperclass_of::handle_reply, this, std::placeholders::_1);
+        std::string json = misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
+        http_post::add_content("json", json, false); 
+        http_post::end();
      }
-private:
+
     /**
      * \brief handle and parse JSON reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json)const
     {
         std::vector<std::string> classes;
         std::stringstream ss(json);
@@ -236,6 +243,16 @@ private:
         delegate__(result);
     }
 
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
+private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(bool result)> delegate__;
 };

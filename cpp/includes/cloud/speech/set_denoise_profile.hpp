@@ -6,11 +6,11 @@ namespace cloud {
 /**
  * \class set_denoise_profile
  * \brief setting the denoising audio profile for speech recognition 
- * \version 0.6.0
- * \date July 2016
+ * \version 0.7.0
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class set_denoise_profile : public asio_http
+class set_denoise_profile : public caller, public http_request
 {
 public:
     /**
@@ -23,12 +23,10 @@ public:
 						 const std::shared_ptr<rapp::object::audio> file,
                          const std::string user
 					   )
-    : asio_http()
+    : http_header("POST /hop/set_denoise_profile HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()),
     {
         assert(file);
-        std::string boundary = rapp::misc::random_boundary();
-        std::string fname = rapp::misc::random_boundary();
-
         boost::property_tree::ptree tree;
         tree.put("user", user);
         tree.put("audio_source", file->audio_source());
@@ -37,30 +35,18 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str();
-
-		post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
-              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
+        std::string json = ss.str();
+        http_post::add_content("json", json, false); 
+        
         auto bytes = file->bytearray();
-        post_.insert(post_.end(), bytes.begin(), bytes.end());
-        post_ += "\r\n--" + boundary + "--";
+        http_post::add_content("file", fname, bytes);
+        http_post::end();
+   }
 
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/set_denoise_profile HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&set_denoise_profile::handle_reply, this, std::placeholders::_1);
-    }
-
-private:
     /**
      * \brief handle platform reply (error notifications only)
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         try {
@@ -81,6 +67,16 @@ private:
             std::cerr << je.message() << std::endl;
         }
     }
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
 };
 }
 }

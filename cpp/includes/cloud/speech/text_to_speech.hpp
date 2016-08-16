@@ -6,11 +6,11 @@ namespace cloud {
 /**
  * \class text_to_speech
  * \brief request speech audio from text
- * \version 0.6.0
- * \date July 2016
+ * \version 0.7.0
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class text_to_speech : public asio_http
+class text_to_speech : public caller, public http_request
 {
 public:
     typedef rapp::object::microphone_wav wav_file;
@@ -25,7 +25,9 @@ public:
 					 const std::string language,
 					 std::function<void(std::unique_ptr<rapp::object::microphone_wav>)> callback
 				  )
-	: asio_http(), delegate_(callback)
+	: http_header("POST /hop/ontology_subclasses_of HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), 
+      delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("text", text);
@@ -34,23 +36,15 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
-		std::string boundary = rapp::misc::random_boundary();
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-			   + ss.str();
+        std::string json = ss.str();
+        http_post::add_content("json", json, false); 
+        http_post::end();
+     }
 
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/text_to_speech HTTP/1.1\r\n";
-		head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&text_to_speech::handle_reply, this, std::placeholders::_1);
-	}
-
-private:
     /**
      * \brief handle platform's JSON reply
      */
-    void handle_reply(std::string json)
+    void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         std::vector<rapp::types::byte> bytearray;
@@ -84,6 +78,16 @@ private:
         delegate_(std::move(wav));
     }
 
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
+private:
     /// 
     std::function<void(std::unique_ptr<wav_file> wav)> delegate_;
 };

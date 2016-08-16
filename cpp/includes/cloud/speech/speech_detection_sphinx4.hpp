@@ -6,11 +6,11 @@ namespace cloud {
 /**
  * \class speech_detection_sphinx4
  * \brief speech-to-text recognition using CMU sphinx4
- * \version 0.6.0
- * \date April 2016
+ * \version 0.7.0
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speech_detection_sphinx4 : public asio_http
+class speech_detection_sphinx4 : public caller, public http_request
 {
 public:
     /**
@@ -32,10 +32,11 @@ public:
 							  const std::vector<std::string> sentences,
 							  std::function<void(std::vector<std::string> words)> callback
 						    )
-	: asio_http(), delegate_(callback)
+	: http_header("POST /hop/ontology_subclasses_of HTTP/1.1\r\n"), 
+      http_post(http_header::get_boundary()), 
+      delegate_(callback)
     {
         assert(file);
-        std::string boundary = rapp::misc::random_boundary();
         std::string fname =  rapp::misc::random_boundary() + file->extension(); 
 
         boost::property_tree::ptree tree;
@@ -69,31 +70,20 @@ public:
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+        std::string json = ss.str();
 
-		post_  = "--" + boundary + "\r\n"
-			   + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-			   + ss.str();
-
-		post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
-              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
+        http_post::add_content("json", json, false);
         auto bytes = file->bytearray();
-        post_.insert(post_.end(), bytes.begin(), bytes.end());
-        post_ += "\r\n--" + boundary + "--";
-
-		// set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n";
-        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
-
-        callback_ = std::bind(&speech_detection_sphinx4::handle_reply, this, std::placeholders::_1);
+        http_post::add_content("file", fname, bytes);
+        http_post::end();
+    
     }
 
-private:
+
     /**
 	 * \brief handle the rappl-platform JSON reply
 	 */ 
-    void handle_reply(std::string json)
+    void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         std::vector<std::string> words;        
@@ -120,6 +110,16 @@ private:
         delegate_(words);
     }
 
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
+private:
     /// The callback called upon completion of receiving the detected words
     std::function<void(std::vector<std::string> words)> delegate_;
 };

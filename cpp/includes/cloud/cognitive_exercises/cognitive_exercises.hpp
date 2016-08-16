@@ -7,13 +7,13 @@ namespace cloud {
  * \class cognitive_test_selector
  * \brief chose a congitive game to play 
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  *
  * \NOTE https://github.com/rapp-project/rapp-platform/tree/master/rapp_web_services/services#cognitive-test-selector
  *		 has changed - will update in 0.7.0
  */
-class cognitive_test_selector : public json_parser, public request
+class cognitive_test_selector : public caller, public http_request
 {
 public:
 
@@ -54,7 +54,7 @@ public:
     /**
      * \brief handle platform's JSON reply
      */
-	void deserialise(std::string json)
+	void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         std::vector<std::string> questions;
@@ -105,6 +105,11 @@ public:
                   test_subtype);
     }
 
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
 private:
     /// 
     std::function<void(std::vector<std::string>,
@@ -118,10 +123,10 @@ private:
 /**
  * \class cognitive_record_performance
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_record_performance : public json_parser, public request
+class cognitive_record_performance : public caller, public http_request
 {
 public:
     /**
@@ -155,7 +160,7 @@ public:
     /**
      * \brief handle platform's JSON reply
      */
-    void deserialise(std::string json)
+    void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         std::string performance_entry;
@@ -183,6 +188,16 @@ public:
         delegate_(performance_entry);
     }
 
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
+
 private:
     ///
     std::function<void(std::string)> delegate_;
@@ -191,10 +206,10 @@ private:
 /**
  * \class cognitive_get_history
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_get_history : public json_parser, public request
+class cognitive_get_history : public caller, public http_request
 {
 public:
     /**
@@ -232,9 +247,18 @@ public:
     /**
      * \brief forward (don't parse) platform reply
      */
-    void deserialise(std::string json)
+    void deserialise(std::string json) const
     {
         delegate_(std::move(json));
+    }
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
     }
 
 private:
@@ -245,10 +269,10 @@ private:
 /**
  * \class cognitive_get_scores
  * \version 0.7.0
- * \date August  2016
+ * \date 15 August  2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-class cognitive_get_scores :  public json_parser, public request
+class cognitive_get_scores :  public caller, public http_request
 {
 public:
     /**
@@ -282,7 +306,7 @@ public:
     /**
      * \brief handle platform's JSON reply
      */
-    void deserialise(std::string json)
+    void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         std::vector<unsigned int> test_classes;
@@ -315,6 +339,15 @@ public:
         delegate_(test_classes, scores);
     }
 
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
 
 private:
     ///

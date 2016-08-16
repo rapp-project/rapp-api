@@ -7,10 +7,10 @@ namespace cloud {
  * \brief geolocation service
  * \class geolocation
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  * \author Alex Gkiokas ,a.gkiokas@ortelio.co.uk>
  */
-class geolocation :  public json_parser, public request
+class geolocation :  public caller, public http_request
 {
 public:
     /**
@@ -43,10 +43,20 @@ public:
     /**
      * \brief handle platform's JSON reply
      */
-	void deserialise(std::string json)
+	void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         delegate_(std::move(json));
+    }
+
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
     }
 
 private:   

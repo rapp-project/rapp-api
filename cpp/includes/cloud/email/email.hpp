@@ -7,9 +7,9 @@ namespace cloud {
  * \brief fetch email(s)
  * \class email_fetch
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  */
-class email_fetch :  public json_parser, public request
+class email_fetch :  public caller, public http_request
 {
 public:
     /** 
@@ -67,10 +67,20 @@ public:
     /**
      * \brief handle platform's JSON reply
      */
-	void deserialise(std::string json)
+	void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         delegate_(std::move(json));
+    }
+
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
     }
     
 private:
@@ -82,9 +92,9 @@ private:
  * \brief send an email
  * \class email_send
  * \version 0.7.0
- * \date August 2016
+ * \date 15 August 2016
  */
-class email_send :  public json_parser, public request
+class email_send :  public caller, public http_request
 {
 public:
     /** 
@@ -142,12 +152,21 @@ public:
     /**
      * \brief handle platform's JSON reply
      */
-	void deserialise(std::string json)
+	void deserialise(std::string json) const
     {
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
    
+
+    /**
+    * \brief method to fill the buffer with http_post and http_header information
+    * \param info is the data of the platform    
+    */
+    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    {
+           return std::move(http_request::fill_buffer(info));
+    }
    
 private:
     /// 
