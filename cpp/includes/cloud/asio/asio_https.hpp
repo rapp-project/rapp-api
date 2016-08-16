@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 #include "includes.ihh"
-#include "asio_socket.hpp"
+#include "asio_handler.hpp"
 namespace rapp {
 namespace cloud {
 /**
@@ -29,7 +29,7 @@ namespace cloud {
  * \see request
  * \see response
  */
-class asio_https  
+class asio_https 
 {
 public:
 	/**
@@ -75,7 +75,7 @@ private:
 	/// tls context
 	boost::asio::ssl::context ctx_;
     /// asio handler
-    rapp::cloud::asio_socket<tls_socket> handler_;
+    rapp::cloud::asio_handler<tls_socket> handler_;
     /// boost asio socket 
     std::shared_ptr<tls_socket> socket_;
     /// request object

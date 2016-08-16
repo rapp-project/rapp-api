@@ -13,10 +13,10 @@ asio_timer::asio_timer(std::function<void()> callback)
 void asio_timer::set_timeout(unsigned int arg)
 {
 	timer_->expires_from_now(boost::posix_time::seconds(arg));
-	timer_->async_wait(boost::bind(&timer::check_timeout, this));
+	timer_->async_wait(boost::bind(&asio_timer::check_timeout, this));
 }
 
-void asio_timer::check_timeout() const 
+void asio_timer::check_timeout()  
 {
 	// timer has expired - call the callback
 	if (timer_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
@@ -25,7 +25,7 @@ void asio_timer::check_timeout() const
 	}
 	// Put the actor back to sleep.
 	else {
-		timer_->async_wait(boost::bind(&timer::check_timeout, this));
+		timer_->async_wait(boost::bind(&asio_timer::check_timeout, this));
 	}
 }
 

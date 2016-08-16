@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 2.8)
+
 add_subdirectory(asio)
 add_subdirectory(service_controller)
-
 add_subdirectory(available_services)
-
 add_subdirectory(ontology)
 add_subdirectory(speech)
 add_subdirectory(vision)
 add_subdirectory(navigation)
-
 add_subdirectory(cognitive_exercises)
 add_subdirectory(email)
 add_subdirectory(geolocation)

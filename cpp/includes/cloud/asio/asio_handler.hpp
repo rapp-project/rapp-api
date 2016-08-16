@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 #include "includes.ihh"
-#include "response.hpp"
+#include "http_response.hpp"
 #include "asio_timer.hpp"
-namespace rapp {
-namespace cloud {
+
 typedef boost::asio::ip::tcp::socket http_socket;
 typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> tls_socket;
 typedef boost::system::error_code error_code;
-typedef boost::asio::placeholders::err place_error;
-typedef boost::asio::placeholders::bytes_transferred bytes_transferred;
 typedef boost::asio::ip::tcp::resolver resolver;
+
+namespace rapp {
+namespace cloud {
 /**
  * \class asio_handler
  * \version 0.7.0
@@ -48,9 +48,11 @@ public:
 	 */
     asio_handler(
                   const std::function<void(std::string)> cloud_function,
-                  const std::function<void(error_code)> error_function,
-                  const std::shared_ptr<T> socket
+                  const std::function<void(boost::system::error_code)> error_function
                 );
+
+    /// \brief set socket pointer
+    void set_socket(const std::shared_ptr<T> socket);
 
 	/// \brief start the timer
 	/// \param seconds will countdown and then invoke `has_timed_out`
@@ -58,34 +60,35 @@ public:
     
     /// \brief write the cloud request to the socket
 	/// \param err is propagated from boost asio
-    void do_request(error_code err);
+    void do_request(const boost::system::error_code & err);
     
     /// \brief read first HTTP line and check for a 200 response
 	/// \param err is propagated from boost asio
-    void read_status_line(error_code err);
+    void read_status_line(const boost::system::error_code & err);
     
     /// \brief read HTTP headers and validate
 	/// \param err is propagated from boost asio
-    void read_headers(error_code err);
+    void read_headers(const boost::system::error_code & err);
 
     /// \brief strip the header and read the POST data
 	/// \param err is propagated from boost asio
-    void read_content(error_code err);
+    void read_content(const boost::system::error_code & err);
 
     /// \brief close socket and cleanup members
 	/// \param err is propagated from boost asio
-    void end(error_code err);
+    void end(const boost::system::error_code & err);
 
     /// \brief socket operation timed out
-    void has_timed_out() const;
+    void has_timed_out();
 
 private:
     /// our socket T pointer
     std::shared_ptr<T> socket_;
-    /// error handler callback
-    std::function<void(error_code)> error_cb_;
-    /// json_callback
+        /// json_callback
     std::function<void(std::string)> cloud_cb_;
+    /// error handler callback
+    std::function<void(boost::system::error_code)> error_cb_;
+
     /// timer - asio_http and asio_https can't access timer
     rapp::cloud::asio_timer timer_;
     /// newline

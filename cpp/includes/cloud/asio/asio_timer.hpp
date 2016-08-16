@@ -32,7 +32,7 @@ public:
 	 * \brief construct
 	 * \param callback will be executed if theres a timeout
 	 */
-    timer(std::function<void()> callback);
+    asio_timer(std::function<void()> callback);
 
     /// \brief set the timer with \param seconds
     void set_timeout(unsigned int arg);
@@ -43,7 +43,7 @@ public:
 private:
 
 	/// \brief check if timer has timed out
-    void check_timeout() const;
+    void check_timeout();
 
 
 	std::function<void()> callback_;

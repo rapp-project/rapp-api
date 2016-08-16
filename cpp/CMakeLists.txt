@@ -17,7 +17,7 @@
 # 
 PROJECT(rapp)
 set (RAPP_VERSION_MAJOR 0)
-set (RAPP_VERSION_MINOR 2)
+set (RAPP_VERSION_MINOR 7)
 cmake_minimum_required(VERSION 2.8)
 set(LIBRARY_PATH ${LIBRARY_PATH}
 		      /lib
@@ -28,7 +28,7 @@ set(LIBRARY_PATH ${LIBRARY_PATH}
 		      /usr/lib/x86_64-linux-gnu)
 set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 include_directories(SYSTEM ${INCLUDE_HEADERS})
-set (INCLUDES ${INCLUDES} includes)
+set(INCLUDES ${INCLUDES} includes)
 add_subdirectory(${INCLUDES})
 set(CMAKE_MACOSX_RPATH 1)
 
@@ -46,6 +46,7 @@ set (SOURCES ${SOURCES}
 						${INCLUDES}/cloud/asio/http_response.cpp
 						${INCLUDES}/config/config.cpp)
 
+# Begin searching for packgages we use in RAPP API
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
 
@@ -70,6 +71,7 @@ if(OPENSSL_FOUND)
 	message(STATUS "OpenSSL Headers: ${OPENSSL_INCLUDE_DIR}")
 endif()
 
+# # #
 # Set library sources
 add_library(lrapp OBJECT ${SOURCES})
 
@@ -150,7 +152,6 @@ if (${BUILD_TESTS})
     add_executable(object_test           ${TESTS}/object_test.cpp)
     add_executable(service_test          ${TESTS}/service_test.cpp)
     add_executable(serialise_test        ${TESTS}/serialise.cpp)
-
     add_test(unit_object_test            object_test) 
     add_test(unit_service_test           service_test)
     add_test(json_serialise_test         serialise_test)
@@ -202,6 +203,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         set(CMAKE_EXE_LINKER_FLAGS "-lc++ -lcxxrt")
         set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++ -m32")
     endif()
+
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
     set(BUILD_SHARED_LIBS OFF)
     message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})

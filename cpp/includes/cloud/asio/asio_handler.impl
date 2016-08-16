@@ -6,24 +6,31 @@ namespace cloud {
 template <class T> 
 asio_handler<T>::asio_handler(
                                const std::function<void(std::string)> cloud_function,
-                               const std::function<void(error_code)> error_function,
-                               const std::shared_ptr<T> socket  
+                               const std::function<void(boost::system::error_code)> error_function
 							 )
-: cloud_cb_(cloud_function), user_callback_(error_function), socket_(socket)
+: http_response(error_function), 
+  cloud_cb_(cloud_function), 
+  error_cb_(error_function),
+  timer_(boost::bind(&asio_handler<T>::has_timed_out, this))
 {
-	assert(cloud_cb && error_cb);
-    timer_ = rapp::cloud::timer(boost::bind(&asio_handler<T>::has_timed_out, this)); 
-	assert(timer_ && socket);
+    assert(cloud_cb_ && error_cb_);
 }
 
 template <class T>
-asio_handler<T>::start_timer(unsigned int seconds)
+void asio_handler<T>::set_socket(const std::shared_ptr<T> socket)
 {
-	timer_->set_timeout(seconds);
+    assert(socket);
+    socket_ = socket;
+}
+
+template <class T>
+void asio_handler<T>::start_timer(unsigned int seconds)
+{
+	timer_.set_timeout(seconds);
 }
 
 template <class T> 
-void asio_handler<T>::do_request(error_code err)
+void asio_handler<T>::do_request(const boost::system::error_code & err)
 {       
     if (!err) {
         end(err);       
@@ -31,27 +38,31 @@ void asio_handler<T>::do_request(error_code err)
 	}
 	// read until first newline (HTTP 1.1\r\n) - callback `read_status_line`
 	boost::asio::async_read_until(*socket_,
-								  response::buffer_,
+								  http_response::buffer_,
 								  rn_,
-								  boost::bind(&asio_handler<T>::read_status_line, this, place_error));
+								  boost::bind(&asio_handler<T>::read_status_line, 
+                                              this, 
+                                              boost::asio::placeholders::error));
 }
 
 template <class T>
-void asio_handler<T>::read_status_line(error_code err)
+void asio_handler<T>::read_status_line(const boost::system::error_code & err)
 {
-    if (err & !response::check_http_header()) {
+    if (err || !http_response::check_http_header()) {
         end(err);
 		return;
 	}
 	// read entire header (double newlines denote end of HTTP header) - callback `read_headers`
 	boost::asio::async_read_until(*socket_,
-								  response::buffer_, 
+								  http_response::buffer_, 
 								  double_rn_,
-								  boost::bind(&asio_handler<T>::read_headers, this, place_error));
+								  boost::bind(&asio_handler::read_headers, 
+                                              this, 
+                                              boost::asio::placeholders::error));
 }
 
 template <class T>
-void asio_handler<T>::read_headers(error_code err)
+void asio_handler<T>::read_headers(const boost::system::error_code & err)
 {
     if (err) {
         end(err);
@@ -61,12 +72,15 @@ void asio_handler<T>::read_headers(error_code err)
 	std::size_t c_len = has_content_length();	
 	if (c_len > 0) {
 		// remove HTTP header and keep only POST data
-		response::json_ = response::strip_http_header(response::to_string());
+		http_response::json_ = http_response::strip_http_header(http_response::to_string());
 		// read data into buffer of size `Content-Length` - callback `read_content`
 		boost::asio::async_read(*socket_,
-								response::buffer_,
+								http_response::buffer_,
 								boost::asio::transfer_exactly(c_len),
-								boost::bind(&asio_handler<T>::read_content, this, place_error, bytes_transferred));
+								boost::bind(&asio_handler::read_content, 
+                                            this, 
+                                            boost::asio::placeholders::error, 
+                                            boost::asio::placeholders::bytes_transferred));
 	}
 	else {
 		end(boost::system::errc::bad_message);
@@ -74,38 +88,43 @@ void asio_handler<T>::read_headers(error_code err)
 }
 
 template <class T>
-void asio_handler<T>::read_content(error_code err)
+void asio_handler<T>::read_content(const boost::system::error_code & err)
 {
     if (err) {
         end(err);
 		return;
 	}
 	// consume buffer - if transferred bytes >= Content-Length then = EOF && end 
-	if (response::consume_buffer(cloud_cb_)) {
-		end(boost::system:errc::success);
+	if (http_response::consume_buffer(cloud_cb_)) {
+		end(err);
 	}
 	// Continue reading data until we have enough bytes - reccursively calls its self
 	boost::asio::async_read(*socket_,
-							response::buffer_,
+							http_response::buffer_,
 							boost::asio::transfer_at_least(1),
-							boost::bind(&asio_handler<T>::read_content, this, place_error, bytes_transferred));
+							boost::bind(&asio_handler::read_content, 
+                                        this, 
+                                        boost::asio::placeholders::error, 
+                                        boost::asio::placeholders::bytes_transferred));
 }
 
 template<class T>
-void asio_handler<T>::has_timed_out() const
+void asio_handler<T>::has_timed_out() 
 {
    end(boost::asio::error::timed_out);
 }
 
 template <class T>
-void asio_handler<T>::end(error_code err)
+void asio_handler<T>::end(const boost::system::error_code & err)
 {
     if (err) {
         error_cb_(err);
     }
-    response::end();
-    socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send, err);
+    http_response::end();
+    socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send);
+    socket_->close();
 }
+
 
 }
 }
