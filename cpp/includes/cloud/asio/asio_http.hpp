@@ -38,7 +38,6 @@ public:
 	 * \brief `error_function` is the handler which may receive the errors
 	 * \brief `io_service` is the ASIO service controller
 	 * \brief `request` is a stream buffer containing the request
-	 * TODO: pass a PEM filename to evaluate CA
 	 */
     asio_http(
                 std::function<void(std::string)> cloud_function,
@@ -64,6 +63,9 @@ private:
 
     /// \brief begin connection
 	void connect(const boost::system::error_code err);
+
+    /// \brief shutdown connection
+    void shutdown(const boost::system::error_code);
 
 private:
     /// error callback

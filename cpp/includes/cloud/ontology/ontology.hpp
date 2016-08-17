@@ -24,8 +24,7 @@ public:
                             bool recursive,
                             std::function<void(std::vector<std::string>)> callback
                           )
-    : http_header("POST /hop/ontology_subclasses_of HTTP/1.1\r\n"), 
-      http_post(http_header::get_boundary()),
+    : http_request("POST /hop/ontology_subclasses_of HTTP/1.1\r\n"),
       delegate__(callback)
     {
         boost::property_tree::ptree tree;
@@ -35,8 +34,8 @@ public:
         boost::property_tree::write_json(ss, tree, false);
 
         std::string json = rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
-        http_post::add_content("json", json, false); 
-        http_post::end();
+        http_request.add_content("json", json, false); 
+        http_request.close();
      }
 
     /**
@@ -75,9 +74,12 @@ public:
     * \brief method to fill the buffer with http_post and http_header information
     * \param info is the data of the platform    
     */
-    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
+    void fill_buffer(
+                       boost::asio::streambuf & request,
+                       rapp::cloud::platform info
+                    )
     {
-           return std::move(http_request::fill_buffer(info));
+        http_request::fill_buffer(request, info);
     }
 
 private:

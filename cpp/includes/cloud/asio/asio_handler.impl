@@ -6,11 +6,13 @@ namespace cloud {
 template <class T> 
 asio_handler<T>::asio_handler(
                                const std::function<void(std::string)> cloud_function,
-                               const std::function<void(boost::system::error_code)> error_function
+                               const std::function<void(boost::system::error_code)> error_function,
+                               const std::function<void(boost::system::error_code)> shutdown_function
 							 )
 : http_response(error_function), 
   cloud_cb_(cloud_function), 
   error_cb_(error_function),
+  close_cb_(shutdown_function),
   timer_(boost::bind(&asio_handler<T>::has_timed_out, this))
 {
     assert(cloud_cb_ && error_cb_);
@@ -83,6 +85,7 @@ void asio_handler<T>::read_headers(const boost::system::error_code & err)
                                             boost::asio::placeholders::bytes_transferred));
 	}
 	else {
+        // TODO: update with correct message type
 		//end(boost::system::errc::bad_message);
 	}
 }
@@ -124,8 +127,11 @@ void asio_handler<T>::end(const boost::system::error_code & err)
         error_cb_(err);
     }
     http_response::end();
+    this->close_cb_(err);
+    /*
     socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send);
     socket_->close();
+    */
 }
 
 

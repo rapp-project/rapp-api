@@ -76,7 +76,7 @@ private:
     /// POST data
     std::string data_;
     std::string boundary_;
-    std::atomic<bool> open_ = true;
+    std::atomic<bool> open_ = {true};
 };
 }
 }

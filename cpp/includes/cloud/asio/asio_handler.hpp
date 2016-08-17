@@ -48,7 +48,8 @@ public:
 	 */
     asio_handler(
                   const std::function<void(std::string)> cloud_function,
-                  const std::function<void(boost::system::error_code)> error_function
+                  const std::function<void(const boost::system::error_code)> error_function,
+                  const std::function<void(const boost::system::error_code)> shutdown_function
                 );
 
     /// \brief set socket pointer
@@ -90,7 +91,9 @@ protected:
         /// json_callback
     std::function<void(std::string)> cloud_cb_;
     /// error handler callback
-    std::function<void(boost::system::error_code)> error_cb_;
+    std::function<void(const boost::system::error_code)> error_cb_;
+    /// shutdown callback
+    std::function<void(const boost::system::error_code)> close_cb_;
 
     /// timer - asio_http and asio_https can't access timer
     rapp::cloud::asio_timer timer_;

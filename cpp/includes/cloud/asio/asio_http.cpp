@@ -8,8 +8,11 @@ asio_http::asio_http(
 						boost::asio::io_service & io_service,
 						boost::asio::streambuf request
 					)
-: 
-  asio_handler<http_socket>(cloud_function, error_function),  
+: asio_handler<http_socket>(cloud_function, 
+                            error_function,
+                            boost::bind(&asio_http::shutdown,
+                                        this,
+                                        boost::asio::placeholders::error)),  
   error_cb_(error_function)
 {
     socket_ = std::make_shared<http_socket>(io_service);
@@ -55,6 +58,12 @@ void asio_http::connect(const boost::system::error_code err)
 							 boost::bind(&asio_http::do_request, 
                                          this,
                                          boost::asio::placeholders::error));
+}
+
+void asio_http::shutdown(const boost::system::error_code err)
+{
+    socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send);
+    socket_->close();
 }
 
 }

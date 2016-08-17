@@ -38,7 +38,10 @@ public:
 	 * \param info specifies the connecting endpoint, port and access token \see platform
 	 * \return is a boost stream buffer owned by the caller
 	 */
-	virtual boost::asio::streambuf fill_buffer(rapp::cloud::platform info)  = 0;
+	virtual void fill_buffer(
+                              boost::asio::streambuf & request,
+                              rapp::cloud::platform info
+                            )  = 0;
 	
 };
 }

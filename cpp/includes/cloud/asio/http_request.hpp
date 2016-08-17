@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "include.ihh"
+#include "includes.ihh"
 #include "http_header.hpp"
 #include "http_post.hpp"
 #include "platform.hpp"
@@ -31,7 +31,7 @@ namespace cloud{
  * \see rapp::cloud::http_header
  * \see rapp::cloud::http_post
  */
-class http_request : public http_header, public http_post
+class http_request 
 {
 public:
     /**
@@ -41,10 +41,7 @@ public:
 	 * \see rapp::cloud::http_header
 	 * \see rapp::cloud::http_post
 	 */
-    http_request(
-				  const rapp::cloud::http_header header, 
-				  const rapp::cloud::http_post post
-                );
+    http_request(const std::string uri);
 
 	/**
      * \brief fill the socket streambuf with the request header and post data
@@ -53,7 +50,24 @@ public:
      * \note this method will modify the header by setting the HOST, PORT and TOKEN
 	 * \note use this method to satisfy `virtual caller::fill_buffer` polymorphism
 	 */
-    boost::asio::streambuf fill_buffer(rapp::cloud::platform info);
+    void fill_buffer(
+                      boost::asio::streambuf & buffer,
+                      rapp::cloud::platform info
+                    );
+
+    /// \brief
+    template <typename... Args>
+    void add_content(Args... args)
+    {
+		post_->add_content(std::forward<Args>(args)...);
+    }
+
+    /// \brief close this request properly
+    void close();
+
+private:
+    std::unique_ptr<http_header> header_;
+    std::unique_ptr<http_post>   post_;
 };
 }
 }

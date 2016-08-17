@@ -74,10 +74,10 @@ public:
 	{
 		assert(ptr);
 		// TODO: chose type of socket?
-        auto asio = asio_http(std::bind(&T::deserialise, ptr.get(), std::placeholders::_1),
-							  def_cb, 
-							  io_, 
-							  ptr->fill_buffer(cloud_)); 
+        boost::asio::streambuf request;
+        ptr->fill_buffer(request);
+        auto callback = std::bind(&T::deserialise, ptr.get(), std::placeholders::_1);
+        auto asio = asio_http(callback, def_cb, io_, request); 
 		asio.begin(query_, resol_);
 		io_.run();
 		io_.reset();

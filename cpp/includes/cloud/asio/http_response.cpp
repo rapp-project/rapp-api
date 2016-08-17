@@ -4,18 +4,18 @@ namespace rapp {
 namespace cloud {
 
 http_response::http_response(std::function<void(error_code error)> callback)
-: callback_(callback)
+: error_cb_(callback)
 {}
 
 http_response::http_response(std::string arg)
 {
-	std::istringstream ss(arg);
-	ss >> buffer_;
+	std::ostream ss(&buffer_);
+	ss << arg;
 }
 
-std::size_t http_response::has_content_length() const
+std::size_t http_response::has_content_length()
 {
-	const std::string head = response::to_string();
+	std::string head = this->to_string();
 	static const boost::regex reg("Content-Length:\\s[-0-9]+", boost::regex::icase);
 	boost::match_results<std::string::const_iterator> results;
 	std::size_t length = -1;
@@ -44,18 +44,21 @@ std::string http_response::strip_http_header(const std::string & data) const
 		return data.substr(i+4, std::string::npos);
 	}
 	else {
-		error_cb_(boost::systemm::errc::bad_message);
+        boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::bad_message);
+        error_cb_(err);
+        std::string error = "Error";
+        return error;
 	}
 }
 
-std::string http_response::to_string() const  
+std::string http_response::to_string() 
 {
 	std::string buffer((std::istreambuf_iterator<char>(&buffer_)), 
 						std::istreambuf_iterator<char>());
 	return buffer;
 }
 
-bool http_response::check_http_header() const
+bool http_response::check_http_header()
 {
 	std::istream buffer_stream(&buffer_);
 	std::string http_version;
@@ -66,17 +69,20 @@ bool http_response::check_http_header() const
 	std::getline(buffer_stream, status_message);
 	// did not receive a reply
 	if (!buffer_stream) {
-		error_cb_(boost::system::errc::no_message);
-		return false;
+		boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::no_message);
+        error_cb_(err);
+        return false;
 	}
 	// reply is not HTTP Protocol
 	else if (http_version.substr(0, 5) != "HTTP/") {
-		error_cb_(boost::system::errc::protocol_not_supported);
+		boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::protocol_not_supported);
+        error_cb_(err);
 		return false; 
 	}
 	// HTTP reply is not 200
 	else if (status_code != 200) {
-		error_cb_(boost::system::errc::protocol_error);
+		boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
+        error_cb_(err);
 		std::cerr << status_code << std::endl;
 		return false;
 	}
@@ -87,9 +93,9 @@ bool http_response::consume_buffer(std::function<void(std::string)> callback)
 {
 	assert(callback);
 	json_ += to_string();
-	bytes_transferred_ += response.size();
+	bytes_transferred_ += buffer_.size();
 	// have received the data correctly
-	if (bytes_transferred_ >= content_length_) {
+	if (bytes_transferred_ >= has_content_length()) {
 		callback(json_); 
 		return true;
 	}
@@ -99,7 +105,6 @@ bool http_response::consume_buffer(std::function<void(std::string)> callback)
 void http_response::end()
 {
 	json_.clear();
-	content_length_ = 0;
 	bytes_transferred_ = 0;
 }
 

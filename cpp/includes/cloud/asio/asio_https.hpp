@@ -29,7 +29,7 @@ namespace cloud {
  * \see request
  * \see response
  */
-class asio_https 
+class asio_https : public asio_handler<tls_socket>
 {
 public:
 	/**
@@ -64,18 +64,19 @@ private:
 	bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx);
 
 	/// \brief begin connection
-	void connect(const boost::system::errc err);
+	void connect(const boost::system::error_code err);
 
 	/// \brief handle handshake
-  	void handshake(const boost::system::errc err);
+  	void handshake(const boost::system::error_code err);
+
+    /// \brief shutdown handler
+    void shutdown(const boost::system::error_code);
 
 private: 
     /// error callback
-    std::function<void(boost::system::errc)> error_cb_;
+    std::function<void(boost::system::error_code err)> error_cb_;
 	/// tls context
 	boost::asio::ssl::context ctx_;
-    /// asio handler
-    rapp::cloud::asio_handler<tls_socket> handler_;
     /// boost asio socket 
     std::shared_ptr<tls_socket> socket_;
     /// request object

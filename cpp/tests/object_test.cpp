@@ -82,48 +82,6 @@ BOOST_AUTO_TEST_CASE(constructors_test)
     //BOOST_CHECK( og1 != wv1 );
 }
 
-#include "../includes/cloud/asio/response.http"
-BOOST_AUTO_TEST_CASE(cloud_class_test)
-{
-    rapp::cloud::response obj1 = rapp::cloud::response("blah");
 
-    // assignment test
-    auto obj2 = obj1;
-    BOOST_CHECK(obj1 == obj2);
-
-    // copy constructo test
-    auto obj3 = rapp::cloud::response(obj1);
-    BOOST_CHECK(obj3 == obj1);
-
-    // check method `to_string`
-    BOOST_TEST_MESSAGE("rapp::cloud::response test `to_string` method");
-    std::string str_obj1 = obj1.to_string();
-    std::string str_hard = "blah";
-    BOOST_CHECK(str_obj1 == str_hard);
-
-    // check `strip_to_header`
-    BOOST_TEST_MESSAGE("rapp::cloud::response test `strip_http_header`");
-    std::string hardcoded_header = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"
-                                += "Host: net.tutsplus.com\r\n"
-                                += "Accept-Encoding: gzip,deflate\r\n"
-                                += "Connection: keep-alive\r\n"
-                                += "Content-Length: 9\r\n"
-                                += "Cache-Control: no-cache\r\n\r\n";
-
-    std::string stripped = obj1.strip_http_header(hardcoded_header);
-    BOOST_CHECK(stripped.is_empty());
-
-    // check method does not have a content length
-    BOOST_TEST_MESSAGE("rapp::cloud::response test `has_content_lenght` method");
-    std::size_t length = -1;
-    std::size_t length_response = obj1.has_content_lenght();
-    BOOST_CHECK(length == length_response);
-
-    // check method has valid content length
-    auto obj4 = rapp::cloud::response(hardcoded_header);
-    std::size_t length2 = 9;
-    std::size_t length_response2 = obj4.has_content_length();
-    BOOST_CHECK( length2 == length_response2);
-}
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -18,7 +18,7 @@ std::string rapp::config::load_auth_token(std::string filename)
 	}
 }
 
-rapp::cloud::platform_info rapp::config::load_yaml_config(std::string filename)
+rapp::cloud::platform rapp::config::load_yaml_config(std::string filename)
 {
 	if (filename.empty()){
 		throw std::runtime_error("empty filename");
@@ -28,7 +28,7 @@ rapp::cloud::platform_info rapp::config::load_yaml_config(std::string filename)
 		throw std::runtime_error("failed to open file: " + filename);
 	}
 	std::string line;
-	rapp::cloud::platform_info lhs;
+	rapp::cloud::platform lhs;
 	int i = 1;
 	while (std::getline(infile, line)) {
 		// process one line
@@ -68,5 +68,5 @@ rapp::cloud::platform_info rapp::config::load_yaml_config(std::string filename)
 		}
 		i++;
 	}
-	return std::move(lhs);
+	return lhs;
 }

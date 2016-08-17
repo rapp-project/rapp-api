@@ -8,12 +8,18 @@ asio_https::asio_https(
 						boost::asio::io_service & io_service,
 						boost::asio::streambuf request
 					  )
-: ctx_(boost::asio::ssl::context::tlsv12_client), error_cb_(callback) 
+:
+   asio_handler<tls_socket>(cloud_function, 
+                            error_function,
+                            boost::bind(&asio_https::shutdown,
+                                        this,
+                                        boost::asio::placeholders::error)
+                            ),  
+   error_cb_(error_function), ctx_(boost::asio::ssl::context::tlsv12_client)  
 {
-	assert(cloud_function && error_function);
 	socket_ = std::make_shared<tls_socket>(io_service, ctx_);
-	assert(socket_);
-	hadler_ = asio_socket<tls_socket>(cloud_funtion, error_function, socket_);
+	assert(cloud_function && error_function && socket_);
+	asio_handler::set_socket(socket_);
 
 	// set context option for TLS - allow only TLS v1.2 and later
 	ctx_.set_options(boost::asio::ssl::context::default_workarounds
@@ -39,18 +45,23 @@ void asio_https::begin(
 
 	// resolve and connect
 	boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-	boost::system::error_code error = boost::asio::error::host_not_found;
+    boost::asio::ip::tcp::resolver::iterator end;
+    boost::system::error_code error = boost::asio::error::host_not_found;
+
 	while (error && endpoint_iterator != end) {
-		socket_->close();
+	    
+        socket_->lowest_layer().close();
 		// start timeout countdown
-		handler_->start_timer(30);
+        asio_handler::start_timer(30);
 		// try connecting
 		boost::asio::async_connect(socket_->lowest_layer(), 
 								   endpoint_iterator,
-								   boost::bind(&asio_https::connect, this, place_error));
+								   boost::bind(&asio_https::connect, 
+                                               this, 
+                                               boost::asio::placeholders::error));
 	}
 	if (error) {
-		handler_->end(error);
+        asio_handler::end(error);
 	}
 }
 
@@ -62,27 +73,36 @@ bool asio_https::verify_certificate(bool preverified, boost::asio::ssl::verify_c
 	return preverified;
 }
 
-void asio_https::connect(const boost::system::errc err)
+void asio_https::connect(const boost::system::error_code err)
 {
 	if (err) {
-		handler_->end(err);
+		asio_handler::end(err);
 		return;
 	}
 	socket_->async_handshake(boost::asio::ssl::stream_base::client,
-							 boost::bind(&asio_https::handshake, this, place_error));
+							 boost::bind(&asio_https::handshake, 
+                                         this, 
+                                         boost::asio::placeholders::error));
 }
 
-void asio_https::handshake(const boost::system::errc err)
+void asio_https::handshake(const boost::system::error_code err)
 {
 	if (err) {
-		handler_->end(error);
+        asio_handler::end(err);
 		std::cerr << "Handshake failed: " << err.message() << "\n";
 		return;
 	}
 	boost::asio::async_write(*socket_,
 							 request_,
-							 boost::bind(&asio_socket::do_request, this->handler_, place_error));
+							 boost::bind(&asio_handler::do_request, 
+                                         this,
+                                         boost::asio::placeholders::error));
 }
 
+void asio_https::shutdown(const boost::system::error_code err)
+{
+    socket_->lowest_layer().close();
+    socket_->lowest_layer().shutdown(boost::asio::ip::tcp::socket::shutdown_send);
+}
 }
 }

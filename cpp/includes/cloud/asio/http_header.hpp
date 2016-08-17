@@ -42,7 +42,7 @@ public:
      * \param endpoint contains the data of the platform
      * \param length is the size of the content
 	 */
-    std::string to_string(rapp::cloud::platform endpoint, unsigned int length) const;
+    std::string to_string(rapp::cloud::platform endpoint, unsigned int length);
 
     /**
 	 * \brief get boundary

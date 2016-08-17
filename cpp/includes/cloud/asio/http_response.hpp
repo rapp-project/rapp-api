@@ -49,19 +49,19 @@ public:
 	 * \brief get the content length streambuf response
      * \return content-length or -1 for not found
 	 */
-    std::size_t has_content_length() const;
+    std::size_t has_content_length();
     	
     /// \brief remove/strip the HTTP header and \return the body
     std::string strip_http_header(const std::string & data) const;
     
     /// \brief conversion from streambuf to string
-    std::string to_string() const;
+    std::string to_string();
     
     /** 
 	 * \brief check if HTTP status is 200
 	 * \param error handler will receive error if response is invalid
 	 */
-    bool check_http_header() const;
+    bool check_http_header();
          
 	/// \brief take data from the response and save it in JSON
 	bool consume_buffer(std::function<void(std::string)> callback);

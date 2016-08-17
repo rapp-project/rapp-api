@@ -2,20 +2,29 @@
 namespace rapp {
 namespace cloud {
 
-http_request::http_request(
-					const rapp::cloud::http_header header, 
-					const rapp::cloud::http_post post
-				)
-: header_(header), post_(post)
-{}
-
-boost::asio::streambuf http_request::fill_buffer(rapp::cloud::platform info) 
+http_request::http_request(const std::string uri)
 {
-	boost::asio::streambuf buffer;
+    if (uri.empty()) {
+        throw std::runtime_error("empty uri param");
+    }
+    header_ = std::make_unique<rapp::cloud::http_header>(uri);
+    post_   = std::make_unique<rapp::cloud::http_post>(header_->get_boundary());
+    assert(header_ && post_);
+}
+
+void http_request::fill_buffer(
+                                boost::asio::streambuf & buffer,
+                                rapp::cloud::platform info
+                              ) 
+{
 	std::ostream http_request_stream(&buffer);
-	http_request_stream << header_.to_string(info, post_.size()) 
-					    << post_.to_string();
-	return std::move(buffer);
+	http_request_stream << header_->to_string(info, post_->size()) 
+					    << post_->to_string();
+}
+
+void http_request::close()
+{
+    post_->end();
 }
 
 }
