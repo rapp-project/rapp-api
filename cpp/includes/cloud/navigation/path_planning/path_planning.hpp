@@ -125,6 +125,7 @@ public:
                     )
     : asio_http(), delegate_(callback)
     {
+        std::string boundary = rapp::misc::random_boundary();
 		// multipart/form-data append JSON first
 		post_  = "--" + boundary + "\r\n"
 	    + "Content-Disposition: form-data; name=\"map_name\"\r\n\r\n"
