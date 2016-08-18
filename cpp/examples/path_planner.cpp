@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
     if (argc == 18) 
 	{
 		// service controler
-        rapp::cloud::platform_info info = {"155.207.19.229", "9001", "rapp_token"}; 
+        rapp::cloud::platform_info info = {"localhost", "9001", "rapp_token"}; 
 		rapp::cloud::service_controller ctrl(info);
 
 		// callback lambda UPLOAD MAP
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 
 		// callback lambda PLAN_PATH_2D
 		auto callback = [&](rapp::object::planned_path path)
-							{std::cout << "is plan found? \n" << path.plan_found << " \n" << std::endl;};
+							{std::cout << "is plan found? \n" << path.plan_found << " \n" << std::endl; std::cout << "Plan has " << path.path.size() << " points\n";};
 
 		// detect faces
 		

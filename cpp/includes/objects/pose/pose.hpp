@@ -31,16 +31,10 @@ struct pose
     pose(const rapp::object::pose &) = default;
 
 	/// \brief construct using a boost propetry JSON tree
-	pose(boost::property_tree::ptree::const_iterator json)
+	pose(const boost::property_tree::ptree & pt)
 	{
-		for (auto it : json->second) {
-			if (it.first == "position") {
-				this->position = rapp::object::point(it);
-			}
-			else if (it.first == "orientation") {
-				this->orientation = rapp::object::quaternion(it); 
-			}
-		}
+        position = rapp::object::point(pt.get_child("position"));
+        orientation = rapp::object::quaternion(pt.get_child("orientation"));
 	}
     
     /// \brief Equality operator

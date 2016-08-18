@@ -6,7 +6,7 @@
 #include <ctime>
 #include <chrono>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include "misc/json_parser.hpp"
 
 ///
 ///
@@ -36,9 +36,9 @@ int main(int argc, char * argv[])
     //TEST JSON serialisation
     boost::property_tree::ptree tree;
     tree.add_child("start", ps.treefy());
-	std::stringstream ss;
-	boost::property_tree::write_json(ss, tree, false);
-	std::cout << ss.str();
+    std::stringstream ss;
+    boost::property_tree::write_json(ss, tree, true);
+    std::cout << ss.str();
 
     return 0;
 }

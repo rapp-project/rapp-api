@@ -33,24 +33,13 @@ struct msg_metadata
     msg_metadata(const rapp::object::msg_metadata &) = default;
 
 	/// \brief load from a boost property JSON tree
-	msg_metadata(boost::property_tree::ptree::const_iterator json)
+	msg_metadata(const boost::property_tree::ptree & pt)
 	{
-		for (const auto it : json->second) {
-			if (it.first == "seq") {
-				this->seq_ = it.second.get_value<int>();
-			}
-			else if (it.first == "frame_id") {
-			    this->frameid_ = it.second.get_value<std::string>();
-			}
-			else if (it.first == "stamp") {
-				for (auto it2 = it.second.begin(); it2 != it.second.end(); ++it2) {
-					if (it2->first == "nsecs") {
-						std::chrono::nanoseconds nsec(it2->second.get_value<uint64_t>());
-						this->stamp_ = rapp::object::time(nsec);
-					}
-				}
-			}
-		}
+		seq_ = pt.get<int>("seq");
+		frameid_ = pt.get<std::string>("frame_id");
+		int sec = pt.get<int>("stamp.secs");
+		int nsec = pt.get<int>("stamp.nsecs");
+		stamp_ = rapp::object::time(std::chrono::seconds(sec) + std::chrono::nanoseconds(nsec));
 	}
 
     /** 
@@ -69,7 +58,7 @@ struct msg_metadata
 	{
 		boost::property_tree::ptree tree;
         tree.put("seq", seq_);
-        tree.put("frameid", frameid_);
+        tree.put("frame_id", frameid_, s());
 		tree.add_child("stamp", stamp_.treefy());
 		return tree;
 	}
