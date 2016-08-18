@@ -35,11 +35,37 @@ struct msg_metadata
 	/// \brief load from a boost property JSON tree
 	msg_metadata(const boost::property_tree::ptree & pt)
 	{
+<<<<<<< HEAD:cpp/includes/objects/msg_metadata/msg_metadata.hpp
 		seq_ = pt.get<int>("seq");
 		frameid_ = pt.get<std::string>("frame_id");
 		int sec = pt.get<int>("stamp.secs");
 		int nsec = pt.get<int>("stamp.nsecs");
 		stamp_ = rapp::object::time(std::chrono::seconds(sec) + std::chrono::nanoseconds(nsec));
+=======
+		for (const auto it : json->second) {
+			if (it.first == "seq") {
+				this->seq_ = it.second.get_value<int>();
+			}
+			else if (it.first == "frame_id") {
+			    this->frameid_ = it.second.get_value<std::string>();
+			}
+			else if (it.first == "stamp") {
+                uint32_t sec_value;
+                uint64_t nsec_value;
+				for (auto it2 = it.second.begin(); it2 != it.second.end(); ++it2) {
+                    if (it2->first == "sec") {
+                        sec_value = it2->second.get_value<uint32_t>();
+                    }
+                    else if (it2->first == "nsec") {
+                        nsec_value = it2->second.get_value<uint64_t>();
+                    }
+				}
+                uint64_t total = ((uint64_t) sec_value << 32 | nsec_value);
+                std::chrono::nanoseconds nsec(total);
+			    this->stamp_ = rapp::object::time(nsec);
+			}
+		}
+>>>>>>> cpp:cpp/includes/objects/pose_metadata/pose_metadata.hpp
 	}
 
     /** 

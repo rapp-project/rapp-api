@@ -94,6 +94,7 @@ namespace rapp {
                 std::function<void(rapp::object::planned_path path)> delegate_;
         };
 
+<<<<<<< HEAD
         // 
         class path_upload_map : public asio_http
         {
@@ -118,6 +119,32 @@ namespace rapp {
                     post_  = "--" + boundary + "\r\n"
                         + "Content-Disposition: form-data; name=\"map_name\"\r\n\r\n"
                         + map_name + "\r\n";
+=======
+// 
+class path_upload_map : public asio_http
+{
+public:
+    /**
+     * \brief upload a map 
+     * \param png_file is an image (PNG format) of the map
+     * \param yaml_file is a map description yaml file
+     * \param map_name is the name of the map
+     * \note callback only receives an error if one occurs
+     */
+     path_upload_map(
+                      const rapp::object::picture & png_file,
+					  const rapp::object::yaml & yaml_file,
+                      const std::string map_name,
+                      std::function<void(std::string)> callback
+                    )
+    : asio_http(), delegate_(callback)
+    {
+        std::string boundary = rapp::misc::random_boundary();
+		// multipart/form-data append JSON first
+		post_  = "--" + boundary + "\r\n"
+	    + "Content-Disposition: form-data; name=\"map_name\"\r\n\r\n"
+	    + map_name + "\r\n";
+>>>>>>> cpp
 
                     // write the PNG file binary data
                     std::string png = rapp::misc::random_boundary() + ".png";
