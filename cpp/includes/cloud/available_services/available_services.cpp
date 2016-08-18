@@ -21,14 +21,19 @@ void available_services::deserialise(std::string json) const
     const Value& error    = doc["error"];
 
     assert(services.IsArray());
-    /*
+    assert(error.IsString());
+    std::string error_str = doc["error"].GetString();
+    if (!error_str.empty()) {
+        std::cerr << error_str << std::endl;
+        return;
+    }
     if (!services.IsArray()) {
-        throw std::runtime_error("services JSON not an array");
+        std::cerr << "services JSON not an array" << std::endl;
+        return;
     }
-    for (Value::ConstIterator itr = audios.Begin(); itr != audios.End(); ++itr) {
-        const Value& value = (*itr)["metadata"];
+    for (Value::ConstIterator itr = services.Begin(); itr != services.End(); ++itr) {
+        const Value& value = (*itr)["service"];
     }
-    */
 
     // ...
     //delegate_(std::move(services));

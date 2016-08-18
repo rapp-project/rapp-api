@@ -152,12 +152,12 @@ if (${BUILD_TESTS})
     #add_test(unit_object_test            object_test) 
     #add_test(unit_service_test           service_test)
     #add_test(json_serialise_test         serialise_test)
-    add_test(asio_classes_test            asio_classes)
+    add_test(asio_classes                 asio_classes)
 
     #target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
     #                                     rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    target_link_libraries(asio_clases_test      ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(asio_classes    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
     #target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
     #    ${Boost_SYSTEM_LIBRARY}
