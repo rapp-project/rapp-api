@@ -21,7 +21,7 @@ int main(int argc, char * argv[])
     rapp::object::time t(nanosec);
 
     /// a header: sequence, timestap, frameid
-    rapp::object::pose_metadata meta(0, t, "/map/blahblah");
+    rapp::object::msg_metadata meta(0, t, "/map/blahblah");
     /// robot position
     rapp::object::point position(0.0, 0.0, 1.0);
     /// robot quaternion (orientation)
