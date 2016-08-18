@@ -49,7 +49,7 @@ struct pose_metadata
                     if (it2->first == "sec") {
                         sec_value = it2->second.get_value<uint32_t>();
                     }
-                    elsef if (it2->first == "nsec") {
+                    else if (it2->first == "nsec") {
                         nsec_value = it2->second.get_value<uint64_t>();
                     }
 				}
