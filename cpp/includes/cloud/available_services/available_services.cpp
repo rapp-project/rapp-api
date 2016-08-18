@@ -31,9 +31,11 @@ void available_services::deserialise(std::string json) const
         std::cerr << "services JSON not an array" << std::endl;
         return;
     }
+    /*
     for (Value::ConstIterator itr = services.Begin(); itr != services.End(); ++itr) {
         const Value& value = (*itr)["service"];
     }
+    */
 
     // ...
     //delegate_(std::move(services));
