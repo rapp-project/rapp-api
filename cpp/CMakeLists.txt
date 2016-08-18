@@ -37,20 +37,24 @@ include_directories("includes")
 
 # Library-only Executables -
 set (SOURCES ${SOURCES} 
-						${INCLUDES}/cloud/asio/asio_timer.cpp
-                        ${INCLUDES}/cloud/asio/asio_http.cpp
-                        ${INCLUDES}/cloud/asio/asio_https.cpp
-						${INCLUDES}/cloud/asio/http_header.cpp
-						${INCLUDES}/cloud/asio/http_post.cpp
-						${INCLUDES}/cloud/asio/http_request.cpp
-						${INCLUDES}/cloud/asio/http_response.cpp
-						${INCLUDES}/config/config.cpp)
+            ${INCLUDES}/cloud/asio/asio_timer.cpp
+            ${INCLUDES}/cloud/asio/asio_http.cpp
+            ${INCLUDES}/cloud/asio/asio_https.cpp
+            ${INCLUDES}/cloud/asio/http_header.cpp
+            ${INCLUDES}/cloud/asio/http_post.cpp
+            ${INCLUDES}/cloud/asio/http_request.cpp
+            ${INCLUDES}/cloud/asio/http_response.cpp
+            ${INCLUDES}/config/config.cpp
+            ${INCLUDES}/cloud/available_services/available_services.cpp
+            )
 
 # Begin searching for packgages we use in RAPP API
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
 
-# Find Boost
+###
+# Find Boost - we use it for a variety of operations
+#
 find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex filesystem REQUIRED)
 if (Boost_FOUND)
 	if (${RAPP_STATIC})
@@ -63,7 +67,9 @@ if (Boost_FOUND)
     message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 endif()
 
-# Find libcrypt / libssl
+###
+# Find libcrypt / libssl - we use it for TLS/SSL sockets
+#
 find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
@@ -72,10 +78,20 @@ if(OPENSSL_FOUND)
     message(STATUS "OpenSSL Libraries: ${OPENSSL_LIBRARIES}")
 endif()
 
-# # #
-# Set library sources
-add_library(lrapp OBJECT ${SOURCES})
+###
+# Find RapidJSON - (rapidjson-dev in Debian and Ubuntu) 
+#
+find_package(RapidJSON REQUIRED)
+if (RapidJSON_FOUND)
+    include_directories(${RAPIDJSON_INCLUDE_DIRS})
+    set(RAPIDJSON_USE_SSE2 ON)
+    set(RAPIDJSON_USE_SSE42 ON)
+endif()
 
+###
+# Set library sources
+#
+add_library(lrapp OBJECT ${SOURCES})
 
 ###
 #   Static Library - only if asked - may be needed for NAO, Intel Atom, older ARM platforms
@@ -102,7 +118,7 @@ if ((${RAPP_SHARED}) OR (NOT (${RAPP_STATIC})))
 endif()
 
 ###
-#   INSTALL STUFF
+#   Installation Directory - default or user defined
 ###
 # user has set install location
 if (CMAKE_INSTALL_PREFIX)
@@ -128,27 +144,25 @@ if (${BUILD_TESTS})
     set (TESTS ${TESTS} tests)
     enable_testing()
 
-    add_executable(object_test           ${TESTS}/object_test.cpp)
+    #add_executable(object_class_test     ${TESTS}/object_test.cpp)
     #add_executable(service_test          ${TESTS}/service_test.cpp)
     #add_executable(serialise_test        ${TESTS}/serialise.cpp)
-    add_executable(cloud_test            ${TESTS}/unit_cloud.cpp)
+    add_executable(asio_classes           ${TESTS}/unit_cloud.cpp)
 
-    add_test(unit_object_test            object_test) 
+    #add_test(unit_object_test            object_test) 
     #add_test(unit_service_test           service_test)
     #add_test(json_serialise_test         serialise_test)
-    add_test(unit_cloud_test             cloud_test)
+    add_test(asio_classes_test            asio_classes)
 
-    target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-                                         rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-
-    target_link_libraries(cloud_test     ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-                                         rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    #target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+    #                                     rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(asio_clases_test      ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+                                                rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
     #target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
     #    ${Boost_SYSTEM_LIBRARY}
     #    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
     #    rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-
     #target_link_libraries(serialise_test rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
     message(STATUS "Building tests, they will be placed in the `${CMAKE_CURRENT_BINARY_DIR}`")

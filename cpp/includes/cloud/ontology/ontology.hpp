@@ -71,9 +71,9 @@ public:
     }
 
     /**
-    * \brief method to fill the buffer with http_post and http_header information
-    * \param info is the data of the platform    
-    */
+     * \brief method to fill the buffer with http_post and http_header information
+     * \param info is the data of the platform    
+     */
     void fill_buffer(
                        boost::asio::streambuf & request,
                        rapp::cloud::platform info

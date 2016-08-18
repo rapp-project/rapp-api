@@ -6,5 +6,7 @@
 #include "cloud/asio/caller.hpp"
 #include "cloud/asio/http_request.hpp"
 #include <boost/lexical_cast.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+
+#pragma once
+#define RAPIDJSON_HAS_STDSTRING 1
+#include <rapidjson/rapidjson.h>
