@@ -171,9 +171,12 @@ else()
 endif()
 
 
-
+###
+#   build examples - TODO: move them into a subdirectory
+###
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
+	add_executable(available_services ${EXAMPLES}/available_services.cpp)
 	#add_executable(face_detect      ${EXAMPLES}/face_detect.cpp)
 	#add_executable(qr_detect        ${EXAMPLES}/qr_detect.cpp)
 	#add_executable(speech_recog     ${EXAMPLES}/speech_to_text.cpp)
@@ -183,9 +186,9 @@ if (${BUILD_EXAMPLES})
 	#add_executable(asio_tls         ${EXAMPLES}/asio_tls.cpp)
 	#add_executable(text_to_speech   ${EXAMPLES}/text_to_speech.cpp)
 	#add_executable(config_example	${EXAMPLES}/config.cpp)
-	#add_executable(available_services ${EXAMPLES}/available_services.cpp)
 	#add_executable(cognitive_example  ${EXAMPLES}/cognitive_example.cpp)
 
+	target_link_libraries(available_services ${LIBOBJ})
 	#target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(speech_recog      ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
@@ -195,7 +198,6 @@ if (${BUILD_EXAMPLES})
 	#target_link_libraries(text_to_speech    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(service_example   ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(config_example	${LIBOBJ})
-	#target_link_libraries(available_services ${LIBOBJ})
 	#target_link_libraries(cognitive_example ${LIBOBJ})
 
     message(STATUS "Building examples, they will be placed in `${CMAKE_CURRENT_BINARY_DIR}`")

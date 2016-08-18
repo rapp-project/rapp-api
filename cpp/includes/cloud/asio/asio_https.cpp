@@ -52,7 +52,7 @@ void asio_https::begin(
 	    
         socket_->lowest_layer().close();
 		// start timeout countdown
-        asio_handler::start_timer(30);
+        //asio_handler::start_timer(30);
 		// try connecting
 		boost::asio::async_connect(socket_->lowest_layer(), 
 								   endpoint_iterator,

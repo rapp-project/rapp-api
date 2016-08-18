@@ -4,10 +4,11 @@ namespace rapp {
 namespace cloud {
 
 http_response::http_response(std::function<void(error_code error)> callback)
-: error_cb_(callback)
+: error_cb_(callback),  bytes_transferred_(0)
 {}
 
 http_response::http_response(std::string arg)
+: bytes_transferred_(0)
 {
 	std::ostream ss(&buffer_);
 	ss << arg;
@@ -79,6 +80,9 @@ bool http_response::check_http_header()
         error_cb_(err);
 		return false; 
 	}
+    // TODO: if HTTP Reply is 404 = URL not found
+    // TODO: if HTTP Reply is 500 = bad header
+    // TODO: if HTTP Reply is 401 = Internal Server Error
 	// HTTP reply is not 200
 	else if (status_code != 200) {
 		boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);

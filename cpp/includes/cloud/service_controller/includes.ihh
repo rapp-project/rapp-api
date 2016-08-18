@@ -9,5 +9,7 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
-#include "cloud/asio/asio_http/asio_http.hpp"
-#include "cloud/asio/asio_socket/asio_socket.hpp"
+#include "cloud/asio/platform.hpp"
+#include "cloud/asio/asio_http.hpp"
+#include "cloud/asio/asio_https.hpp"
+#include "cloud/asio/caller.hpp"

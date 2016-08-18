@@ -37,7 +37,7 @@ namespace cloud {
  * \see asio_https
  * \see http_response
  */
-template <class T> class asio_handler : protected http_response 
+template <class T> class asio_handler : protected http_response
 {
 public:
 	/**
@@ -54,11 +54,7 @@ public:
 
     /// \brief set socket pointer
     void set_socket(const std::shared_ptr<T> socket);
-
-	/// \brief start the timer
-	/// \param seconds will countdown and then invoke `has_timed_out`
-	void start_timer(unsigned int seconds);
-    
+	    
     /// \brief write the cloud request to the socket
 	/// \param err is propagated from boost asio
     void do_request(const boost::system::error_code & err);
@@ -95,8 +91,6 @@ protected:
     /// shutdown callback
     std::function<void(const boost::system::error_code)> close_cb_;
 
-    /// timer - asio_http and asio_https can't access timer
-    rapp::cloud::asio_timer timer_;
     /// newline
     const std::string rn_ = "\r\n";
     ///two new lines

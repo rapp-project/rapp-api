@@ -43,7 +43,7 @@ public:
                 std::function<void(std::string)> cloud_function,
                 std::function<void(error_code error)> error_function,
                 boost::asio::io_service & io_service,
-                boost::asio::streambuf request
+                boost::asio::streambuf & request
              );
 
 	/**
@@ -61,8 +61,17 @@ public:
 
 private:
 
+    /// \brief resolve
+    void resolve(
+                   boost::system::error_code  err,
+                   boost::asio::ip::tcp::resolver::iterator endpoint_iterator
+                );
+
     /// \brief begin connection
-	void connect(const boost::system::error_code err);
+	void connect(
+                 const boost::system::error_code err,
+                 boost::asio::ip::tcp::resolver::iterator endpoint_iterator
+                );
 
     /// \brief shutdown connection
     void shutdown(const boost::system::error_code);

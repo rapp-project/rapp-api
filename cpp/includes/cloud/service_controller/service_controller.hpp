@@ -16,10 +16,6 @@
  * limitations under the License.
  */
 #include "includes.ihh"
-#include "asio/platform.hpp"
-#include "asio/asio_http.hpp"
-#include "asio/asio_https.hpp"
-#include "asio/caller.hpp"
 
 namespace rapp {
 namespace cloud {
@@ -40,9 +36,9 @@ class service_controller
 {
 public:
 
-    /// \brief construct a service controller using a rapp::cloud::platform_info object
+    /// \brief construct a service controller using a rapp::cloud::platform object
 	service_controller(rapp::cloud::platform info)
-	: cloud_(info), query_(info.address, info.port), io_(), resol_(io_)
+	: info_(info), query_(info.address, info.port), io_(), resol_(io_)
 	{
 		derr_cb_ = std::bind(&service_controller::default_error_handler, this, std::placeholders::_1);
 	}
@@ -54,34 +50,27 @@ public:
 						rapp::cloud::platform info,
 						std::function<void(boost::system::error_code error)> error_handler
 					  )
-	: cloud_(info), query_(info.address, info.port), io_(), resol_(io_), error_(error_handler) 
+	: info_(info), query_(info.address, info.port), io_(), resol_(io_), error_(error_handler) 
 	{}
 
     /// \brief make_call will instantly run an asynchronous cloud job
     template <typename T, typename... Args>
     void make_call(Args... args)
     {
-		std::shared_ptr<T> ptr = std::make_shared<T>(args...);
-        run_call(asio);
-    }
+		auto ptr = std::make_shared<T>(args...);
+        assert(ptr);
 
-    /**
-     * \brief run one cloud call
-     * \param ptr is ?
-	 * \note subsequent calls will block in a FIFO queue
-     */
-    void run_call(const std::shared_ptr<rapp::cloud::caller> ptr)
-	{
-		assert(ptr);
-		// TODO: chose type of socket?
         boost::asio::streambuf request;
-        ptr->fill_buffer(request);
+        ptr->fill_buffer(boost::ref(request), info_);
+        
         auto callback = std::bind(&T::deserialise, ptr.get(), std::placeholders::_1);
-        auto asio = asio_http(callback, def_cb, io_, request); 
-		asio.begin(query_, resol_);
+
+        auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
+        assert(asio);
+		asio->begin(query_, resol_);
 		io_.run();
 		io_.reset();
-	}
+    }
 
     /**
      * \brief run a group of jobs asynchronously as a single batch
@@ -111,12 +100,12 @@ protected:
 	/// \brief handle asio errors
 	void default_error_handler(boost::system::error_code error) const
 	{
-        std::cerr << error.what() << std::endl;
+        std::cerr << error << std::endl;
 	}
 
 private:
 	// cloud params
-    rapp::cloud::platform_info cloud_;
+    rapp::cloud::platform info_;
     // resolution, query and io service
     boost::asio::ip::tcp::resolver::query query_;
 	// service IO for TCP/IP control
@@ -126,7 +115,7 @@ private:
 	// error handler
 	std::function<void(boost::system::error_code)> error_;
 	// default error handler
-	std::function<void(boost::system::errc)> derr_cb_;
+	std::function<void(boost::system::error_code)> derr_cb_;
 };
 }
 }
