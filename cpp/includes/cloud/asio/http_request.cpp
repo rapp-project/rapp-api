@@ -27,5 +27,15 @@ void http_request::close()
     post_->end();
 }
 
+std::string http_request::to_string(rapp::cloud::platform info) const
+{
+    return header_->to_string(info, post_->size()) + post_->to_string();
+}
+
+bool http_request::operator==(const http_request & rhs) const
+{
+    return (this->header_ == rhs.header_) && (this->post_ == rhs.post_);
+}
+
 }
 }

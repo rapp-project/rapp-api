@@ -1,6 +1,10 @@
 #define BOOST_TEST_MODULE ObjectTest
 #include <boost/test/unit_test.hpp>
 #include "../includes/cloud/asio/http_response.hpp"
+#include "../includes/cloud/asio/http_header.hpp"
+#include "../includes/cloud/asio/http_post.hpp"
+#include "../includes/cloud/asio/http_request.hpp"
+#include "../includes/cloud/asio/platform.hpp"
 
 BOOST_AUTO_TEST_SUITE(cloud_classes_test)
 
@@ -10,45 +14,45 @@ BOOST_AUTO_TEST_CASE(cloud_response_test)
     BOOST_TEST_MESSAGE("rapp::cloud::http_response test");
 
     std::string buf = "Buffer_Example";
-    rapp::cloud::http_response obj1 = rapp::cloud::http_response(buf);
-
-    // assignment test
-    auto obj2 = obj1;
-    BOOST_CHECK(obj1 == obj2);
+    auto obj1 = std::make_unique<rapp::cloud::http_response>(buf);
 
     // copy constructo test
-    auto obj3 = rapp::cloud::http_response(buf);
-    BOOST_CHECK(obj3 == obj1);
+    auto obj2 = std::make_unique<rapp::cloud::http_response>(buf);
+
+    // NO equality operators
+    BOOST_CHECK(obj2->to_string() == obj1->to_string());
 
     // check method `to_string`
     BOOST_TEST_MESSAGE("rapp::cloud::http_response test `to_string` method");
-    std::string str_obj1 = obj1.to_string();
-    std::string str_hard = "blah";
+    std::string str_obj1 = obj1->to_string();
+    std::string str_hard = "Buffer_Example";
+
+    /// FAILS
     BOOST_CHECK(str_obj1 == str_hard);
 
-    // check `strip_to_header`
+    // check `strip_http_header`
     BOOST_TEST_MESSAGE("rapp::cloud::http_response test `strip_http_header`");
-    std::string hardcoded_header = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n" + 
-                                + "Host: net.tutsplus.com\r\n"
-                                + "Accept-Encoding: gzip,deflate\r\n"
-                                + "Connection: keep-alive\r\n"
-                                + "Content-Length: 9\r\n"
-                                + "Cache-Control: no-cache\r\n\r\n";
+    std::string hardcoded_header = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"; 
+                hardcoded_header += "Host: net.tutsplus.com\r\n";
+                hardcoded_header += "Accept-Encoding: gzip,deflate\r\n";
+                hardcoded_header += "Connection: keep-alive\r\n";
+                hardcoded_header += "Content-Length: 9\r\n";
+                hardcoded_header += "Cache-Control: no-cache\r\n\r\n";
 
-    std::string stripped = obj1.strip_http_header(hardcoded_header);
+    std::string stripped = obj1->strip_http_header(hardcoded_header);
     BOOST_CHECK(stripped.empty());
 
     // check method does not have a content length
     BOOST_TEST_MESSAGE("rapp::cloud::http_response test `has_content_lenght` method");
     std::size_t length = -1;
-    std::size_t length_response = obj1.has_content_lenght();
+    std::size_t length_response = obj1->has_content_length();
     BOOST_CHECK(length == length_response);
 
     // check method has valid content length
-    auto obj4 = rapp::cloud::http_response(hardcoded_header);
+    auto obj4 = std::make_unique<rapp::cloud::http_response>(hardcoded_header);
     std::size_t length2 = 9;
-    std::size_t length_response2 = obj4.has_content_length();
-    BOOST_CHECK( length2 == length_response2);
+    std::size_t length_response2 = obj4->has_content_length();
+    BOOST_CHECK(length2 == length_response2);
 }
 
 /// \brief test `includes/cloud/asio/http_header.hpp`
@@ -56,47 +60,36 @@ BOOST_AUTO_TEST_CASE(cloud_http_header_test)
 {
     BOOST_TEST_MESSAGE("rapp::cloud::http_header test");
 
-    rapp::cloud::http_header head1 = rapp::cloud::http_header();
-
-    //copy constructor test
-    auto head2 = head1;
-    BOOST_CHECK(head1 == head2);
+    std::string ur = "uri\r\n";
+    rapp::cloud::http_header head1 = rapp::cloud::http_header(ur);
 
     //check method `to_string`
     BOOST_TEST_MESSAGE("rapp::cloud::http_header test `to string` method");
 
-    std::string head3 = head1.uri_
-                     + "Host: http://example:8080 \r\n"
-                     + "User-Agent: rapp_api/cpp/0.7.0\r\n"
-                     + "Connection: close\r\n";
-                     + "Accept: */*\r\n"
-                     + "Accept-Token: token\r\n"
-                     + "Content-Length: 8\r\n"
-                     + "Content-Type: multipart/form-data; boundary=" +head1.boundary_
-                     + "\r\n\r\n";
+    std::string head2 = "uri\r\n";
+                head2 += "Host: http://example:8080 \r\n";
+                head2 += "User-Agent: rapp_api/cpp/0.7.0\r\n";
+                head2 += "Connection: close\r\n";
+                head2 += "Accept: */*\r\n";
+                head2 += "Accept-Token: token\r\n";
+                head2 += "Content-Length: 8\r\n";
+                head2 += "Content-Type: multipart/form-data; boundary=" +head1.get_boundary();
+                head2 += "\r\n\r\n";
     
-     rapp::cloud::platform_info info = { "http://example", "8080", "token"};
+    rapp::cloud::platform info = { "http://example", "8080", "token"};
     
-     unsigned int length_test = 8;
+    unsigned int length_test = 8;
    
-     std::string head4 = head1.to_string(info, length_test);
-    
-     BOOST_CHECK( head3 == head4);                
-
-    //check method `set_uri`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_header test `set_uri` method");
-    
-    std::string test = "test";
-    head1.set_uri(test);
-    BOOST_CHECK(head1.uri_ == test);
+    std::string head3 = head1.to_string(info, length_test);
+   
+    /// FAILS
+    BOOST_CHECK(head3 == head2);                
 
     //check method `get_boundary`
     BOOST_TEST_MESSAGE("rapp::cloud::http_header test `get_boundary` method");
 
     std::string test2 = head1.get_boundary();
-    BOOST_CHECK(head1.boundary_ == test2);
-
-
+    BOOST_CHECK(head1.get_boundary() == test2);
 }
 
 /// \brief test `includes/cloud/asio/http_post.hpp` 
@@ -105,107 +98,86 @@ BOOST_AUTO_TEST_CASE(cloud_http_post_test)
     BOOST_TEST_MESSAGE("rapp::cloud::http_post test");
 
     std::string boundary_example = rapp::misc::random_boundary();
-    rapp::cloud::http_post post1 = rapp::cloud::http_post::http_post(boundary_example); 
+    auto post1 = std::make_unique<rapp::cloud::http_post>(boundary_example); 
 
     // assignament test
-    auto post2 = post1;
-    BOOST_CHECK( post1 == post2);
-    
-    // check method `add_content`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_post test `add_content` method");
+    auto post2 = std::make_unique<rapp::cloud::http_post>(boundary_example);
+    // NO equality operators
+    BOOST_CHECK(post1->to_string() == post2->to_string());
     
     std::string name = "ortelio";
     std::string content = "content";
-    std::string data_example = post1.data_;
+    std::string data_example = post1->to_string();
 
     std::string string_post3 = data_example
-                             += "--" + boundary_example + "\r\n";
-                             += "Content-Disposition: form-data; name=\""\ + name + "\"\r\n\r\n";
-                             += content
-                             += "\r\n"; 
+                             + "--" + boundary_example + "\r\n"
+                             + "Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n"
+                             + content
+                             + "\r\n"; 
 
-    auto post4 = post1;
+    auto post4 = std::make_unique<rapp::cloud::http_post>(boundary_example);
 
-    post4.add_content(name, content, true);
-    BOOST_CHECK(post4.data_ ==string_post3);
-
-    // check method `add_content`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_post test `add_content` second method");
+    post4->add_content(name, content, true);
+    BOOST_CHECK(post4->to_string() == string_post3);
 
     std::string filename = "image";
     std::vector<rapp::types::byte> bytes;
     bytes.push_back(89);
     bytes.push_back(50);
+    std::string string_post4 = data_example
+                             + "--" + boundary_example + "\r\n"
+                             + "Content-Disposition: form-data; name=\"" + name + "\";"
+                             + " filename=\"" + filename + "\r\n"
+                             + "Content-Transfer-Encoding: binary\r\n\r\n";
 
-    std::string string_post3 = data_example
-                     += "--" + boundary_example + "\r\n"
-                     += "Content-Disposition: form-data; name=\"" + name + ""\";"
-                     += " filename=\"" + filename + "\"\r\n"
-                     += "Content-Transfer-Encoding: binary\r\n\r\n";
+    string_post4.insert(data_example.end(), bytes.begin(), bytes.end());
+    string_post3 += "\r\n";                     
 
-    string_post3.insert(data_.end(), bytes.begin(), bytes.end());
-    string_post3+= "\r\n";                     
+    auto post5 = std::make_unique<rapp::cloud::http_post>(boundary_example);
 
-    auto post5 = post1;
-
-    post5.add_content(name, filename, bytes);
-    BOOST_CHECK(post5.data_ == string_post3);
+    post5->add_content(name, filename, bytes);
+    BOOST_CHECK(post5->to_string() == string_post4);
 
     // check method `end`
     BOOST_TEST_MESSAGE("rapp::cloud::http_post test `end` method");
 
-    std::string data2 = post1.data_;
-    data2 +=  "--" + boundary + "--\r\n";
+    std::string data2 = post1->to_string();
+    data2 +=  "--" + boundary_example + "--\r\n";
 
-    auto post6 = post1;
-    post6.end();
+    auto post6 = std::make_unique<rapp::cloud::http_post>(boundary_example);
+    post6->end();
 
-    BOOST_CHECK(post6.data_ == data2);
+    BOOST_CHECK(post6->to_string() == data2);
 
-    //check method `to_string`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_post test `to_string` method");
+    std::string data3 = post4->to_string();
+    BOOST_CHECK(string_post3 == data3);
 
-    std::string data3 = post1.to_string();
-    BOOST_CHECK(post1.data_ == data3);
-
-    //check method `size`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_post test `size` method");
-
-    std::string data4 = post1.data_;
+    std::string data4 = post1->to_string();
     unsigned int size1, size2;
     size1 = data4.size()*sizeof(std::string::value_type);
-    size2 = post1.size();
+    size2 = post1->size();
 
     BOOST_CHECK(size1 == size2);
-
 }
 
-/// \brief test`includes/cloud/asio/request.hpp` 
+/// \brief test`includes/cloud/asio/http_request.hpp` 
 BOOST_AUTO_TEST_CASE(cloud_request_test)
 {
-    BOOST_TEST_MESSAGE("rapp::cloud::request test");
-    
-    //check method `fill_buffer`
-    BOOST_TEST_MESSAGE("rapp::cloud::request test `request` method");
-    
     std::string boundary1 = rapp::misc::random_boundary();
- 
-    rapp::cloud::http_header head = rapp::cloud::http_header();
-    rapp::cloud::http_post post =rapp::cloud::http_post(boundary1);
-    rapp::cloud::request request_test = rapp::cloud::request(head, post);
+    const std::string ur = "ur\r\n";
+    std::string ur2 = "ur\r\n";
 
-    std::string str = head.to_string() + post.to_string();
-    rapp::cloud::platform_info info = {"localhost", "9001", "rapp_token"};
+    auto request_test = rapp::cloud::http_request(ur);
+    auto request_2 = std::make_unique<rapp::cloud::http_request>(ur2);
 
-
+    rapp::cloud::platform info = {"localhost", "9001", "rapp_token"};
+    //check method `fill_buffer`
     boost::asio::streambuf buffer;
-    // TEST
     request_test.fill_buffer(buffer, info); 
 
-    std::string buf_str((std::istreambuf_iterator<char>(&buffer)), 
-                        std::istreambuf_iterator<char>());
+    std::cout << request_2->to_string(info);
 
-    BOOST_CHECK(buf_str == str);
+    //BOOST_CHECK(buf_str == ostr);
 }
 
 

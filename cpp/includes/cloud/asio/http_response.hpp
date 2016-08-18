@@ -68,7 +68,7 @@ public:
 	
 	/// \brief clean the variables
 	void end();
-	
+    	
 protected:
     boost::asio::streambuf buffer_;
     std::string json_;

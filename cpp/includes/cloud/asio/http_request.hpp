@@ -65,6 +65,12 @@ public:
     /// \brief close this request properly
     void close();
 
+    /// \brief
+    std::string to_string(rapp::cloud::platform info) const;
+
+    /// brief 
+    bool operator==(const http_request & rhs) const;
+
 private:
     std::unique_ptr<http_header> header_;
     std::unique_ptr<http_post>   post_;
