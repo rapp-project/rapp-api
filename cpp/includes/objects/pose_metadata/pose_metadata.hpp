@@ -43,12 +43,19 @@ struct pose_metadata
 			    this->frameid_ = it.second.get_value<std::string>();
 			}
 			else if (it.first == "stamp") {
+                uint32_t sec_value;
+                uint64_t nsec_value;
 				for (auto it2 = it.second.begin(); it2 != it.second.end(); ++it2) {
-					if (it2->first == "nsecs") {
-						std::chrono::nanoseconds nsec(it2->second.get_value<uint64_t>());
-						this->stamp_ = rapp::object::time(nsec);
-					}
+                    if (it2->first == "sec") {
+                        sec_value = it2->second.get_value<uint32_t>();
+                    }
+                    elsef if (it2->first == "nsec") {
+                        nsec_value = it2->second.get_value<uint64_t>();
+                    }
 				}
+                uint64_t total = ((uint64_t) sec_value << 32 | nsec_value);
+                std::chrono::nanoseconds nsec(total);
+			    this->stamp_ = rapp::object::time(nsec);
 			}
 		}
 	}
