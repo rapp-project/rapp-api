@@ -43,6 +43,12 @@ struct point
 			}
 		}
 	}
+
+    point(const boost::property_tree::ptree & pt) {
+        x = pt.get<float>("x");
+        y = pt.get<float>("y");
+        z = pt.get<float>("z");
+    }
     
     /// \brief Equality operator
     bool operator==(const rapp::object::point & rhs) const

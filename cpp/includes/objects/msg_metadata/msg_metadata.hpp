@@ -4,13 +4,13 @@
 namespace rapp {
 namespace object {
 /**
- * \class pose_metadata
+ * \class msg_metadata
  * \brief encapsulates metadata of another class (e.g. pose)
  * \version 0.6.0
  * \date 24-July-2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-struct pose_metadata
+struct msg_metadata
 {
     /**
      * \brief Consruct using sequence nr, time stamp and frameid
@@ -18,7 +18,7 @@ struct pose_metadata
      * \param stamp is message data generation time stamp
      * \param frameid is data coordination frame
      */
-    pose_metadata(
+    msg_metadata(
 					int seq,
 					rapp::object::time stamp,
 					std::string frameid
@@ -27,14 +27,21 @@ struct pose_metadata
     {}
     
     /// \brief disable Empty Consructor
-    pose_metadata() = default;
+    msg_metadata() = default;
     
     /// \brief default copy Conatructor
-    pose_metadata(const rapp::object::pose_metadata &) = default;
+    msg_metadata(const rapp::object::msg_metadata &) = default;
 
 	/// \brief load from a boost property JSON tree
-	pose_metadata(boost::property_tree::ptree::const_iterator json)
+	msg_metadata(const boost::property_tree::ptree & pt)
 	{
+<<<<<<< HEAD:cpp/includes/objects/msg_metadata/msg_metadata.hpp
+		seq_ = pt.get<int>("seq");
+		frameid_ = pt.get<std::string>("frame_id");
+		int sec = pt.get<int>("stamp.secs");
+		int nsec = pt.get<int>("stamp.nsecs");
+		stamp_ = rapp::object::time(std::chrono::seconds(sec) + std::chrono::nanoseconds(nsec));
+=======
 		for (const auto it : json->second) {
 			if (it.first == "seq") {
 				this->seq_ = it.second.get_value<int>();
@@ -58,13 +65,14 @@ struct pose_metadata
 			    this->stamp_ = rapp::object::time(nsec);
 			}
 		}
+>>>>>>> cpp:cpp/includes/objects/pose_metadata/pose_metadata.hpp
 	}
 
     /** 
      * \brief equality operator
      * \note compare all components
      */
-    bool operator==(const rapp::object::pose_metadata & rhs) const
+    bool operator==(const rapp::object::msg_metadata & rhs) const
     {
 		return (this->seq_ == rhs.seq_) &&
 			   (this->stamp_ == rhs.stamp_) &&
@@ -76,7 +84,7 @@ struct pose_metadata
 	{
 		boost::property_tree::ptree tree;
         tree.put("seq", seq_);
-        tree.put("frameid", frameid_);
+        tree.put("frame_id", frameid_, s());
 		tree.add_child("stamp", stamp_.treefy());
 		return tree;
 	}

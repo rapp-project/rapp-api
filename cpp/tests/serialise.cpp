@@ -6,7 +6,7 @@
 #include <ctime>
 #include <chrono>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include "misc/json_parser.hpp"
 
 ///
 ///
@@ -21,7 +21,7 @@ int main(int argc, char * argv[])
     rapp::object::time t(nanosec);
 
     /// a header: sequence, timestap, frameid
-    rapp::object::pose_metadata meta(0, t, "/map/blahblah");
+    rapp::object::msg_metadata meta(0, t, "/map/blahblah");
     /// robot position
     rapp::object::point position(0.0, 0.0, 1.0);
     /// robot quaternion (orientation)
@@ -36,9 +36,9 @@ int main(int argc, char * argv[])
     //TEST JSON serialisation
     boost::property_tree::ptree tree;
     tree.add_child("start", ps.treefy());
-	std::stringstream ss;
-	boost::property_tree::write_json(ss, tree, false);
-	std::cout << ss.str();
+    std::stringstream ss;
+    boost::property_tree::write_json(ss, tree, true);
+    std::cout << ss.str();
 
     return 0;
 }

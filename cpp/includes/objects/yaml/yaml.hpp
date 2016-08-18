@@ -18,9 +18,12 @@ public:
     yaml() = default;
 
 	/// construct with a filename and raw yaml string
-	yaml(std::string data)
-	: data_(data)
-	{}
+	yaml(const std::string & fname)
+	{
+		std::ifstream t(fname);
+		std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+		data_ = str;
+	}
 
     /// copy constructor
     yaml(const rapp::object::yaml &) = default;
