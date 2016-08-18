@@ -147,7 +147,7 @@ if (${BUILD_TESTS})
     #add_executable(object_class_test     ${TESTS}/object_test.cpp)
     #add_executable(service_test          ${TESTS}/service_test.cpp)
     #add_executable(serialise_test        ${TESTS}/serialise.cpp)
-    add_executable(asio_classes           ${TESTS}/unit_cloud.cpp)
+    add_executable(asio_classes           ${TESTS}/asio_classes.cpp)
 
     #add_test(unit_object_test            object_test) 
     #add_test(unit_service_test           service_test)

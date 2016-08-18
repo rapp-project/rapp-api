@@ -59,15 +59,15 @@ public:
     bool save(const std::string filepath)
     {
         std::ofstream os(filepath, std::ios::out | std::ofstream::binary);
-        if (os.is_open())
-        {
+        if (os.is_open()) {
             std::copy(bytearray_.begin(), bytearray_.end(), 
                       std::ostreambuf_iterator<rapp::types::byte>(os));
             os.close();
             return true;
         }
-        else
+        else {
             return false;
+        }
     }
 
 private:

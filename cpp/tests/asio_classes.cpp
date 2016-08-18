@@ -1,3 +1,19 @@
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #define BOOST_TEST_MODULE ObjectTest
 #include <boost/test/unit_test.hpp>
 #include "../includes/cloud/asio/http_response.hpp"
@@ -5,35 +21,38 @@
 #include "../includes/cloud/asio/http_post.hpp"
 #include "../includes/cloud/asio/http_request.hpp"
 #include "../includes/cloud/asio/platform.hpp"
+#include "../includes/objects/picture/picture.hpp"
 
 BOOST_AUTO_TEST_SUITE(cloud_classes_test)
 
-/// \brief test `includes/cloud/asio/response.hpp`
+/**
+ *\brief TEST for http_reponse class
+ *\First,  we check the constructor creating two equal objects and comparing
+ *\        their attribute buffer between them
+ *\Second, method 'to_string()' is checked creating an string equal to argument
+ *\        we pass to the constructor, and they are compared.
+ *\Third,  method 'strip_http_header' is checked creating manually a http header
+ *\        and comparing with the header created by the class. It's checked too
+ *\        if it's empty.
+ *\Last,   method 'has_content_lenght' is checked comparing with and size_t with
+ *\        the same size that the header created before, and comparing them.
+ */
 BOOST_AUTO_TEST_CASE(cloud_response_test)
 {
-    BOOST_TEST_MESSAGE("rapp::cloud::http_response test");
 
     std::string buf = "Buffer_Example";
     auto obj1 = std::unique_ptr<rapp::cloud::http_response>(new rapp::cloud::http_response(buf));
     BOOST_CHECK(obj1);
-
-    // copy constructo test
     auto obj2 = std::unique_ptr<rapp::cloud::http_response>(new rapp::cloud::http_response(buf));
     BOOST_CHECK(obj2);
+    BOOST_CHECK_EQUAL(obj2->to_string(), obj1->to_string());
 
-    // NO equality operators
-    BOOST_CHECK(obj2->to_string() == obj1->to_string());
-
-    // check method `to_string`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_response test `to_string` method");
-    std::string str_obj1 = obj1->to_string();
+    auto obj3 = std::unique_ptr<rapp::cloud::http_response>(new rapp::cloud::http_response(buf));
+    std::string str_obj3 = obj3->to_string();
     std::string str_hard = "Buffer_Example";
 
-    /// FAILS
-    BOOST_CHECK(str_obj1 == str_hard);
+    BOOST_CHECK_EQUAL(str_obj3, str_hard);
 
-    // check `strip_http_header`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_response test `strip_http_header`");
     std::string hardcoded_header = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"; 
                 hardcoded_header += "Host: net.tutsplus.com\r\n";
                 hardcoded_header += "Accept-Encoding: gzip,deflate\r\n";
@@ -44,74 +63,74 @@ BOOST_AUTO_TEST_CASE(cloud_response_test)
     std::string stripped = obj1->strip_http_header(hardcoded_header);
     BOOST_CHECK(stripped.empty());
 
-    // check method does not have a content length
-    BOOST_TEST_MESSAGE("rapp::cloud::http_response test `has_content_lenght` method");
     std::size_t length = -1;
     std::size_t length_response = obj1->has_content_length();
-    BOOST_CHECK(length == length_response);
+    BOOST_CHECK_EQUAL(length, length_response);
 
-    // check method has valid content length
     auto obj4 = std::unique_ptr<rapp::cloud::http_response>(new rapp::cloud::http_response(hardcoded_header));
     BOOST_CHECK(obj4);
 
     std::size_t length2 = 9;
     std::size_t length_response2 = obj4->has_content_length();
-    BOOST_CHECK(length2 == length_response2);
+    BOOST_CHECK_EQUAL(length2, length_response2);
 }
 
-/// \brief test `includes/cloud/asio/http_header.hpp`
+/**
+ *\brief TEST for http_header class
+ *\First,  we check the constructor and the  method 'to_string()' creating manually
+ *\        an http header and comparing with the header created by the class.
+ *\Second, method 'get boundary' is checked comparing the attibute of the first
+ *\        object with itself
+ */
 BOOST_AUTO_TEST_CASE(cloud_http_header_test)
 {
-    BOOST_TEST_MESSAGE("rapp::cloud::http_header test");
-
-    std::string ur = "uri\r\n";
+    std::string ur = "hop/test\r\n";
     rapp::cloud::http_header head1 = rapp::cloud::http_header(ur);
 
-    //check method `to_string`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_header test `to string` method");
-
-    std::string head2 = "uri\r\n";
-                head2 += "Host: http://example:8080 \r\n";
+    std::string head2 = "hop/test\r\n";
+                head2 += "Host: http://example:8080\r\n";
                 head2 += "User-Agent: rapp_api/cpp/0.7.0\r\n";
                 head2 += "Connection: close\r\n";
-                head2 += "Accept: */*\r\n";
                 head2 += "Accept-Token: token\r\n";
                 head2 += "Content-Length: 8\r\n";
                 head2 += "Content-Type: multipart/form-data; boundary=" +head1.get_boundary();
                 head2 += "\r\n\r\n";
     
     rapp::cloud::platform info = { "http://example", "8080", "token"};
-    
     unsigned int length_test = 8;
-   
     std::string head3 = head1.to_string(info, length_test);
    
-    /// FAILS
-    BOOST_CHECK(head3 == head2);                
-
-    //check method `get_boundary`
-    BOOST_TEST_MESSAGE("rapp::cloud::http_header test `get_boundary` method");
+    BOOST_CHECK_EQUAL(head3, head2);                
 
     std::string test2 = head1.get_boundary();
-    BOOST_CHECK(head1.get_boundary() == test2);
+    BOOST_CHECK_EQUAL(head1.get_boundary(), test2);
 }
 
-/// \brief test `includes/cloud/asio/http_post.hpp` 
+/**
+ *\brief TEST for http_post class
+ *\First,  we check the constructor creating two equal objects and comparing
+ *\        their attribute buffer between them
+ *\Second, method 'to_string()' is checked creating a post header manually
+ *\        equal that the class creates for comparing them.
+ *\Third,  both methods 'add_content' is checked creating a post data manually
+ *\        and comparing with the one created by the class
+ *\Last,   method 'size' is checked using the same string and calculating
+ *\        the size manually and with the method.
+ */ 
 BOOST_AUTO_TEST_CASE(cloud_http_post_test)
 {
     std::string boundary_example = rapp::misc::random_boundary();
     auto post1 = std::unique_ptr<rapp::cloud::http_post>(new rapp::cloud::http_post(boundary_example)); 
     BOOST_CHECK(post1);
 
-    // assignament test
     auto post2 = std::unique_ptr<rapp::cloud::http_post>(new rapp::cloud::http_post(boundary_example));
     BOOST_CHECK(post2);
 
-    // NO equality operators
-    BOOST_CHECK(post1->to_string() == post2->to_string());
+    // check if two http posts with same boundary are the same
+    BOOST_CHECK_EQUAL(post1->to_string(), post2->to_string());
     
-    std::string data_example = post1->to_string();
-    std::string string_post3 = data_example
+    // craft a manual POST Content Disposition and compare it to the method
+    std::string string_post3 = post1->to_string()
                              + "--" + boundary_example + "\r\n"
                              + "Content-Disposition: form-data; name=\"blah\"\r\n\r\n"
                              + "blah blah blah"
@@ -119,51 +138,42 @@ BOOST_AUTO_TEST_CASE(cloud_http_post_test)
 
     auto post4 = std::unique_ptr<rapp::cloud::http_post>(new rapp::cloud::http_post(boundary_example));
     BOOST_CHECK(post4);
-
     post4->add_content("blah", "blah blah blah", true);
-    BOOST_CHECK(post4->to_string() == string_post3);
 
-/*
-    std::string filename = "image";
-    std::vector<rapp::types::byte> bytes;
-    bytes.push_back(89);
-    bytes.push_back(50);
-    std::string string_post4 = data_example
-                             + "--" + boundary_example + "\r\n"
-                             + "Content-Disposition: form-data; name=\"" + name + "\";"
-                             + " filename=\"" + filename + "\r\n"
+    // compare manual string with method one
+    BOOST_CHECK_EQUAL(post4->to_string(), string_post3);
+
+    // load the picture byes
+    const std::string file = "qrcode.png";
+    auto pic = std::unique_ptr<rapp::object::picture>(new rapp::object::picture(file));
+    BOOST_CHECK(pic);
+    const auto bytes = pic->bytearray();
+    std::string string_post4 = "--" + boundary_example + "\r\n"
+                             + "Content-Disposition: form-data; name=\"blah\";"
+                             + " filename=\"" + file + "\"\r\n"
                              + "Content-Transfer-Encoding: binary\r\n\r\n";
-
-    string_post4.insert(data_example.end(), bytes.begin(), bytes.end());
-    string_post3 += "\r\n";                     
-*/
+    string_post4.insert(string_post4.end(), bytes.begin(), bytes.end());
+    string_post4 += "\r\n";                     
 
     auto post5 = std::unique_ptr<rapp::cloud::http_post>(new rapp::cloud::http_post(boundary_example));
     BOOST_CHECK(post5);
+    post5->add_content("blah", file, bytes);
 
-    //post5->add_content(name, filename, bytes);
-    //BOOST_CHECK(post5->to_string() == string_post4);
+    // test the content dispoition for files with manual string
+    BOOST_CHECK_EQUAL(post5->to_string(), string_post4);
 
-    std::string data2 = post1->to_string();
-    data2 +=  "--" + boundary_example + "--\r\n";
+    // check post sizes
+    unsigned int str_size = string_post4.size()*sizeof(std::string::value_type);
+    BOOST_CHECK_EQUAL(str_size, post5->size());
 
-    auto post6 = std::unique_ptr<rapp::cloud::http_post>(new rapp::cloud::http_post(boundary_example));
-    BOOST_CHECK(post6);
-    post6->end();
-
-    BOOST_CHECK(post6->to_string() == data2);
-
-    std::string data3 = post4->to_string();
-    BOOST_CHECK(string_post3 == data3);
-
-    std::string data4 = post1->to_string();
-    unsigned int size1 = data4.size()*sizeof(std::string::value_type);
-    unsigned int size2 = post1->size();
-
-    BOOST_CHECK(size1 == size2);
+    // check post sizes
+    BOOST_CHECK(post4->size() != post5->size()); 
 }
 
-/// \brief test`includes/cloud/asio/http_request.hpp` 
+/**
+ *\brief TEST for http_request class
+ *\this class was checked looking with cout command what was the result 
+ */
 BOOST_AUTO_TEST_CASE(cloud_request_test)
 {
     std::string boundary1 = rapp::misc::random_boundary();
@@ -175,14 +185,8 @@ BOOST_AUTO_TEST_CASE(cloud_request_test)
     BOOST_CHECK(request_2);
 
     rapp::cloud::platform info = {"localhost", "9001", "rapp_token"};
-    //check method `fill_buffer`
     boost::asio::streambuf buffer;
     request_test.fill_buffer(buffer, info); 
-
-    std::cout << request_2->to_string(info);
-
-    //BOOST_CHECK(buf_str == ostr);
 }
-
 
 BOOST_AUTO_TEST_SUITE_END()
