@@ -9,5 +9,5 @@
 #include "objects/point/point.hpp"
 #include "objects/quaternion/quaternion.hpp"
 #include "objects/pose/pose.hpp"
-#include "objects/pose_metadata/pose_metadata.hpp"
+#include "objects/msg_metadata/msg_metadata.hpp"
 #include "objects/pose_stamped/pose_stamped.hpp"
