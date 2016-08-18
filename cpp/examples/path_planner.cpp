@@ -23,11 +23,16 @@ int main(int argc, char* argv[])
 		// upload map
 		std::string yaml_file_name  = argv[16];
 		std::string png_file_name  = argv[15];
+		std::string map_name  = argv[17];
+		std::cout<<"yaml: "<<yaml_file_name<<std::endl;
+
+		std::cout<<"png: "<<png_file_name<<std::endl;
+		std::cout<<"map_name: "<<map_name<<std::endl;
 		auto yaml_file = rapp::object::yaml(yaml_file_name);
 		auto picture_file = rapp::object::picture(png_file_name);
 
 		///
-		ctrl.make_call<rapp::cloud::path_upload_map>(picture_file, yaml_file, "my_map", upload_callback);
+		ctrl.make_call<rapp::cloud::path_upload_map>(picture_file, yaml_file, map_name, upload_callback);
 
 		//set start and goal 
 		std::chrono::nanoseconds nanosec(10);
@@ -42,7 +47,7 @@ int main(int argc, char* argv[])
 							{std::cout << "is plan found? \n" << path.plan_found << " \n" << std::endl;};
 
 		// detect faces
-		std::string map_name  = argv[17];
+		
 		ctrl.make_call<rapp::cloud::plan_path_2d>(map_name, "NAO", "dijkstra", start, goal, callback);
 		return 0;
     }
