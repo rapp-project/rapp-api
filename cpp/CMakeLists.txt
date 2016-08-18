@@ -130,12 +130,12 @@ if (${BUILD_TESTS})
 
     add_executable(object_test           ${TESTS}/object_test.cpp)
     #add_executable(service_test          ${TESTS}/service_test.cpp)
-    add_executable(serialise_test        ${TESTS}/serialise.cpp)
+    #add_executable(serialise_test        ${TESTS}/serialise.cpp)
     add_executable(cloud_test            ${TESTS}/unit_cloud.cpp)
 
     add_test(unit_object_test            object_test) 
     #add_test(unit_service_test           service_test)
-    add_test(json_serialise_test         serialise_test)
+    #add_test(json_serialise_test         serialise_test)
     add_test(unit_cloud_test             cloud_test)
 
     target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
@@ -149,7 +149,7 @@ if (${BUILD_TESTS})
     #    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
     #    rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
-    target_link_libraries(serialise_test rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    #target_link_libraries(serialise_test rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
     message(STATUS "Building tests, they will be placed in the `${CMAKE_CURRENT_BINARY_DIR}`")
 else()
