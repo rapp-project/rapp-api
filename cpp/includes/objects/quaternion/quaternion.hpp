@@ -3,11 +3,13 @@
 #include "includes.ihh"
 namespace rapp {
 namespace object {
+
+using namespace rapidjson;    
 /**
  * \struct quaternion
  * \brief class which encapsulate quaternion vector
- * \version 0.6.0
- * \date July-24-2016
+ * \version 0.7.0
+ * \date 19 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 struct quaternion
@@ -29,24 +31,57 @@ struct quaternion
     /// \brief copy constructor
     quaternion(const rapp::object::quaternion &) = default;
 
-	/// \brief construct from a boost JSON ptree::value_type
-	quaternion(const boost::property_tree::ptree::value_type json)
-	{
-		for (auto it = json.second.begin(); it != json.second.end(); ++it) {
-			if (it->first == "x") {
-				this->x = it->second.get_value<uint32_t>();
-			}
-			else if (it->first == "y") {
-				this->y = it->second.get_value<uint32_t>();
-			}
-			else if (it->first == "z") {
-				this->y = it->second.get_value<uint32_t>();
-			}
-			else if (it->first == "w") {
-				this->y = it->second.get_value<uint32_t>();
-			}
-		}
-	}
+	quaternion(const rapidjson::Value::ConstMemberIterator & iter)
+    {
+        auto it_x = iter->FindMember("x");
+        if (it_x != iter->MemberEnd()) {
+            if (it_x->value.IsFloat())
+            {
+                this->x = it_x->value.GetFloat();
+            }
+            else
+                throw std::runtime_error("member `x` not a float");    
+        }
+        else 
+            throw std::runtime_error("param has no `x` value");
+
+        float y_value;
+        auto it_y = iter->FindMember("y");
+        if (it_y != iter->MemberEnd()) {
+            if (it_y->value.IsFloat())
+            {
+                this->y = it_y->value.GetFloat();
+            }
+            else
+                throw std::runtime_error("member `y` not a float");    
+        }
+        else 
+            throw std::runtime_error("param has no `y` value");
+
+        auto it_z = iter->FindMember("z");
+        if (it_z != iter->MemberEnd()) {
+            if (it_z->value.IsFloat())
+            {
+                this->z = it_z->value.GetFloat();
+            }
+            else
+                throw std::runtime_error("member `z` not a float");    
+        }
+        else 
+            throw std::runtime_error("param has no `z` value");
+
+        auto it_w = iter->FindMember("w");
+        if (it_w != iter->MemberEnd()) {
+            if (it_w->value.IsFloat())
+            {
+               this->w = it_w->value.GetFloat();
+            }
+            else
+                throw std::runtime_error("member `w` not a float");    
+        }
+        else 
+            throw std::runtime_error("param has no `w` value");
+    }
     
     /// \brief equalit-> operator
     bool operator==(const rapp::object::quaternion & rhs) const
@@ -57,17 +92,22 @@ struct quaternion
 			   (this->w == rhs.w);
     }
 
-	/// \brief convert *this* into a boost tree
-	boost::property_tree::ptree treefy() const
-	{
-		boost::property_tree::ptree tree;
-        tree.put("x", x);
-        tree.put("y", y);
-		tree.put("z", y);
-		tree.put("w", z);
-		return tree;
-	}
+	template <typename W>
+    void Serialize(W & writer) const
+    {
+        writer.StartObject();
+        writer.String("x");
+        writer.Float(x);
+        writer.String("y");
+        writer.Float(y);
+        writer.String("z");
+        writer.Float(z);
+        writer.String("w");
+        writer.Float(w);
+        writer.EndObject();
 
+    }
+    
 	/// members
 	float x = 0;
     float y = 0;

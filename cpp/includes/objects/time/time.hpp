@@ -3,11 +3,13 @@
 #include "includes.ihh"
 namespace rapp {
 namespace object {
+
+using namespace rapidjson;    
 /**
  * \struct time
  * \brief wraps around a time-stamp (UNIX Epoch)
- * \version 0.6.0
- * \date 24-7-2016
+ * \version 0.7.0
+ * \date 19 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 struct time
@@ -26,6 +28,36 @@ struct time
     
     /// Copy Conatructor
     time(const rapp::object::time &) = default;
+
+    /// construct using rapidJSON
+    time(const rapidjson::Value::ConstMemberIterator & iter)
+    {
+        uint32_t sec_value;
+        auto it = iter->FindMember("sec");
+        if (it != iter->MemberEnd()) {
+            if (it->value.IsUint()) {
+                sec_value = it->value.GetUint();
+            }
+            else 
+                throw std::runtime_error("member `sec` not a uint");
+        }
+        else 
+            throw std::runtime_error("param has no `sec` member");
+
+        uint64_t nsec_value;
+        it = iter->FindMember("nsec");
+        if (it != iter->MemberEnd()) {
+            if (it->value.IsUint64()) {
+                nsec_value = it->value.GetUint64();
+            }
+            else 
+                throw std::runtime_error("member `nsec` not a uint64");
+        }
+        else {
+            throw std::runtime_error("param has no `nsec` member");
+        }
+        // TODO: construct a timepoint using the values we got
+    }
     
     /// \brief Equality operator
     bool operator==(const rapp::object::time & rhs) const
@@ -53,14 +85,16 @@ struct time
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(nsec - sec).count();
 	}
 
-	/// \brief convert *this* into a boost tree
-	boost::property_tree::ptree treefy() const
-	{
-		boost::property_tree::ptree tree;
-        tree.put("sec", time::sec());
-        tree.put("nsec", time::nanosec());
-		return tree;
-	}
+    template <typename W>
+    void Serialize(W & writer) const
+    {
+        writer.StartObject();
+        writer.String("sec");
+        writer.Uint(sec());
+        writer.String("nsec");
+        writer.Uint64(nanosec());
+        writer.EndObject();
+    }
 
 private:
 	/// members

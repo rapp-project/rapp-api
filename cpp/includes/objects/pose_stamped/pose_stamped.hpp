@@ -3,12 +3,14 @@
 #include "includes.ihh"
 namespace rapp {
 namespace object {
+
+using namespace rapidjson;    
 /**
  * \struct pose_stamped
  * \brief encapsulate robot pose with message header component
- * \version 0.6.0
- * \date 10-May-2016
- * \author Wojciech Dudek <dudekwa@gmail.com>
+ * \version 0.7.0
+ * \date 19 August 2016
+ * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
 struct pose_stamped
 {
@@ -30,6 +32,17 @@ struct pose_stamped
     /// \brief copy constructor
     pose_stamped(const rapp::object::pose_stamped &) = default;
 
+    /// \brief construct using rapidJSON
+    pose_stamped( const rapidjson::Value::ConstMemberIterator & iter)
+    {
+        auto it = iter->FindMember("header");
+        this->header.pose_metadata(it);
+
+        auto it2 = iter->FindMember("pose");
+        this->pose.pose(it2);
+    }
+
+    
     /// \brief Equality operator
     bool operator==(const rapp::object::pose_stamped & rhs) const
     {
@@ -37,14 +50,18 @@ struct pose_stamped
 			   (this->pose == rhs.pose);
     }
 
-	/// \brief convert *this* into a boost tree
-	boost::property_tree::ptree treefy() const
-	{
-		boost::property_tree::ptree tree;
-        tree.add_child("header", header.treefy());
-		tree.add_child("pose", pose.treefy());
-		return tree;
-	}
+	/// \brief Serialization with rapidJSON
+    template <typename W>
+    void Serialize(W & writer) const
+    {
+        writer.StartObject();
+        writer.String("header");
+        header.Serialize(writer);
+
+        writer.String("pose");
+        pose.Serialize(writer);
+        writer.EndObject();
+    }
 
 	/// members
 	rapp::object::pose_metadata header;

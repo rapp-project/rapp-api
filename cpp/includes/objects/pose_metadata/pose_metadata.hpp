@@ -32,27 +32,37 @@ struct pose_metadata
     /// \brief default copy Conatructor
     pose_metadata(const rapp::object::pose_metadata &) = default;
 
-	/// \brief load from a boost property JSON tree
-	pose_metadata(boost::property_tree::ptree::const_iterator json)
-	{
-		for (const auto it : json->second) {
-			if (it.first == "seq") {
-				this->seq_ = it.second.get_value<int>();
-			}
-			else if (it.first == "frame_id") {
-			    this->frameid_ = it.second.get_value<std::string>();
-			}
-			else if (it.first == "stamp") {
-				for (auto it2 = it.second.begin(); it2 != it.second.end(); ++it2) {
-					if (it2->first == "nsecs") {
-						std::chrono::nanoseconds nsec(it2->second.get_value<uint64_t>());
-						this->stamp_ = rapp::object::time(nsec);
-					}
-				}
-			}
-		}
-	}
+	/// \brief construct using rapidJSON
+    pose_metada(const rapidjson::Value::ConstMemberIterator & iter)
+    {
+        auto it = iter->FindMember("seq");
+        if (it != iter->MemberEnd()) {
+            if (it->value.IsInt())
+            {
+                this->seq_ = it->value.GetInt();
+            }
+            else
+                throw std::runtime_error("member `seq` not a int");    
+        }
+        else 
+            throw std::runtime_error("param has no `seq` value");
 
+        auto it = iter->FindMember("frame_id");
+        if (it != iter->MemberEnd()) {
+            if (it->value.IsString())
+            {
+                this->frameid_ = it->value.GetString();
+            }
+            else
+                throw std::runtime_error("member `frame_id` not a string");    
+        }
+        else 
+            throw std::runtime_error("param has no `frame_id` value");
+        
+        auto it = iter->FindMember("stamp");
+        this->stamp_.time(it);
+    }
+    
     /** 
      * \brief equality operator
      * \note compare all components
@@ -64,15 +74,19 @@ struct pose_metadata
 			   (this->frameid_ == rhs.frameid_);
     }
 
-	/// \brief convert *this* into a boost tree
-	boost::property_tree::ptree treefy() const
-	{
-		boost::property_tree::ptree tree;
-        tree.put("seq", seq_);
-        tree.put("frameid", frameid_);
-		tree.add_child("stamp", stamp_.treefy());
-		return tree;
-	}
+	
+    /// \brief Serialization using rapidJSON
+    template <typename W>
+    void Serialize(W & writer) const
+    {
+        writer.StartObject();
+        writer.String("seq");
+        writer.Int(seq_);
+        writer.String("frame_id");
+        writer.String(frameid_);
+        writer.String("stamp");
+        stamp_.Serialize(writer);   
+    }
 
 	/// members
 	int seq_ = 0;

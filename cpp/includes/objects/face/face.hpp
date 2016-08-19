@@ -48,8 +48,6 @@ public:
     /// Copy constructor
     face(const face &) = default;
 
-    /// \brief constuct using a rapid_json
-
     
     /// Equality operator
     bool operator==(const face & rhs) const

@@ -7,10 +7,10 @@
 
 BOOST_AUTO_TEST_SUITE(object_test)
 
+    // TODO: remove
 BOOST_AUTO_TEST_CASE(constructors_test)
 {
     BOOST_TEST_MESSAGE("constructors test");
-
     // Test all face constructors work
     // Empty face object
     auto f_ptr = std::make_shared<rapp::object::face>();
@@ -82,6 +82,6 @@ BOOST_AUTO_TEST_CASE(constructors_test)
     //BOOST_CHECK( og1 != wv1 );
 }
 
-
+// TODO: for each class under /includes/objects make a separate test below
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -3,11 +3,13 @@
 #include "includes.ihh"
 namespace rapp {
 namespace object {
+
+using namespace rapidjson;    
 /**
  * \struct pose
  * \brief encapsulates robot pose vectors (position & orientation)
- * \version 0.6.0
- * \date 24-July-2016
+ * \version 0.7.0
+ * \date 19 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 struct pose
@@ -30,18 +32,16 @@ struct pose
     /// \brief copy constructor
     pose(const rapp::object::pose &) = default;
 
-	/// \brief construct using a boost propetry JSON tree
-	pose(boost::property_tree::ptree::const_iterator json)
-	{
-		for (auto it : json->second) {
-			if (it.first == "position") {
-				this->position = rapp::object::point(it);
-			}
-			else if (it.first == "orientation") {
-				this->orientation = rapp::object::quaternion(it); 
-			}
-		}
-	}
+	/// \brief contruct using rapidJSON
+    pose(const rapidjson::Value::ConstMemberIterator & iter)
+    {
+        auto it = iter->FindMember("position");
+        this->position.point(it);
+        
+        auto it2 = iter->FindMember("orientation");
+        this->orientation.quaternion(it2);
+        
+    }
     
     /// \brief Equality operator
     bool operator==(const pose & rhs) const
@@ -50,16 +50,20 @@ struct pose
 			   (this->orientation == rhs.orientation);
     }
 
-	/// \brief convert *this* into a boost tree
-	boost::property_tree::ptree treefy() const
-	{
-		boost::property_tree::ptree tree;
-        tree.add_child("position", position.treefy());
-		tree.add_child("orientation", orientation.treefy());
-		return tree;
-	}
+	/// \brief Serialization with rapidJSON
+    template <typename W>
+    void Serialize(W & writer) const
+    {
+        writer.StartObject();
+        writer.String("position");
+        position.Serialize(writer);
 
-	/// members
+        writer.String("orientation");
+        orientation.Serialize(writer);
+        writer.EndObject();
+    }
+    
+   	/// members
 	rapp::object::point position;
 	rapp::object::quaternion orientation;
 };

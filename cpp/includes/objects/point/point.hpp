@@ -3,11 +3,13 @@
 #include "includes.ihh"
 namespace rapp {
 namespace object {
+
+using namespace rapidjson;    
 /**
  * \struct point
  * \brief encapsulate point position vector
- * \version 0.6.0
- * \date July-24-2016
+ * \version 0.7.0
+ * \date 19 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 struct point
@@ -28,21 +30,43 @@ struct point
     /// \brief Copy Conatructor
     point(const rapp::object::point &) = default;
 
-	/// \brief construct from a boost JSON ptree::value_type
-	point(const boost::property_tree::ptree::value_type json)
-	{
-		for (auto it = json.second.begin(); it != json.second.end(); ++it) {
-			if (it->first == "x") {
-				this->x = it->second.get_value<uint32_t>();
-			}
-			else if (it->first == "y") {
-				this->y = it->second.get_value<uint32_t>();
-			}
-			else if (it->first == "z") {
-				this->z = it->second.get_value<uint32_t>();
-			}
-		}
-	}
+	/// \brief construct using rapidJSON
+    point( const rapidJSON::Value::CostMemberIterator & iter)
+    {
+        auto it_x = iter->FindMember("x");
+        if (it_x != iter->MemberEnd()) {
+            if (it_x->value.IsFloat()){
+                this->x = it_x->value.GetFloat();
+            }
+            else
+                throw std::runtime_error("member `x` not a float");    
+        }
+        else 
+            throw std::runtime_error("param has no `x` value");
+        
+        auto it_y = iter->FindMember("y");
+        if (it_y != iter->MemberEnd()) {
+            if (it_y->value.IsFloat()){
+                this->y = it_y->value.GetFloat();
+            }
+            else
+                throw std::runtime_error("member `y` not a float");    
+        }
+        else 
+            throw std::runtime_error("param has no `y` value");
+        
+        auto it_z = iter->FindMember("z");
+        if (it_z != iter->MemberEnd()) {
+            if (it_z->value.IsFloat()){
+                this->z = it_z->value.GetFloat();
+            }
+            else
+                throw std::runtime_error("member `z` not a float");    
+        }
+        else 
+            throw std::runtime_error("param has no `z` value");
+
+    }
     
     /// \brief Equality operator
     bool operator==(const rapp::object::point & rhs) const
@@ -52,17 +76,21 @@ struct point
 			   (this->z == rhs.z);
     }
 
-	/// \brief convert *this* into a boost tree
-	boost::property_tree::ptree treefy() const
-	{
-		boost::property_tree::ptree tree;
-        tree.put("x", x);
-        tree.put("y", y);
-		tree.put("z", z);
-		return tree;
-	}
-
-	/// members
+	/// \brief serialization with rapidJSON
+    template <typename W>
+    void Serialize(W & writer) const
+    {
+        writer.StartObject();
+        writer.String("x");
+        writer.Float(x);
+        writer.String("y");
+        writer.Float(y);
+        writer.String("z");
+        writer.Float(z);
+        writer.EndObject();
+    } 
+    
+    /// members
 	float x = 0;
     float y = 0;
     float z = 0;
