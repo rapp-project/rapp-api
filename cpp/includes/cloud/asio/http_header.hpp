@@ -35,6 +35,12 @@ public:
 	 * \warning requires newline
 	 */
     http_header(std::string uri);
+
+    /**
+     * \brief make this header a `multipart/form-data`
+     * \warning it will modify the HTTP Header
+     */
+    void make_multipart_form();
     
     /**
 	 * \brief complete the rest of parameters that we need for the http_header and 

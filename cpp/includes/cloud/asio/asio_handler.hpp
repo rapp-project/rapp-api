@@ -57,15 +57,18 @@ public:
 	    
     /// \brief write the cloud request to the socket
 	/// \param err is propagated from boost asio
-    void do_request(const boost::system::error_code & err);
+    void write_request(const boost::system::error_code & err,
+                       const std::size_t bytes);
     
     /// \brief read first HTTP line and check for a 200 response
 	/// \param err is propagated from boost asio
-    void read_status_line(const boost::system::error_code & err);
+    void read_status_line(const boost::system::error_code & err,
+                          const std::size_t bytes);
     
     /// \brief read HTTP headers and validate
 	/// \param err is propagated from boost asio
-    void read_headers(const boost::system::error_code & err);
+    void read_headers(const boost::system::error_code & err,
+                      const std::size_t bytes);
 
     /// \brief strip the header and read the POST data
 	/// \param err is propagated from boost asio
@@ -90,12 +93,8 @@ protected:
     std::function<void(const boost::system::error_code)> error_cb_;
     /// shutdown callback
     std::function<void(const boost::system::error_code)> close_cb_;
-
-    /// newline
-    const std::string rn_ = "\r\n";
-    ///two new lines
-    const std::string double_rn_ = "\r\n\r\n";
 };
+
 }
 }
 #include "asio_handler.impl"

@@ -26,60 +26,75 @@ void asio_handler<T>::set_socket(const std::shared_ptr<T> socket)
 }
 
 template <class T> 
-void asio_handler<T>::do_request(const boost::system::error_code & err)
+void asio_handler<T>::write_request(const boost::system::error_code & err,
+                                    const std::size_t bytes)
 {       
     if (!err) {
-        // read until first newline (HTTP 1.1\r\n) - callback `read_status_line`
+        // read until first newline
         boost::asio::async_read_until(*socket_,
-                                      http_response::buffer_,
-                                      rn_,
-                                      boost::bind(&asio_handler<T>::read_status_line, 
+                                      buffer_,
+                                      "\r\n",
+                                      boost::bind(&asio_handler::read_status_line, 
                                                   this, 
-                                                  boost::asio::placeholders::error));
+                                                  boost::asio::placeholders::error,
+                                                  boost::asio::placeholders::bytes_transferred));
     }
     else {
+        // request error/wrong request, header or post
         end(err);       
 	}
 }
 
 template <class T>
-void asio_handler<T>::read_status_line(const boost::system::error_code & err)
+void asio_handler<T>::read_status_line(const boost::system::error_code & err,
+                                       const std::size_t bytes)
 {
     if (!err) {
+       if (http_response::check_http_header()) {
         // read entire header (double newlines denote end of HTTP header) - callback `read_headers`
         boost::asio::async_read_until(*socket_,
-                                      http_response::buffer_, 
-                                      double_rn_,
-                                      boost::bind(&asio_handler<T>::read_headers, 
+                                      buffer_, 
+                                      "\r\n\r\n",
+                                      boost::bind(&asio_handler::read_headers, 
                                                   this, 
-                                                  boost::asio::placeholders::error));
+                                                  boost::asio::placeholders::error,
+                                                  boost::asio::placeholders::bytes_transferred));
+        }
+        else {
+            boost::system::error_code err = boost::system::errc::make_error_code(
+                                                                    boost::system::errc::protocol_error);
+            end(err);
+        }
     }
-    else if (err || !http_response::check_http_header()) {
+    else {
         end(err);
 	}
 }
 
 template <class T>
-void asio_handler<T>::read_headers(const boost::system::error_code & err)
+void asio_handler<T>::read_headers(const boost::system::error_code & err,
+                                   const std::size_t bytes)
 {
     if (!err) {
-        // verify `Content-Length` and use it to read as much
-        std::size_t c_len = has_content_length();	
-        if (c_len > 0) {
-            // remove HTTP header and keep only POST data
-            http_response::json_ = http_response::strip_http_header(http_response::to_string());
-            // read data into buffer of size `Content-Length` - callback `read_content`
-            boost::asio::async_read(*socket_,
-                                    http_response::buffer_,
-                                    boost::asio::transfer_exactly(c_len),
-                                    boost::bind(&asio_handler<T>::read_content, 
+        // strip HTTP Header, calculate actual POST bytes received,
+        // and if needed ask for more POST data.
+        unsigned int remaining = http_response::strip_http_header(bytes);
+        if (remaining > 0) {
+            boost::asio::async_read(*socket_.get(),
+                                    buffer_,
+                                    boost::asio::transfer_at_least(remaining),
+                                    boost::bind(&asio_handler::read_content, 
                                                 this, 
                                                 boost::asio::placeholders::error, 
                                                 boost::asio::placeholders::bytes_transferred));
         }
+        // we may have received all the data at once
+        // in which case simply close and quit 
+        // we add zero bytes, since we called `strip_http_header`
         else {
-            //end(boost::system::errc::bad_message);
-            this->close_cb_(err);
+            http_response::consume_buffer(cloud_cb_, bytes);
+            close_cb_(boost::system::errc::make_error_code(
+                                           boost::system::errc::success));
         }
     }
     else {
@@ -94,19 +109,24 @@ void asio_handler<T>::read_content(
                                   )
 {
     if (!err) {
-        // consume buffer - if transferred bytes >= Content-Length then = EOF && end 
-        if (http_response::consume_buffer(cloud_cb_)) {
-            close_cb_(err);
+        // received all data 
+        if (http_response::consume_buffer(cloud_cb_, bytes)) {
+            close_cb_(boost::system::errc::make_error_code(
+                                           boost::system::errc::success));
         }
-        // Continue reading data until we have enough bytes - reccursively calls its self
-        boost::asio::async_read(*socket_,
-                                http_response::buffer_,
-                                boost::asio::transfer_at_least(1),
-                                boost::bind(&asio_handler<T>::read_content, 
-                                            this, 
-                                            boost::asio::placeholders::error, 
-                                            boost::asio::placeholders::bytes_transferred));
+        // still data left to receive
+        else {
+            unsigned int remaining = http_response::content_length() - http_response::bytes_received();
+            boost::asio::async_read(*socket_.get(),
+                                    http_response::buffer_,
+                                    boost::asio::transfer_at_least(remaining),
+                                    boost::bind(&asio_handler::read_content, 
+                                                this, 
+                                                boost::asio::placeholders::error, 
+                                                boost::asio::placeholders::bytes_transferred));
+        }
     }
+    // error - normally EOF, meaning the server closed the connection
     else {
         end(err);
 	}

@@ -50,12 +50,22 @@ void http_post::end()
 
 std::string http_post::to_string() const
 {
-	return data_;
+    if (!data_.empty()) {
+        return data_;
+    }
+    else {
+        return "";
+    }
 }
 
 unsigned int http_post::size() const
 {
-	return data_.size() * sizeof(std::string::value_type);
+    if (!data_.empty()) {
+        return data_.size() * sizeof(std::string::value_type);
+    }
+    else {
+        return 0;
+    }
 }
 
 }

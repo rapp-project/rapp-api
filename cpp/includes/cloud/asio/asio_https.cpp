@@ -6,7 +6,7 @@ asio_https::asio_https(
 						std::function<void(std::string)> cloud_function,
 						std::function<void(error_code error)> error_function,
 						boost::asio::io_service & io_service,
-						boost::asio::streambuf request
+						boost::asio::streambuf & request
 					  )
 :
    asio_handler<tls_socket>(cloud_function, 
@@ -15,7 +15,9 @@ asio_https::asio_https(
                                         this,
                                         boost::asio::placeholders::error)
                             ),  
-   error_cb_(error_function), ctx_(boost::asio::ssl::context::tlsv12_client)  
+   error_cb_(error_function), 
+   ctx_(boost::asio::ssl::context::tlsv12_client),
+   request_(request)
 {
 	socket_ = std::make_shared<tls_socket>(io_service, ctx_);
 	assert(cloud_function && error_function && socket_);
@@ -94,9 +96,10 @@ void asio_https::handshake(const boost::system::error_code err)
 	}
 	boost::asio::async_write(*socket_,
 							 request_,
-							 boost::bind(&asio_handler::do_request, 
+							 boost::bind(&asio_handler::write_request, 
                                          this,
-                                         boost::asio::placeholders::error));
+                                         boost::asio::placeholders::error,
+                                         boost::asio::placeholders::bytes_transferred));
 }
 
 void asio_https::shutdown(const boost::system::error_code err)

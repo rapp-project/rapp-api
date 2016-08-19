@@ -44,7 +44,7 @@ public:
                 std::function<void(std::string)> cloud_function,
                 std::function<void(error_code error)> error_function,
                 boost::asio::io_service & io_service,
-                boost::asio::streambuf request
+                boost::asio::streambuf & request
              );
 
 	/**
@@ -80,7 +80,7 @@ private:
     /// boost asio socket 
     std::shared_ptr<tls_socket> socket_;
     /// request object
-    boost::asio::streambuf request_;
+    boost::asio::streambuf & request_;
 };
 }
 }

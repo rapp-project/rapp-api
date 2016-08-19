@@ -55,6 +55,7 @@ void available_services::deserialise(std::string json) const
             std::cerr << "missing `url` member" << std::endl;
             return;
         }
+        services.push_back(pair);
     }
 
     delegate_(services);

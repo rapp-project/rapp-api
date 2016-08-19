@@ -13,7 +13,8 @@ asio_http::asio_http(
                             boost::bind(&asio_http::shutdown,
                                         this,
                                         boost::asio::placeholders::error)),  
-  error_cb_(error_function)
+  error_cb_(error_function),
+  request_(request)
 {
     socket_ = std::make_shared<http_socket>(io_service);
 	assert(cloud_function && error_function && socket_);
@@ -57,11 +58,13 @@ void asio_http::connect(
                        )
 {
 	if (!err) {
-        boost::asio::async_write(*socket_,
+        // write the request to the socket
+        boost::asio::async_write(*socket_.get(),
                                  request_,
-                                 boost::bind(&asio_handler<http_socket>::do_request, 
+                                 boost::bind(&asio_handler<http_socket>::write_request, 
                                              this,
-                                             boost::asio::placeholders::error));
+                                             boost::asio::placeholders::error,
+                                             boost::asio::placeholders::bytes_transferred));
 
     }
     else if (endpoint_iterator != boost::asio::ip::tcp::resolver::iterator()) {

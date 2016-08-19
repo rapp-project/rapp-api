@@ -49,13 +49,16 @@ public:
 	 * \brief get the content length streambuf response
      * \return content-length or -1 for not found
 	 */
-    std::size_t has_content_length();
-    	
+    unsigned int content_length();
+
     /// \brief remove/strip the HTTP header and \return the body
-    std::string strip_http_header(const std::string & data) const;
+    unsigned int strip_http_header(unsigned int bytes);
     
     /// \brief conversion from streambuf to string
     std::string to_string();
+
+    /// \get total POST data bytes received
+    unsigned int bytes_received() const;
     
     /** 
 	 * \brief check if HTTP status is 200
@@ -64,17 +67,21 @@ public:
     bool check_http_header();
          
 	/// \brief take data from the response and save it in JSON
-	bool consume_buffer(std::function<void(std::string)> callback);
+	bool consume_buffer(std::function<void(std::string)> callback, 
+                        unsigned int bytes);
 	
 	/// \brief clean the variables
 	void end();
     	
 protected:
     boost::asio::streambuf buffer_;
-    std::string json_;
+    std::string reply_string;
+
 private:
     std::function<void(error_code error)> error_cb_;
-    unsigned int bytes_transferred_;
+    unsigned int bytes_transferred_ = 0;
+    unsigned int content_length_ = 0;
+    std::atomic<bool> once_ = {false};
 };
 }
 }

@@ -4,52 +4,71 @@ namespace rapp {
 namespace cloud {
 
 http_response::http_response(std::function<void(error_code error)> callback)
-: error_cb_(callback),  bytes_transferred_(0)
+: error_cb_(callback)
 {}
 
 http_response::http_response(std::string arg)
-: bytes_transferred_(0)
 {
 	std::ostream ss(&buffer_);
 	ss << arg;
 }
 
-std::size_t http_response::has_content_length()
+unsigned int http_response::content_length()
 {
-	std::string head = this->to_string();
-	static const boost::regex reg("Content-Length:\\s[-0-9]+", boost::regex::icase);
-	boost::match_results<std::string::const_iterator> results;
-	std::size_t length = -1;
-	// search for matching regex
-	if (boost::regex_search(head, results, reg)) {
-		if (results.size() > 0) {
-			std::string key = results[0];
-			key.erase(std::remove(key.begin(), key.end(), '\n'), key.end());
-			// find the `: `
-			std::string hay = ": ";
-			std::size_t i = key.find(hay);
-			if (i != std::string::npos) {
-				length = boost::lexical_cast<std::size_t>(key.substr(i+hay.size(),
-																	 std::string::npos));
-			}
-		}
-	}
-	return length;
+    if (!once_) {
+        http_response::reply_string = to_string();
+
+        // NOTE: A BOOST REGEX is a BAD choice, it is slow - replace this with a non-regex solution!
+        static const boost::regex reg("Content-Length:\\s[-0-9]+", boost::regex::icase);
+        boost::match_results<std::string::const_iterator> results;
+
+        // TODO: search for the `Content-Length:` keyword
+        //       get the sustring from the end of it, to the first \r\n
+        //       try casting it to an unsigned integer
+
+        // search for matching regex
+        if (boost::regex_search(reply_string, results, reg)) {
+            if (results.size() > 0) {
+                std::string key = results[0];
+                key.erase(std::remove(key.begin(), key.end(), '\n'), key.end());
+
+                // find the `: `
+                std::string hay = ": ";
+                std::size_t i = key.find(hay);
+                if (i != std::string::npos) {
+                    content_length_ = boost::lexical_cast<std::size_t>(key.substr(i+hay.size(), 
+                                                                       std::string::npos));
+                }
+            }
+        }
+        once_ = true;
+    }
+	return content_length_;
 }
 
-std::string http_response::strip_http_header(const std::string & data) const
+unsigned int http_response::strip_http_header(unsigned int bytes) 
 {
+    // WARNING - call first, else if we strip we lose the `Content-Length`
+    content_length_ = content_length();
+
 	// find the "\r\n\r\n" double return after the header
-	std::size_t i = data.find("\r\n\r\n");
+	std::size_t i = reply_string.find("\r\n\r\n");
+
+    // found OK, update the reply string
 	if (i != std::string::npos) {
-		return data.substr(i+4, std::string::npos);
+		reply_string = reply_string.substr(i + 4, std::string::npos);
 	}
-	else {
-        boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::bad_message);
-        error_cb_(err);
-        std::string error = "Error";
-        return error;
-	}
+    // no "\r\n\r\n" means malformed reply
+    else {
+       error_cb_(boost::system::errc::make_error_code(
+                                      boost::system::errc::bad_message));
+       return 0;
+    }
+
+    // Transfer Bytes = Total Bytes (HTTP Header & POST data) - POST data 
+    bytes_transferred_ = reply_string.size()*sizeof(std::string::value_type);
+    // remaining bytes we need
+    return content_length() - (bytes_transferred_);
 }
 
 std::string http_response::to_string() 
@@ -68,15 +87,18 @@ bool http_response::check_http_header()
 	buffer_stream >> status_code;
 	std::string status_message;
 	std::getline(buffer_stream, status_message);
+
 	// did not receive a reply
 	if (!buffer_stream) {
-		boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::no_message);
+		boost::system::error_code err = boost::system::errc::make_error_code(
+                                                            boost::system::errc::no_message);
         error_cb_(err);
         return false;
 	}
 	// reply is not HTTP Protocol
 	else if (http_version.substr(0, 5) != "HTTP/") {
-		boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::protocol_not_supported);
+		boost::system::error_code err = boost::system::errc::make_error_code(
+                                                            boost::system::errc::protocol_not_supported);
         error_cb_(err);
 		return false; 
 	}
@@ -85,22 +107,28 @@ bool http_response::check_http_header()
     // TODO: if HTTP Reply is 401 = Internal Server Error
 	// HTTP reply is not 200
 	else if (status_code != 200) {
-		boost::system::error_code err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
+		boost::system::error_code err = boost::system::errc::make_error_code(
+                                                            boost::system::errc::protocol_error);
         error_cb_(err);
-		std::cerr << status_code << std::endl;
 		return false;
 	}
 	return true;
 }
   
-bool http_response::consume_buffer(std::function<void(std::string)> callback)
+unsigned int http_response::bytes_received() const
+{
+    return bytes_transferred_;
+}
+
+bool http_response::consume_buffer(std::function<void(std::string)> callback, unsigned int bytes)
 {
 	assert(callback);
-	json_ += to_string();
-	bytes_transferred_ += buffer_.size();
+    reply_string += to_string();
+	bytes_transferred_ = reply_string.size()*sizeof(std::string::value_type);
+
 	// have received the data correctly
-	if (bytes_transferred_ >= has_content_length()) {
-		callback(json_); 
+	if (bytes_transferred_ >= content_length_) {
+		callback(reply_string); 
 		return true;
 	}
 	return false;
@@ -108,7 +136,7 @@ bool http_response::consume_buffer(std::function<void(std::string)> callback)
 
 void http_response::end()
 {
-	json_.clear();
+	reply_string.clear();
 	bytes_transferred_ = 0;
 }
 

@@ -82,7 +82,7 @@ private:
     /// boost asio socket 
     std::shared_ptr<http_socket> socket_;
     /// request object
-    boost::asio::streambuf request_;
+    boost::asio::streambuf & request_;
 };
 }
 }
