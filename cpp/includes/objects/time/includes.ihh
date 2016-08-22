@@ -1,1 +1,3 @@
+#include <iostream>
 #include "rapidjson/prettywriter.h"
+#include "rapidjson/document.h"

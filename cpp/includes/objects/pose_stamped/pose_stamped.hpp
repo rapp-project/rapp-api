@@ -36,10 +36,10 @@ struct pose_stamped
     pose_stamped( const rapidjson::Value::ConstMemberIterator & iter)
     {
         auto it = iter->FindMember("header");
-        this->header.pose_metadata(it);
+        this->header = pose_metadata(it);
 
         auto it2 = iter->FindMember("pose");
-        this->pose.pose(it2);
+        this->pose = pose(it2);
     }
 
     

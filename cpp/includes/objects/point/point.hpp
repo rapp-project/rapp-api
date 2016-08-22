@@ -4,7 +4,6 @@
 namespace rapp {
 namespace object {
 
-using namespace rapidjson;    
 /**
  * \struct point
  * \brief encapsulate point position vector
@@ -31,12 +30,12 @@ struct point
     point(const rapp::object::point &) = default;
 
 	/// \brief construct using rapidJSON
-    point( const rapidJSON::Value::CostMemberIterator & iter)
+    point( const rapidjson::Value::ConstMemberIterator & iter)
     {
         auto it_x = iter->FindMember("x");
         if (it_x != iter->MemberEnd()) {
-            if (it_x->value.IsFloat()){
-                this->x = it_x->value.GetFloat();
+            if (it_x->value.IsDouble()){
+                this->x = it_x->value.GetDouble();
             }
             else
                 throw std::runtime_error("member `x` not a float");    
@@ -46,8 +45,8 @@ struct point
         
         auto it_y = iter->FindMember("y");
         if (it_y != iter->MemberEnd()) {
-            if (it_y->value.IsFloat()){
-                this->y = it_y->value.GetFloat();
+            if (it_y->value.IsDouble()){
+                this->y = it_y->value.GetDouble();
             }
             else
                 throw std::runtime_error("member `y` not a float");    
@@ -57,8 +56,8 @@ struct point
         
         auto it_z = iter->FindMember("z");
         if (it_z != iter->MemberEnd()) {
-            if (it_z->value.IsFloat()){
-                this->z = it_z->value.GetFloat();
+            if (it_z->value.IsDouble()){
+                this->z = it_z->value.GetDouble();
             }
             else
                 throw std::runtime_error("member `z` not a float");    
@@ -81,12 +80,12 @@ struct point
     void Serialize(W & writer) const
     {
         writer.StartObject();
-        writer.String("x");
-        writer.Float(x);
         writer.String("y");
-        writer.Float(y);
+        writer.Double(y);
+        writer.String("x");
+        writer.Double(x);
         writer.String("z");
-        writer.Float(z);
+        writer.Double(z);
         writer.EndObject();
     } 
     

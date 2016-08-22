@@ -36,10 +36,10 @@ struct pose
     pose(const rapidjson::Value::ConstMemberIterator & iter)
     {
         auto it = iter->FindMember("position");
-        this->position.point(it);
+        this->position = point(it);
         
         auto it2 = iter->FindMember("orientation");
-        this->orientation.quaternion(it2);
+        this->orientation = quaternion(it2);
         
     }
     

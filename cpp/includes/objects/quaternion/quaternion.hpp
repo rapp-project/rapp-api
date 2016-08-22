@@ -4,7 +4,6 @@
 namespace rapp {
 namespace object {
 
-using namespace rapidjson;    
 /**
  * \struct quaternion
  * \brief class which encapsulate quaternion vector
@@ -35,9 +34,9 @@ struct quaternion
     {
         auto it_x = iter->FindMember("x");
         if (it_x != iter->MemberEnd()) {
-            if (it_x->value.IsFloat())
+            if (it_x->value.IsDouble())
             {
-                this->x = it_x->value.GetFloat();
+                this->x = it_x->value.GetDouble();
             }
             else
                 throw std::runtime_error("member `x` not a float");    
@@ -45,12 +44,11 @@ struct quaternion
         else 
             throw std::runtime_error("param has no `x` value");
 
-        float y_value;
         auto it_y = iter->FindMember("y");
         if (it_y != iter->MemberEnd()) {
-            if (it_y->value.IsFloat())
+            if (it_y->value.IsDouble())
             {
-                this->y = it_y->value.GetFloat();
+                this->y = it_y->value.GetDouble();
             }
             else
                 throw std::runtime_error("member `y` not a float");    
@@ -60,9 +58,9 @@ struct quaternion
 
         auto it_z = iter->FindMember("z");
         if (it_z != iter->MemberEnd()) {
-            if (it_z->value.IsFloat())
+            if (it_z->value.IsDouble())
             {
-                this->z = it_z->value.GetFloat();
+                this->z = it_z->value.GetDouble();
             }
             else
                 throw std::runtime_error("member `z` not a float");    
@@ -72,9 +70,9 @@ struct quaternion
 
         auto it_w = iter->FindMember("w");
         if (it_w != iter->MemberEnd()) {
-            if (it_w->value.IsFloat())
+            if (it_w->value.IsDouble())
             {
-               this->w = it_w->value.GetFloat();
+               this->w = it_w->value.GetDouble();
             }
             else
                 throw std::runtime_error("member `w` not a float");    
@@ -97,13 +95,13 @@ struct quaternion
     {
         writer.StartObject();
         writer.String("x");
-        writer.Float(x);
+        writer.Double(x);
         writer.String("y");
-        writer.Float(y);
+        writer.Double(y);
         writer.String("z");
-        writer.Float(z);
+        writer.Double(z);
         writer.String("w");
-        writer.Float(w);
+        writer.Double(w);
         writer.EndObject();
 
     }

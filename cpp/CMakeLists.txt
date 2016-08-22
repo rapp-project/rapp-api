@@ -144,20 +144,23 @@ if (${BUILD_TESTS})
     set (TESTS ${TESTS} tests)
     enable_testing()
 
-    #add_executable(object_class_test     ${TESTS}/object_test.cpp)
+    add_executable(asio_classes           ${TESTS}/asio_classes.cpp)
+    add_executable(json_classes           ${TESTS}/json_classes.cpp)
+    #add_executable(object_classes         ${TESTS}/object_classes.cpp)
     #add_executable(service_test          ${TESTS}/service_test.cpp)
     #add_executable(serialise_test        ${TESTS}/serialise.cpp)
-    add_executable(asio_classes           ${TESTS}/asio_classes.cpp)
 
-    #add_test(unit_object_test            object_test) 
+    add_test(asio_classes                 asio_classes)
+    add_test(json_classes                 json_classes)
+    #add_test(object_classes               object_classes) 
     #add_test(unit_service_test           service_test)
     #add_test(json_serialise_test         serialise_test)
-    add_test(asio_classes                 asio_classes)
 
-    #target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-    #                                     rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    target_link_libraries(asio_classes    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(asio_classes    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(json_classes    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+
+    #target_link_libraries(object_classes  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
+    #                                      rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
     #target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
     #    ${Boost_SYSTEM_LIBRARY}

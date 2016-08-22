@@ -60,7 +60,7 @@ struct pose_metadata
             throw std::runtime_error("param has no `frame_id` value");
         
         auto it = iter->FindMember("stamp");
-        this->stamp_.time(it);
+        this->stamp_ = time(it);
     }
     
     /** 

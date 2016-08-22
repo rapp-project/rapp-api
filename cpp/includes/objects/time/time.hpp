@@ -4,7 +4,6 @@
 namespace rapp {
 namespace object {
 
-using namespace rapidjson;    
 /**
  * \struct time
  * \brief wraps around a time-stamp (UNIX Epoch)
@@ -30,33 +29,25 @@ struct time
     time(const rapp::object::time &) = default;
 
     /// construct using rapidJSON
-    time(const rapidjson::Value::ConstMemberIterator & iter)
+    time(const rapidjson::Value & stamp)
     {
         uint32_t sec_value;
-        auto it = iter->FindMember("sec");
-        if (it != iter->MemberEnd()) {
-            if (it->value.IsUint()) {
-                sec_value = it->value.GetUint();
-            }
-            else 
-                throw std::runtime_error("member `sec` not a uint");
-        }
-        else 
-            throw std::runtime_error("param has no `sec` member");
-
         uint64_t nsec_value;
-        it = iter->FindMember("nsec");
-        if (it != iter->MemberEnd()) {
-            if (it->value.IsUint64()) {
-                nsec_value = it->value.GetUint64();
+        /*
+        for (auto itr = stamp.MemberBegin(); itr != stamp.MemberEnd(); ++itr) {
+            if (strcmp(itr->name.GetString(), "secs") == 0) {
+                sec_value = (uint32_t)itr->value.GetUint();
             }
-            else 
-                throw std::runtime_error("member `nsec` not a uint64");
+            else if (strcmp(itr->name.GetString(), "nsecs") == 0) {
+                nsec_value = (uint64_t)itr->value.GetUint64();
+            }
         }
-        else {
-            throw std::runtime_error("param has no `nsec` member");
-        }
-        // TODO: construct a timepoint using the values we got
+        */
+        std::cout << "sec: " << sec_value << std::endl;
+        std::cout << "nsec: " << nsec_value << std::endl;
+        nsec_value = (uint64_t)sec_value << 32;
+        timepoint_ = std::chrono::nanoseconds(nsec_value);
+        std::cout << timepoint_.count() << std::endl;
     }
     
     /// \brief Equality operator
