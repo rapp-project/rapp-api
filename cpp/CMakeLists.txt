@@ -46,6 +46,8 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/asio/http_response.cpp
             ${INCLUDES}/config/config.cpp
             ${INCLUDES}/cloud/available_services/available_services.cpp
+            ${INCLUDES}/objects/quaternion/quaternion.cpp
+            ${INCLUDES}/objects/point/point.cpp
             )
 
 # Begin searching for packgages we use in RAPP API
@@ -81,12 +83,12 @@ endif()
 ###
 # Find RapidJSON - (rapidjson-dev in Debian and Ubuntu) 
 #
-find_package(RapidJSON REQUIRED)
-if (RapidJSON_FOUND)
-    include_directories(${RAPIDJSON_INCLUDE_DIRS})
-    set(RAPIDJSON_USE_SSE2 ON)
-    set(RAPIDJSON_USE_SSE42 ON)
-endif()
+#find_package(RapidJSON REQUIRED)
+#if (RapidJSON_FOUND)
+#    include_directories(${RAPIDJSON_INCLUDE_DIRS})
+#    set(RAPIDJSON_USE_SSE2 ON)
+#    set(RAPIDJSON_USE_SSE42 ON)
+#endif()
 
 ###
 # Set library sources
@@ -146,21 +148,19 @@ if (${BUILD_TESTS})
 
     add_executable(asio_classes           ${TESTS}/asio_classes.cpp)
     add_executable(json_classes           ${TESTS}/json_classes.cpp)
-    #add_executable(object_classes         ${TESTS}/object_classes.cpp)
+    add_executable(object_classes         ${TESTS}/object_classes.cpp)
     #add_executable(service_test          ${TESTS}/service_test.cpp)
     #add_executable(serialise_test        ${TESTS}/serialise.cpp)
 
     add_test(asio_classes                 asio_classes)
     add_test(json_classes                 json_classes)
-    #add_test(object_classes               object_classes) 
+    add_test(object_classes               object_classes) 
     #add_test(unit_service_test           service_test)
     #add_test(json_serialise_test         serialise_test)
 
     target_link_libraries(asio_classes    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     target_link_libraries(json_classes    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-
-    #target_link_libraries(object_classes  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-    #                                      rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(object_classes  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
 
     #target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
     #    ${Boost_SYSTEM_LIBRARY}

@@ -23,7 +23,7 @@ struct pose
            rapp::object::point position,
            rapp::object::quaternion orientation
 		)
-    : position(position), orientation(orientation)
+    : position_(position), orientation_(orientation)
     {}
     
     /// \brief allow empty consructor
@@ -33,14 +33,24 @@ struct pose
     pose(const rapp::object::pose &) = default;
 
 	/// \brief contruct using rapidJSON
-    pose(const rapidjson::Value::ConstMemberIterator & iter)
+    pose(const json::const_iterator & pose)
     {
-        auto it = iter->FindMember("position");
-        this->position = point(it);
-        
-        auto it2 = iter->FindMember("orientation");
-        this->orientation = quaternion(it2);
-        
+        if (pose->find("position") == pose->end()){
+           throw std::runtime_error("no position member in pose");
+        }
+        else {
+            const position = pose->find("position"); //---
+            position_ = rapp::object::point(position);
+        }
+
+        if (pose->find("orientation") == pose->end()){
+           throw std::runtime_error("no orientation member in pose"); 
+        }
+        else {
+            const orientation = pose->find("orientation");
+            orientation_ = rapp::object::quaternion(orientation);
+        }
+              
     }
     
     /// \brief Equality operator
@@ -50,22 +60,17 @@ struct pose
 			   (this->orientation == rhs.orientation);
     }
 
-	/// \brief Serialization with rapidJSON
-    template <typename W>
-    void Serialize(W & writer) const
+    json::object_t to_json() const
     {
-        writer.StartObject();
-        writer.String("position");
-        position.Serialize(writer);
-
-        writer.String("orientation");
-        orientation.Serialize(writer);
-        writer.EndObject();
-    }
+        json::object_t pos = position_.to_json();
+        json::object_t ori = orientation_.to_json();
+        json::object_t obj = {{"pose", pos, ori}};
+        return obj;
+    }    
     
    	/// members
-	rapp::object::point position;
-	rapp::object::quaternion orientation;
+	rapp::object::point position_;
+	rapp::object::quaternion orientation_;
 };
 }
 }

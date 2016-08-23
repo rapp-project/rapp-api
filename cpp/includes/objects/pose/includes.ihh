@@ -1,3 +1,5 @@
 #include "objects/point/point.hpp"
 #include "objects/quaternion/quaternion.hpp"
-#include "rapidjson/prettywriter.h"
+#include "json.hpp"#
+
+using json = nlohmann::json;

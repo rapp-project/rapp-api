@@ -11,16 +11,21 @@ namespace object {
  * \date 19 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-struct time
+class time
 {
+public:
     /**
      * \brief Consruct using second and nanosecond
      * \param sec is system second
      * \param nsec is system nanosecond
      */
     time(std::chrono::nanoseconds timepoint)
-	: timepoint_(timepoint)
-    {}
+    {
+        auto sec = std::chrono::duration_cast<std::chrono::seconds>(timepoint);
+        auto nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(timepoint);
+        seconds_ = sec.count();
+        nanoseconds_ = std::chrono::duration_cast<std::chrono::nanoseconds>(nsec - sec).count();
+    }
     
     /// Allow Empty Consructor
     time() = default;
@@ -28,68 +33,53 @@ struct time
     /// Copy Conatructor
     time(const rapp::object::time &) = default;
 
-    /// construct using rapidJSON
-    time(const rapidjson::Value & stamp)
+    /// construct using library "json for modern c++"
+    time(const json::const_iterator & stamp)
     {
-        uint32_t sec_value;
-        uint64_t nsec_value;
-        /*
-        for (auto itr = stamp.MemberBegin(); itr != stamp.MemberEnd(); ++itr) {
-            if (strcmp(itr->name.GetString(), "secs") == 0) {
-                sec_value = (uint32_t)itr->value.GetUint();
-            }
-            else if (strcmp(itr->name.GetString(), "nsecs") == 0) {
-                nsec_value = (uint64_t)itr->value.GetUint64();
-            }
+        if (stamp->find("secs") == stamp->end()) {
+            throw std::runtime_error("no sec in stamp");
         }
-        */
-        std::cout << "sec: " << sec_value << std::endl;
-        std::cout << "nsec: " << nsec_value << std::endl;
-        nsec_value = (uint64_t)sec_value << 32;
-        timepoint_ = std::chrono::nanoseconds(nsec_value);
-        std::cout << timepoint_.count() << std::endl;
+        else {
+            seconds_ = stamp->find("secs")->get<uint32_t>();
+        }
+        if (stamp->find("nsecs") == stamp->end()) {
+            throw std::runtime_error("no nsec in stamp");
+        }
+        else {
+            nanoseconds_ = stamp->find("nsecs")->get<uint32_t>();
+        }
+    }
+
+    json::object_t to_json() const
+    {
+        json::object_t values = {{"secs", seconds_}, {"nsecs", nanoseconds_}};
+        json::object_t obj    = {{"stamp" , values}};
+        return obj;
     }
     
     /// \brief Equality operator
     bool operator==(const rapp::object::time & rhs) const
     {
-		return (this->timepoint_ == rhs.timepoint_);
+		return (this->seconds_ == rhs.seconds_)
+                && (this->nanoseconds_ == rhs.nanoseconds_);
     }
 
-	/// \brief get the actual timepoint
-	std::chrono::nanoseconds timepoint() const
-	{
-		return timepoint_;
-	}
-
 	/// \brief return seconds elapsed since UNIX Epoch
-	uint32_t sec() const
+	uint32_t seconds() const
 	{
-		return std::chrono::duration_cast<std::chrono::seconds>(timepoint_).count();
+		return seconds_;
 	}
 
 	/// \brief return nanoseconds elapsed since UNIX Epoch
-	uint64_t nanosec() const
+	uint32_t nanoseconds() const
 	{
-		auto sec = std::chrono::duration_cast<std::chrono::seconds>(timepoint_);
-		auto nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(timepoint_);
-		return std::chrono::duration_cast<std::chrono::nanoseconds>(nsec - sec).count();
+		return nanoseconds_;
 	}
 
-    template <typename W>
-    void Serialize(W & writer) const
-    {
-        writer.StartObject();
-        writer.String("sec");
-        writer.Uint(sec());
-        writer.String("nsec");
-        writer.Uint64(nanosec());
-        writer.EndObject();
-    }
-
 private:
-	/// members
-	std::chrono::nanoseconds timepoint_;
+
+    uint32_t seconds_;
+    uint32_t nanoseconds_;
 };
 }
 }

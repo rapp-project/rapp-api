@@ -19,15 +19,14 @@
 #include <chrono>
 #include <iostream>
 #include <boost/test/unit_test.hpp>
-#include "rapidjson/document.h"
 
 //#include "../includes/objects/face/face.hpp"
 //#include "../includes/objects/qr_code/qr_code.hpp"
 //#include "../includes/objects/picture/picture.hpp"
 //#include "../includes/objects/audio/audio.hpp"
 #include "../includes/objects/time/time.hpp"
-//#include "../includes/objects/point/point.hpp"
-//#include "../includes/objects/quaternion/quaternion.hpp"
+#include "../includes/objects/point/point.hpp"
+#include "../includes/objects/quaternion/quaternion.hpp"
 
 
 
@@ -111,12 +110,10 @@ BOOST_AUTO_TEST_CASE(constructors_test)
 
 /**
  *\brief TEST for time object
- *\First, we check the constructors creating identical objects and comparing 
- *\       between them
- *\Second,JSON functions are checked using "time_class.json", which has the same 
- *\       timepoint that obj_time1, and comparing the results between them
- *\Finally, Serialize function is checked writing a new string  with the obj_time1
- *\         data and comparing with the "time_class.json". They have to be equals.
+ *\We check the constructors creating identical objects and comparing 
+ *\between them.
+ *\Methods seconds and nanoseconds are checked comparing the atributes
+ *\between the objects created before. They have to be the same.
  */
 BOOST_AUTO_TEST_CASE(object_time_test)
 {
@@ -125,40 +122,41 @@ BOOST_AUTO_TEST_CASE(object_time_test)
     rapp::object::time obj_time2 = rapp::object::time(t);
     BOOST_CHECK(obj_time1 ==  obj_time2);
 
+    BOOST_CHECK_EQUAL(obj_time1.seconds(), 1464949299);
+    BOOST_CHECK_EQUAL(obj_time1.nanoseconds(), 93018853);
+
+    // assignment constructor
     rapp::object::time obj_time3 = rapp::object::time(obj_time1);
     BOOST_CHECK(obj_time1 == obj_time3); 
 
-    std::chrono::nanoseconds timepoint_obj_time1 = obj_time1.timepoint();
-    std::chrono::nanoseconds timepoint_obj_time2 = obj_time2.timepoint();
-    BOOST_CHECK(timepoint_obj_time1 == timepoint_obj_time2);
+    // copy constructor
+    auto obj_time4 = obj_time3;
+    BOOST_CHECK(obj_time3 == obj_time4);
 
-    uint32_t s_obj_time1 = obj_time1.sec();
-    uint32_t s_obj_time2 = obj_time2.sec();
+    // test seconds
+    uint32_t s_obj_time1 = obj_time1.seconds();
+    uint32_t s_obj_time2 = obj_time2.seconds();
     BOOST_CHECK_EQUAL(s_obj_time1, s_obj_time2);
 
-    uint64_t n_obj_time1 = obj_time1.nanosec();
-    uint64_t n_obj_time2 = obj_time2.nanosec();
+    // test nanoseconds
+    uint64_t n_obj_time1 = obj_time1.nanoseconds();
+    uint64_t n_obj_time2 = obj_time2.nanoseconds();
     BOOST_CHECK_EQUAL(n_obj_time1, n_obj_time2);
 
-    bool obj1_obj2_equals = (obj_time1 == obj_time2);
-    BOOST_CHECK_EQUAL(obj1_obj2_equals, true);
-
-    //BOOST_CHECK_EQUAL(timepoint_obj4, timepoint_obj_time1);
+    // test comparison operator
+    BOOST_CHECK(obj_time1 == obj_time2);
 }
 
 /**
  *\brief TEST for point object
- *\First, the constructors are checked
- *\Second, a json file is created to check the reading of these files
- *\Last, Serialize function is checked writing a new buffer and 
- *\      comparing with the previous buffer. They have to be the same
+ *\The constructors are checked creating identical
+ *\objects and comparing between them.
  */
-/*
 BOOST_AUTO_TEST_CASE(object_point_test)
 {
-    float x = 0.9999999776482582;
-    float y = 0.9999999776482582;
-    float z = 0.0;
+    double x = 0.9999999776482582;
+    double y = 0.9999999776482582;
+    double z = 0.0;
     auto point1 = rapp::object::point(x, y, z);
     auto point2 = rapp::object::point(x, y, z);
     BOOST_CHECK(point1 ==  point2);
@@ -166,54 +164,46 @@ BOOST_AUTO_TEST_CASE(object_point_test)
     auto point3 = rapp::object::point(point1);
     BOOST_CHECK(point1 == point3);
 
-    auto point4 = rapp::object::point(0,0,0);
+    auto point4 = rapp::object::point(0, 0, 0);
     auto point0 = rapp::object::point();
     BOOST_CHECK(point4 == point0);
+    
+    auto point5 = point4;
+    BOOST_CHECK(point4 == point5);
 
-    //JSON
-    std::string json = read_json_file("point_class.json");
-    rapidjson::Document doc;
-    doc.Parse(json);
-    const rapidjson::Value::ConstMemberIterator it = doc.FindMember("position");
-    auto point5 = rapp::object::point(it);
-    BOOST_CHECK_EQUAL(point1.x, point5.x);
-    BOOST_CHECK_EQUAL(point1.y, point5.y);
-    BOOST_CHECK_EQUAL(point1.z, point5.z);
-
-    //Serialize
-    rapidjson::StringBuffer s_buffer;
-    rapidjson::Writer<StringBuffer> writer(s_buffer);
-    point1.Serialize(writer);
-    std::string serialize_result = s_buffer.GetString();
-    BOOST_CHECK_EQUAL(json, serialize_result);
+    //to check that the variable is the same
+    BOOST_CHECK_EQUAL(point1.x, 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point1.y, 0.9999999776482582);
 
 }
-*/
 
 /**
  *\brief TEST for quaternion object 
- *
- *
- *
- *
- *
+ *\The constructor are checked creating identical objects
+ *\and comparing between them.
+ *\A extra checked was added to guarantee the atributes
+ *\have the same valor that constants created.
  */
-/*
 BOOST_AUTO_TEST_CASE(object_quaternion_test)
 {
     auto quat0 = rapp::object::quaternion();
-    auto quat1 = rapp::object::quaternion(0,0,0,1);
+    auto quat1 = rapp::object::quaternion(0, 0, 0, 1);
     BOOST_CHECK( quat0 == quat1);
     
-    float x = 0.0;
-    float y = 0.0;
-    float z = 0.17576372515799546;
-    float w = 0.9844323810798712;
+    double x = 0.0;
+    double y = 0.0;
+    double z = 0.3062984133859556;
+    double w = 0.9519355450644997;
     
-    auto quat2 = rapp::object::quaternion(x,y,z,w);
+    auto quat2 = rapp::object::quaternion(x, y, z, w);
     auto quat3 = rapp::object::quaternion(quat2);
     BOOST_CHECK(quat2 == quat3);
 
+    BOOST_CHECK_EQUAL(quat3.z, 0.3062984133859556);
+    BOOST_CHECK_EQUAL(quat3.w, 0.9519355450644997);
+
+    auto quat4 = quat3;
+    BOOST_CHECK(quat3 == quat4);
 }
-*/
+
 BOOST_AUTO_TEST_SUITE_END()

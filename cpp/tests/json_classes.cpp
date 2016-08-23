@@ -3,10 +3,14 @@
 #include <iostream>
 #include <fstream>
 #include <boost/test/unit_test.hpp>
-#include "rapidjson/document.h"
+#include "json.hpp"
 #include "../includes/objects/time/time.hpp"
+#include "../includes/objects/point/point.hpp"
+#include "../includes/objects/quaternion/quaternion.hpp"
+#include "../includes/objects/pose/pose.hpp"
 
-/// \brief
+/// \brief function to read a json file and it is converted 
+//  \into a string param
 std::string read_json_file(const std::string file)
 {
     if (file.empty()){
@@ -28,30 +32,86 @@ std::string read_json_file(const std::string file)
 
 BOOST_AUTO_TEST_SUITE(json_classes_test)
 
-/// \brief load from JSON, save to JSON
+/**
+ * check rapp::object::time for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
 BOOST_AUTO_TEST_CASE(time_json_test)
 {
-    //JSON
-    std::string json = read_json_file("time_class.json");
-    BOOST_CHECK(!json.empty());
+    std::string string = read_json_file("time_class.json");
+    BOOST_CHECK(!string.empty());
 
-    rapidjson::Document d;
-    d.Parse(json.c_str()); 
+    auto json = nlohmann::json::parse(string); 
+    const auto stamp = json.find("stamp");
+    BOOST_CHECK(stamp != json.end());
 
-    const auto & stamp = d["stamp"];
     rapp::object::time time_obj = rapp::object::time(stamp);
-    BOOST_CHECK_EQUAL(time_obj.sec(), 1464949299);
-    BOOST_CHECK_EQUAL(time_obj.nanosec(), 93018853);
+    BOOST_CHECK_EQUAL(time_obj.seconds(), 1464949299);
+    BOOST_CHECK_EQUAL(time_obj.nanoseconds(), 93018853);
     
-
-    //Serialize
-    /*
-    rapidjson::StringBuffer s_buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> writer(s_buffer);
-    obj_time1.Serialize(writer);
-    std::string serialize_result = s_buffer.GetString();
-    BOOST_CHECK_EQUAL(json, serialize_result);
-    */
-
+    auto out = time_obj.to_json();
+    BOOST_CHECK(json == out);
 }
+
+/**
+ * check rapp::object::time for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+
+BOOST_AUTO_TEST_CASE(point_json_test)
+{
+    std::string string = read_json_file("point_class.json");
+    BOOST_CHECK(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto position = json.find("position");
+    BOOST_CHECK(position != json.end());
+
+    rapp::object::point point_obj = rapp::object::point(position);
+    BOOST_CHECK_EQUAL(point_obj.x, 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point_obj.y, 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point_obj.z, 0.0);
+
+    auto out = point_obj.to_json();
+    BOOST_CHECK(json == out);
+}
+
+/**
+ * check rapp::object::time for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+BOOST_AUTO_TEST_CASE(quaternion_json_test)
+{
+    std::string string = read_json_file("quaternion_class.json");
+    BOOST_CHECK(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto orientation = json.find("orientation");
+    BOOST_CHECK(orientation !=json.end());
+    
+    rapp::object::quaternion quat_obj = rapp::object::quaternion(orientation);
+    BOOST_CHECK_EQUAL(quat_obj.x, 0.0);
+    BOOST_CHECK_EQUAL(quat_obj.y, 0.0);
+    BOOST_CHECK_EQUAL(quat_obj.z, 0.3062984133859556);
+    BOOST_CHECK_EQUAL(quat_obj.w, 0.9519355450644997);
+
+    auto out = quat_obj.to_json();
+    BOOST_CHECK(json==out);
+}
+
+// TODO: pose test
+// TODO: pose_stamped
+// TODO: msg_metadata
+BOOST_AUT_TEST_CASE(pose_json_test)
+{
+    ///...
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()

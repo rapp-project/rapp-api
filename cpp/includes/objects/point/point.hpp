@@ -11,17 +11,17 @@ namespace object {
  * \date 19 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
-struct point
+class point
 {
+
+public:
     /**
      * \brief Consruct using code coordinates (x,y,z)
      * \param x is x coordinate
      * \param y is y coordinate
      * \param z is z coordinate
      */
-    point(float x, float y, float z)
-    : x(x), y(y), z(z)
-    {}
+    point(double x, double y, double z);
     
     /// \brief Allow Empty Consructor
     point() = default;
@@ -29,70 +29,18 @@ struct point
     /// \brief Copy Conatructor
     point(const rapp::object::point &) = default;
 
-	/// \brief construct using rapidJSON
-    point( const rapidjson::Value::ConstMemberIterator & iter)
-    {
-        auto it_x = iter->FindMember("x");
-        if (it_x != iter->MemberEnd()) {
-            if (it_x->value.IsDouble()){
-                this->x = it_x->value.GetDouble();
-            }
-            else
-                throw std::runtime_error("member `x` not a float");    
-        }
-        else 
-            throw std::runtime_error("param has no `x` value");
-        
-        auto it_y = iter->FindMember("y");
-        if (it_y != iter->MemberEnd()) {
-            if (it_y->value.IsDouble()){
-                this->y = it_y->value.GetDouble();
-            }
-            else
-                throw std::runtime_error("member `y` not a float");    
-        }
-        else 
-            throw std::runtime_error("param has no `y` value");
-        
-        auto it_z = iter->FindMember("z");
-        if (it_z != iter->MemberEnd()) {
-            if (it_z->value.IsDouble()){
-                this->z = it_z->value.GetDouble();
-            }
-            else
-                throw std::runtime_error("member `z` not a float");    
-        }
-        else 
-            throw std::runtime_error("param has no `z` value");
-
-    }
-    
+    /// construct using library "json for modern c++"
+    point(const json::const_iterator & position);
+   
+    json::object_t to_json() const;
+   
     /// \brief Equality operator
-    bool operator==(const rapp::object::point & rhs) const
-    {
-		return (this->x == rhs.x) &&
-			   (this->y == rhs.y) &&
-			   (this->z == rhs.z);
-    }
-
-	/// \brief serialization with rapidJSON
-    template <typename W>
-    void Serialize(W & writer) const
-    {
-        writer.StartObject();
-        writer.String("y");
-        writer.Double(y);
-        writer.String("x");
-        writer.Double(x);
-        writer.String("z");
-        writer.Double(z);
-        writer.EndObject();
-    } 
-    
+    bool operator==(const rapp::object::point & rhs) const;
+  
     /// members
-	float x = 0;
-    float y = 0;
-    float z = 0;
+	double x = 0;
+    double y = 0;
+    double z = 0;
 };
 }
 }
