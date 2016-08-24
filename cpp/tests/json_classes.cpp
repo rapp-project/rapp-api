@@ -76,7 +76,7 @@ BOOST_AUTO_TEST_CASE(point_json_test)
     BOOST_CHECK_EQUAL(point_obj.y, 0.9999999776482582);
     BOOST_CHECK_EQUAL(point_obj.z, 0.0);
 
-    auto out = point_obj.to_json();
+    nlohmann::json::object_t out = {{ "position", point_obj.to_json() }};
     BOOST_CHECK(json == out);
 }
 
@@ -93,7 +93,7 @@ BOOST_AUTO_TEST_CASE(quaternion_json_test)
 
     auto json = nlohmann::json::parse(string);
     const auto orientation = json.find("orientation");
-    BOOST_CHECK(orientation !=json.end());
+    BOOST_CHECK(orientation != json.end());
     
     rapp::object::quaternion quat_obj = rapp::object::quaternion(orientation);
     BOOST_CHECK_EQUAL(quat_obj.x, 0.0);
@@ -101,16 +101,35 @@ BOOST_AUTO_TEST_CASE(quaternion_json_test)
     BOOST_CHECK_EQUAL(quat_obj.z, 0.3062984133859556);
     BOOST_CHECK_EQUAL(quat_obj.w, 0.9519355450644997);
 
-    auto out = quat_obj.to_json();
-    BOOST_CHECK(json==out);
+    nlohmann::json::object_t out = {{ "orientation", quat_obj.to_json()}};
+    BOOST_CHECK(json == out);
 }
 
-// TODO: pose test
 // TODO: pose_stamped
 // TODO: msg_metadata
-BOOST_AUT_TEST_CASE(pose_json_test)
+BOOST_AUTO_TEST_CASE(pose_json_test)
 {
-    ///...
+    std::string string = read_json_file("pose_class.json");
+    BOOST_CHECK(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto pose_it = json.find("pose");
+    BOOST_CHECK(pose_it != json.end());
+
+    rapp::object::pose pose_obj = rapp::object::pose(pose_it);
+    auto quat_obj = pose_obj.get_orientation();
+    BOOST_CHECK_EQUAL(quat_obj.x, 0);
+    BOOST_CHECK_EQUAL(quat_obj.z, 0.17576372515799546);
+    BOOST_CHECK_EQUAL(quat_obj.w, 0.9844323810798712);
+
+    auto point_obj = pose_obj.get_position();
+    BOOST_CHECK_EQUAL(point_obj.x, 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point_obj.y, 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point_obj.z, 0);
+
+    nlohmann::json::object_t out = {{ "pose" ,pose_obj.to_json()}};
+    BOOST_CHECK(json == out);
+
 }
 
 

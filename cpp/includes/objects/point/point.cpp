@@ -31,8 +31,8 @@ point::point(const json::const_iterator & position)
 json::object_t point::to_json() const
 {
     json::object_t values = {{"x", x}, {"y", y}, {"z", z}};
-    json::object_t obj    = {{"position" , values}};
-    return obj;
+    //json::object_t obj    = {{"position" , values}};
+    return values;
 }
 
 bool point::operator==(const rapp::object::point & rhs) const

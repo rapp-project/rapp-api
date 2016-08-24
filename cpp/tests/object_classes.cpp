@@ -27,7 +27,7 @@
 #include "../includes/objects/time/time.hpp"
 #include "../includes/objects/point/point.hpp"
 #include "../includes/objects/quaternion/quaternion.hpp"
-
+#include "../includes/objects/pose/pose.hpp"
 
 
 BOOST_AUTO_TEST_SUITE(object_classes_test)
@@ -206,4 +206,39 @@ BOOST_AUTO_TEST_CASE(object_quaternion_test)
     BOOST_CHECK(quat3 == quat4);
 }
 
+/**
+ *
+ *
+ *
+ *
+ */
+BOOST_AUTO_TEST_CASE(object_pose_test)
+{
+    auto quat =rapp::object::quaternion( 0, 
+                                         0, 
+                                         0.17576372515799546, 
+                                         0.9844323810798712);
+
+    auto point = rapp::object::point( 0.9999999776482582, 
+                                      0.9999999776482582, 
+                                      0);
+
+    auto pose0 = rapp::object::pose();
+    auto pose1 = rapp::object::pose(pose0);
+    BOOST_CHECK(pose0 == pose1);
+
+    auto pose2 = rapp::object::pose( point, quat); 
+    auto pose3 = rapp::object::pose( point, quat);
+    BOOST_CHECK(pose2 == pose3);
+
+    const auto quat1 = pose3.get_orientation();
+    BOOST_CHECK(quat1 == quat);
+    BOOST_CHECK_EQUAL(quat1.w, 0.9844323810798712);
+    BOOST_CHECK_EQUAL(quat1.z, 0.17576372515799546);
+
+    const auto point1 = pose3.get_position();
+    BOOST_CHECK(point == point1);
+    BOOST_CHECK_EQUAL( point1.x, 0.9999999776482582);
+
+}
 BOOST_AUTO_TEST_SUITE_END()

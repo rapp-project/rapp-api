@@ -37,8 +37,8 @@ quaternion::quaternion(const json::const_iterator & orientation)
 json::object_t quaternion::to_json() const
 {
     json::object_t values = {{"x", x}, {"y", y}, {"z", z}, {"w", w}};
-    json::object_t obj    = {{"orientation" , values}};
-    return obj;
+    //json::object_t obj    = {{"orientation" , values}};
+    return values;
 }
 
 bool quaternion::operator==(const rapp::object::quaternion & rhs) const

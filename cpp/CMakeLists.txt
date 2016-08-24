@@ -48,6 +48,7 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/available_services/available_services.cpp
             ${INCLUDES}/objects/quaternion/quaternion.cpp
             ${INCLUDES}/objects/point/point.cpp
+            ${INCLUDES}/objects/pose/pose.cpp
             )
 
 # Begin searching for packgages we use in RAPP API
