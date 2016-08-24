@@ -58,7 +58,7 @@ private:
         std::stringstream ss(json);
         std::vector<rapp::object::pose_stamped> path;
         std::string plan_error;
-        int plan_found;
+        int plan_found = 0;
 
         // see `examples/planned.path.json` for example
         try {
@@ -68,17 +68,22 @@ private:
             // get `plan_error`
             plan_error = tree.get<std::string>("error");
 
-            // get `plan_found`
-            plan_found = tree.get<int>("plan_found");
+            if (plan_error != "") {
+	        std::cout << "Path planning error: " << plan_error << "\n";
+	    } else {
 
-            // iterate array `path` objects
-            for (auto child : tree.get_child("path")) {
-                auto pt_header = child.second.get_child("header");
-                rapp::object::msg_metadata meta(pt_header);
-                rapp::object::pose pose(child.second.get_child("pose"));
+                // get `plan_found`
+                plan_found = tree.get<int>("plan_found");
+
+                // iterate array `path` objects
+                for (auto child : tree.get_child("path")) {
+                    auto pt_header = child.second.get_child("header");
+                    rapp::object::msg_metadata meta(pt_header);
+                    rapp::object::pose pose(child.second.get_child("pose"));
             
-                rapp::object::pose_stamped ps(meta, pose);
-                path.push_back(std::move(ps));
+                    rapp::object::pose_stamped ps(meta, pose);
+                    path.push_back(std::move(ps));
+                }
             }
         }
         catch (boost::property_tree::json_parser::json_parser_error & je) {
@@ -86,9 +91,7 @@ private:
                 << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
         }
-        delegate_(rapp::object::planned_path(boost::lexical_cast<uint8_t>(plan_found), 
-                    plan_error, 
-                    path));
+        delegate_(rapp::object::planned_path(plan_found, plan_error, path));
     }
     /// 
     std::function<void(rapp::object::planned_path path)> delegate_;
