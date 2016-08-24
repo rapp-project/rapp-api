@@ -1,3 +1,5 @@
 #include <string>
 #include "objects/time/time.hpp"
-#include <boost/property_tree/ptree.hpp>
+#include "json.hpp"
+
+using json = nlohmann::json;

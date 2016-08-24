@@ -28,7 +28,8 @@
 #include "../includes/objects/point/point.hpp"
 #include "../includes/objects/quaternion/quaternion.hpp"
 #include "../includes/objects/pose/pose.hpp"
-
+#include "../includes/objects/msg_metadata/msg_metadata.hpp"
+#include "../includes/objects/pose_stamped/pose_stamped.hpp"
 
 BOOST_AUTO_TEST_SUITE(object_classes_test)
 
@@ -241,4 +242,94 @@ BOOST_AUTO_TEST_CASE(object_pose_test)
     BOOST_CHECK_EQUAL( point1.x, 0.9999999776482582);
 
 }
+
+/**
+ *
+ *
+ *
+ *
+ */
+BOOST_AUTO_TEST_CASE(object_msg_metadata_test)
+{
+    std::chrono::nanoseconds t(1464949299093018853);
+    auto time0 = rapp::object::time(t);
+    int seq0 = 0;
+    std::string frameid0 = "map";
+
+    auto msg0 = rapp::object::msg_metadata();
+    auto msg1 = rapp::object::msg_metadata(msg0);
+    BOOST_CHECK(msg0 == msg1);
+    
+    auto msg2 = rapp::object::msg_metadata();
+    BOOST_CHECK(msg0 == msg2);
+
+    auto msg3 = rapp::object::msg_metadata( seq0, time0, frameid0);
+    auto msg4 = rapp::object::msg_metadata( seq0, time0, frameid0);
+    BOOST_CHECK(msg3 == msg4);
+
+    rapp::object::time time1 = msg4.get_time();
+    BOOST_CHECK_EQUAL(time1.seconds(),1464949299);
+    BOOST_CHECK_EQUAL(time1.nanoseconds(),93018853);
+
+    BOOST_CHECK_EQUAL(msg4.get_seq(), 0);
+    BOOST_CHECK_EQUAL(msg4.get_frame(), "map");
+
+}
+
+/**
+ *
+ *
+ *
+ *
+ */
+BOOST_AUTO_TEST_CASE(object_pose_stamped_test)
+{
+    std::chrono::nanoseconds t(1464949299093018853);
+    auto time0 = rapp::object::time(t);
+    int seq0 = 0;
+    std::string frameid0 = "map";
+    auto header0 = rapp::object::msg_metadata(seq0 , time0, frameid0);
+   
+    auto quat =rapp::object::quaternion(0, 
+                                        0, 
+                                        0.17576372515799546, 
+                                        0.9844323810798712);
+
+    auto point = rapp::object::point(0.9999999776482582, 
+                                     0.9999999776482582, 
+                                     0);
+
+    auto pose0 = rapp::object::pose( point, quat);
+
+    auto ps_obj0 = rapp::object::pose_stamped();
+    auto ps_obj1 = rapp::object::pose_stamped(ps_obj0);
+    BOOST_CHECK(ps_obj0 == ps_obj1);
+
+    auto ps_obj2 = rapp::object::pose_stamped();
+    BOOST_CHECK(ps_obj0 == ps_obj2);
+
+    auto ps_obj3 = rapp::object::pose_stamped(header0, pose0);
+    auto ps_obj4 = rapp::object::pose_stamped(header0, pose0);
+    BOOST_CHECK(ps_obj3 == ps_obj4);
+
+    const auto pose1 = ps_obj4.get_pose();
+    auto quat1 = pose1.get_orientation();
+    BOOST_CHECK(quat == quat1);
+    
+    auto point1 = pose1.get_position();
+    BOOST_CHECK(point == point1);
+
+    const auto header1 = ps_obj4.get_header();
+    auto frameid1= header1.get_frame();
+    auto seq1 = header1.get_seq();
+    auto time1 = header1.get_time();
+    BOOST_CHECK_EQUAL(frameid1, frameid0);
+    BOOST_CHECK_EQUAL(seq1, seq0);
+    BOOST_CHECK_EQUAL(time1.seconds(),1464949299);
+    BOOST_CHECK_EQUAL(time1.nanoseconds(),93018853);
+
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END()

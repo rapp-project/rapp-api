@@ -46,9 +46,11 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/asio/http_response.cpp
             ${INCLUDES}/config/config.cpp
             ${INCLUDES}/cloud/available_services/available_services.cpp
+            ${INCLUDES}/objects/time/time.cpp
             ${INCLUDES}/objects/quaternion/quaternion.cpp
             ${INCLUDES}/objects/point/point.cpp
             ${INCLUDES}/objects/pose/pose.cpp
+            ${INCLUDES}/objects/msg_metadata/msg_metadata.cpp
             )
 
 # Begin searching for packgages we use in RAPP API

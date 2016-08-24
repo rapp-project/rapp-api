@@ -8,6 +8,7 @@
 #include "../includes/objects/point/point.hpp"
 #include "../includes/objects/quaternion/quaternion.hpp"
 #include "../includes/objects/pose/pose.hpp"
+#include "../includes/objects/msg_metadata/msg_metadata.hpp"
 
 /// \brief function to read a json file and it is converted 
 //  \into a string param
@@ -50,8 +51,8 @@ BOOST_AUTO_TEST_CASE(time_json_test)
     rapp::object::time time_obj = rapp::object::time(stamp);
     BOOST_CHECK_EQUAL(time_obj.seconds(), 1464949299);
     BOOST_CHECK_EQUAL(time_obj.nanoseconds(), 93018853);
-    
-    auto out = time_obj.to_json();
+        
+    nlohmann::json::object_t out = {{"stamp", time_obj.to_json()}};
     BOOST_CHECK(json == out);
 }
 
@@ -106,7 +107,6 @@ BOOST_AUTO_TEST_CASE(quaternion_json_test)
 }
 
 // TODO: pose_stamped
-// TODO: msg_metadata
 BOOST_AUTO_TEST_CASE(pose_json_test)
 {
     std::string string = read_json_file("pose_class.json");
@@ -132,5 +132,25 @@ BOOST_AUTO_TEST_CASE(pose_json_test)
 
 }
 
+BOOST_AUTO_TEST_CASE(msg_metadata_json_test)
+{
+    std::string string = read_json_file("msg_metadata_class.json");
+    BOOST_CHECK(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto header_it = json.find("header");
+    BOOST_CHECK(header_it != json.end());
+
+    auto msg0 = rapp::object::msg_metadata(header_it);
+    rapp::object::time time1 = msg0.get_time();
+    BOOST_CHECK_EQUAL(time1.seconds(),1464949299);
+    BOOST_CHECK_EQUAL(time1.nanoseconds(),93018853);
+
+    BOOST_CHECK_EQUAL(msg0.get_seq(), 0);
+    BOOST_CHECK_EQUAL(msg0.get_frame(), "map"); 
+
+    nlohmann::json out = {{"header", msg0.to_json()}};
+    BOOST_CHECK(json == out);
+}
 
 BOOST_AUTO_TEST_SUITE_END()

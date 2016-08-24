@@ -4,7 +4,6 @@
 namespace rapp {
 namespace object {
 
-using namespace rapidjson;    
 /**
  * \struct pose_stamped
  * \brief encapsulate robot pose with message header component
@@ -12,18 +11,19 @@ using namespace rapidjson;
  * \date 19 August 2016
  * \author Maria Ramos <m.ramos@ortelio.co.uk>
  */
-struct pose_stamped
+class pose_stamped
 {
+public:
     /**
      * \brief Consruct using robot pose and message header component
      * \param header defines pose metadata (sequence, frame_id, stamp)
      * \param pose is robot pose definition (position & orientation)
      */
 	pose_stamped( 
-				  const rapp::object::pose_metadata header,
+				  const rapp::object::msg_metadata header,
 				  const rapp::object::pose pose
 				)
-    : header(header), pose(pose)
+    : header_(header), pose_(pose)
     {}
     
     /// \brief empty consructor
@@ -33,39 +33,52 @@ struct pose_stamped
     pose_stamped(const rapp::object::pose_stamped &) = default;
 
     /// \brief construct using rapidJSON
-    pose_stamped( const rapidjson::Value::ConstMemberIterator & iter)
+    pose_stamped( const json::const_iterator & stamped)
     {
-        auto it = iter->FindMember("header");
-        this->header = pose_metadata(it);
-
-        auto it2 = iter->FindMember("pose");
-        this->pose = pose(it2);
+        if(stamped->find("pose") == stamped->end()) {
+            throw std::runtime_error("no param pose in pose_stamped");
+        }
+        else {
+            const auto pose_it = stamped->find("pose");
+            pose_ = rapp::object::pose(pose_it);
+        }
+        if(stamped->find("header") == stamped->end()) {
+            throw std::runtime_error("no param header in pose_stamped");
+        }
+        else {
+            const auto header_it = stamped->find("header");
+            header_ = rapp::object::msg_metadata(header_it);
+        }
     }
 
-    
+    json::object_t to_json() const
+    {
+        json::object_t values = {{"pose", pose_.to_json()}, 
+                                 {"header", header_.to_json()}};
+        return values;
+    }
+
+    rapp::object::msg_metadata get_header() const
+    {
+       return header_;
+    }
+
+    rapp::object::pose get_pose() const
+    {
+        return pose_;
+    } 
     /// \brief Equality operator
     bool operator==(const rapp::object::pose_stamped & rhs) const
     {
-		return (this->header == rhs.header) &&
-			   (this->pose == rhs.pose);
+		return (this->header_ == rhs.get_header()) &&
+			   (this->pose_ == rhs.get_pose());
     }
 
-	/// \brief Serialization with rapidJSON
-    template <typename W>
-    void Serialize(W & writer) const
-    {
-        writer.StartObject();
-        writer.String("header");
-        header.Serialize(writer);
 
-        writer.String("pose");
-        pose.Serialize(writer);
-        writer.EndObject();
-    }
-
-	/// members
-	rapp::object::pose_metadata header;
-    rapp::object::pose pose;
+private:
+    /// members
+	rapp::object::msg_metadata header_;
+    rapp::object::pose pose_;
 };
 }
 }
