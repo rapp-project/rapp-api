@@ -26,7 +26,7 @@ macro(CREATE_RAPP)
 #   MESSAGE("Libs: ${RAPP_LIBS}")
 
     add_executable(${RAPP_NAME} ${RAPP_SRCS})
-    target_link_libraries(${RAPP_NAME} rapp_robot_vision rapp_robot_navigation rapp_robot_communication rapp_robot_info rapp_robot_localization ${RAPP_LIBS} ${Boost_LIBRARIES})
+    target_link_libraries(${RAPP_NAME} rapp rapp_robot_vision rapp_robot_navigation rapp_robot_communication rapp_robot_info rapp_robot_localization ${RAPP_LIBS} ${Boost_LIBRARIES})
 
     install(TARGETS ${RAPP_NAME} DESTINATION bin)
     
