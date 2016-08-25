@@ -20,16 +20,17 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 
-//#include "../includes/objects/face/face.hpp"
-//#include "../includes/objects/qr_code/qr_code.hpp"
-//#include "../includes/objects/picture/picture.hpp"
-//#include "../includes/objects/audio/audio.hpp"
+#include "../includes/objects/face/face.hpp"
+#include "../includes/objects/qr_code/qr_code.hpp"
+#include "../includes/objects/picture/picture.hpp"
+#include "../includes/objects/audio/audio.hpp"
 #include "../includes/objects/time/time.hpp"
 #include "../includes/objects/point/point.hpp"
 #include "../includes/objects/quaternion/quaternion.hpp"
 #include "../includes/objects/pose/pose.hpp"
 #include "../includes/objects/msg_metadata/msg_metadata.hpp"
 #include "../includes/objects/pose_stamped/pose_stamped.hpp"
+#include "../includes/objects/planned_path/planned_path.hpp"
 
 BOOST_AUTO_TEST_SUITE(object_classes_test)
 
@@ -111,8 +112,10 @@ BOOST_AUTO_TEST_CASE(constructors_test)
 
 /**
  *\brief TEST for time object
+ *\
  *\We check the constructors creating identical objects and comparing 
  *\between them.
+ *\
  *\Methods seconds and nanoseconds are checked comparing the atributes
  *\between the objects created before. They have to be the same.
  */
@@ -150,6 +153,7 @@ BOOST_AUTO_TEST_CASE(object_time_test)
 
 /**
  *\brief TEST for point object
+ *\
  *\The constructors are checked creating identical
  *\objects and comparing between them.
  */
@@ -180,6 +184,7 @@ BOOST_AUTO_TEST_CASE(object_point_test)
 
 /**
  *\brief TEST for quaternion object 
+ *\
  *\The constructor are checked creating identical objects
  *\and comparing between them.
  *\A extra checked was added to guarantee the atributes
@@ -208,10 +213,14 @@ BOOST_AUTO_TEST_CASE(object_quaternion_test)
 }
 
 /**
- *
- *
- *
- *
+ *\brief TEST for pose object
+ *\
+ *\The constructors are checked creating identical
+ *\objects and comparing between them.
+ *\
+ *\For methods, we take the parameters and 
+ *\they are compared with the objects created for
+ *\initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_pose_test)
 {
@@ -241,13 +250,19 @@ BOOST_AUTO_TEST_CASE(object_pose_test)
     BOOST_CHECK(point == point1);
     BOOST_CHECK_EQUAL( point1.x, 0.9999999776482582);
 
+    auto pose4 = pose3;
+    BOOST_CHECK(pose3 == pose4);
 }
 
 /**
- *
- *
- *
- *
+ *\brief TEST for msg_metadata object
+ *\
+ *\The constructors are checked creating identical
+ *\ objects and comparing between them.
+ *\
+ *\For methods, we take the parameters and 
+ *\ they are compared with the objects created for
+ *\ initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_msg_metadata_test)
 {
@@ -277,10 +292,15 @@ BOOST_AUTO_TEST_CASE(object_msg_metadata_test)
 }
 
 /**
- *
- *
- *
- *
+ *\brief TEST for pose_stamped object
+ *\
+ *\In the same way that the classes before
+ *\the constructors are checked creating identical
+ *\objects and comparing between them.
+ *\
+ *\For methods, we take the parameters and 
+ *\they are compared with the objects created for
+ *\initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_pose_stamped_test)
 {
@@ -319,7 +339,7 @@ BOOST_AUTO_TEST_CASE(object_pose_stamped_test)
     auto point1 = pose1.get_position();
     BOOST_CHECK(point == point1);
 
-    const auto header1 = ps_obj4.get_header();
+    auto header1 = ps_obj4.get_header();
     auto frameid1= header1.get_frame();
     auto seq1 = header1.get_seq();
     auto time1 = header1.get_time();
@@ -327,6 +347,104 @@ BOOST_AUTO_TEST_CASE(object_pose_stamped_test)
     BOOST_CHECK_EQUAL(seq1, seq0);
     BOOST_CHECK_EQUAL(time1.seconds(),1464949299);
     BOOST_CHECK_EQUAL(time1.nanoseconds(),93018853);
+
+    auto ps_obj5 = ps_obj4;
+    BOOST_CHECK(ps_obj4 == ps_obj5);
+}
+
+/**
+ *\brief TEST for planned_path object
+ *\
+ *\In the same way that the classes before
+ *\the constructors are checked creating identical
+ *\objects and comparing between them.
+ *\
+ *\For methods, we take the parameters and 
+ *\they are compared with the objects created for
+ *\initialize that object.
+ */
+BOOST_AUTO_TEST_CASE(object_planned_path_test)
+{
+    std::chrono::nanoseconds t(1464949299093018853);
+    auto time0 = rapp::object::time(t);
+    int seq0 = 0;
+    std::string frameid0 = "map";
+    auto header0 = rapp::object::msg_metadata(seq0 , time0, frameid0);
+   
+    auto quat =rapp::object::quaternion(0, 
+                                        0, 
+                                        0.17576372515799546, 
+                                        0.9844323810798712);
+
+    auto point = rapp::object::point(0.9999999776482582, 
+                                     0.9999999776482582, 
+                                     0);
+
+    auto pose0 = rapp::object::pose( point, quat);
+    auto ps_obj0 = rapp::object::pose_stamped(header0, pose0);
+
+    auto pp_obj = rapp::object::planned_path();
+    auto pp_obj1 = rapp::object::planned_path();
+    BOOST_CHECK(pp_obj == pp_obj1);
+
+    auto pp_obj2 = rapp::object::planned_path(pp_obj);
+    BOOST_CHECK(pp_obj == pp_obj2);
+
+    std::vector<rapp::object::pose_stamped> ps_vector;
+    ps_vector.push_back(ps_obj0);
+    auto pp_obj3 = rapp::object::planned_path(1, "", ps_vector);
+    auto pp_obj4 = rapp::object::planned_path(1, "", ps_vector);
+    BOOST_CHECK(pp_obj3 == pp_obj4); 
+    BOOST_CHECK_EQUAL(pp_obj3.get_plan(), 1);
+    BOOST_CHECK_EQUAL(pp_obj3.get_error(), "");
+    BOOST_CHECK(pp_obj3.get_path() == ps_vector);
+
+    auto pp_obj5 = pp_obj4;
+    BOOST_CHECK(pp_obj4 == pp_obj5);
+}
+
+/**
+ *\brief TEST for qr_code object
+ *\
+ *\The constructor are checked creating identical
+ *\objects and comparing between them.
+ *\
+ *\For methods, we take the parameters and 
+ *\they are compared with the objects created for
+ *\initialize that object.
+ */
+BOOST_AUTO_TEST_CASE(object_qr_code_test)
+{
+    auto qr0 = rapp::object::qr_code();
+    auto qr1 = rapp::object::qr_code();
+    BOOST_CHECK(qr0 == qr1);
+
+    auto qr2 = rapp::object::qr_code(qr0);
+    BOOST_CHECK(qr0 == qr2);
+
+    auto qr3 = rapp::object::qr_code( 0.1f, 0.1f, "test");
+    auto qr4 = rapp::object::qr_code( 0.1f, 0.1f, "test");
+    BOOST_CHECK(qr3 == qr4);
+
+    BOOST_CHECK_EQUAL(qr4.label(), "test");
+
+    auto qr5 = qr4;
+    BOOST_CHECK(qr4 == qr5);
+}
+
+/**
+ *\brief TEST for picture object
+ *\
+ *\The constructor are checked creating identical
+ *\objects and comparing between them.
+ *\
+ *\For methods, we take the parameters and 
+ *\they are compared with the objects created for
+ *\initialize that object.
+ */
+BOOST_AUTO_TEST_CASE(object_picture_test)
+{
+
 
 }
 

@@ -6,15 +6,15 @@ namespace object {
 /**
  * \class qrCode
  * \brief class which should encapsulate a QR code
- * \version 1
- * \date 13-February-2015
+ * \version 0.7.0
+ * \date 25 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class qr_code
 {
 public:
     /**
-     * \brief Consruct using code coordinates (a rectangle) and a label (URL, email, string, etc)
+     * \brief Construct using code coordinates (a rectangle) and a label (URL, email, string, etc)
      * \param centre_x is coordinate
      * \param centre_y is coordinate
      * \param label is message embedded in QR
@@ -29,10 +29,10 @@ public:
       message__(label)
     {}
     
-    /// Allow Empty Consructor
+    /// Allow Empty Constructor
     qr_code() = default;
     
-    /// Copy Conatructor
+    /// Copy Constructor
     qr_code(const qr_code &) = default;
     
     /** 

@@ -1,5 +1,21 @@
 #ifndef RAPP_OBJECT_POSE_STAMPED
 #define RAPP_OBJECT_POSE_STAMPED
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "includes.ihh"
 namespace rapp {
 namespace object {
@@ -22,9 +38,7 @@ public:
 	pose_stamped( 
 				  const rapp::object::msg_metadata header,
 				  const rapp::object::pose pose
-				)
-    : header_(header), pose_(pose)
-    {}
+				);
     
     /// \brief empty consructor
     pose_stamped() = default;
@@ -32,48 +46,20 @@ public:
     /// \brief copy constructor
     pose_stamped(const rapp::object::pose_stamped &) = default;
 
-    /// \brief construct using rapidJSON
-    pose_stamped( const json::const_iterator & stamped)
-    {
-        if(stamped->find("pose") == stamped->end()) {
-            throw std::runtime_error("no param pose in pose_stamped");
-        }
-        else {
-            const auto pose_it = stamped->find("pose");
-            pose_ = rapp::object::pose(pose_it);
-        }
-        if(stamped->find("header") == stamped->end()) {
-            throw std::runtime_error("no param header in pose_stamped");
-        }
-        else {
-            const auto header_it = stamped->find("header");
-            header_ = rapp::object::msg_metadata(header_it);
-        }
-    }
+    /// \brief construct using `json for modern c++`
+    pose_stamped(const json::const_iterator & stamped);
 
-    json::object_t to_json() const
-    {
-        json::object_t values = {{"pose", pose_.to_json()}, 
-                                 {"header", header_.to_json()}};
-        return values;
-    }
+    /// \brief method to pass the information into a json object
+    json::object_t to_json() const;
 
-    rapp::object::msg_metadata get_header() const
-    {
-       return header_;
-    }
+    /// \brief method to get the param header_
+    rapp::object::msg_metadata get_header() const; 
 
-    rapp::object::pose get_pose() const
-    {
-        return pose_;
-    } 
+    /// \brief method to get the param pose_
+    rapp::object::pose get_pose() const;
+
     /// \brief Equality operator
-    bool operator==(const rapp::object::pose_stamped & rhs) const
-    {
-		return (this->header_ == rhs.get_header()) &&
-			   (this->pose_ == rhs.get_pose());
-    }
-
+    bool operator==(const rapp::object::pose_stamped & rhs) const;
 
 private:
     /// members

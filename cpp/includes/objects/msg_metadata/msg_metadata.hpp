@@ -1,5 +1,21 @@
 #ifndef RAPP_OBJECT_MSG_METADATA
 #define RAPP_OBJECT_MSG_METADATA
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "includes.ihh"
 namespace rapp {
 namespace object {
@@ -7,7 +23,7 @@ namespace object {
  * \class msg_metadata
  * \brief encapsulates metadata of another class (e.g. pose)
  * \version 0.6.0
- * \date 24-July-2016
+ * \date 25 August 2016
  * \author Alex Giokas <a.gkiokas@ortelio.co.uk>
  */
 class msg_metadata
@@ -31,15 +47,19 @@ public:
     /// \brief default copy Conatructor
     msg_metadata(const rapp::object::msg_metadata &) = default;
 
-	/// \brief construct using rapidJSON
+	/// \brief construct using `json for modern C++`
     msg_metadata(const json::const_iterator & metadata);
        
+    /// \brief method to pass the params to a json object
     json::object_t to_json() const; 
 
+    /// \brief method to get the param stamp_
     rapp::object::time get_time();
 
+    /// \brief method to get the param seq_
     int get_seq();
 
+    /// \brief method to get the param frameid_
     std::string get_frame();
 
     /** 

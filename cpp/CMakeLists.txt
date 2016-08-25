@@ -51,6 +51,8 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/objects/point/point.cpp
             ${INCLUDES}/objects/pose/pose.cpp
             ${INCLUDES}/objects/msg_metadata/msg_metadata.cpp
+            ${INCLUDES}/objects/pose_stamped/pose_stamped.cpp
+            ${INCLUDES}/objects/planned_path/planned_path.cpp
             )
 
 # Begin searching for packgages we use in RAPP API

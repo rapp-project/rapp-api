@@ -1,0 +1,12 @@
+{
+    "human":{ 
+                "up_left_point":{
+                                    "x": 0, 
+                                    "y": 0
+                }, 
+                "down_right_point":{
+                                    "x": 0, 
+                                    "y": 0
+                } 
+    }
+}

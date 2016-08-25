@@ -9,6 +9,8 @@
 #include "../includes/objects/quaternion/quaternion.hpp"
 #include "../includes/objects/pose/pose.hpp"
 #include "../includes/objects/msg_metadata/msg_metadata.hpp"
+#include "../includes/objects/pose_stamped/pose_stamped.hpp"
+#include "../includes/objects/planned_path/planned_path.hpp"
 
 /// \brief function to read a json file and it is converted 
 //  \into a string param
@@ -57,7 +59,7 @@ BOOST_AUTO_TEST_CASE(time_json_test)
 }
 
 /**
- * check rapp::object::time for json (de)serialisation
+ * check rapp::object::point for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -82,7 +84,7 @@ BOOST_AUTO_TEST_CASE(point_json_test)
 }
 
 /**
- * check rapp::object::time for json (de)serialisation
+ * check rapp::object::quaternion for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -106,7 +108,13 @@ BOOST_AUTO_TEST_CASE(quaternion_json_test)
     BOOST_CHECK(json == out);
 }
 
-// TODO: pose_stamped
+/**
+ * check rapp::object::pose for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+
 BOOST_AUTO_TEST_CASE(pose_json_test)
 {
     std::string string = read_json_file("pose_class.json");
@@ -132,6 +140,13 @@ BOOST_AUTO_TEST_CASE(pose_json_test)
 
 }
 
+/**
+ * check rapp::object::msg_metadata for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+
 BOOST_AUTO_TEST_CASE(msg_metadata_json_test)
 {
     std::string string = read_json_file("msg_metadata_class.json");
@@ -151,6 +166,73 @@ BOOST_AUTO_TEST_CASE(msg_metadata_json_test)
 
     nlohmann::json out = {{"header", msg0.to_json()}};
     BOOST_CHECK(json == out);
+}
+
+/**
+ * check rapp::object::pose_stamped for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+
+BOOST_AUTO_TEST_CASE(pose_stamped_json_test)
+{
+    std::string string = read_json_file("pose_stamped.json");
+    BOOST_CHECK(!string.empty());
+
+    auto json = nlohmann::json::parse(string);
+    const auto stamped_it = json.find("path");
+    BOOST_CHECK(stamped_it != json.end());
+
+    auto ps_obj0 = rapp::object::pose_stamped(stamped_it);
+    auto quat =rapp::object::quaternion(0, 
+                                        0, 
+                                        0.17576372515799546, 
+                                        0.9844323810798712);
+
+    auto point = rapp::object::point(0.9999999776482582, 
+                                     0.9999999776482582, 
+                                     0);
+
+    const auto pose0 = ps_obj0.get_pose();
+    auto quat1 = pose0.get_orientation();
+    BOOST_CHECK(quat == quat1);
+    
+    auto point1 = pose0.get_position();
+    BOOST_CHECK(point == point1);
+
+    auto header1 = ps_obj0.get_header();
+    auto frameid1= header1.get_frame();
+    auto seq1 = header1.get_seq();
+    auto time1 = header1.get_time();
+    BOOST_CHECK_EQUAL(frameid1, "map");
+    BOOST_CHECK_EQUAL(seq1, 0);
+    BOOST_CHECK_EQUAL(time1.seconds(),1464949299);
+    BOOST_CHECK_EQUAL(time1.nanoseconds(),93018853);
+
+    nlohmann::json out = {{"path", ps_obj0.to_json()}};
+    BOOST_CHECK(json == out);
+
+}
+
+/**
+ * check rapp::object::planned_path for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+
+BOOST_AUTO_TEST_CASE(planned_path_json_test)
+{
+    std::string string = read_json_file("planned_path.json");
+    BOOST_CHECK(!string.empty());
+
+    const auto json = nlohmann::json::parse(string);
+    auto pp_obj = rapp::object::planned_path(json);
+
+    const auto json_back = pp_obj.to_json();
+    BOOST_CHECK(json == json_back);
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
