@@ -61,12 +61,14 @@ void available_services::deserialise(std::string json) const
     delegate_(services);
 }
 
-void available_services::fill_buffer(
-                                       boost::asio::streambuf & request,
-                                       rapp::cloud::platform info
-                                    )
+std::function<std::string> available_services::operator()(
+                                                           boost::asio::streambuf & request,
+                                                           rapp::cloud::platform info
+                                                         )
 {
+    auto callback = std::bind(&available_services::deserialise, *this, std::placeholders::_1);
     http_request::fill_buffer(request, info);
+    return callback;
 }
 
 }

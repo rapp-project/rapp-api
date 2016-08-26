@@ -57,14 +57,15 @@ public:
     template <typename T, typename... Args>
     void make_call(Args... args)
     {
-		auto ptr = std::make_shared<T>(args...);
-        assert(ptr);
-
+        // create the cloud class
+		auto obj T(args...);
         boost::asio::streambuf request;
-        ptr->fill_buffer(boost::ref(request), info_);
+        obj.fill_buffer(boost::ref(request), info_);
         
-        auto callback = std::bind(&T::deserialise, ptr.get(), std::placeholders::_1);
+        // bind the callback fo class T::deserialize for response processing
+        auto callback = std::bind(&T::deserialise, obj, std::placeholders::_1);
 
+        // create an asio_socket and run the request
         auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
         assert(asio);
 		asio->begin(query_, resol_);
@@ -72,22 +73,46 @@ public:
 		io_.reset();
     }
 
-    /**
-     * \brief run a group of jobs asynchronously as a single batch
-     * \param jobs is vector of constant pointers to client services
-	 * \note subsequent calls of `run_job` or `run_jobs` will block in a FIFO queue
-     */
-    /*
-    void run_calls(const std::vector<std::shared_ptr<>> jobs)
-	{
-		for (const std::shared_ptr<asio_socket> & job : jobs) {
-			assert(job);
-			job->schedule(query_, resol_, io_, cloud_);
-		}
-		io_.run();
+    /// \brief create an arbitrary number of cloud calls using a variadic template
+    /// \see https://ideone.com/Fq242E
+    template <typename... Args>
+    void make_calls(Args... args)
+    {
+        // pack the variadic arguments in a tuple
+        auto t = std::tuple<Args...>(args...);
+        unsigned int size = std::tuple_size<decltype(t)>::value;
+
+        // each variadic object will run the code below
+        auto execute = [](auto & obj){ 
+
+            // fill buffer and get callback
+            boost::asio::streambuf request;
+            auto callback = obj()(boost::ref(request), info_);
+
+            // create an asio_socket and run the request
+            auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
+            assert(asio);
+            asio->begin(query_, resol_);
+        };
+
+        // iterate the cloud calls running them in a batch
+        for (int i = 0; i < size; i++) {
+            rapp::misc::visit_at(t, i, execute);
+        }
+
+        // run all calls, then reset asio queue
+        io_.run();
 		io_.reset();
-	}
-    */
+    }
+
+    /// \brief make a cloud object
+    /// \type T defines the cloud class
+    /// \type Args is the variadic arguments of the class constructor
+    template <typename T, typename... Args>
+    T make_class(Args ...args)
+    {
+        return T(args...);
+    }
 
     /// \brief stop the service controller
     void stop()
@@ -96,7 +121,7 @@ public:
 	}
 
 protected:
-
+    
 	/// \brief handle asio errors
 	void default_error_handler(boost::system::error_code error) const
 	{

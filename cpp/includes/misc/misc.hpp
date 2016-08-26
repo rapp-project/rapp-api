@@ -107,6 +107,50 @@ struct json_unquote_pdt_value<bool>
 	}
 };
 
+/// \brief visitot for runtime access to std::tuple
+template <size_t I>
+struct visit_impl
+{
+    template <typename T, typename F>
+    static void visit(T& tup, size_t idx, F fun)
+    {
+        if (idx == I - 1) {
+            fun(std::get<I - 1>(tup));
+        }
+        else { 
+            visit_impl<I - 1>::visit(tup, idx, fun);
+        }
+    }
+};
+
+/// \brief visitor for runtime access to std::tuple 
+/// \param tup type T is the tuple of variadic templates
+/// \param idx is the index (asserted)
+/// \param fun is a functor
+template <>
+struct visit_impl<0>
+{
+    template <typename T, typename F>
+    static void visit(T& tup, size_t idx, F fun)
+    { 
+        assert(false);
+    }
+};
+ 
+/// visit at runtime the tuple item at idx and run F
+template <typename F, typename... Ts>
+void visit_at(std::tuple<Ts...> const& tup, size_t idx, F fun)
+{
+    visit_impl<sizeof...(Ts)>::visit(tup, idx, fun);
+}
+
+/// visit at runtime the tuple item at idx and run F
+template <typename F, typename... Ts>
+void visit_at(std::tuple<Ts...>& tup, size_t idx, F fun)
+{
+    visit_impl<sizeof...(Ts)>::visit(tup, idx, fun);
+}
+
 }
 }
 
@@ -120,6 +164,8 @@ std::unique_ptr<T> make_unique(Args&&... args)
 }
 }
 #endif
+
+
 
 //
 #endif
