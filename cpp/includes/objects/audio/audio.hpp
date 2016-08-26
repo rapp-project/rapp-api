@@ -1,13 +1,29 @@
 #ifndef RAPP_OBJECT_AUDIO
 #define RAPP_OBJECT_AUDIO
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "includes.ihh"
 namespace rapp {
 namespace object {
 /**
  * \class audio
  * \brief class which wraps around raw bytes of an audiofile
- * \version 2
- * \date January-2016
+ * \version 0.7.0
+ * \date 26 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  *
  * TODO: instead of making `audio` polymorphic we can request as ctor param
@@ -19,69 +35,35 @@ class audio
 {
 public:
     /// Construct from a file on disk
-    audio(const std::string filepath)
-    {
-        std::ifstream bytestream(filepath, std::ios::in | std::ios::binary | std::ios::ate);
-        if (!bytestream.is_open()) {
-            throw std::runtime_error("could not open bytestream for "+filepath);
-        }
-        else {
-            read_bytes(bytestream);
-        }
-    }
+    audio(const std::string filepath);
 
     /// \brief Construct using an open file stream
     /// \param bytestream will be **consumed** by the object
-    audio(std::ifstream & bytestream)
-    {
-        read_bytes(bytestream);
-    }
+    audio(std::ifstream & bytestream);
 
     /// \brief construct using an existing byte-array
     /// \param bytearray should contain the audio data
-    audio(std::vector<rapp::types::byte> bytearray)
-    : bytearray_(bytearray)
-    {}
+    audio(std::vector<rapp::types::byte> bytearray);
 
     /// Copy constructor
     audio(const audio &) = default;
 
     /// Get audio as array of bytes
-    std::vector<rapp::types::byte> bytearray() const
-    {
-        return bytearray_;
-    }
+    std::vector<rapp::types::byte> bytearray() const;
 
     /// Are audios same ?
-    bool operator==(const audio & rhs) const
-    {
-        return typeid(*this) == typeid(rhs) &&
-               (this->bytearray_ == rhs.bytearray_);
-    }
+    bool operator==(const audio & rhs) const;
+
+    /// Audios are not the same
+    bool operator!=(const audio & rhs) const;
 
     /// Assignment operator
     audio & operator=(const audio &) = default;
 
     /// Save audio to filepath
-    bool save(const std::string filepath)
-    {
-        std::ofstream os(filepath, std::ios::out | std::ofstream::binary);
-        if (os.is_open())
-        {
-            std::copy(bytearray_.begin(), bytearray_.end(), 
-                      std::ostreambuf_iterator<rapp::types::byte>(os));
-            os.close();
-            return true;
-        }
-        else
-            return false;
-    }
+    bool save(const std::string filepath);
 
-    virtual std::string audio_source() const
-    { return ""; }
-
-    virtual std::string extension() const
-    { return ""; }
+    std::string audio_source() const;
 
 private:
 
@@ -89,89 +71,62 @@ private:
     audio() = delete;
 
     // Copy the bytestream into the bytearray
-    void read_bytes(std::ifstream & bytestream)
-    {
-        bytestream.seekg(0, std::ios_base::end);
-        std::streampos fileSize = bytestream.tellg();
-        bytearray_.resize(fileSize);
-        bytestream.seekg(0, std::ios_base::beg);
-        bytestream.read(&bytearray_[0], fileSize);
-    }
+    void read_bytes(std::ifstream & bytestream);
 
     // Actual bytes of audio file
     std::vector<rapp::types::byte> bytearray_;
 };
+
 /// OGG Class specialisation
 class ogg : public audio
 {
 public:
 
-    ogg(const std::string filepath) 
-    : audio(filepath){}
+    ogg(const std::string filepath);  
 
-    ogg(std::ifstream & bytestream) 
-    : audio(bytestream){}
+    ogg(std::ifstream & bytestream);
 
-    std::string audio_source() const
-    { return "nao_ogg";}
+    std::string audio_source() const;
 
-    std::string extension() const
-    { return ".ogg";}
 };
+
 /// WAV Class specialisation for a single channel
 class nao_single_channel_wav : public audio
 {
 public:
 
-    nao_single_channel_wav(const std::string filepath)
-    : audio (filepath){}
+    nao_single_channel_wav(const std::string filepath);
 
-    nao_single_channel_wav(std::ifstream & bytestream)
-    : audio (bytestream){}
+    nao_single_channel_wav(std::ifstream & bytestream);
 
-    std::string audio_source() const
-    { return "nao_wav_1_ch"; }
+    std::string audio_source() const;
 
-    std::string extension() const
-    { return ".wav"; }
 };
 /// WAV Class specialisation for quad channel
 class nao_quad_channel_wav : public audio
 {
 public:
 
-    nao_quad_channel_wav(const std::string filepath)
-    : audio (filepath){}
+    nao_quad_channel_wav(const std::string filepath);
 
-    nao_quad_channel_wav(std::ifstream & bytestream)
-    : audio (bytestream){}
+    nao_quad_channel_wav(std::ifstream & bytestream);
 
-    std::string audio_source() const
-    { return "nao_wav_4_ch";}
+    std::string audio_source() const;
 
-    std::string extension() const
-    { return ".wav";}
 };
 /// WAV Single channel 16Khz > Headset audio source
 class microphone_wav : public audio
 {
 public:
 
-    microphone_wav(const std::string filepath)
-    : audio (filepath){}
+    microphone_wav(const std::string filepath);
 
-    microphone_wav(std::ifstream & bytestream)
-    : audio (bytestream){}
+    microphone_wav(std::ifstream & bytestream);
 
-    microphone_wav(std::vector<rapp::types::byte> bytearray)
-    : audio(bytearray)
-    {}
+    microphone_wav(std::vector<rapp::types::byte> bytearray);
 
-    std::string audio_source() const
-    { return "headset";}
+    std::string audio_source() const;
 
-    std::string extension() const
-    { return ".wav";}
 };
 }
 }

@@ -29,36 +29,50 @@ namespace object {
 class face
 {
 public:
-    /// \brief Consruct using face coordinates (a rectangle)
+    /// \brief Construct using face coordinates (a rectangle)
     face( 
           float top_left_x,
           float top_left_y,
           float bottom_right_x,
           float bottom_right_y
-        )
-    : top_left_x__(top_left_x),
-      top_left_y__(top_left_y),
-      bottom_right_x__(bottom_right_x),
-      bottom_right_y__(bottom_right_y)
-    {}
-   
-    /// Allow empty consructor
+        );
+  
+    /// Allow empty constructor
     face() = default;
     
     /// Copy constructor
     face(const face &) = default;
 
-    
+    /// \brief constructor using `json for modern C++`
+    face(const json::const_iterator & face_it);
+   
+    /// \brief method to pass the information to a json format
+    json::object_t to_json() const;
+
     /// Equality operator
-    bool operator==(const face & rhs) const
-    {
-        return ( this->top_left_x__ == rhs.top_left_x__ &&
-                 this->top_left_y__ == rhs.top_left_y__ &&
-                 this->bottom_right_x__ == rhs.bottom_right_x__ &&
-                 this->bottom_right_y__ == rhs.bottom_right_y__);
-    }
+    bool operator==(const face & rhs) const;
     
+    /// \brief method to get the top_left_x__ param
+    float get_left_x() const;
+
+    /// \brief method to get the top_left_y__ param
+    float get_left_y() const;
+
+    /// \brief method to get the bottom_right_x__ param
+    float get_right_x() const;
+
+    /// \brief method to get the bottom_right_y__param
+    float get_right_y() const;
+
 private:
+
+    /// \brief method to find the up_left_point information from json data
+    void up_left_point(const json::const_iterator & coord_it);
+
+    /// \brief method to find the down_right_point information from json data
+    void down_right_point(const json::const_iterator & coord_it);
+
+    /// members
     float top_left_x__;
     float top_left_y__;
     float bottom_right_x__;

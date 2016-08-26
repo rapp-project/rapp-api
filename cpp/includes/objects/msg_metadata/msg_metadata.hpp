@@ -54,13 +54,13 @@ public:
     json::object_t to_json() const; 
 
     /// \brief method to get the param stamp_
-    rapp::object::time get_time();
+    rapp::object::time get_time() const;
 
     /// \brief method to get the param seq_
-    int get_seq();
+    int get_seq() const;
 
     /// \brief method to get the param frameid_
-    std::string get_frame();
+    std::string get_frame() const;
 
     /** 
      * \brief equality operator

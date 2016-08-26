@@ -20,6 +20,7 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 
+#include "../includes/objects/human/human.hpp"
 #include "../includes/objects/face/face.hpp"
 #include "../includes/objects/qr_code/qr_code.hpp"
 #include "../includes/objects/picture/picture.hpp"
@@ -433,7 +434,7 @@ BOOST_AUTO_TEST_CASE(object_qr_code_test)
 }
 
 /**
- *\brief TEST for picture object
+ *\brief TEST for human object
  *\
  *\The constructor are checked creating identical
  *\objects and comparing between them.
@@ -442,12 +443,159 @@ BOOST_AUTO_TEST_CASE(object_qr_code_test)
  *\they are compared with the objects created for
  *\initialize that object.
  */
-BOOST_AUTO_TEST_CASE(object_picture_test)
+BOOST_AUTO_TEST_CASE(object_human_test)
 {
+    auto human0 = rapp::object::human();
+    auto human1 = rapp::object::human();
+    BOOST_CHECK(human0 == human1);
 
+    auto human2 = rapp::object::human(human0);
+    BOOST_CHECK(human0 == human2);
 
+    auto human3 = rapp::object::human( 0.1f, 0.2f, 0.3f, 0.4f);
+    auto human4 = rapp::object::human( 0.1f, 0.2f, 0.3f, 0.4f);
+    BOOST_CHECK(human3 == human4);
+
+    BOOST_CHECK_EQUAL(human4.get_left_x(), 0.1f);
+    BOOST_CHECK_EQUAL(human4.get_left_y(), 0.2f);   
+    BOOST_CHECK_EQUAL(human4.get_right_x(), 0.3f);
+    BOOST_CHECK_EQUAL(human4.get_right_y(), 0.4f);
+
+    auto human5 = human4;
+    BOOST_CHECK(human4 == human5);
 }
 
+/**
+ *\brief TEST for face object
+ *\
+ *\The constructor are checked creating identical
+ *\objects and comparing between them.
+ *\
+ *\For methods, we take the parameters and 
+ *\they are compared with the objects created for
+ *\initialize that object.
+ */
+BOOST_AUTO_TEST_CASE(object_face_test)
+{
+    auto face0 = rapp::object::face();
+    auto face1 = rapp::object::face();
+    BOOST_CHECK(face0 == face1);
 
+    auto face2 = rapp::object::face(face0);
+    BOOST_CHECK(face0 == face2);
+
+    auto face3 = rapp::object::face(0.1f, 0.2f, 0.3f, 0.4f);
+    auto face4 = rapp::object::face(0.1f, 0.2f, 0.3f, 0.4f);
+    BOOST_CHECK(face3 == face4);
+
+    BOOST_CHECK_EQUAL(face4.get_left_x(), 0.1f);
+    BOOST_CHECK_EQUAL(face4.get_left_y(), 0.2f);   
+    BOOST_CHECK_EQUAL(face4.get_right_x(), 0.3f);
+    BOOST_CHECK_EQUAL(face4.get_right_y(), 0.4f);
+
+    auto face5 = face4;
+    BOOST_CHECK(face4 == face5);
+}
+
+/**
+ *\brief TEST for picture object
+ *\
+ *\The constructor are checked creating identical
+ *\objects and comparing between them.
+ *\
+ *\To compare different images a vector of images
+ *\is created, to verify all of them
+ */
+
+BOOST_AUTO_TEST_CASE(object_picture_test)
+{
+    std::vector<std::string> infiles = { "two_faces.jpg", "cat.jpg", "qrcode.png",
+                                         "door_1.png", "lamp_on.jpg", "lamp_off.jpg" };
+
+    // Construct from a file-path
+    rapp::object::picture lena("Lenna.png");
+
+    for (std::string & fname : infiles) {
+        // Construct from a file-path
+        rapp::object::picture picture1(fname);
+
+        // Open a byte steam from file, and construct the picture
+        std::ifstream bytestream(fname, std::ios::in | std::ios::binary | std::ios::ate);
+        rapp::object::picture b_copy(bytestream);
+        BOOST_CHECK(picture1 == b_copy);
+
+        // Copy constructor
+        rapp::object::picture r_copy = picture1;
+        BOOST_CHECK(picture1 == r_copy);
+
+        // Assignment
+        rapp::object::picture asmt = picture1;
+        BOOST_CHECK(asmt == picture1);
+
+        BOOST_CHECK(lena != picture1);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(object_audio_test)
+{
+    // audio tests
+    rapp::object::audio t1("terminator_1.wav");
+    std::ifstream bytes1("terminator_1.wav", std::ios::in | std::ios::binary | std::ios::ate);
+    rapp::object::audio t1_ifstrm(bytes1);
+
+    BOOST_CHECK(t1 == t1_ifstrm);
+
+    rapp::object::audio t2("terminator_2.wav");
+    rapp::object::audio t2_cpy = t2;
+
+    BOOST_CHECK( t2 == t2_cpy );
+
+    //ogg
+    rapp::object::ogg og1("recording_sentence2.ogg");
+    rapp::object::ogg og2(og1);
+
+    BOOST_CHECK(og1 == og2);
+    BOOST_CHECK( og1 != t1 );
+
+    BOOST_CHECK_EQUAL(og1.audio_source(), "nao_ogg");
+
+    //microphone_wav
+    rapp::object::microphone_wav microphone1("terminator_2.wav");
+    std::ifstream bytes2("terminator_2.wav", std::ios::in | std::ios::binary | std::ios::ate);
+    rapp::object::microphone_wav microphone2(bytes2);
+    BOOST_CHECK(microphone1 == microphone2);
+
+    rapp::object::microphone_wav microphone3(microphone1);
+    BOOST_CHECK(microphone1 == microphone3);
+
+    BOOST_CHECK_EQUAL(microphone3.audio_source(), "headset");
+
+    rapp::object::microphone_wav microphone4(microphone3.bytearray());
+    BOOST_CHECK(microphone3 == microphone4);
+
+    rapp::object::microphone_wav microphone5 = microphone1;
+    BOOST_CHECK(microphone1 == microphone5);
+
+    BOOST_CHECK(microphone1 != og1);
+
+    //nao_single_channel_wav
+    rapp::object::nao_single_channel_wav naos1("terminator_1.wav");
+    rapp::object::nao_single_channel_wav naos2(naos1);
+    BOOST_CHECK(naos1 == naos2);
+
+    BOOST_CHECK_EQUAL(naos2.audio_source(), "nao_wav_1_ch");
+
+    BOOST_CHECK(naos1 != t2);
+
+    //nao_quad_channel_wav
+    rapp::object::nao_quad_channel_wav naoq1("terminator_1.wav");
+    rapp::object::nao_quad_channel_wav naoq2(naoq1);
+    BOOST_CHECK(naoq1 == naoq2);
+
+    BOOST_CHECK_EQUAL(naoq2.audio_source(), "nao_wav_4_ch");
+
+    BOOST_CHECK(naoq1 != t2);
+
+}
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -1,35 +1,38 @@
 #ifndef RAPP_OBJECT_PICTURE
 #define RAPP_OBJECT_PICTURE
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "includes.ihh"
 namespace rapp {
 namespace object {
 /**
  * \class picture
  * \brief class which wraps around raw bytes of a picture
- * \version 0.6.0
- * \date July 2016
+ * \version 0.7.0
+ * \date August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
 class picture
 {
 public:
     /// Construct from a file-path
-    picture(const std::string filepath)
-    {
-        std::ifstream bytestream(filepath, std::ios::in | std::ios::binary | std::ios::ate);
-        if (!bytestream.is_open()) {
-            throw std::runtime_error("could not open bytestream for "+filepath);
-		}
-        else { 
-            opencb_(bytestream);
-		}
-    }
-
+    picture(const std::string filepath);
+        
     /// Construct using an open file stream
-    picture(std::ifstream & bytestream)
-    {
-        opencb_(bytestream);
-    }
+    picture(std::ifstream & bytestream);
 
     /// Copy constructor
     picture(const picture &) = default;
@@ -38,37 +41,19 @@ public:
     picture & operator=(const picture &) = default;
 
     /// picture equality
-    bool operator==(const picture & rhs) const
-    {
-        return (this->bytearray_ == rhs.bytearray_);
-    }
+    bool operator==(const picture & rhs) const;
+
+    /// not picture equality
+    bool operator!=(const picture & rhs) const;
 
     /// Get picture as array of bytes
-    std::vector<rapp::types::byte> bytearray() const
-    {
-        return bytearray_;
-    }
+    std::vector<rapp::types::byte> bytearray() const;
 
     /// try and get image type (JPG/PNG supported)
-    std::string type() const
-    {
-        return imgtype_;
-    }
+    std::string type() const;
 
     /// Save picture to filepath
-    bool save(const std::string filepath)
-    {
-        std::ofstream os(filepath, std::ios::out | std::ofstream::binary);
-        if (os.is_open()) {
-            std::copy(bytearray_.begin(), bytearray_.end(), 
-                      std::ostreambuf_iterator<rapp::types::byte>(os));
-            os.close();
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool save(const std::string filepath);
 
 private:
 	typedef char byte;
@@ -77,23 +62,8 @@ private:
     picture() = delete;
 
     // Parse the bytestream into the bytearray
-    void opencb_(std::ifstream & bytestream)
-    {
-        // copy byte by byte
-        bytestream.seekg(0, std::ios_base::end);
-        std::streampos fileSize = bytestream.tellg();
-        bytearray_.resize(fileSize);
-        bytestream.seekg(0, std::ios_base::beg);
-        bytestream.read(&bytearray_[0], fileSize);
-        // Check Magic Number to find picture format
-        if ((unsigned int)bytearray_[0] == 0xFFFFFF89 
-            && (unsigned int)bytearray_[1] == 0x00000050)
-            imgtype_ = "png";
-        if ((unsigned int)bytearray_[0] == 0xFFFFFFFF 
-            && (unsigned int)bytearray_[1] == 0xFFFFFFD8)
-            imgtype_ = "jpg";
-    }
-
+    void opencb_(std::ifstream & bytestream);
+        
     std::vector<rapp::types::byte> bytearray_;
     std::string imgtype_;
 };

@@ -43,17 +43,17 @@ json::object_t msg_metadata::to_json() const
     return values;
 }
 
-rapp::object::time msg_metadata::get_time()
+rapp::object::time msg_metadata::get_time() const
 {
     return stamp_;
 }
 
-int msg_metadata::get_seq()
+int msg_metadata::get_seq() const
 {
     return seq_;
 }
 
-std::string msg_metadata::get_frame()
+std::string msg_metadata::get_frame() const
 {
     return frameid_;
 }

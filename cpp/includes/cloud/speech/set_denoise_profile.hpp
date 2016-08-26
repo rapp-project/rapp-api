@@ -1,5 +1,21 @@
 #ifndef RAPP_CLOUD_SET_DENOISE_PROFILE
 #define RAPP_CLOUD_SET_DENOISE_PROFILE
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
@@ -7,9 +23,10 @@ namespace cloud {
  * \class set_denoise_profile
  * \brief setting the denoising audio profile for speech recognition 
  * \version 0.7.0
- * \date 15 August 2016
+ * \date 26 August 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
+template <class T>
 class set_denoise_profile : public caller, public http_request
 {
 public:
@@ -20,17 +37,17 @@ public:
      * \param user is the user denoise profile
      */
     set_denoise_profile(
-						 const std::shared_ptr<rapp::object::audio> file,
+						 const T audiofile,
                          const std::string user
 					   )
     : http_header("POST /hop/set_denoise_profile HTTP/1.1\r\n"), 
       http_post(http_header::get_boundary()),
     {
-        assert(file);
+        assert(audiofile);
         boost::property_tree::ptree tree;
         tree.put("user", user);
-        tree.put("audio_source", file->audio_source());
-        tree.put("filename", fname + "." + file->extension());
+        tree.put("audio_source", audiofile->audio_source());
+        tree.put("filename", fname + "." + audiofile->extension());
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
@@ -38,7 +55,7 @@ public:
         std::string json = ss.str();
         http_post::add_content("json", json, false); 
         
-        auto bytes = file->bytearray();
+        auto bytes = audiofile->bytearray();
         http_post::add_content("file", fname, bytes);
         http_post::end();
    }

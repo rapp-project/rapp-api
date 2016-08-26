@@ -1,5 +1,21 @@
 #ifndef RAPP_CLOUD_TEXT2SPEECH
 #define RAPP_CLOUD_TEXT2SPEECH
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
@@ -23,7 +39,7 @@ public:
 	text_to_speech(
 					 const std::string text,
 					 const std::string language,
-					 std::function<void(std::unique_ptr<rapp::object::microphone_wav>)> callback
+					 std::function<void(wav_file)> callback
 				  )
 	: http_header("POST /hop/ontology_subclasses_of HTTP/1.1\r\n"), 
       http_post(http_header::get_boundary()), 
@@ -74,7 +90,7 @@ public:
             std::cerr << je.message() << std::endl;
         }
         // create wav file and move it to the delegate
-        auto wav = std::make_unique<rapp::object::microphone_wav>(bytearray);
+        auto wav = rapp::object::microphone_wav(bytearray);
         delegate_(std::move(wav));
     }
 
@@ -89,7 +105,7 @@ public:
 
 private:
     /// 
-    std::function<void(std::unique_ptr<wav_file> wav)> delegate_;
+    std::function<void(wav_file wav)> delegate_;
 };
 }
 }

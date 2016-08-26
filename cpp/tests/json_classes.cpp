@@ -11,6 +11,8 @@
 #include "../includes/objects/msg_metadata/msg_metadata.hpp"
 #include "../includes/objects/pose_stamped/pose_stamped.hpp"
 #include "../includes/objects/planned_path/planned_path.hpp"
+#include "../includes/objects/human/human.hpp"
+#include "../includes/objects/face/face.hpp"
 
 /// \brief function to read a json file and it is converted 
 //  \into a string param
@@ -233,6 +235,48 @@ BOOST_AUTO_TEST_CASE(planned_path_json_test)
     const auto json_back = pp_obj.to_json();
     BOOST_CHECK(json == json_back);
 
+}
+
+/**
+ * check rapp::object::human for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+
+BOOST_AUTO_TEST_CASE(human_json_test)
+{
+    std::string string = read_json_file("human_class.json");
+    BOOST_CHECK(!string.empty());
+
+    const auto json = nlohmann::json::parse(string);
+    const auto human_it = json.find("human");
+    BOOST_CHECK(human_it != json.end());
+
+    auto human_obj = rapp::object::human(human_it);
+    nlohmann::json out = {{"human", human_obj.to_json()}};
+    BOOST_CHECK(json == out);
+}
+
+/**
+ * check rapp::object::face for json (de)serialisation
+ * first load from json file and parse
+ * then test with hardcoded values from JSON
+ * and finally test serialisation produces the same JSON
+ */
+
+BOOST_AUTO_TEST_CASE(face_json_test)
+{
+    std::string string = read_json_file("face_class.json");
+    BOOST_CHECK(!string.empty());
+
+    const auto json = nlohmann::json::parse(string);
+    const auto face_it = json.find("faces");
+    BOOST_CHECK(face_it != json.end());
+
+    auto face_obj = rapp::object::face(face_it);
+    nlohmann::json out = {{"faces", face_obj.to_json()}};
+    BOOST_CHECK(json == out);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
