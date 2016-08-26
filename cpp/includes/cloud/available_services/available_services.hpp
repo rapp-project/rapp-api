@@ -25,19 +25,18 @@ public:
      * \brief fill the buffer and return a handler
      * \param request is the buffer which will contain the request for asio
      * \param info is the rapp cloud platform
-     * \return a callback used to process the JSON reply from asio
      */
-    std::function<std::string> operator()(
-                                            boost::asio::streambuf & request,
-                                            rapp::cloud::platform info
-                                         );
-    
+    void operator()(
+                      boost::asio::streambuf & request,
+                      rapp::cloud::platform info
+                   );
+
 private:
 
     /**
      * \brief handle platform's JSON reply
      */
-    void deserialise(std::string json) const;
+    void deserialise(std::string json);
 
     /// user's handler
     std::function<void(std::vector<service> services)> delegate_;

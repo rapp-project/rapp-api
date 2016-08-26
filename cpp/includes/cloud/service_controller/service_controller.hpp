@@ -60,14 +60,18 @@ public:
         // create the cloud class
 		auto obj T(args...);
         boost::asio::streambuf request;
-        obj.fill_buffer(boost::ref(request), info_);
+        obj()(boost::ref(request), info_);
         
         // bind the callback fo class T::deserialize for response processing
-        auto callback = std::bind(&T::deserialise, obj, std::placeholders::_1);
+        auto callback = [&](std::string rhs) {
+            obj.deserialise(rhs);
+        };
 
         // create an asio_socket and run the request
         auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
         assert(asio);
+
+        // start
 		asio->begin(query_, resol_);
 		io_.run();
 		io_.reset();
@@ -87,11 +91,17 @@ public:
 
             // fill buffer and get callback
             boost::asio::streambuf request;
-            auto callback = obj()(boost::ref(request), info_);
+            obj()(boost::ref(request), info_);
+
+            // once asio finished, it should call the cloud call ::deserialise() method
+            auto callback = [&](std::string rhs) {
+                obj.deserialise(rhs);
+            };
 
             // create an asio_socket and run the request
             auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
             assert(asio);
+
             asio->begin(query_, resol_);
         };
 

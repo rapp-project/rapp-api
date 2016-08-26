@@ -10,8 +10,9 @@ available_services::available_services(std::function<void(std::vector<service>)>
     assert(callback);
 }
 
-void available_services::deserialise(std::string json) const
+void available_services::deserialise(std::string json) 
 {
+    /*
     std::vector<std::pair<std::string, std::string>> services;
     using namespace rapidjson;
     Document doc;
@@ -59,17 +60,17 @@ void available_services::deserialise(std::string json) const
     }
 
     delegate_(services);
+    */
 }
 
-std::function<std::string> available_services::operator()(
-                                                           boost::asio::streambuf & request,
-                                                           rapp::cloud::platform info
-                                                         )
+void available_services::operator()(
+                                     boost::asio::streambuf & request,
+                                     rapp::cloud::platform info
+                                   )
 {
-    auto callback = std::bind(&available_services::deserialise, *this, std::placeholders::_1);
     http_request::fill_buffer(request, info);
-    return callback;
 }
+
 
 }
 }
