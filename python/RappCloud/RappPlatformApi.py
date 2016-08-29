@@ -55,6 +55,8 @@ from CloudMsgs import ObjectDetectionFindObjects
 from CloudMsgs import ObjectDetectionClearModels
 from CloudMsgs import ObjectDetectionLoadModels
 from CloudMsgs import ObjectDetectionLearnObject
+from CloudMsgs import VisualLocalization
+from CloudMsgs import VisualLocalizationInit
 
 from Service import RappPlatformService
 
@@ -929,5 +931,35 @@ class RappPlatformAPI():
             response = ObjectDetectionLearnObject.Response(error=str(e))
         return {
             'result': response.result,
+            'error': response.error
+        }
+
+    def visualLocalizationInit(self, mapname):
+        msg = VisualLocalizationInit()
+        try:
+            print("visualLocalizationInit")
+            msg.req.map = mapname
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            print("Exc: ", str(e))
+            response = VisualLocalizationInit.Response(error=str(e))
+        return {
+            'id': response.id,
+            'error': response.error
+        }
+
+    def visualLocalization(self, fname, pose_delta, client_id):
+        msg = VisualLocalization()
+        try:
+            msg.req.fname = fname
+            msg.req.pose_delta = pose_delta
+            msg.id = client_id
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = VisualLocalization.Response(error=str(e))
+        return {
+            'belief': response.belief,
+            'best_pose': response.best_pose,
+            'status': response.status,
             'error': response.error
         }
