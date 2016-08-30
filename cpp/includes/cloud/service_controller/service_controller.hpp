@@ -94,7 +94,9 @@ public:
             obj.fill_buffer(boost::ref(request), info_);
 
             // once asio finished, it should call the cloud call ::deserialise() method
-            auto callback = [&](std::string rhs) {
+            // won't the reference of `obj` go out of scope?
+            // even more so, if I copy by value I will call the implicit deleted ctor?
+            auto callback = [=](std::string rhs) {
                 obj.deserialise(rhs);
             };
 
