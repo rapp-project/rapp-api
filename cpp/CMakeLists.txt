@@ -45,7 +45,6 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/asio/http_request.cpp
             ${INCLUDES}/cloud/asio/http_response.cpp
             ${INCLUDES}/config/config.cpp
-            ${INCLUDES}/cloud/available_services/available_services.cpp
             ${INCLUDES}/objects/time/time.cpp
             ${INCLUDES}/objects/quaternion/quaternion.cpp
             ${INCLUDES}/objects/point/point.cpp
@@ -58,6 +57,8 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/objects/picture/picture.cpp
             ${INCLUDES}/objects/audio/audio.cpp
             ${INCLUDES}/objects/qr_code/qr_code.cpp
+
+            ${INCLUDES}/cloud/available_services/available_services.cpp
             )
 
 # Begin searching for packgages we use in RAPP API
@@ -180,8 +181,8 @@ endif()
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
 	add_executable(available_services ${EXAMPLES}/available_services.cpp)
-	#add_executable(face_detect      ${EXAMPLES}/face_detect.cpp)
-	#add_executable(qr_detect        ${EXAMPLES}/qr_detect.cpp)
+    #add_executable(face_detect      ${EXAMPLES}/face_detect.cpp)
+    #add_executable(qr_detect        ${EXAMPLES}/qr_detect.cpp)
 	#add_executable(speech_recog     ${EXAMPLES}/speech_to_text.cpp)
 	#add_executable(ontology         ${EXAMPLES}/ontology_example.cpp)
 	#add_executable(set_denoise      ${EXAMPLES}/set_denoise_example.cpp)
@@ -192,8 +193,8 @@ if (${BUILD_EXAMPLES})
 	#add_executable(cognitive_example  ${EXAMPLES}/cognitive_example.cpp)
 
 	target_link_libraries(available_services ${LIBOBJ})
-	#target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-	#target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    #target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    #target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(speech_recog      ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(ontology          ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(set_denoise       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})

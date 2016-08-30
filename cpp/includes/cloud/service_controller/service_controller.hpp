@@ -58,9 +58,9 @@ public:
     void make_call(Args... args)
     {
         // create the cloud class
-		auto obj T(args...);
+		auto obj = T(args...);
         boost::asio::streambuf request;
-        obj()(boost::ref(request), info_);
+        obj.fill_buffer(boost::ref(request), info_);
         
         // bind the callback fo class T::deserialize for response processing
         auto callback = [&](std::string rhs) {
@@ -87,11 +87,11 @@ public:
         unsigned int size = std::tuple_size<decltype(t)>::value;
 
         // each variadic object will run the code below
-        auto execute = [](auto & obj){ 
+        auto execute = [&](auto & obj){ 
 
             // fill buffer and get callback
             boost::asio::streambuf request;
-            obj()(boost::ref(request), info_);
+            obj.fill_buffer(boost::ref(request), info_);
 
             // once asio finished, it should call the cloud call ::deserialise() method
             auto callback = [&](std::string rhs) {

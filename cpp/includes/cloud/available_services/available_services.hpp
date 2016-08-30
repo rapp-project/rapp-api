@@ -21,23 +21,12 @@ public:
      */
     available_services(std::function<void(std::vector<service>)> callback);
     
-    /** 
-     * \brief fill the buffer and return a handler
-     * \param request is the buffer which will contain the request for asio
-     * \param info is the rapp cloud platform
-     */
-    void operator()(
-                      boost::asio::streambuf & request,
-                      rapp::cloud::platform info
-                   );
-
-private:
-
     /**
      * \brief handle platform's JSON reply
      */
     void deserialise(std::string json);
 
+private:
     /// user's handler
     std::function<void(std::vector<service> services)> delegate_;
 };

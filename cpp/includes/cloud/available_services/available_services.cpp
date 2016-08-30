@@ -12,6 +12,7 @@ available_services::available_services(std::function<void(std::vector<service>)>
 
 void available_services::deserialise(std::string json) 
 {
+    std::cout << json;
     /*
     std::vector<std::pair<std::string, std::string>> services;
     using namespace rapidjson;
@@ -61,14 +62,6 @@ void available_services::deserialise(std::string json)
 
     delegate_(services);
     */
-}
-
-void available_services::operator()(
-                                     boost::asio::streambuf & request,
-                                     rapp::cloud::platform info
-                                   )
-{
-    http_request::fill_buffer(request, info);
 }
 
 

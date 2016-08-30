@@ -33,5 +33,12 @@ int main(int argc, char* argv[])
      * This method will **block** until its complete.
      */
 	ctrl.make_call<rapp::cloud::available_services>(cb);
+
+    /*
+    ctrl.make_calls(
+                    rapp::cloud::available_services(cb),
+                    rapp::cloud::available_services(cb),
+                    rapp::cloud::available_services(cb));
+    */
 	return 0;
 }
