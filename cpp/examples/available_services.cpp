@@ -18,13 +18,12 @@ int main(int argc, char* argv[])
      * In this example we'll pass an inline lambda as the callback.
      * All it does is receive a list of services and print them on stdout.
      */
-	auto cb = [](std::vector<std::pair<std::string, std::string>> services)
-				{
-					 std::cout << "available services: " << std::endl;
-					 for (const auto & pair : services) {
-						std::cout << pair.first << " " << pair.second << std::endl;
-					 }
-				 };
+	auto cb = [](std::vector<std::pair<std::string, std::string>> services) {
+         std::cout << "available services: " << std::endl;
+         for (const auto & pair : services) {
+            std::cout << pair.first << " " << pair.second << std::endl;
+         }
+     };
 
 	/**
      * Finally we make the call.
@@ -32,13 +31,9 @@ int main(int argc, char* argv[])
      * as template type the actual cloud call, in this case the `available_services` class.
      * This method will **block** until its complete.
      */
-	ctrl.make_call<rapp::cloud::available_services>(cb);
+	//ctrl.make_call<rapp::cloud::available_services>(cb);
 
-    /*
-    ctrl.make_calls(
-                    rapp::cloud::available_services(cb),
-                    rapp::cloud::available_services(cb),
+    ctrl.make_calls(rapp::cloud::available_services(cb),
                     rapp::cloud::available_services(cb));
-    */
 	return 0;
 }

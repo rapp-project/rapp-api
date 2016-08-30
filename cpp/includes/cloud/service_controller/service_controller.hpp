@@ -61,16 +61,12 @@ public:
 		auto obj = T(args...);
         boost::asio::streambuf request;
         obj.fill_buffer(boost::ref(request), info_);
-        
-        // bind the callback fo class T::deserialize for response processing
-        auto callback = [&](std::string rhs) {
-            obj.deserialise(rhs);
+        std::function<void(std::string)> callback = [&](auto reply) {
+            obj.deserialise(reply);
         };
-
         // create an asio_socket and run the request
         auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
         assert(asio);
-
         // start
 		asio->begin(query_, resol_);
 		io_.run();
@@ -78,52 +74,32 @@ public:
     }
 
     /// \brief create an arbitrary number of cloud calls using a variadic template
-    /// \see https://ideone.com/Fq242E
     template <typename... Args>
     void make_calls(Args... args)
     {
-        // pack the variadic arguments in a tuple
-        auto t = std::tuple<Args...>(args...);
-        unsigned int size = std::tuple_size<decltype(t)>::value;
+        std::vector<std::pair<std::shared_ptr<boost::asio::streambuf>,
+                              std::shared_ptr<asio_http>>> sockets;
 
-        // each variadic object will run the code below
-        auto execute = [&](auto & obj){ 
-
-            // fill buffer and get callback
-            boost::asio::streambuf request;
-            obj.fill_buffer(boost::ref(request), info_);
-
-            // once asio finished, it should call the cloud call ::deserialise() method
-            // won't the reference of `obj` go out of scope?
-            // even more so, if I copy by value I will call the implicit deleted ctor?
-            auto callback = [=](std::string rhs) {
-                obj.deserialise(rhs);
+        // iterate each argument (has already been constructed and is non-copyable)
+        misc::for_each_arg([&](auto & obj) {
+            // set the callback
+            std::function<void(std::string)> callback = [&](auto reply){
+                obj.deserialise(reply); 
             };
-
-            // create an asio_socket and run the request
-            auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
-            assert(asio);
-
-            asio->begin(query_, resol_);
-        };
-
-        // iterate the cloud calls running them in a batch
-        for (int i = 0; i < size; i++) {
-            rapp::misc::visit_at(t, i, execute);
-        }
+            // allocate buffer  - must live as long as socket
+            auto buffer = std::make_shared<boost::asio::streambuf>();
+            // fill buffer
+            obj.fill_buffer(boost::ref(*buffer), info_);
+            // make socket - must live as long as the io_service uses it!
+            auto socket = std::make_shared<asio_http>(callback, derr_cb_, io_, *buffer);
+            // keep the socket and buffer alive and start the connection
+            sockets.emplace_back(std::make_pair(buffer, socket));
+            sockets.back().second->begin(query_, resol_);
+        }, args...);
 
         // run all calls, then reset asio queue
         io_.run();
 		io_.reset();
-    }
-
-    /// \brief make a cloud object
-    /// \type T defines the cloud class
-    /// \type Args is the variadic arguments of the class constructor
-    template <typename T, typename... Args>
-    T make_class(Args ...args)
-    {
-        return T(args...);
     }
 
     /// \brief stop the service controller

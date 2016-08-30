@@ -41,7 +41,6 @@ public:
         auto imagebytes = image.bytearray();
         http_post::add_content("file", fname, imagebytes);
         http_post::end();
-		
     }
 	/**
 	 * \brief handle the rapp-platform JSON reply

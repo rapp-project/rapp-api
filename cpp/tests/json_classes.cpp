@@ -18,7 +18,7 @@
 #include <iostream>
 #include <fstream>
 #include <boost/test/unit_test.hpp>
-#include "json.hpp"
+#include "../includes/misc/json.hpp"
 #include "../includes/objects/time/time.hpp"
 #include "../includes/objects/point/point.hpp"
 #include "../includes/objects/quaternion/quaternion.hpp"
