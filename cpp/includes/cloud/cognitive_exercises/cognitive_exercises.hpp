@@ -13,7 +13,7 @@ namespace cloud {
  * \NOTE https://github.com/rapp-project/rapp-platform/tree/master/rapp_web_services/services#cognitive-test-selector
  *		 has changed - will update in 0.7.0
  */
-class cognitive_test_selector : public caller, public http_request
+class cognitive_test_selector : public http_request
 {
 public:
 
@@ -63,7 +63,67 @@ public:
         std::string test_instance;
         std::string test_type;
         std::string test_subtype;
-        try {
+        
+        json::const_iterator it =json.find("questions");
+        if (it == json.end()){
+            throw std::runtime_error("no questions in cognitive exercise");
+        }
+        else {
+            questions = it->get<std::vector<std::string>>();
+        }
+
+        json::const_iterator it_pa =json.find("possib_ans");
+        if (it_pa == json.end()){
+            throw std::runtime_error("no possible answers in cognitive exercise");
+        }
+        else {
+            possib_ans = it_pa->get<std::vector<std::string>>();
+        }
+
+        json::const_iterator it_ca =json.find("correct_ans");
+        if (it_ca == json.end()){
+            throw std::runtime_error("no correct answers in cognitive exercise");
+        }
+        else {
+            correct_ans = it_ca->get<std::vector<std::string>>();
+        }
+
+        json::const_iterator it_ti = json.find("test_instance");
+        if (it_ti == json.end()){
+            throw std::runtime_error("no test instance in cognitive exercise");
+        }
+        else {
+            test_instance = it_ti->get<std::string>();
+        }
+        
+        json::const_iterator it_type = json.find("test_type");
+        if (it_type == json.end()){
+            throw std::runtime_error("no test type in cognitive exercise");
+        }
+        else {
+            test_type = it_type->get<std::string>();
+        }
+
+        json::const_iterator it_sub = json.find("test_subtype");
+        if (it_sub== json.end()){
+            throw std::runtime_error("no test subtype in cognitive exercise");
+        }
+        else {
+            test_subtype = it_sub->get<std::string>();
+        }
+
+        json::const_iterator it_error = json.find("error");
+        if (it_error== json.end()){
+            throw std::runtime_error("no error param in cognitive exercise");
+        }
+        else {
+            error = it_error->get<std::string>();
+            if (!error.empty()) {
+                std::cerr << "cognitive_test_selector JSON error: " << error <<std::endl;
+            }
+        }
+
+        /*try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
             // NOTE: untested!
@@ -96,7 +156,7 @@ public:
             std::cerr << "cognitive_test_selector::handle_reply Error parsing: " << je.filename() 
                       << " on line: " << je.line() << std::endl;
             std::cerr << je.message() << std::endl;
-        }
+        }*/
         delegate_(questions,
                   possib_ans,
                   correct_ans,
