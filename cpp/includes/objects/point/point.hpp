@@ -32,20 +32,20 @@ class point
 
 public:
     /**
-     * \brief Consruct using code coordinates (x,y,z)
+     * \brief Construct using code coordinates (x,y,z)
      * \param x is x coordinate
      * \param y is y coordinate
      * \param z is z coordinate
      */
     point(double x, double y, double z);
     
-    /// \brief Allow Empty Consructor
+    /// \brief Allow Empty Constructor
     point() = default;
     
-    /// \brief Copy Conatructor
+    /// \brief Copy Constructor
     point(const rapp::object::point &) = default;
 
-    /// construct using library "json for modern c++"
+    /// \brief Construct using library "json for modern c++"
     point(const json::const_iterator & position);
    
     /// \brief method to pass the information to a json object

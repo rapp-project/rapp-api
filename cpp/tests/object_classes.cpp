@@ -1,3 +1,4 @@
+#define BOOST_TEST_MODULE ObjectTest
 /**
  * Copyright 2015 RAPP
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-#define BOOST_TEST_MODULE ObjectTest
 #include <fstream>
 #include <chrono>
 #include <iostream>
@@ -35,90 +35,15 @@
 
 BOOST_AUTO_TEST_SUITE(object_classes_test)
 
-/*
-BOOST_AUTO_TEST_CASE(constructors_test)
-{
-    BOOST_TEST_MESSAGE("constructors test");
-    // Test all face constructors work
-    // Empty face object
-    auto f_ptr = std::make_shared<rapp::object::face>();
-    BOOST_CHECK(f_ptr != nullptr);
-
-    // Contruct with coordinates
-    rapp::object::face f_valid( 0.5f,0.3f,0.6f,0.8f);
-
-    // Copy Constructor
-    rapp::object::face f_copy(f_valid);
-    BOOST_CHECK(f_copy == f_valid);
-
-    // Assignment constructor
-    rapp::object::face f_asmt = f_copy;
-    BOOST_CHECK(f_asmt == f_copy);
-    
-    // Test all qrCode contructors work
-    auto qr_ptr = std::make_shared<rapp::object::qr_code>();
-    BOOST_CHECK(qr_ptr != nullptr);
-
-    // Construct with coordinate and message
-    rapp::object::qr_code qr_valid (0.1f, 0.1f, "alex");
-
-    // Copy constructor
-    rapp::object::qr_code qr_copy(qr_valid);
-    BOOST_CHECK(qr_copy == qr_valid);
-
-    // Asignment constructor
-    rapp::object::qr_code qr_asmt = qr_copy;
-    BOOST_CHECK(qr_copy == qr_asmt);
-
-    // Test all picture contructors work
-    // NOTE: Use lena.jpg as the file
-
-    // Construct from a file-path
-    rapp::object::picture lena("Lenna.png");
-
-    // Open a byte steam from file, and construct the picture
-    std::ifstream bytestream("Lenna.png", std::ios::in | std::ios::binary | std::ios::ate);
-    rapp::object::picture b_copy(bytestream);
-    BOOST_CHECK(lena == b_copy);
-
-    // Copy constructor
-    rapp::object::picture r_copy = lena;
-    BOOST_CHECK(lena == r_copy);
-
-    // Assignment
-    rapp::object::picture asmt = lena;
-    BOOST_CHECK(lena == asmt);
-
-    // audio tests
-    rapp::object::audio t1("terminator_1.wav");
-    std::ifstream bytes("terminator_1.wav", std::ios::in | std::ios::binary | std::ios::ate);
-    rapp::object::audio t1_ifstrm(bytes);
-
-    BOOST_CHECK(t1 == t1_ifstrm);
-
-    rapp::object::audio t2("terminator_2.wav");
-    rapp::object::audio t2_cpy = t2;
-
-    //BOOST_CHECK_PREDICATE( std::not_equal_to<rapp::object::audio>(), (t1)(t2) );
-    BOOST_CHECK( t2 == t2_cpy );
-
-    rapp::object::ogg og1("recording_sentence1.ogg");
-    rapp::object::ogg og2(og1);
-    //rapp::object::WAVfileSingleChannel wv1 ("yes-no.wav");
-
-    BOOST_CHECK(og1 == og2);
-    //BOOST_CHECK( og1 != wv1 );
-}
-*/
 
 /**
- *\brief TEST for time object
- *\
- *\We check the constructors creating identical objects and comparing 
- *\between them.
- *\
- *\Methods seconds and nanoseconds are checked comparing the atributes
- *\between the objects created before. They have to be the same.
+ * \brief TEST for time object
+ *
+ * We check the constructors creating identical objects and comparing 
+ * between them.
+ *
+ * Methods seconds and nanoseconds are checked comparing the atributes
+ * between the objects created before. They have to be the same.
  */
 BOOST_AUTO_TEST_CASE(object_time_test)
 {
@@ -153,10 +78,10 @@ BOOST_AUTO_TEST_CASE(object_time_test)
 }
 
 /**
- *\brief TEST for point object
- *\
- *\The constructors are checked creating identical
- *\objects and comparing between them.
+ * \brief TEST for point object
+ *
+ * The constructors are checked creating identical
+ * objects and comparing between them.
  */
 BOOST_AUTO_TEST_CASE(object_point_test)
 {
@@ -184,12 +109,12 @@ BOOST_AUTO_TEST_CASE(object_point_test)
 }
 
 /**
- *\brief TEST for quaternion object 
- *\
- *\The constructor are checked creating identical objects
- *\and comparing between them.
- *\A extra checked was added to guarantee the atributes
- *\have the same valor that constants created.
+ * \brief TEST for quaternion object 
+ *
+ * The constructor are checked creating identical objects
+ * and comparing between them.
+ * A extra checked was added to guarantee the atributes
+ * have the same valor that constants created.
  */
 BOOST_AUTO_TEST_CASE(object_quaternion_test)
 {
@@ -214,14 +139,14 @@ BOOST_AUTO_TEST_CASE(object_quaternion_test)
 }
 
 /**
- *\brief TEST for pose object
- *\
- *\The constructors are checked creating identical
- *\objects and comparing between them.
- *\
- *\For methods, we take the parameters and 
- *\they are compared with the objects created for
- *\initialize that object.
+ * \brief TEST for pose object
+ *
+ * The constructors are checked creating identical
+ * objects and comparing between them.
+ *
+ * For methods, we take the parameters and 
+ * they are compared with the objects created for
+ * initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_pose_test)
 {
@@ -256,14 +181,14 @@ BOOST_AUTO_TEST_CASE(object_pose_test)
 }
 
 /**
- *\brief TEST for msg_metadata object
- *\
- *\The constructors are checked creating identical
- *\ objects and comparing between them.
- *\
- *\For methods, we take the parameters and 
- *\ they are compared with the objects created for
- *\ initialize that object.
+ * \brief TEST for msg_metadata object
+ *
+ * The constructors are checked creating identical
+ * objects and comparing between them.
+ *
+ * For methods, we take the parameters and 
+ * they are compared with the objects created for
+ * initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_msg_metadata_test)
 {
@@ -293,15 +218,15 @@ BOOST_AUTO_TEST_CASE(object_msg_metadata_test)
 }
 
 /**
- *\brief TEST for pose_stamped object
- *\
- *\In the same way that the classes before
- *\the constructors are checked creating identical
- *\objects and comparing between them.
- *\
- *\For methods, we take the parameters and 
- *\they are compared with the objects created for
- *\initialize that object.
+ * \brief TEST for pose_stamped object
+ *
+ * In the same way that the classes before
+ * the constructors are checked creating identical
+ * objects and comparing between them.
+ *
+ * For methods, we take the parameters and 
+ * they are compared with the objects created for
+ * initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_pose_stamped_test)
 {
@@ -354,15 +279,15 @@ BOOST_AUTO_TEST_CASE(object_pose_stamped_test)
 }
 
 /**
- *\brief TEST for planned_path object
- *\
- *\In the same way that the classes before
- *\the constructors are checked creating identical
- *\objects and comparing between them.
- *\
- *\For methods, we take the parameters and 
- *\they are compared with the objects created for
- *\initialize that object.
+ * \brief TEST for planned_path object
+ *
+ * In the same way that the classes before
+ * the constructors are checked creating identical
+ * objects and comparing between them.
+ *
+ * For methods, we take the parameters and 
+ * they are compared with the objects created for
+ * initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_planned_path_test)
 {
@@ -405,14 +330,14 @@ BOOST_AUTO_TEST_CASE(object_planned_path_test)
 }
 
 /**
- *\brief TEST for qr_code object
- *\
- *\The constructor are checked creating identical
- *\objects and comparing between them.
- *\
- *\For methods, we take the parameters and 
- *\they are compared with the objects created for
- *\initialize that object.
+ * \brief TEST for qr_code object
+ *
+ * The constructor are checked creating identical
+ * objects and comparing between them.
+ *
+ * For methods, we take the parameters and 
+ * they are compared with the objects created for
+ * initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_qr_code_test)
 {
@@ -434,14 +359,14 @@ BOOST_AUTO_TEST_CASE(object_qr_code_test)
 }
 
 /**
- *\brief TEST for human object
- *\
- *\The constructor are checked creating identical
- *\objects and comparing between them.
- *\
- *\For methods, we take the parameters and 
- *\they are compared with the objects created for
- *\initialize that object.
+ * \brief TEST for human object
+ *
+ * The constructor are checked creating identical
+ * objects and comparing between them.
+ *
+ * For methods, we take the parameters and 
+ * they are compared with the objects created for
+ * initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_human_test)
 {
@@ -466,14 +391,14 @@ BOOST_AUTO_TEST_CASE(object_human_test)
 }
 
 /**
- *\brief TEST for face object
- *\
- *\The constructor are checked creating identical
- *\objects and comparing between them.
- *\
- *\For methods, we take the parameters and 
- *\they are compared with the objects created for
- *\initialize that object.
+ * \brief TEST for face object
+ *
+ * The constructor are checked creating identical
+ * objects and comparing between them.
+ *
+ * For methods, we take the parameters and 
+ * they are compared with the objects created for
+ * initialize that object.
  */
 BOOST_AUTO_TEST_CASE(object_face_test)
 {
@@ -498,29 +423,33 @@ BOOST_AUTO_TEST_CASE(object_face_test)
 }
 
 /**
- *\brief TEST for picture object
- *\
- *\The constructor are checked creating identical
- *\objects and comparing between them.
- *\
- *\To compare different images a vector of images
- *\is created, to verify all of them
+ * \brief TEST for picture object
+ *
+ * The constructor are checked creating identical
+ * objects and comparing between them.
+ *
+ * To compare different images a vector of images
+ * is created, to verify all of them
  */
 
 BOOST_AUTO_TEST_CASE(object_picture_test)
 {
-    std::vector<std::string> infiles = { "two_faces.jpg", "cat.jpg", "qrcode.png",
-                                         "door_1.png", "lamp_on.jpg", "lamp_off.jpg" };
+    std::vector<std::string> infiles = { "tests/data/object_classes_picture_1.png", 
+                                         "tests/data/object_classes_picture_2.jpg", 
+                                         "tests/data/object_classes_picture_3.png", 
+                                         "tests/data/object_classes_picture_4.jpg", 
+                                         "tests/data/object_classes_picture_5.jpg", 
+                                         "tests/data/object_classes_picture_6.jpg" };
 
     // Construct from a file-path
-    rapp::object::picture lena("Lenna.png");
+    rapp::object::picture lena(infiles[0]);
 
-    for (std::string & fname : infiles) {
+    for (auto it = infiles.begin() + 1; it != infiles.end(); ++it) {
         // Construct from a file-path
-        rapp::object::picture picture1(fname);
+        rapp::object::picture picture1(*it);
 
         // Open a byte steam from file, and construct the picture
-        std::ifstream bytestream(fname, std::ios::in | std::ios::binary | std::ios::ate);
+        std::ifstream bytestream(*it, std::ios::in | std::ios::binary | std::ios::ate);
         rapp::object::picture b_copy(bytestream);
         BOOST_CHECK(picture1 == b_copy);
 
@@ -536,22 +465,35 @@ BOOST_AUTO_TEST_CASE(object_picture_test)
     }
 }
 
+/**
+ * \brief TEST for audio object
+ *
+ * The constructors are checked creating identical
+ * objects and comparing between them.
+ *
+ * Different audios are saved in a vector and 
+ * they are used to compare between formats.
+ */
 BOOST_AUTO_TEST_CASE(object_audio_test)
 {
     // audio tests
-    rapp::object::audio t1("terminator_1.wav");
-    std::ifstream bytes1("terminator_1.wav", std::ios::in | std::ios::binary | std::ios::ate);
+    std::vector<std::string> infiles = { "tests/data/object_classes_audio_1.ogg", 
+                                         "tests/data/object_classes_audio_2.wav",
+                                         "tests/data/object_classes_audio_3.wav" };
+
+    rapp::object::audio t1(infiles.at(1));
+    std::ifstream bytes1(infiles.at(1), std::ios::in | std::ios::binary | std::ios::ate);
     rapp::object::audio t1_ifstrm(bytes1);
 
     BOOST_CHECK(t1 == t1_ifstrm);
 
-    rapp::object::audio t2("terminator_2.wav");
+    rapp::object::audio t2(infiles.at(2));
     rapp::object::audio t2_cpy = t2;
 
     BOOST_CHECK( t2 == t2_cpy );
 
     //ogg
-    rapp::object::ogg og1("recording_sentence2.ogg");
+    rapp::object::ogg og1(infiles.at(0));
     rapp::object::ogg og2(og1);
 
     BOOST_CHECK(og1 == og2);
@@ -560,8 +502,8 @@ BOOST_AUTO_TEST_CASE(object_audio_test)
     BOOST_CHECK_EQUAL(og1.audio_source(), "nao_ogg");
 
     //microphone_wav
-    rapp::object::microphone_wav microphone1("terminator_2.wav");
-    std::ifstream bytes2("terminator_2.wav", std::ios::in | std::ios::binary | std::ios::ate);
+    rapp::object::microphone_wav microphone1(infiles.at(2));
+    std::ifstream bytes2(infiles.at(2), std::ios::in | std::ios::binary | std::ios::ate);
     rapp::object::microphone_wav microphone2(bytes2);
     BOOST_CHECK(microphone1 == microphone2);
 
@@ -579,7 +521,7 @@ BOOST_AUTO_TEST_CASE(object_audio_test)
     BOOST_CHECK(microphone1 != og1);
 
     //nao_single_channel_wav
-    rapp::object::nao_single_channel_wav naos1("terminator_1.wav");
+    rapp::object::nao_single_channel_wav naos1(infiles.at(1));
     rapp::object::nao_single_channel_wav naos2(naos1);
     BOOST_CHECK(naos1 == naos2);
 
@@ -588,7 +530,7 @@ BOOST_AUTO_TEST_CASE(object_audio_test)
     BOOST_CHECK(naos1 != t2);
 
     //nao_quad_channel_wav
-    rapp::object::nao_quad_channel_wav naoq1("terminator_1.wav");
+    rapp::object::nao_quad_channel_wav naoq1(infiles.at(1));
     rapp::object::nao_quad_channel_wav naoq2(naoq1);
     BOOST_CHECK(naoq1 == naoq2);
 

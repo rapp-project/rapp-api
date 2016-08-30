@@ -31,7 +31,7 @@ class quaternion
 {
 public:
     /**
-     * \brief Consruct using code coordinates (x,y,z,w)
+     * \brief Construct using code coordinates (x,y,z,w)
      * \param x is quaternion x component
      * \param y is quaternion y component
      * \param z is quaternion z component
@@ -39,18 +39,19 @@ public:
      */
 	quaternion(double x, double y, double z, double w);
     
-    /// \brief empty consructor
+    /// \brief Empty consructor
     quaternion() = default;
     
-    /// \brief copy constructor
+    /// \brief Copy constructor
     quaternion(const rapp::object::quaternion &) = default;
 
-	/// construct using library "json for modern c++"
+	/// \brief Construct using library "json for modern c++"
     quaternion(const json::const_iterator & orientation);
     
+    /// \brief Method to pass the data in a json object
     json::object_t to_json() const;
        
-    /// \brief equalit-> operator
+    /// \brief Equality operator
     bool operator==(const rapp::object::quaternion & rhs) const;
 	
     /// members

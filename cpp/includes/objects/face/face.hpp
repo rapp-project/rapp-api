@@ -30,6 +30,10 @@ class face
 {
 public:
     /// \brief Construct using face coordinates (a rectangle)
+    /// \param top_left_x is the coordinate x of top left point
+    /// \param top_left_y is the coordinate y of top left point
+    /// \param bottom_right_x is the coordinate x of down right point
+    /// \param bottom_right_y is the coordinate y of down right point
     face( 
           float top_left_x,
           float top_left_y,
@@ -37,39 +41,39 @@ public:
           float bottom_right_y
         );
   
-    /// Allow empty constructor
+    /// \brief Allow empty constructor
     face() = default;
     
-    /// Copy constructor
+    /// \brief Copy constructor
     face(const face &) = default;
 
-    /// \brief constructor using `json for modern C++`
+    /// \brief Constructor using `json for modern C++`
     face(const json::const_iterator & face_it);
    
-    /// \brief method to pass the information to a json format
+    /// \brief Method to pass the information to a json format
     json::object_t to_json() const;
 
-    /// Equality operator
+    /// \brief Equality operator
     bool operator==(const face & rhs) const;
     
-    /// \brief method to get the top_left_x__ param
+    /// \brief Method to get the top_left_x__ param
     float get_left_x() const;
 
-    /// \brief method to get the top_left_y__ param
+    /// \brief Method to get the top_left_y__ param
     float get_left_y() const;
 
-    /// \brief method to get the bottom_right_x__ param
+    /// \brief Method to get the bottom_right_x__ param
     float get_right_x() const;
 
-    /// \brief method to get the bottom_right_y__param
+    /// \brief Method to get the bottom_right_y__param
     float get_right_y() const;
 
 private:
 
-    /// \brief method to find the up_left_point information from json data
+    /// \brief Method to find the up_left_point information from json data
     void up_left_point(const json::const_iterator & coord_it);
 
-    /// \brief method to find the down_right_point information from json data
+    /// \brief Method to find the down_right_point information from json data
     void down_right_point(const json::const_iterator & coord_it);
 
     /// members

@@ -32,20 +32,17 @@ json::object_t time::to_json() const
     return values;
 }
 
-/// \brief Equality operator
 bool time::operator==(const rapp::object::time & rhs) const
 {
     return (this->seconds_ == rhs.seconds_)
             && (this->nanoseconds_ == rhs.nanoseconds_);
 }
 
-/// \brief return seconds elapsed since UNIX Epoch
 uint32_t time::seconds() const
 {
     return seconds_;
 }
 
-/// \brief return nanoseconds elapsed since UNIX Epoch
 uint32_t time::nanoseconds() const
 {
     return nanoseconds_;

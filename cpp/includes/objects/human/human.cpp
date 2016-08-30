@@ -20,7 +20,7 @@ human::human(const json::const_iterator & human_it)
       throw std::runtime_error("no up left point param in human");
    }
    else {
-      // Look for params x and y in up_left_point
+      // Look for params x and y in up_left_point method
       auto coord_it = human_it->find("up_left_point");
       up_left_point(coord_it); 
    }
@@ -29,6 +29,7 @@ human::human(const json::const_iterator & human_it)
      throw std::runtime_error("no down right point param in human");
   }
   else {
+      // Look for params x and y in down_right_point method
       auto coord_it = human_it->find("down_right_point");
       down_right_point(coord_it); 
   }

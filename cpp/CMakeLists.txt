@@ -57,6 +57,7 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/objects/face/face.cpp
             ${INCLUDES}/objects/picture/picture.cpp
             ${INCLUDES}/objects/audio/audio.cpp
+            ${INCLUDES}/objects/qr_code/qr_code.cpp
             )
 
 # Begin searching for packgages we use in RAPP API
@@ -90,16 +91,6 @@ if(OPENSSL_FOUND)
 endif()
 
 ###
-# Find RapidJSON - (rapidjson-dev in Debian and Ubuntu) 
-#
-#find_package(RapidJSON REQUIRED)
-#if (RapidJSON_FOUND)
-#    include_directories(${RAPIDJSON_INCLUDE_DIRS})
-#    set(RAPIDJSON_USE_SSE2 ON)
-#    set(RAPIDJSON_USE_SSE42 ON)
-#endif()
-
-###
 # Set library sources
 #
 add_library(lrapp OBJECT ${SOURCES})
@@ -109,7 +100,7 @@ add_library(lrapp OBJECT ${SOURCES})
 ###
 if (${RAPP_STATIC})
 	message(STATUS "Building Static library")
-    add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
+    add_library(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static)
 	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
@@ -144,40 +135,40 @@ if (CMAKE_INSTALL_PREFIX)
 	message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include`")
 endif()
 # Header install dir
-install (DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+install(DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
 # Install Global header
-install (FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}) #copy global include header
+install(FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}) #copy global include header
 
 ###
 #   build tests - run with `make test`
 ###
 if (${BUILD_TESTS})
-    set (TESTS ${TESTS} tests)
     enable_testing()
+    set(TESTS ${TESTS} tests)
+    set(TESTFILES ${TESTFILES} asio_classes.cpp 
+                               json_classes.cpp 
+                               object_classes.cpp)
+    set(TEST_DIR ${TEST_DIR} tests)
+    message(STATUS "Building tests, they will be placed in the `${TEST_DIR}`")
 
-    add_executable(asio_classes           ${TESTS}/asio_classes.cpp)
-    add_executable(json_classes           ${TESTS}/json_classes.cpp)
-    add_executable(object_classes         ${TESTS}/object_classes.cpp)
-    #add_executable(service_test          ${TESTS}/service_test.cpp)
-    #add_executable(serialise_test        ${TESTS}/serialise.cpp)
+    # create "/tests"
+    add_custom_command(TARGET rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E make_directory ${TEST_DIR})
 
-    add_test(asio_classes                 asio_classes)
-    add_test(json_classes                 json_classes)
-    add_test(object_classes               object_classes) 
-    #add_test(unit_service_test           service_test)
-    #add_test(json_serialise_test         serialise_test)
+    # symlink `/tests/data` instead of copying
+    add_custom_command(TARGET rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} POST_BUILD
+                     COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/${TESTS}/data ${TEST_DIR}/data)
 
-    target_link_libraries(asio_classes    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    target_link_libraries(json_classes    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    target_link_libraries(object_classes  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-
-    #target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
-    #    ${Boost_SYSTEM_LIBRARY}
-    #    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
-    #    rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    #target_link_libraries(serialise_test rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-
-    message(STATUS "Building tests, they will be placed in the `${CMAKE_CURRENT_BINARY_DIR}`")
+    # iterate tests
+    foreach(ITEM ${TESTFILES})
+        string(REPLACE ".cpp" "" TARGET ${ITEM})
+        add_executable(${TARGET} ${TESTS}/${ITEM})
+        target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
+        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
+        add_test(${TARGET} ${TEST_DIR}/${TARGET})
+    endforeach(ITEM)
+        
 else()
     message(STATUS "Not Building tests - enable with `-DBUILD_TESTS=ON`")
 endif()

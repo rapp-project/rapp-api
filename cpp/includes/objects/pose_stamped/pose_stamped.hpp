@@ -31,7 +31,7 @@ class pose_stamped
 {
 public:
     /**
-     * \brief Consruct using robot pose and message header component
+     * \brief Construct using robot pose and message header component
      * \param header defines pose metadata (sequence, frame_id, stamp)
      * \param pose is robot pose definition (position & orientation)
      */
@@ -40,22 +40,22 @@ public:
 				  const rapp::object::pose pose
 				);
     
-    /// \brief empty consructor
+    /// \brief Empty constructor
     pose_stamped() = default;
     
-    /// \brief copy constructor
+    /// \brief Copy constructor
     pose_stamped(const rapp::object::pose_stamped &) = default;
 
-    /// \brief construct using `json for modern c++`
+    /// \brief Construct using `json for modern c++`
     pose_stamped(const json::const_iterator & stamped);
 
-    /// \brief method to pass the information into a json object
+    /// \brief Method to pass the information into a json object
     json::object_t to_json() const;
 
-    /// \brief method to get the param header_
+    /// \brief Method to get the param header_
     rapp::object::msg_metadata get_header() const; 
 
-    /// \brief method to get the param pose_
+    /// \brief Method to get the param pose_
     rapp::object::pose get_pose() const;
 
     /// \brief Equality operator

@@ -20,17 +20,17 @@
 namespace rapp {
 namespace object {
 /**
- * \struct planned_path
+ * \class planned_path
  * \brief encapsulate collision free path planning service response
  * \version 0.6.0
- * \date 10-May-2016
- * \author Wojciech Dudek <dudekwa@gmail.com>
+ * \date 26 August 2016
+ * \author Maria Ramos Montero <m.ramos@ortelio.co.uk>
  */
 class planned_path
 {
 public:
     /**
-     * \brief construct using path header, definition of success/error code, vector of path points
+     * \brief Construct using path header, definition of success/error code, vector of path points
      * \param plan_found is success/error code
      * \param planning_error is error description
      * \param path is vector of path pose_stamped
@@ -41,28 +41,28 @@ public:
 				   std::vector<pose_stamped> path 
 				);
 
-    /// \brief empty constructor
+    /// \brief Empty constructor
     planned_path() = default;
     
-    /// \brief copy constructor
+    /// \brief Copy constructor
     planned_path(const rapp::object::planned_path &) = default;
     
-    /// \brief constructor using `json for modern C++`
+    /// \brief Constructor using `json for modern C++`
     planned_path(const json & arg);
     
-    /// \brief method to pass the information to a json object
+    /// \brief Method to pass the information to a json object
     json to_json() const;
    
-	/// \brief equality operator
+	/// \brief Equality operator
     bool operator==(const rapp::object::planned_path & rhs) const;
 
-    /// \brief method to get param plan_found_
+    /// \brief Method to get param plan_found_
     uint8_t get_plan() const;
 
-    /// \brief method to get param planning_error
+    /// \brief Method to get param planning_error
     std::string get_error() const;
 
-    /// \brief method to get param path_
+    /// \brief Method to get param path_
     std::vector<rapp::object::pose_stamped> get_path() const;
 
 private:

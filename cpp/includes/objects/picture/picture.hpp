@@ -28,42 +28,43 @@ namespace object {
 class picture
 {
 public:
-    /// Construct from a file-path
+    /// \brief Construct from a file-path
     picture(const std::string filepath);
         
-    /// Construct using an open file stream
+    /// \brief Construct using an open file stream
     picture(std::ifstream & bytestream);
 
-    /// Copy constructor
+    /// \brief Copy constructor
     picture(const picture &) = default;
     
-    /// Assignment operator
+    /// \brief Assignment operator
     picture & operator=(const picture &) = default;
 
-    /// picture equality
+    /// \brief Picture equality
     bool operator==(const picture & rhs) const;
 
-    /// not picture equality
+    /// \brief Not picture equality
     bool operator!=(const picture & rhs) const;
 
-    /// Get picture as array of bytes
+    /// \brief Get picture as array of bytes
     std::vector<rapp::types::byte> bytearray() const;
 
-    /// try and get image type (JPG/PNG supported)
+    /// \brief Get image type (JPG/PNG supported)
     std::string type() const;
 
-    /// Save picture to filepath
+    /// \brief Save picture to filepath
     bool save(const std::string filepath);
 
 private:
 	typedef char byte;
 
-    // Delete empty constructor    
+    /// \brief Delete empty constructor    
     picture() = delete;
 
-    // Parse the bytestream into the bytearray
+    /// \brief Parse the bytestream into the bytearray
     void opencb_(std::ifstream & bytestream);
         
+    /// Members
     std::vector<rapp::types::byte> bytearray_;
     std::string imgtype_;
 };

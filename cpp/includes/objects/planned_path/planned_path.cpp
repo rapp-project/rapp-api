@@ -21,8 +21,6 @@ planned_path::planned_path(const json & arg)
     }
     else {
          for (auto it = path_it->begin(); it != path_it->end(); it++){
-         //for (const auto & obj : *path_it){
-           // std::cout << it << std::endl;
             path_.push_back(rapp::object::pose_stamped(it));
          } 
     }

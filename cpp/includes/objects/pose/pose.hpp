@@ -31,7 +31,7 @@ class pose
 {
 public:
     /**
-     * \brief consruct using position and orientation components
+     * \brief Construct using position and orientation components
      * \param position is vector of position coordinates
      * \param orientation is vector of orientation (quaternion) coordinates
      */
@@ -40,25 +40,25 @@ public:
            rapp::object::quaternion orientation
 		);
     
-    /// \brief allow empty consructor
+    /// \brief Allow empty consructor
     pose() = default;
     
-    /// \brief copy constructor
+    /// \brief Copy constructor
     pose(const rapp::object::pose &) = default;
 
-	/// \brief contruct using rapidJSON
+	/// \brief Contruct using 'json for modern c++'
     pose(const json::const_iterator & pose);
     
     /// \brief Equality operator
     bool operator==(const pose & rhs) const;
     
-    /// \brief method to pass information to a json object
+    /// \brief Method to pass information to a json object
     json::object_t to_json() const;
    
-    /// \brief method to get position_ parameter
+    /// \brief Method to get position_ parameter
     rapp::object::point get_position() const;
 
-    /// \brief method to get orientation_ param
+    /// \brief Method to get orientation_ param
     rapp::object::quaternion get_orientation() const;
 
 private:

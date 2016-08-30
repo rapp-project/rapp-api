@@ -40,12 +40,13 @@ public:
     /// Allow Empty Consructor
     time() = default;
     
-    /// Copy Conatructor
+    /// Copy Constructor
     time(const rapp::object::time &) = default;
 
-    /// construct using library "json for modern c++"
+    /// Construct using library "json for modern c++"
     time(const json::const_iterator & stamp);
 
+    /// \brief method to pass all the data into a json object
     json::object_t to_json() const;
     
     /// \brief Equality operator

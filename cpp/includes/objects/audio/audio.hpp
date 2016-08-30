@@ -34,46 +34,47 @@ namespace object {
 class audio
 {
 public:
-    /// Construct from a file on disk
+    /// \brief Construct from a file on disk
     audio(const std::string filepath);
 
     /// \brief Construct using an open file stream
     /// \param bytestream will be **consumed** by the object
     audio(std::ifstream & bytestream);
 
-    /// \brief construct using an existing byte-array
+    /// \brief Construct using an existing byte-array
     /// \param bytearray should contain the audio data
     audio(std::vector<rapp::types::byte> bytearray);
 
-    /// Copy constructor
+    /// \brief Copy constructor
     audio(const audio &) = default;
 
-    /// Get audio as array of bytes
+    /// \brief Get audio as array of bytes
     std::vector<rapp::types::byte> bytearray() const;
 
-    /// Are audios same ?
+    /// \brief Are audios same ?
     bool operator==(const audio & rhs) const;
 
-    /// Audios are not the same
+    /// \brief Audios are not the same
     bool operator!=(const audio & rhs) const;
 
-    /// Assignment operator
+    /// \brief Assignment operator
     audio & operator=(const audio &) = default;
 
-    /// Save audio to filepath
+    /// \brief Save audio to filepath
     bool save(const std::string filepath);
 
+    /// \brief Get the audio source
     std::string audio_source() const;
 
 private:
 
-    // Delete empty constructor    
+    /// \brief Delete empty constructor    
     audio() = delete;
 
-    // Copy the bytestream into the bytearray
+    /// \brief Copy the bytestream into the bytearray
     void read_bytes(std::ifstream & bytestream);
 
-    // Actual bytes of audio file
+    /// \brief Actual bytes of audio file
     std::vector<rapp::types::byte> bytearray_;
 };
 
@@ -82,10 +83,14 @@ class ogg : public audio
 {
 public:
 
+    /// \brief Constructor from a file on disk
     ogg(const std::string filepath);  
 
+    /// \brief Construct using an open file stream
+    /// \param bytestream will be **consumed** by the object
     ogg(std::ifstream & bytestream);
 
+    /// \brief Get the audio source
     std::string audio_source() const;
 
 };
@@ -95,10 +100,14 @@ class nao_single_channel_wav : public audio
 {
 public:
 
+    /// \brief Construct from a file
     nao_single_channel_wav(const std::string filepath);
 
+    /// \brief Construct using an open file stream
+    /// \param bytestream will be **consumed** by the object
     nao_single_channel_wav(std::ifstream & bytestream);
 
+    /// \brief Get audio source
     std::string audio_source() const;
 
 };
@@ -107,10 +116,14 @@ class nao_quad_channel_wav : public audio
 {
 public:
 
+    /// \brief Construct from a file
     nao_quad_channel_wav(const std::string filepath);
 
+    /// \brief Construct using an open file stream
+    /// \param bytestream will be **consumed** by the object
     nao_quad_channel_wav(std::ifstream & bytestream);
 
+    /// \brief Get the audio source
     std::string audio_source() const;
 
 };
@@ -119,12 +132,18 @@ class microphone_wav : public audio
 {
 public:
 
+    /// \brief Construct from a file
     microphone_wav(const std::string filepath);
 
+    /// \brief Construct using an open file stream
+    /// \param bytestream will be **consumed** by the object
     microphone_wav(std::ifstream & bytestream);
 
+    /// \brief Construct using raw data
+    /// \param bytearray is a vector of binary data
     microphone_wav(std::vector<rapp::types::byte> bytearray);
 
+    /// \brief Get the audio source
     std::string audio_source() const;
 
 };

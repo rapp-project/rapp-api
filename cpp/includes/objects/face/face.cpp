@@ -20,7 +20,7 @@ face::face(const json::const_iterator & face_it)
       throw std::runtime_error("no up left point param in face");
    }
    else {
-      // Look for params x and y in up_left_point
+      // Look for params x and y in up_left_point method
       auto coord_it = face_it->find("up_left_point");
       up_left_point(coord_it); 
    }
@@ -29,6 +29,7 @@ face::face(const json::const_iterator & face_it)
      throw std::runtime_error("no down right point param in face");
   }
   else {
+      // Look for params x and y in down_right_point method
       auto coord_it = face_it->find("down_right_point");
       down_right_point(coord_it); 
   }

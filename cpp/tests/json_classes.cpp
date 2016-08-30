@@ -1,4 +1,19 @@
 #define BOOST_TEST_MODULE JSONTest
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <iostream>
 #include <fstream>
@@ -15,7 +30,7 @@
 #include "../includes/objects/face/face.hpp"
 
 /// \brief function to read a json file and it is converted 
-//  \into a string param
+//  into a string param
 std::string read_json_file(const std::string file)
 {
     if (file.empty()){
@@ -38,14 +53,14 @@ std::string read_json_file(const std::string file)
 BOOST_AUTO_TEST_SUITE(json_classes_test)
 
 /**
- * check rapp::object::time for json (de)serialisation
+ * \brief check rapp::object::time for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
 BOOST_AUTO_TEST_CASE(time_json_test)
 {
-    std::string string = read_json_file("time_class.json");
+    std::string string = read_json_file("tests/data/json_classes_time.json");
     BOOST_CHECK(!string.empty());
 
     auto json = nlohmann::json::parse(string); 
@@ -61,7 +76,7 @@ BOOST_AUTO_TEST_CASE(time_json_test)
 }
 
 /**
- * check rapp::object::point for json (de)serialisation
+ * \brief check rapp::object::point for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -69,7 +84,7 @@ BOOST_AUTO_TEST_CASE(time_json_test)
 
 BOOST_AUTO_TEST_CASE(point_json_test)
 {
-    std::string string = read_json_file("point_class.json");
+    std::string string = read_json_file("tests/data/json_classes_point.json");
     BOOST_CHECK(!string.empty());
 
     auto json = nlohmann::json::parse(string);
@@ -86,14 +101,14 @@ BOOST_AUTO_TEST_CASE(point_json_test)
 }
 
 /**
- * check rapp::object::quaternion for json (de)serialisation
+ * \brief check rapp::object::quaternion for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
 BOOST_AUTO_TEST_CASE(quaternion_json_test)
 {
-    std::string string = read_json_file("quaternion_class.json");
+    std::string string = read_json_file("tests/data/json_classes_quaternion.json");
     BOOST_CHECK(!string.empty());
 
     auto json = nlohmann::json::parse(string);
@@ -111,7 +126,7 @@ BOOST_AUTO_TEST_CASE(quaternion_json_test)
 }
 
 /**
- * check rapp::object::pose for json (de)serialisation
+ * \brief check rapp::object::pose for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -119,7 +134,7 @@ BOOST_AUTO_TEST_CASE(quaternion_json_test)
 
 BOOST_AUTO_TEST_CASE(pose_json_test)
 {
-    std::string string = read_json_file("pose_class.json");
+    std::string string = read_json_file("tests/data/json_classes_pose.json");
     BOOST_CHECK(!string.empty());
 
     auto json = nlohmann::json::parse(string);
@@ -143,7 +158,7 @@ BOOST_AUTO_TEST_CASE(pose_json_test)
 }
 
 /**
- * check rapp::object::msg_metadata for json (de)serialisation
+ * \brief check rapp::object::msg_metadata for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -151,7 +166,7 @@ BOOST_AUTO_TEST_CASE(pose_json_test)
 
 BOOST_AUTO_TEST_CASE(msg_metadata_json_test)
 {
-    std::string string = read_json_file("msg_metadata_class.json");
+    std::string string = read_json_file("tests/data/json_classes_msg_metadata.json");
     BOOST_CHECK(!string.empty());
 
     auto json = nlohmann::json::parse(string);
@@ -171,7 +186,7 @@ BOOST_AUTO_TEST_CASE(msg_metadata_json_test)
 }
 
 /**
- * check rapp::object::pose_stamped for json (de)serialisation
+ * \brief check rapp::object::pose_stamped for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -179,7 +194,7 @@ BOOST_AUTO_TEST_CASE(msg_metadata_json_test)
 
 BOOST_AUTO_TEST_CASE(pose_stamped_json_test)
 {
-    std::string string = read_json_file("pose_stamped.json");
+    std::string string = read_json_file("tests/data/json_classes_pose_stamped.json");
     BOOST_CHECK(!string.empty());
 
     auto json = nlohmann::json::parse(string);
@@ -218,7 +233,7 @@ BOOST_AUTO_TEST_CASE(pose_stamped_json_test)
 }
 
 /**
- * check rapp::object::planned_path for json (de)serialisation
+ * \brief check rapp::object::planned_path for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -226,7 +241,7 @@ BOOST_AUTO_TEST_CASE(pose_stamped_json_test)
 
 BOOST_AUTO_TEST_CASE(planned_path_json_test)
 {
-    std::string string = read_json_file("planned_path.json");
+    std::string string = read_json_file("tests/data/json_classes_planned_path.json");
     BOOST_CHECK(!string.empty());
 
     const auto json = nlohmann::json::parse(string);
@@ -238,7 +253,7 @@ BOOST_AUTO_TEST_CASE(planned_path_json_test)
 }
 
 /**
- * check rapp::object::human for json (de)serialisation
+ * \brief check rapp::object::human for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -246,7 +261,7 @@ BOOST_AUTO_TEST_CASE(planned_path_json_test)
 
 BOOST_AUTO_TEST_CASE(human_json_test)
 {
-    std::string string = read_json_file("human_class.json");
+    std::string string = read_json_file("tests/data/json_classes_human.json");
     BOOST_CHECK(!string.empty());
 
     const auto json = nlohmann::json::parse(string);
@@ -259,7 +274,7 @@ BOOST_AUTO_TEST_CASE(human_json_test)
 }
 
 /**
- * check rapp::object::face for json (de)serialisation
+ * \brief check rapp::object::face for json (de)serialisation
  * first load from json file and parse
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
@@ -267,7 +282,7 @@ BOOST_AUTO_TEST_CASE(human_json_test)
 
 BOOST_AUTO_TEST_CASE(face_json_test)
 {
-    std::string string = read_json_file("face_class.json");
+    std::string string = read_json_file("tests/data/json_classes_face.json");
     BOOST_CHECK(!string.empty());
 
     const auto json = nlohmann::json::parse(string);

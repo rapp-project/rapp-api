@@ -1,3 +1,4 @@
+#define BOOST_TEST_MODULE ObjectTest
 /**
  * Copyright 2015 RAPP
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-#define BOOST_TEST_MODULE ObjectTest
 #include <boost/test/unit_test.hpp>
 #include "../includes/cloud/asio/http_response.hpp"
 #include "../includes/cloud/asio/http_header.hpp"
@@ -26,33 +26,38 @@
 BOOST_AUTO_TEST_SUITE(cloud_classes_test)
 
 /**
- *\brief TEST for http_reponse class
- *\First,  we check the constructor creating two equal objects and comparing
- *\        their attribute buffer between them
- *\Second, method 'to_string()' is checked creating an string equal to argument
- *\        we pass to the constructor, and they are compared.
- *\Third,  method 'strip_http_header' is checked creating manually a http header
- *\        and comparing with the header created by the class. It's checked too
- *\        if it's empty.
- *\Last,   method 'has_content_lenght' is checked comparing with and size_t with
- *\        the same size that the header created before, and comparing them.
+ * \brief TEST for http_reponse class
+ *
+ * First, we check the constructor creating two equal objects and comparing
+ * their attribute buffer between them.
+ *
+ * Second, method 'to_string()' is checked creating an string equal to argument
+ * we pass to the constructor, and they are compared.
+ *
+ * Third, method 'strip_http_header' is checked creating manually a http header
+ * and comparing with the header created by the class. It's checked too
+ * if it's empty.
+ *
+ * Last, method 'has_content_lenght' is checked comparing with and size_t with
+ * the same size that the header created before, and comparing them.
  */
 BOOST_AUTO_TEST_CASE(cloud_response_test)
 {
 
     std::string buf = "Buffer_Example";
-    auto obj1 = std::unique_ptr<rapp::cloud::http_response>(new rapp::cloud::http_response(buf));
+    auto obj1 = std::make_unique<rapp::cloud::http_response>(buf);
     BOOST_CHECK(obj1);
-    auto obj2 = std::unique_ptr<rapp::cloud::http_response>(new rapp::cloud::http_response(buf));
+    auto obj2 = std::make_unique<rapp::cloud::http_response>(buf);
     BOOST_CHECK(obj2);
     BOOST_CHECK_EQUAL(obj2->to_string(), obj1->to_string());
 
-    auto obj3 = std::unique_ptr<rapp::cloud::http_response>(new rapp::cloud::http_response(buf));
+    auto obj3 = std::make_unique<rapp::cloud::http_response>(buf);
     std::string str_obj3 = obj3->to_string();
     std::string str_hard = "Buffer_Example";
 
     BOOST_CHECK_EQUAL(str_obj3, str_hard);
 
+    // header has zero content-length
     std::string hardcoded_header = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"; 
                 hardcoded_header += "Host: net.tutsplus.com\r\n";
                 hardcoded_header += "Accept-Encoding: gzip,deflate\r\n";
@@ -60,27 +65,26 @@ BOOST_AUTO_TEST_CASE(cloud_response_test)
                 hardcoded_header += "Content-Length: 9\r\n";
                 hardcoded_header += "Cache-Control: no-cache\r\n\r\n";
 
-    //std::string stripped = obj1->strip_http_header(hardcoded_header);
-    //BOOST_CHECK(stripped.empty());
-
-    std::size_t length = -1;
-    std::size_t length_response = obj1->content_length();
+    unsigned int length = 0;
+    unsigned int length_response = obj1->content_length();
     BOOST_CHECK_EQUAL(length, length_response);
 
-    auto obj4 = std::unique_ptr<rapp::cloud::http_response>(new rapp::cloud::http_response(hardcoded_header));
+    auto obj4 = std::make_unique<rapp::cloud::http_response>(hardcoded_header);
     BOOST_CHECK(obj4);
 
-    std::size_t length2 = 9;
-    std::size_t length_response2 = obj4->content_length();
+    unsigned int length2 = 9;
+    unsigned int length_response2 = obj4->content_length();
     BOOST_CHECK_EQUAL(length2, length_response2);
 }
 
 /**
- *\brief TEST for http_header class
- *\First,  we check the constructor and the  method 'to_string()' creating manually
- *\        an http header and comparing with the header created by the class.
- *\Second, method 'get boundary' is checked comparing the attibute of the first
- *\        object with itself
+ * \brief TEST for http_header class
+ *
+ * First,  we check the constructor and the  method 'to_string()' creating manually
+ * an http header and comparing with the header created by the class.
+ *
+ * Second, method 'get boundary' is checked comparing the attibute of the first
+ * object with itself
  */
 BOOST_AUTO_TEST_CASE(cloud_http_header_test)
 {
@@ -89,11 +93,8 @@ BOOST_AUTO_TEST_CASE(cloud_http_header_test)
 
     std::string head2 = "hop/test\r\n";
                 head2 += "Host: http://example:8080\r\n";
-                head2 += "User-Agent: rapp_api/cpp/0.7.0\r\n";
-                head2 += "Connection: close\r\n";
                 head2 += "Accept-Token: token\r\n";
                 head2 += "Content-Length: 8\r\n";
-                head2 += "Content-Type: multipart/form-data; boundary=" +head1.get_boundary();
                 head2 += "\r\n\r\n";
     
     rapp::cloud::platform info = { "http://example", "8080", "token"};
@@ -107,15 +108,18 @@ BOOST_AUTO_TEST_CASE(cloud_http_header_test)
 }
 
 /**
- *\brief TEST for http_post class
- *\First,  we check the constructor creating two equal objects and comparing
- *\        their attribute buffer between them
- *\Second, method 'to_string()' is checked creating a post header manually
- *\        equal that the class creates for comparing them.
- *\Third,  both methods 'add_content' is checked creating a post data manually
- *\        and comparing with the one created by the class
- *\Last,   method 'size' is checked using the same string and calculating
- *\        the size manually and with the method.
+ * \brief TEST for http_post class
+ * First, we check the constructor creating two equal objects and comparing
+ * their attribute buffer between them.
+ *
+ * Second, method 'to_string()' is checked creating a post header manually
+ * equal that the class creates for comparing them.
+ *
+ * Third, both methods 'add_content' is checked creating a post data manually
+ * and comparing with the one created by the class
+ *
+ * Last, method 'size' is checked using the same string and calculating
+ * the size manually and with the method.
  */ 
 BOOST_AUTO_TEST_CASE(cloud_http_post_test)
 {
@@ -144,7 +148,7 @@ BOOST_AUTO_TEST_CASE(cloud_http_post_test)
     BOOST_CHECK_EQUAL(post4->to_string(), string_post3);
 
     // load the picture byes
-    const std::string file = "qrcode.png";
+    const std::string file = "tests/data/asio_classes_qr_code_1.png";
     auto pic = std::unique_ptr<rapp::object::picture>(new rapp::object::picture(file));
     BOOST_CHECK(pic);
     const auto bytes = pic->bytearray();
@@ -172,7 +176,8 @@ BOOST_AUTO_TEST_CASE(cloud_http_post_test)
 
 /**
  *\brief TEST for http_request class
- *\this class was checked looking with cout command what was the result 
+ *
+ * This class was checked looking with `cout` command what was the result 
  */
 BOOST_AUTO_TEST_CASE(cloud_request_test)
 {
