@@ -81,6 +81,7 @@ class CognitiveExerciseSelect(CloudMsg):
                 - @ref test_instance
                 - @ref test_type
                 - @ref test_subtype
+                - @ref language
             """
 
             ## Error message
@@ -98,6 +99,9 @@ class CognitiveExerciseSelect(CloudMsg):
             self.test_type = ''
             ## Cognitive exercise sub-type.
             self.test_subtype = ''
+
+            ## Language
+            self.lang = ''
             super(CognitiveExerciseSelect.Response, self).__init__(**kwargs)
 
 
