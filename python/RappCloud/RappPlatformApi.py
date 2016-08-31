@@ -415,6 +415,7 @@ class RappPlatformAPI():
             'questions': response.questions,
             'possib_ans': response.possib_ans,
             'correct_ans': response.correct_ans,
+            'lang': response.lang,
             'error': response.error
         }
 
