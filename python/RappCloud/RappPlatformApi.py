@@ -60,12 +60,13 @@ from CloudMsgs import VisualLocalizationInit
 
 from Service import RappPlatformService
 
+
 class RappPlatformAPI():
     """ RAPP Platform simple API implementation """
-    def __init__(self):
-        self.svc_caller = RappPlatformService()
+    def __init__(self, *args, **kwargs):
+        self.svc_caller = RappPlatformService(*args, **kwargs)
 
-    def faceDetection(self, imageFilepath, fast = False):
+    def faceDetection(self, imageFilepath, fast=False):
         """! Face detection API service call.
 
         @type imageFilepath: string
@@ -151,9 +152,9 @@ class RappPlatformAPI():
         except Exception as e:
             response = HazardDetectionDoor.Response(error=str(e))
         return {
-            'door_angle': response.door_angle,\
-            'error': response.error\
-                }
+            'door_angle': response.door_angle,
+            'error': response.error
+        }
 
     def hazardDetectionLights(self, imageFilepath):
         """! Hazard detection light check API service call.
@@ -346,7 +347,8 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def ontologyIsSubsuperclass(self, parent_class, child_class, recursive=False):
+    def ontologyIsSubsuperclass(self, parent_class, child_class,
+                                recursive=False):
         """! Ontology is-supsuperclass-of API service call.
 
         @type parent_class: string
@@ -449,7 +451,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def cognitiveGetScores(self, test_type='' , time_to=0):
+    def cognitiveGetScores(self, test_type='', time_to=0):
         """! Gognitive get score records API service call.
 
         @type test_type: string
@@ -579,7 +581,7 @@ class RappPlatformAPI():
 
         @type attach_file: string
         @param attach_file: Attachment file (path). Attachment file can be a
-            .zip file containing multiple attachment files for the email to send
+            .zip file containing multiple attachment files.
 
         @rtype: dict
         @return: Returns a dictionary of the service call response.
@@ -844,7 +846,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def objectDetectionFindObjects(self, fname, limit = 1):
+    def objectDetectionFindObjects(self, fname, limit=1):
         """! Object detection API service call.
 
         @type fname: string
@@ -855,7 +857,10 @@ class RappPlatformAPI():
 
         @rtype: dict
         @return: Returns a dictionary of the service call response.
-            {'found_names': [], 'found_centers': [], 'found_scores': [], 'result': 0, 'error': ''}
+            {
+               'found_names': [], 'found_centers': [],
+               'found_scores': [], 'result': 0, 'error': ''
+            }
         """
         msg = ObjectDetectionFindObjects()
         try:
@@ -888,7 +893,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def objectDetectionLoadModels(self, names = []):
+    def objectDetectionLoadModels(self, names=[]):
         """! Object detection - load models API service call.
 
         @type names: list
@@ -909,7 +914,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def objectDetectionLearnObject(self, fname, name = ''):
+    def objectDetectionLearnObject(self, fname, name=''):
         """! Object detection - load models API service call.
 
         @type fname: string
