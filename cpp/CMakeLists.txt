@@ -44,6 +44,10 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/asio/http_post.cpp
             ${INCLUDES}/cloud/asio/http_request.cpp
             ${INCLUDES}/cloud/asio/http_response.cpp
+
+            ${INCLUDES}/cloud/cognitive_exercises/cognitive_exercises.cpp
+            ${INCLUDES}/cloud/email/email.cpp
+
             ${INCLUDES}/config/config.cpp
             ${INCLUDES}/objects/time/time.cpp
             ${INCLUDES}/objects/quaternion/quaternion.cpp
@@ -181,6 +185,7 @@ endif()
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
 	add_executable(available_services ${EXAMPLES}/available_services.cpp)
+    #add_executable(email_example     ${EXAMPLES}/email_example.cpp)
     #add_executable(face_detect      ${EXAMPLES}/face_detect.cpp)
     #add_executable(qr_detect        ${EXAMPLES}/qr_detect.cpp)
 	#add_executable(speech_recog     ${EXAMPLES}/speech_to_text.cpp)
@@ -190,7 +195,7 @@ if (${BUILD_EXAMPLES})
 	#add_executable(asio_tls         ${EXAMPLES}/asio_tls.cpp)
 	#add_executable(text_to_speech   ${EXAMPLES}/text_to_speech.cpp)
 	#add_executable(config_example	${EXAMPLES}/config.cpp)
-	#add_executable(cognitive_example  ${EXAMPLES}/cognitive_example.cpp)
+    #add_executable(cognitive_example  ${EXAMPLES}/cognitive_example.cpp)
 
 	target_link_libraries(available_services ${LIBOBJ})
     #target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
@@ -202,7 +207,8 @@ if (${BUILD_EXAMPLES})
 	#target_link_libraries(text_to_speech    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(service_example   ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(config_example	${LIBOBJ})
-	#target_link_libraries(cognitive_example ${LIBOBJ})
+    #target_link_libraries(cognitive_example ${LIBOBJ})
+    #target_link_libraries(email_example     ${LIBOBJ})
 
     message(STATUS "Building examples, they will be placed in `${CMAKE_CURRENT_BINARY_DIR}`")
 else()

@@ -1,5 +1,21 @@
 #ifndef RAPP_CLOUD_EMAIL
 #define RAPP_CLOUD_EMAIL
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
@@ -7,9 +23,9 @@ namespace cloud {
  * \brief fetch email(s)
  * \class email_fetch
  * \version 0.7.0
- * \date 15 August 2016
+ * \date August 2016
  */
-class email_fetch :  public caller, public http_request
+class email_fetch : public http_request
 {
 public:
     /** 
@@ -34,54 +50,12 @@ public:
                  const unsigned int to_date,
                  const unsigned int num_emails,
                  std::function<void(std::string)> callback
-                )
-	: http_header("POST /hop/email_fetch HTTP/1.1\r\n"), 
-      http_post(http_header::get_boundary()), 
-      delegate_(callback)
-	{
-        boost::property_tree::ptree tree;
-        tree.put("email", email);
-        tree.put("passwd", pwd);
-        tree.put("server", server);
-        tree.put("port", port);
-        tree.put("email_status", email_status);
-        tree.put("from_date", from_date);
-        tree.put("to_date", to_date);
-        tree.put("num_emails", num_emails);
-        
-		std::stringstream ss;
-        boost::property_tree::write_json(ss, tree, false);
-
-		// JSON PDT value unquote `from_date`
-		auto str = misc::json_unquote_pdt_value<unsigned int>()(ss.str(), from_date);
-		// JSON PDT value unquote `to_date`
-		str = misc::json_unquote_pdt_value<unsigned int>()(str, to_date);
-		// JSON PDT value unquote `num_emails`
-        std::string json = misc::json_unquote_pdt_value<unsigned int>()(str, num_emails);
-
-        http_post::add_content("json", json, false); 
-        http_post::end();
-     
-	}
+                );
 
     /**
      * \brief handle platform's JSON reply
      */
-	void deserialise(std::string json) const
-    {
-        std::stringstream ss(json);
-        delegate_(std::move(json));
-    }
-
-
-    /**
-    * \brief method to fill the buffer with http_post and http_header information
-    * \param info is the data of the platform    
-    */
-    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
-    {
-           return std::move(http_request::fill_buffer(info));
-    }
+	void deserialise(std::string json) const;
     
 private:
     // 
@@ -92,9 +66,9 @@ private:
  * \brief send an email
  * \class email_send
  * \version 0.7.0
- * \date 15 August 2016
+ * \date August 2016
  */
-class email_send :  public caller, public http_request
+class email_send : public http_request
 {
 public:
     /** 
@@ -119,54 +93,12 @@ public:
                  const std::string subject,
                  const std::vector<rapp::types::byte> data,
                  std::function<void(std::string)> callback
-               )
-	: http_header("POST /hop/email_send HTTP/1.1\r\n"), 
-      http_post(http_header::get_boundary()), 
-      delegate_(callback)
-	{
-        std::string fname = rapp::misc::random_boundary();
-
-        boost::property_tree::ptree tree;
-        tree.put("email", email);
-        tree.put("passwd", pwd);
-        tree.put("server", server);
-        tree.put("port", port);
-        tree.put("body", body);
-        tree.put("subject", subject);
-
-        boost::property_tree::ptree array;
-        for (const auto rec : recipients) {
-            array.push_back(std::make_pair("", rec));
-        }
-        tree.add_child("recipients", array);
-        tree.put("file", fname);
-
-		std::stringstream ss;
-        boost::property_tree::write_json(ss, tree, false);
-
-        std::string json =ss.str();
-		http_post::add_content("json", json, false); 
-        http_post::add_content("file", fname, data); 
-        http_post::end();
-    }
+               );
+	
     /**
      * \brief handle platform's JSON reply
      */
-	void deserialise(std::string json) const
-    {
-        std::stringstream ss(json);
-        delegate_(std::move(json));
-    }
-   
-
-    /**
-    * \brief method to fill the buffer with http_post and http_header information
-    * \param info is the data of the platform    
-    */
-    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
-    {
-           return std::move(http_request::fill_buffer(info));
-    }
+	void deserialise(std::string json) const;
    
 private:
     /// 

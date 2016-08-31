@@ -12,3 +12,6 @@
 #include "cloud/asio/caller.hpp"
 #include "cloud/asio/http_request.hpp"
 #include "misc/json.hpp"
+
+using json = nlohmann::json;
+
