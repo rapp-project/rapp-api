@@ -51,15 +51,20 @@ from CloudMsgs import PathPlanningUploadMap
 from CloudMsgs import TextToSpeech
 from CloudMsgs import NewsExplore
 from CloudMsgs import Geolocation
+from CloudMsgs import ObjectDetectionFindObjects
+from CloudMsgs import ObjectDetectionClearModels
+from CloudMsgs import ObjectDetectionLoadModels
+from CloudMsgs import ObjectDetectionLearnObject
 
 from Service import RappPlatformService
 
+
 class RappPlatformAPI():
     """ RAPP Platform simple API implementation """
-    def __init__(self):
-        self.svc_caller = RappPlatformService()
+    def __init__(self, *args, **kwargs):
+        self.svc_caller = RappPlatformService(*args, **kwargs)
 
-    def faceDetection(self, imageFilepath, fast = False):
+    def faceDetection(self, imageFilepath, fast=False):
         """! Face detection API service call.
 
         @type imageFilepath: string
@@ -145,9 +150,9 @@ class RappPlatformAPI():
         except Exception as e:
             response = HazardDetectionDoor.Response(error=str(e))
         return {
-            'door_angle': response.door_angle,\
-            'error': response.error\
-                }
+            'door_angle': response.door_angle,
+            'error': response.error
+        }
 
     def hazardDetectionLights(self, imageFilepath):
         """! Hazard detection light check API service call.
@@ -340,7 +345,8 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def ontologyIsSubsuperclass(self, parent_class, child_class, recursive=False):
+    def ontologyIsSubsuperclass(self, parent_class, child_class,
+                                recursive=False):
         """! Ontology is-supsuperclass-of API service call.
 
         @type parent_class: string
@@ -409,6 +415,7 @@ class RappPlatformAPI():
             'questions': response.questions,
             'possib_ans': response.possib_ans,
             'correct_ans': response.correct_ans,
+            'lang': response.lang,
             'error': response.error
         }
 
@@ -443,7 +450,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def cognitiveGetScores(self, test_type='' , time_to=0):
+    def cognitiveGetScores(self, test_type='', time_to=0):
         """! Gognitive get score records API service call.
 
         @type test_type: string
@@ -573,7 +580,7 @@ class RappPlatformAPI():
 
         @type attach_file: string
         @param attach_file: Attachment file (path). Attachment file can be a
-            .zip file containing multiple attachment files for the email to send
+            .zip file containing multiple attachment files.
 
         @rtype: dict
         @return: Returns a dictionary of the service call response.
@@ -835,5 +842,98 @@ class RappPlatformAPI():
             'region': response.region,
             'timezone': response.timezone,
             'zip': response.zip,
+            'error': response.error
+        }
+
+    def objectDetectionFindObjects(self, fname, limit=1):
+        """! Object detection API service call.
+
+        @type fname: string
+        @param fname: Path to the image file.
+
+        @type limit: int
+        @param limit: Limit results to this number of objects
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+            {
+               'found_names': [], 'found_centers': [],
+               'found_scores': [], 'result': 0, 'error': ''
+            }
+        """
+        msg = ObjectDetectionFindObjects()
+        try:
+            msg.req.fname = fname
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = ObjectDetectionFindObjects.Response(error=str(e))
+        return {
+            'found_names': response.found_names,
+            'found_centers': response.found_centers,
+            'found_scores': response.found_scores,
+            'result': response.result,
+            'error': response.error
+        }
+
+    def objectDetectionClearModels(self):
+        """! Object detection - clear models API service call.
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+            {'result': 0, 'error': ''}
+        """
+        msg = ObjectDetectionClearModels()
+        try:
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = ObjectDetectionClearModels.Response(error=str(e))
+        return {
+            'result': response.result,
+            'error': response.error
+        }
+
+    def objectDetectionLoadModels(self, names=[]):
+        """! Object detection - load models API service call.
+
+        @type names: list
+        @param names: Model names to load
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+            {'result': 0, 'error': ''}
+        """
+        msg = ObjectDetectionLoadModels()
+        try:
+            msg.req.names = names
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = ObjectDetectionLoadModels.Response(error=str(e))
+        return {
+            'result': response.result,
+            'error': response.error
+        }
+
+    def objectDetectionLearnObject(self, fname, name=''):
+        """! Object detection - load models API service call.
+
+        @type fname: string
+        @param fname: Path to the image file.
+
+        @type name: string
+        @param name: Model name
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+            {'result': 0, 'error': ''}
+        """
+        msg = ObjectDetectionLearnObject()
+        try:
+            msg.req.fname = fname
+            msg.req.name = name
+            response = self.svc_caller.call(msg)
+        except Exception as e:
+            response = ObjectDetectionLearnObject.Response(error=str(e))
+        return {
+            'result': response.result,
             'error': response.error
         }

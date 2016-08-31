@@ -41,7 +41,12 @@ class RappPlatformService(object):
         """!
         Constructor
 
-        @param **kwargs - Keyword arguments. Apply values to the request attributes.
+        @param **kwargs - Keyword arguments.
+            - @param persistent: Enable persistent connections.
+            - @param timeout: Server wait timeout
+            - @param address: IPV4 address of the RAPP Platform
+            - @param port: RAPP Platform Web Server listening port
+            - @param protocol: http/https
         """
 
         # Load Default RAPP PLatform parameters from configuration file
@@ -69,7 +74,6 @@ class RappPlatformService(object):
         self.__controller = ServiceControllerSync(self)
         self.__controllerAsync = ServiceControllerAsync(self)
 
-
     @property
     def persistent(self):
         """! Service persistent connection value getter """
@@ -80,36 +84,30 @@ class RappPlatformService(object):
         """! Service persistent connection value setter """
         self.__persistent = val
 
-
     @property
     def timeout(self):
         """! Service timeout value getter """
         return self.__timeout
-
 
     @timeout.setter
     def timeout(self, val):
         """! Service timeout value setter """
         self.__timeout = val
 
-
     @property
     def req(self):
         """! Service request object getter """
         return self.__cloudObj.req if self.__cloudObj is not None else None
-
 
     @property
     def resp(self):
         """! Service response object getter """
         return self.__cloudObj.resp if self.__cloudObj is not None else None
 
-
     @resp.setter
     def resp(self, val):
         """! Service response object setter """
         self.__cloudObj.resp = val
-
 
     def _make_url(self, svcUrlName):
         """! Craft patform service full url path.
@@ -122,7 +120,6 @@ class RappPlatformService(object):
                         self.__platformParams['address'], ':',
                         self.__platformParams['port'], '/hop/',
                         svcUrlName))
-
 
     def call(self, msg=None):
         """! Call the RAPP Platform Service
@@ -145,12 +142,11 @@ class RappPlatformService(object):
             msg.resp.set(key, val)
         return msg.resp
 
-
     def call_async(self, msg, clb=None):
         """! Call the RAPP Platform Service
-        
+
         @param msg - Cloud Mesasge to send to the RAPP Platform
-        @param clb - Callback function to execute on response arrival. 
+        @param clb - Callback function to execute on response arrival.
         """
         urlpath = self._make_url(msg.svcname)
 
@@ -158,7 +154,6 @@ class RappPlatformService(object):
         _future = self.__controllerAsync.run_job(msg, urlpath, clb=clb)
         # Return an AsyncHandler
         return AsyncHandler(_future)
-
 
     def __load_platform_cfg(self):
         _filepath = path.expanduser(
@@ -181,4 +176,3 @@ class RappPlatformService(object):
                 'protocol': 'http'
             }
         self.__platformParams = _params
-
