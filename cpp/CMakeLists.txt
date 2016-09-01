@@ -45,9 +45,6 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/asio/http_request.cpp
             ${INCLUDES}/cloud/asio/http_response.cpp
 
-            ${INCLUDES}/cloud/cognitive_exercises/cognitive_exercises.cpp
-            ${INCLUDES}/cloud/email/email.cpp
-
             ${INCLUDES}/config/config.cpp
             ${INCLUDES}/objects/time/time.cpp
             ${INCLUDES}/objects/quaternion/quaternion.cpp
@@ -63,6 +60,10 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/objects/qr_code/qr_code.cpp
 
             ${INCLUDES}/cloud/available_services/available_services.cpp
+            ${INCLUDES}/cloud/cognitive_exercises/cognitive_exercises.cpp
+            ${INCLUDES}/cloud/email/email.cpp
+            ${INCLUDES}/cloud/geolocation/geolocation.cpp
+            ${INCLUDES}/cloud/ontology/ontology.cpp
             )
 
 # Begin searching for packgages we use in RAPP API
@@ -189,19 +190,20 @@ if (${BUILD_EXAMPLES})
     #add_executable(face_detect      ${EXAMPLES}/face_detect.cpp)
     #add_executable(qr_detect        ${EXAMPLES}/qr_detect.cpp)
 	#add_executable(speech_recog     ${EXAMPLES}/speech_to_text.cpp)
-	#add_executable(ontology         ${EXAMPLES}/ontology_example.cpp)
+	add_executable(ontology          ${EXAMPLES}/ontology_example.cpp)
 	#add_executable(set_denoise      ${EXAMPLES}/set_denoise_example.cpp)
 	#add_executable(picture          ${EXAMPLES}/picture_example.cpp)
 	#add_executable(asio_tls         ${EXAMPLES}/asio_tls.cpp)
 	#add_executable(text_to_speech   ${EXAMPLES}/text_to_speech.cpp)
 	#add_executable(config_example	${EXAMPLES}/config.cpp)
     #add_executable(cognitive_example  ${EXAMPLES}/cognitive_example.cpp)
+    add_executable(geolocation       ${EXAMPLES}/geolocation.cpp)
 
 	target_link_libraries(available_services ${LIBOBJ})
     #target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     #target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(speech_recog      ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
-	#target_link_libraries(ontology          ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+	target_link_libraries(ontology           ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(set_denoise       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(asio_tls	        ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	#target_link_libraries(text_to_speech    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
@@ -209,6 +211,7 @@ if (${BUILD_EXAMPLES})
 	#target_link_libraries(config_example	${LIBOBJ})
     #target_link_libraries(cognitive_example ${LIBOBJ})
     #target_link_libraries(email_example     ${LIBOBJ})
+    target_link_libraries(geolocation        ${LIBOBJ})
 
     message(STATUS "Building examples, they will be placed in `${CMAKE_CURRENT_BINARY_DIR}`")
 else()

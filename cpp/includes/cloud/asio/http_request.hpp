@@ -71,6 +71,9 @@ public:
     /// brief 
     bool operator==(const http_request & rhs) const;
 
+    /// make this a multipart-form
+    void make_multipart_form();
+
 private:
     std::unique_ptr<http_header> header_;
     std::unique_ptr<http_post>   post_;

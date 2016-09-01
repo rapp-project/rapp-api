@@ -60,7 +60,8 @@ public:
 	void deserialise(std::string json) const;
 
 private:
-    /// 
+
+    ///Members 
     std::function<void(std::vector<std::string>,
                        std::vector<std::string>,
                        std::vector<std::string>,
@@ -95,7 +96,8 @@ public:
     void deserialise(std::string json) const;
 
 private:
-    ///
+
+    ///Member
     std::function<void(std::string)> delegate_;
 };
 
@@ -128,6 +130,7 @@ public:
 
 private:
 
+    ///Member
     std::function<void(std::string)> delegate_;
 };
 
@@ -158,6 +161,7 @@ public:
     void deserialise(std::string json) const;
 
 private:
+
     /// Member
     std::function<void(std::vector<unsigned int>,
                        std::vector<float>)> delegate_;

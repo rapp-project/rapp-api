@@ -114,6 +114,25 @@ void for_each_arg(F&& f, Args&&... args)
     (void)swallow{0, (void(f(std::forward<Args>(args))), 0)...};
 }
 
+/*
+ * \brief method to get the values from json
+ * \param value is the name of the variable that we are looking for
+ * \param json_f is the json::json variable when we want to 
+ *  extract the values
+ * \param variable is where we save the value of the data
+ */
+template<typename T>
+void get_value_from_json(std::string current_class, std::string value, json json_f, T& variable)
+{
+    // Get "value" from json 
+    json::const_iterator it = json_f.find(value);
+    if (it == json_f.end()) {
+        throw std::runtime_error("no" + value + " in " + current_class);
+    }
+    else {
+         variable = it->get<T>();
+    }
+}
 
 }
 }

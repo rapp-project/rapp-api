@@ -13,55 +13,57 @@ available_services::available_services(std::function<void(std::vector<service>)>
 void available_services::deserialise(std::string json) 
 {
     std::cout << json;
-    /*
-    std::vector<std::pair<std::string, std::string>> services;
-    using namespace rapidjson;
-    Document doc;
-    doc.Parse(json);
+    service services;
+    std::vector<std::string> args;
+    std::vector<service> vector_services;
 
-    // parse JSON array 
-    const Value& list  = doc["services"];
-    const Value& error = doc["error"];
+    auto json_f = json::parse(json);
 
-    assert(list.IsArray());
-    assert(error.IsString());
-
-    // get and check no errors
-    std::string error_str = doc["error"].GetString();
-    if (!error_str.empty()) {
-        std::cerr << error_str << std::endl;
-        return;
-    }
-    // check service list is an array
-    if (!list.IsArray()) {
-        std::cerr << "services JSON not an array" << std::endl;
-        return;
-    }
-    // iterate service objects
-    for (auto itr = list.Begin(); itr != list.End(); ++itr) {
-        // each object has member `name` and member `url`
-        std::pair<std::string, std::string> pair;
-        auto name = itr->FindMember("name");
-        if(name != itr->MemberEnd()) {
-            pair.first = name->value.GetString();
+    if (!json.empty()) {
+        
+        // Get "response" from json
+        const auto it = json_f.find("services");
+        if (it == json_f.end()){
+            throw std::runtime_error("no services in available_services");
         }
         else {
-            std::cerr << "missing `name` member" << std::endl;
-            return;
-        }
-        auto url = itr->FindMember("url");
-        if (url != itr->MemberEnd()) {
-            pair.second = url->value.GetString();
-        }
-        else {
-            std::cerr << "missing `url` member" << std::endl;
-            return;
-        }
-        services.push_back(pair);
-    }
 
-    delegate_(services);
-    */
+             //Fill the vector_services with names and urls
+             for (auto it_s = it->begin(); it_s != it->end(); it_s++){
+
+                 // Get 'name' from json
+                auto name_it = it_s->find("name");
+                if (name_it == it_s->end()) {
+                    throw std::runtime_error("no name in services");
+                }
+                else {
+                    services.first = name_it->get<std::string>();
+                }
+
+                // Get 'url' from json
+                auto url_it = it_s->find("url");
+                if (url_it == it_s->end()) {
+                    throw std::runtime_error("no url in services");
+                }
+                else {
+                    services.second = url_it->get<std::string>();
+                }            
+
+                vector_services.push_back(services);
+             
+             } 
+
+           // Get "error" from json
+             std::string error;
+             rapp::misc::get_value_from_json("available_services", "error", json_f, error);
+
+             if (!error.empty()) {
+                 std::cerr << error << std::endl; 
+             }
+        }
+    }
+    
+    delegate_(vector_services);
 }
 
 

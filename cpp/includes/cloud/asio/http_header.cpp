@@ -9,6 +9,7 @@ http_header::http_header(std::string uri)
 	user_agent_ = "User-Agent: rapp_api-cpp-0.7.0\r\n";
 }
 
+// BUG: make ONLY ONCE
 void http_header::make_multipart_form()
 {
 	content_type_  = "Content-Type: multipart/form-data; boundary=" + boundary_;
