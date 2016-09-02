@@ -17,10 +17,17 @@
 #include "cloud/service_controller/service_controller.hpp"
 #include "cloud/ontology/ontology.hpp"
 #include <iostream>
-///
-/// query subclasses and superclass of of argv[1]
-///
-// whats the argument Maria?
+/**
+ * query subclasses and superclass of of argv[1]
+ *
+ * The arguments could be : Oven
+ *                          Refrigerator
+ *                          Toy
+ *                          Artifact
+ *                          ...
+ * More info: http://knowrob.org
+ */
+
 int main(int argc, char* argv[])
 {
     if (argc > 1) {
@@ -38,7 +45,7 @@ int main(int argc, char* argv[])
         /**
          * Construct a lambda, std::function or bind your own functor.
          * In this example we'll pass an inline lambda as the callback.
-         * All it does is receive a list of services and print them on stdout.
+         * All it does is receive a list of sub classes and print them on stdout.
          */
         auto subclass_cb = [](std::vector<std::string> classes) { 
             std::cout << "sub classes: " << std::endl;
@@ -47,6 +54,11 @@ int main(int argc, char* argv[])
             }
         };
 
+        /**
+         * Construct a lambda, std::function or bind your own functor.
+         * In this example we'll pass an inline lambda as the callback.
+         * All it does is receive a list of super classes and print them on stdout.
+         */
         auto superclass_cb = [](std::vector<std::string> classes) { 
             std::cout << "super classes: " << std::endl;
             for (const auto & str : classes) {
@@ -54,7 +66,15 @@ int main(int argc, char* argv[])
             }
         };
 
+        /**
+         * We make a call to ontology_subclasses_of to know the subclasses of the argument
+         */
 		ctrl.make_call<rapp::cloud::ontology_subclasses_of>(query, true, subclass_cb);
+
+        /**
+         * We make a call to ontology_superclasses_of to know the superclasses of
+         * the argument.
+         */
 		ctrl.make_call<rapp::cloud::ontology_superclasses_of>(query, false, superclass_cb);
 
         return 0;

@@ -80,14 +80,14 @@ float face::get_right_y() const
 
 void face::up_left_point(const json::const_iterator & coord_it)
 {
-      if (coord_it->find("x") == coord_it->end()){
+      if (coord_it->find("x") == coord_it->end()) {
           throw std::runtime_error("no x param in up left point");  
       }
       else {
           top_left_x__ = coord_it->find("x")->get<float>();
       }
       
-      if (coord_it->find("y") == coord_it->end()){
+      if (coord_it->find("y") == coord_it->end()) {
           throw std::runtime_error("no y param in up left point");
       }
       else {

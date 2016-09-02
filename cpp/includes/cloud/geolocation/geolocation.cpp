@@ -17,72 +17,40 @@ geolocation::geolocation(
   delegate_(callback)
 {
 
-    std::string ss;
+    http_request::make_multipart_form();
     json json_doc = {{"ipaddr", ipaddr},
                     {"engine", engine}};
-    ss = json_doc.dump(4);
-    http_request::add_content("json", ss, false); 
+    http_request::add_content("json", json_doc.dump(-1), true);
     http_request::close();
  
 }
 
 void geolocation::deserialise(std::string json) const
 {
-   
-    std::string city;
-    std::string country; 
-    std::string country_code; 
-    float latitude;
-    float longtitude;
-    std::string timezone; 
-    std::string zip; 
-
-    std::string  current_class = "geolocation";
-
-    auto json_f = json::parse(json);
-
-    if (!json.empty()) {
-
-        // Get "city" from json
-        rapp::misc::get_value_from_json( current_class, "city", json_f, city); 
-
-        // Get "country" from json
-        rapp::misc::get_value_from_json( current_class, "country", json_f, country);        
-
-        // Get "country_code" from json
-        rapp::misc::get_value_from_json( current_class, "country_code", json_f, country_code); 
-
-        // Get "latitude" from json 
-        rapp::misc::get_value_from_json( current_class, "latitude", json_f, latitude);
-        
-        // Get "longtitude" from json
-        rapp::misc::get_value_from_json( current_class, "longtitude", json_f, longtitude);        
-
-        // Get "timezone" from json
-        rapp::misc::get_value_from_json( current_class, "timezone", json_f, timezone); 
-
-        // Get "zip" from json
-        rapp::misc::get_value_from_json( current_class, "zip", json_f, zip);
-        
-        // Get error from json
-        std::string error;
-
-        rapp::misc::get_value_from_json( current_class, "error", json_f, error);
-        if (!error.empty()) {
-            std::cerr << "cognitive_test_selector JSON error: " << error <<std::endl;
-        }
+  
+    if (json.empty()) {
+       throw std::runtime_error("Empty json");
+    }
+    nlohmann::json json_f;
+    try { 
+        json_f = json::parse(json);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+    }
+    auto error = misc::get_json_value<std::string>("error", json_f);
+    if (!error.empty()) {
+        std::cerr << "geolocation JSON: " << error <<std::endl;
     }
     else {
-        throw std::runtime_error("json is empty");
+        delegate_(json_f["city"],
+                  json_f["country"], 
+                  json_f["country_code"], 
+                  json_f["latitude"], 
+                  json_f["longtitude"], 
+                  json_f["timezone"],
+                  json_f["zip"]);
     }
-
-    delegate_(city,
-              country,
-              country_code,
-              latitude,
-              longtitude,
-              timezone,
-              zip);
 }
 
 

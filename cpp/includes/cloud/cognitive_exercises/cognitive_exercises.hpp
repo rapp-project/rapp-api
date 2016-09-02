@@ -121,7 +121,7 @@ public:
                             unsigned int from_time,
                             unsigned int to_time,
                             const std::string test_type,
-                            std::function<void(std::string)> callback
+                            std::function<void(const nlohmann::json::const_iterator &)> callback
                          );
     /**
      * \brief forward (don't parse) platform reply
@@ -131,7 +131,7 @@ public:
 private:
 
     ///Member
-    std::function<void(std::string)> delegate_;
+    std::function<void(const nlohmann::json::const_iterator &)> delegate_;
 };
 
 /**

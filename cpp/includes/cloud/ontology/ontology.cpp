@@ -13,32 +13,30 @@ ontology_subclasses_of::ontology_subclasses_of(
     http_request::make_multipart_form();
     json json_doc = {{"ontology_class", ontology_class},
                      {"recursive", recursive}};
-    //http_request::make_multipart_form();
+
     http_request::add_content("json", json_doc.dump(-1), true); 
     http_request::close();
  }
 
 void ontology_subclasses_of::deserialise(std::string json) const
 {
-    std::vector<std::string> classes;
-    std::string current_class = "ontology_subclasses";
-
-    auto json_f = json::parse(json);
-    if (!json.empty()) {
-        // Get "results" from json
-        rapp::misc::get_value_from_json(current_class, "results", json_f, classes);
-        //Get "error" from json
-        std::string error;
-        rapp::misc::get_value_from_json(current_class, "error", json_f, error);
-        if (!error.empty()) {
-            std::cerr << "ontology_subclasses_of JSON: " << error <<std::endl;
-        }
-    }
-    else {
+    if (json.empty()) {
         throw std::runtime_error("json is empty");
     }
-
-    delegate__(classes);
+    nlohmann::json json_f;
+    try {
+        json_f = json::parse(json);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+    }
+    auto error = misc::get_json_value<std::string>("error", json_f);
+    if (!error.empty()) {
+        std::cerr << "ontology_subclasses_of JSON: " << error <<std::endl;
+    }
+    else {
+        delegate__(json_f["results"]);
+    }
 }
 
 //Class Ontology_superclasses_of
@@ -59,23 +57,23 @@ ontology_superclasses_of::ontology_superclasses_of(
 
 void ontology_superclasses_of::deserialise(std::string json) const
 {
-    std::vector<std::string> classes;
-    std::string current_class = "ontology_superclasses";
-    auto json_f = json::parse(json);
-    if (!json.empty()) {
-        // Get "results" from json
-        rapp::misc::get_value_from_json(current_class, "results", json_f, classes);
-        //Get "error" from json
-        std::string error;
-        rapp::misc::get_value_from_json(current_class, "error", json_f, error);
-        if (!error.empty()) {
-            std::cerr << "ontology_superclasses_of JSON: " << error <<std::endl;
-        }
+    if (json.empty()) {
+       throw std::runtime_error("json is empty");
+    }
+    nlohmann::json json_f;
+    try {
+        json_f = json::parse(json);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+    }
+    auto error = misc::get_json_value<std::string>("error", json_f);
+    if (!error.empty()) {
+        std::cerr << "ontology_superclasses_of JSON: " << error <<std::endl;
     }
     else {
-        throw std::runtime_error("json is empty");
+        delegate__(json_f["results"]);
     }
-    delegate__(classes);
 }
 
 //CLass Ontology_is_subsuperclass_of
@@ -94,27 +92,28 @@ ontology_is_subsuperclass_of::ontology_is_subsuperclass_of(
                      {"recursive", recursive}};
     http_request::add_content("json", json_doc.dump(-1), true); 
     http_request::close();
- }
+}
 
 void ontology_is_subsuperclass_of::deserialise(std::string json) const
 {
-    bool result;
-    std::string current_class = "ontology_is_subsuperclass_of";
-    auto json_f = json::parse(json);
-    if (!json.empty()) {
-        // Get "results" from json
-        rapp::misc::get_value_from_json(current_class, "result", json_f, result);
-        //Get "error" from json
-        std::string error;
-        rapp::misc::get_value_from_json(current_class, "error", json_f, error);
-        if (!error.empty()) {
-            std::cerr << "ontology_superclasses_of JSON: " << error <<std::endl;
-        }
+    if (json.empty()) {
+       throw std::runtime_error("json is empty");
+    }
+    nlohmann::json json_f;
+    try {
+        json_f = json::parse(json);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+    }
+    auto error = misc::get_json_value<std::string>("error", json_f);
+    if (!error.empty()) {
+        std::cerr << "ontology_subsuperclass_of JSON: " << error <<std::endl;
     }
     else {
-        throw std::runtime_error("json is empty");
+        delegate__(json_f["result"]);
     }
-    delegate__(result);
+
 }
 
 }

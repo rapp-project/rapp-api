@@ -16,7 +16,7 @@ email_fetch::email_fetch(
 : http_request("POST /hop/email_fetch HTTP/1.1\r\n"), 
   delegate_(callback)
 {
-    std::string ss;
+    http_request::make_multipart_form();
     json json_doc = {{"email", email},
                      {"passwd", pwd},
                      {"server", server},
@@ -26,8 +26,7 @@ email_fetch::email_fetch(
                      {"to_date", to_date},
                      {"num_emails", num_emails}};
 
-    ss = json_doc.dump(4);
-    http_request::add_content("json", ss, false); 
+    http_request::add_content("json", json_doc.dump(-1), true);
     http_request::close();
  
 }
@@ -37,8 +36,31 @@ email_fetch::email_fetch(
  */
 void email_fetch::deserialise(std::string json) const
 {
-    std::stringstream ss(json);
-    delegate_(std::move(json));
+    if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+
+    std::vector<std::string> vector_emails;
+    auto json_f = json::parse(json);
+    try {
+         //Fill the vector_services with names and urls
+         for (auto it_s : json_f["emails"]){
+
+            /*services.first = it_s["name"];
+            services.second = it_s["url"];           
+            vector_services.push_back(services);
+         */
+         } 
+        delegate_(vector_emails);
+        // Get "error" from json
+        std::string error = json_f["error"];
+        if (!error.empty()) {
+             std::cerr << "error JSON: " << error << std::endl; 
+        }
+    }
+    catch (std::exception & e) {
+        std::cerr << "Exception " << e.what() << std::endl;
+    }
 }
 
 // Class email_send
@@ -56,17 +78,15 @@ email_send::email_send(
 : http_request("POST /hop/email_send HTTP/1.1\r\n"), 
   delegate_(callback)
 {
+    http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary();
-
     json json_doc = {{"email", email},
                      {"passwd", pwd},
                      {"server", server},
                      {"port", port},
                      {"body", body},
                      {"subject", subject}};
-
-    std::string ss = json_doc.dump(4);
-    http_request::add_content("json", ss, false); 
+    http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, data); 
     http_request::close();
 }
@@ -75,8 +95,22 @@ email_send::email_send(
  */
 void email_send::deserialise(std::string json) const
 {
-    std::stringstream ss(json);
-    delegate_(std::move(json));
+    if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+
+    std::vector<std::string> vector_emails;
+    auto json_f = json::parse(json);
+    try {
+        // Get "error" from json
+        std::string error = json_f["error"];
+        if (!error.empty()) {
+             std::cerr << "error JSON: " << error << std::endl; 
+        }
+    }
+    catch (std::exception & e) {
+        std::cerr << "Exception " << e.what() << std::endl;
+    }
 }
 
 }

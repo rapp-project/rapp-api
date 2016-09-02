@@ -59,7 +59,7 @@ public:
     
 private:
     // 
-    std::function<void(std::string)> delegate_;
+    std::function<void(std::vector<std::string>)> delegate_;
 };
 
 /**
@@ -92,7 +92,7 @@ public:
                  const std::string body,
                  const std::string subject,
                  const std::vector<rapp::types::byte> data,
-                 std::function<void(std::string)> callback
+                 std::function<void(void)> callback
                );
 	
     /**
@@ -102,7 +102,7 @@ public:
    
 private:
     /// 
-    std::function<void(std::string)> delegate_;
+    std::function<void(void)> delegate_;
 };
 }
 }
