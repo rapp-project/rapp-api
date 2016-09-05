@@ -106,6 +106,6 @@ class File(object):
             raise Exception('File not found: {0}'.format(self.__path))
         randStr = RandStrGen.create(self.__boundarySize)
         name, ext = path.splitext(path.basename(self.__path))
-        filename = '.'.join((''.join((name, '-', randStr)), ext))
+        filename = ''.join((''.join((name, '-', randStr)), ext))
         return (self.__postfield, (filename, open(self.__path)))
 
