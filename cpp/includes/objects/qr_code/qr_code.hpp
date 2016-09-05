@@ -47,6 +47,12 @@ public:
     /// \brief Copy Constructor
     qr_code(const qr_code &) = default;
     
+    /// \brief constructor using json - not used in 0.7.0
+    //qr_code(const json::const_iterator & qr_it);
+
+    /// \brief method to pass the information to json
+    json::object_t to_json() const;
+
     /** 
      * \brief Equality operator
      * \note the message is case insensitvely compared

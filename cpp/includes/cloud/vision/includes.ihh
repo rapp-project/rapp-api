@@ -7,6 +7,8 @@
 
 #include "objects/face/face.hpp"
 #include "objects/picture/picture.hpp"
+#include "objects/human/human.hpp"
+#include "objects/qr_code/qr_code.hpp"
 #include "cloud/asio/http_request.hpp"
 #include "misc/json.hpp"
 

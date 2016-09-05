@@ -19,7 +19,7 @@ void http_request::fill_buffer(
 {
 	std::ostream http_request_stream(&buffer);
 	http_request_stream << header_->to_string(info, post_->size());
-    //std::cout << header_->to_string(info, post_->size()) << post_->to_string();
+    std::cout << header_->to_string(info, post_->size()); //<< post_->to_string();
     if (post_->size() > 0) {
         http_request_stream << post_->to_string();
     }
@@ -38,6 +38,11 @@ std::string http_request::to_string(rapp::cloud::platform info) const
     else {
         return header_->to_string(info, 0);
     }
+}
+
+std::string http_request::to_post() const
+{
+    return post_->to_string();
 }
 
 bool http_request::operator==(const http_request & rhs) const

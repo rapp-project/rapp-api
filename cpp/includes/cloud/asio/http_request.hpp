@@ -68,6 +68,9 @@ public:
     /// \brief
     std::string to_string(rapp::cloud::platform info) const;
 
+    /// \brief
+    std::string to_post() const;
+
     /// brief 
     bool operator==(const http_request & rhs) const;
 
