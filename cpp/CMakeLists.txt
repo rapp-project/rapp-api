@@ -37,10 +37,10 @@ include_directories("includes")
 
 # Library-only Executables -
 set (SOURCES ${SOURCES} 
-                        ${INCLUDES}/cloud/asio/asio_handler/asio_handler.cpp
-                        ${INCLUDES}/cloud/asio/asio_http/asio_http.cpp
-                        ${INCLUDES}/cloud/asio/asio_https/asio_https.cpp
-						${INCLUDES}/config/config.cpp)
+             ${INCLUDES}/cloud/asio/asio_handler/asio_handler.cpp
+             ${INCLUDES}/cloud/asio/asio_http/asio_http.cpp
+             ${INCLUDES}/cloud/asio/asio_https/asio_https.cpp
+	     ${INCLUDES}/config/config.cpp)
 
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
@@ -48,11 +48,6 @@ find_package(Threads REQUIRED)
 # Find Boost
 find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex filesystem REQUIRED)
 if (Boost_FOUND)
-	if (${RAPP_STATIC})
-		set(Boost_USE_STATIC_LIBS ON)
-	else()
-		set(Boost_USE_STATIC_LIBS OFF)
-	endif()
     include_directories(${Boost_INCLUDE_DIR})
     message(STATUS "Using Boost Version: ${Boost_VERSION}")
     message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
@@ -63,7 +58,7 @@ find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
     message(STATUS "Using OpenSSL Version: ${OPENSSL_VERSION}")
-	message(STATUS "OpenSSL Headers: ${OPENSSL_INCLUDE_DIR}")
+    message(STATUS "OpenSSL Headers: ${OPENSSL_INCLUDE_DIR}")
 endif()
 
 # Set library sources
@@ -71,31 +66,35 @@ add_library(lrapp OBJECT ${SOURCES})
 
 # user has set install location
 if (CMAKE_INSTALL_PREFIX)
-	message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}`")
+    message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}`")
 # user did not set it - revert to "/usr/local"
 else()
-	set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} "/usr/local/")
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} "/usr/local/")
     message(STATUS "Installing library in `${CMAKE_INSTALL_PREFIX}`")
 endif()	
 
 # Static Library - only if asked
-if (${RAPP_STATIC})
-	message(STATUS "Building Static library")
+if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
+    message(STATUS "Building Static library")
+    set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_STATIC_RUNTIME ON)
+    set(BOOST_ALL_DYN_LINK OFF)  
     add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static)
-	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-	install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static.a librapp.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
-endif()
-
+    install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+    install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static.a librapp.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
 # Shared Library - By default or if asked
-if ((${RAPP_SHARED}) OR (NOT (${RAPP_STATIC})))
-	message(STATUS "Building Shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
+elseif (${RAPP_SHARED})
+    message(STATUS "Building Shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
+    set(Boost_USE_STATIC_LIBS OFF)
+    set(Boost_USE_STATIC_RUNTIME OFF)
+    set(BOOST_ALL_DYN_LINK ON)
     add_library(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-	install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.so librapp.so WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
+    install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+    install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.so librapp.so WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
 endif()
 
 if (CMAKE_INSTALL_PREFIX)
@@ -189,20 +188,23 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     elseif ()
         message (FATAL_ERROR "g++ version >= 4.7 is required")
     endif()
-    if (${STATIC_LIBSTD})
-        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++")
-    else()
-        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC")
-    endif()
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 
-    # TODO: can somebody with a NAO test this?
-    if (${OPEN_NAO})
-        set(CMAKE_EXE_LINKER_FLAGS "-lc++ -lcxxrt")
-        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++ -m32")
+    if (${STATIC_LIBSTD})
+	set(BUILD_SHARED_LIBS OFF)
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC")
+	set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+    elseif(${OPEN_NAO})
+	set(BUILD_SHARED_LIBS OFF)
+	set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC  -march=atom -mtune=atom")
+    else()
+	set(BUILD_SHARED_LIBS ON)
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC")
     endif()
+
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
-    set(BUILD_SHARED_LIBS OFF)
+
     message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
     message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
 
