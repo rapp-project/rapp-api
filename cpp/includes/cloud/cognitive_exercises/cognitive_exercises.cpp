@@ -80,7 +80,7 @@ void cognitive_record_performance::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "ontology_superclasses_of JSON: " << error <<std::endl;
+        std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
         delegate_(json_f["performance_entry"]);
@@ -119,7 +119,7 @@ void cognitive_get_history::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "ontology_superclasses_of JSON: " << error <<std::endl;
+        std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
         delegate_(json_f.find("records"));

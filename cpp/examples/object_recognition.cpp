@@ -15,13 +15,13 @@
  */
 
 #include "cloud/service_controller/service_controller.hpp"
-#include "cloud/vision/detection.hpp"
+#include "cloud/vision/recognition.hpp"
 #include "objects/picture/picture.hpp"
 /**
- * \brief example to detect faces in a file
+ * \brief example to recognise objects in a file
  *  passed by argument. 
  *
- *  You can test with arg: "tests/data/object_classes_picture_1.png"
+ *  You can test with arg: "tests/data/object_classes_picture_5.jpg"
  */
 int main(int argc, char* argv[])
 {
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
         /**
          * First, the path and the name of the file is saved
          */
-        std::cout << "face detect: " << argv[1] << std::endl;
+        std::cout << "object detect: " << argv[1] << std::endl;
         std::string file  = argv[1];
 
         /**
@@ -48,17 +48,16 @@ int main(int argc, char* argv[])
 		/**
          * Construct a lambda, std::function or bind your own functor.
          * In this example we'll pass an inline lambda as the callback.
-         * All it does is receive a vector of rapp::object::face and
-         * we show the size of the vector to know how many faces have 
-         * been found.
-         */
-		auto callback = [&](std::vector<rapp::object::face> faces)
-						{std::cout << "found " << faces.size() << " faces!" << std::endl;};
+         * All it does is receive a string with the type of object that
+         * it has been found        
+        */
+		auto callback = [&](std::string objects)
+						{std::cout << "found " << objects << std::endl;};
 
         /**
-         * We make a call to face_detection class to detect faces in the file
+         * We make a call to object_recognition class to recognise objects in the file
          */
-		ctrl.make_call<rapp::cloud::face_detection>(pic, false, callback);
+		ctrl.make_call<rapp::cloud::object_recognition>(pic, callback);
        
 	    return 0;
     }

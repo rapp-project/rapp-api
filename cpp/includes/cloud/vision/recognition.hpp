@@ -36,51 +36,20 @@ public:
     * \param callback is the function that will receive a string
     */
     object_recognition(
-                      const rapp::object::picture & image,
-                      std::function<void(std::string)> callback
-                    )
-    : http_request("POST /hop/ontology_subclasses_of HTTP/1.1\r\n"), 
-      delegate__(callback)
-    {
-        http_request::make_multipart_form();
-        std::string fname = rapp::misc::random_boundary()+"."+image.type();
-
-		json json_doc = {{"file", fname}};
-        http_request::add_content("json", json_doc.dump(-1), true);
-        // add picture bytes
-        http_request::add_content("file", fname, image.bytearray());
-        http_request::close();
-
-    }
+                        const rapp::object::picture & image,
+                        std::function<void(std::string)> callback
+                      );
+    
 	/**
 	 * \brief handle the rapp-platform JSON reply
 	 */
-    void deserialise(std::string json) const
-    {
-        if (json.empty()) {
-            throw std::runtime_error("empty json reply");
-        }
-        nlohmann::json json_f;
-        try {
-            json_f = json::parse(json);
-        }
-        catch (std::exception & e) {
-            std::cerr << e.what() << std::endl;
-        }
-        auto error = misc::get_json_value<std::string>("error", json_f);
-        if (!error.empty()) {
-            std::cerr << "error JSON: " << error << std::endl;
-        }
-        else {
-            delegate_(json_f["object_class"]);
-        }    
-    }
+    void deserialise(std::string json) const;
 
 private:
     /// The callback called upon completion of receiving the detected faces
-    std::function<void(std::string)> delegate__;
+    std::function<void(std::string)> delegate_;
 };
 
-
 }
 }
+#endif

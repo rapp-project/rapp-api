@@ -55,10 +55,10 @@ int main(int argc, char* argv[])
 
     /**
      * Initialization of the parameters:
-     * \param ipaddr: the machine's ip address
+     * \param ipaddr: our machine's ip address
      * \param engine:Engine to use. Defaults to 'ip-api' (Currently the only supported)
      */
-     std::string ipaddr = "";
+     std::string ipaddr = "81.145.182.225";
      std::string engine = "ip-api";
 
     /**

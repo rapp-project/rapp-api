@@ -32,10 +32,19 @@ int main(int argc, char* argv[])
     /// between us and the server for having a response.
 	rapp::cloud::service_controller ctrl(info);
 
-	// sub-class callback - print each sub-class
-	auto sb_cb = [](std::string json)
+	// callback - print json information
+    auto sb_cb = [](std::string json)
 				 { std::cout << json; };
 
+    // callback for take nlohmann::json::iterator
+    // With it, we read the content of the json given
+    auto it_cb = [](nlohmann::json::const_iterator it_records)
+                 {
+                     for ( auto it = it_records->begin(); it != it_records->end(); it++)
+                     {
+                         std::cout<< it->get<std::string>() << std::endl;
+                     }
+                 };
     // Example for class cognitive_test_selector
     /// \param functor is a callback for taking all the 
     /// data about the test
@@ -70,7 +79,8 @@ int main(int argc, char* argv[])
     /// \brief A call is done to the controller to use
     /// cognitive_test_selector
     ///
-    /// \param test_type (String): Cognitive Exercise test type. 
+    /// \param test_type (String): Cognitive Exercise test type.
+    /// ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts') 
     /// \param test_subtype (String): Use this to force select 
     /// from this subtype. Defaults to empty string "".
     /// \param test_diff (String): Use this to force select from 
@@ -78,13 +88,13 @@ int main(int argc, char* argv[])
     /// \param test_index (String): Use this to force select 
     /// from this id. Defaults to empty string "".
     /// \param functor is the callback that we made before. 
-    ctrl.make_call<rapp::cloud::cognitive_test_selector>( "Arithmetic", 
-                                                          "BasicArithmetic", 
+    ctrl.make_call<rapp::cloud::cognitive_test_selector>( "ArithmeticCts", 
+                                                          "TransactionChangeCts", 
                                                           "1", 
                                                           "1", 
                                                           functor);
 
-
+    
     // Example for class cognitive_record_performance
 
     /// \brief Call done to the controller to use cognitive_record_performance
@@ -92,7 +102,7 @@ int main(int argc, char* argv[])
     /// \param test_instance (String): Cognitive Exercise test instance. 
     /// The full cognitive test entry name as returned by the cognitive_test_chooser web service.
     /// \param score (Integer): User's performance score on given test entry. 
-	ctrl.make_call<rapp::cloud::cognitive_record_performance>("random_test", 0.9, sb_cb);
+	ctrl.make_call<rapp::cloud::cognitive_record_performance>("ArithmeticCts_stXqnGrc", 40, sb_cb);
 
     //Example for class cognitive_get_history
 
@@ -102,7 +112,7 @@ int main(int argc, char* argv[])
     /// \param from_time (Integer): Unix timestamp.
     /// \param to_time (Integer): Unix timestamp.
     /// \param callback for taking the values
-    ctrl.make_call<rapp::cloud::cognitive_get_history>(0, 10, "Arithmetic", sb_cb);
+    ctrl.make_call<rapp::cloud::cognitive_get_history>(0, 100000000, "", it_cb);
 
     //Example for class cognitive_get_scores
 
@@ -125,7 +135,7 @@ int main(int argc, char* argv[])
     /// \param test_type (String): Cognitive Exercise test type.     
     /// \param up_to_time (Integer): Unix timestamp. Return scores that 
     /// have been recorder up to this time value
-    ctrl.make_call<rapp::cloud::cognitive_get_scores>(20, "Arithmetic", call_scores);
+    ctrl.make_call<rapp::cloud::cognitive_get_scores>(100000000, "", call_scores);
 
     return 0;
 }

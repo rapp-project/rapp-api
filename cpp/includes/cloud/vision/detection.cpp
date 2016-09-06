@@ -13,11 +13,9 @@ face_detection::face_detection(
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary()+"."+image.type();
-
     json json_doc = {{"file", fname},
                      {"fast", fast}};
-    http_request::add_content("json", json_doc.dump(-1), true);
-    // add picture bytes
+    //http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 }
@@ -40,7 +38,8 @@ void face_detection::deserialise(std::string json) const
         std::cerr << "error JSON: " << error << std::endl;
     }
     else {
-        for (auto it =json_f.find("faces"); it !=json_f.end(); it++ ) {
+        auto it_faces = json_f.find("faces");
+        for (auto it = it_faces->begin(); it != it_faces->end(); it++ ) {
             faces.push_back(rapp::object::face(it));
         }
         delegate_(faces);
@@ -57,10 +56,8 @@ hazard_detection_door_check::hazard_detection_door_check(
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary()+"."+image.type();
-
     json json_doc = {{"file", fname}};
-    http_request::add_content("json", json_doc.dump(-1), true);
-    // add picture bytes
+    //http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 }
@@ -96,10 +93,8 @@ human_detection::human_detection(
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary()+"."+image.type();
-
     json json_doc = {{"file", fname}};
-    http_request::add_content("json", json_doc.dump(-1), true);
-    // add picture bytes
+//    http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 
@@ -123,7 +118,8 @@ void human_detection::deserialise(std::string json) const
         std::cerr << "error JSON: " << error << std::endl;
     }
     else {
-        for (auto it =json_f.find("humans"); it !=json_f.end(); it++ ) {
+        auto it_human = json_f.find("humans");
+        for (auto it = it_human->begin(); it != it_human->end(); it++ ) {
             humans.push_back(rapp::object::human(it));
         }
        delegate_(humans);
@@ -139,8 +135,8 @@ qr_detection::qr_detection(
 {
     http_request::make_multipart_form();
     std::string fname = rapp::misc::random_boundary()+"."+image.type();
-
     json json_doc = {{"file", fname}};
+    //http_request::add_content("json", json_doc.dump(-1), true);
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 }
@@ -167,7 +163,7 @@ void qr_detection::deserialise(std::string json) const
         for (auto & obj : json_f["qr_centers"]) {
             qr_codes.push_back(rapp::object::qr_code(obj["x"], 
                                                      obj["y"], 
-                                                     json_f["messages"].at(i)));
+                                                     json_f["qr_messages"].at(i)));
             i++;
         }
         delegate_(qr_codes);
