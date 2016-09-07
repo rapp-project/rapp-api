@@ -4,6 +4,12 @@
 #include <fstream>
 #include <sstream>
 #include <tuple>
-#include <boost/property_tree/ptree.hpp>
-#include "cloud/asio/caller.hpp"
+
 #include "cloud/asio/http_request.hpp"
+#include "objects/planned_path/planned_path.hpp"
+#include "objects/pose_stamped/pose_stamped.hpp"
+#include "objects/picture/picture.hpp"
+#include "objects/yaml/yaml.hpp"
+#include "misc/json.hpp"
+
+using json = nlohmann::json;
