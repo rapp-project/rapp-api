@@ -59,7 +59,7 @@ int main()
      *           # The return value units.(Int)
      *           # Callback
      */
-    ctrl.make_call<rapp::cloud::weather_report_current>("Athens", "", 0, callback);
+    ctrl.make_call<rapp::cloud::weather_report_current>("Athens", "", 1, callback);
    
     /**
      * Example of weather_report_forecast
