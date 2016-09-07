@@ -219,8 +219,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     # using Clang
     message (FATAL_ERROR "unsupported platform")
-
-
 # Intel Compiler May run on Linux - Maybe we should support it
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     message (FATAL_ERROR "unsupported compiler")
