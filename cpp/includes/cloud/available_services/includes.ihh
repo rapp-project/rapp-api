@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "cloud/asio/http_request.hpp"
-#include <boost/lexical_cast.hpp>
 #include "misc/json.hpp"
 
 using json = nlohmann::json;

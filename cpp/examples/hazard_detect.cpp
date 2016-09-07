@@ -50,11 +50,15 @@ int main(int argc, char* argv[])
          * All it does is receive a double and we show the angle of the door
          * in the case that a hazard is found.         
          */
-		auto callback = [&](double door_angle)
-						{std::cout << "Door angle: " << door_angle  << std::endl;};
+		auto callback = [&](double door_angle) {
+            std::cout << "Door angle: " << door_angle  << std::endl;
+        };
 
         /**
          * We make a call to hazard_detection class to detect hazards in the file
+         *
+         * We need: # a rapp::object::picture
+         *          # a callback
          */
 		ctrl.make_call<rapp::cloud::hazard_detection_door_check>(pic, callback);
        

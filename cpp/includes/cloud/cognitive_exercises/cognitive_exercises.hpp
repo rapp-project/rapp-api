@@ -35,7 +35,7 @@ public:
 
 	/// callback functor
 	typedef std::function<void(std::vector<std::string>,
-                               std::vector<std::string>,
+                               std::vector<std::vector<std::string>>,
                                std::vector<std::string>,
                                std::string,
                                std::string,
@@ -62,12 +62,7 @@ public:
 private:
 
     ///Members 
-    std::function<void(std::vector<std::string>,
-                       std::vector<std::string>,
-                       std::vector<std::string>,
-                       std::string,
-                       std::string,
-                       std::string)> delegate_;
+    functor delegate_;
 };
 
 /**
@@ -121,7 +116,7 @@ public:
                             unsigned int from_time,
                             unsigned int to_time,
                             const std::string test_type,
-                            std::function<void(const nlohmann::json::const_iterator &)> callback
+                            std::function<void(std::string)> callback
                          );
     /**
      * \brief forward (don't parse) platform reply
@@ -131,7 +126,7 @@ public:
 private:
 
     ///Member
-    std::function<void(const nlohmann::json::const_iterator &)> delegate_;
+    std::function<void(std::string)> delegate_;
 };
 
 /**
@@ -152,7 +147,7 @@ public:
     cognitive_get_scores(
                           unsigned int up_to_time,
                           const std::string test_type,
-                          std::function<void(std::vector<unsigned int>, std::vector<float>)> callback
+                          std::function<void(std::vector<std::string>, std::vector<float>)> callback
                         );
     
     /**
@@ -163,9 +158,10 @@ public:
 private:
 
     /// Member
-    std::function<void(std::vector<unsigned int>,
+    std::function<void(std::vector<std::string>,
                        std::vector<float>)> delegate_;
 };
+
 }
 }
 #endif

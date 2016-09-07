@@ -29,15 +29,7 @@ namespace cloud {
 class weather_report_current : public http_request
 {
 public:
-    typedef std::function<void(std::string,
-                               std::string,
-                               std::string,
-                               std::string,
-                               std::string,
-                               std::string,
-                               std::string,
-                               std::string,
-                               std::string)> functor;
+    typedef std::function<void(std::vector<std::string>)> functor;
 
     /**
      * \param city: location for the weather report query
@@ -73,6 +65,7 @@ private:
 class weather_report_forecast : public http_request
 {
 public:
+    typedef std::function<void(std::vector<std::vector<std::string>>)> forecast_functor;
     /**
      * \param city: location of the weather forecast query
      * \param weather_reporter: weather API being queried
@@ -84,7 +77,7 @@ public:
                               const std::string city,
                               const std::string weather_reporter,
                               const unsigned int metric,
-                              std::function<void(std::string)> callback
+                              forecast_functor callback
                             );
     /**
      * \brief handle platform's JSON reply
@@ -93,7 +86,7 @@ public:
     
 private:
     /// 
-    std::function<void(std::string)> delegate_;
+    forecast_functor delegate_;
 };
 }
 }

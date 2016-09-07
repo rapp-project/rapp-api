@@ -51,11 +51,15 @@ int main(int argc, char* argv[])
          * we show the size of the vector to know how many humans have 
          * been found.
          */
-		auto callback = [&](std::vector<rapp::object::human> humans)
-						{std::cout << "found " << humans.size() << " humans!" << std::endl;};
+		auto callback = [&](std::vector<rapp::object::human> humans) {
+            std::cout << "found " << humans.size() << " humans!" << std::endl;
+        };
 
         /**
          * We make a call to human_detection class to detect humans in the file
+         *
+         * We need: #a rapp::object::picture
+         *          #a callback
          */
 		ctrl.make_call<rapp::cloud::human_detection>(pic, callback);
        

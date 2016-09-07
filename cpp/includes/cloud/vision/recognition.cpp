@@ -10,10 +10,7 @@ object_recognition::object_recognition(
   delegate_(callback)
 {
     http_request::make_multipart_form();
-    std::string fname = rapp::misc::random_boundary()+"."+image.type();
-
-    json json_doc = {{"file", fname}};
-    //http_request::add_content("json", json_doc.dump(-1), true);
+    std::string fname = rapp::misc::random_boundary() + "." + image.type();
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 
@@ -35,7 +32,7 @@ void object_recognition::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "error JSON: " << error << std::endl;
+        std::cerr << "ontology_subclasses_of JSON: " << error <<std::endl;
     }
     else {
         delegate_(json_f["object_class"]);

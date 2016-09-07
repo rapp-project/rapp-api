@@ -17,22 +17,24 @@ void available_services::deserialise(std::string json)
     }
 
     std::vector<service> services;
-    auto json_f = json::parse(json);
+    nlohmann::json json_f;
     try {
-        for (auto it_s : json_f["services"]) {
-            services.push_back(std::make_pair(misc::get_json_value<std::string>("name", it_s), 
-                                              misc::get_json_value<std::string>("url", it_s)));
-        } 
-        std::string error = misc::get_json_value<std::string>("error", json_f);
-        if (!error.empty()) {
-             std::cerr << "error JSON: " << error << std::endl; 
-        }
+        json_f = json::parse(json);
     }
     catch (std::exception & e) {
         std::cerr << "Exception " << e.what() << std::endl;
     }
-    
-    delegate_(services);
+    auto error = misc::get_json_value<std::string>("error", json_f);
+    if (!error.empty()) {
+         std::cerr << "error JSON: " << error << std::endl; 
+    }
+    else {
+        for (auto it_s : json_f["services"]) {
+            services.push_back(std::make_pair(misc::get_json_value<std::string>("name", it_s), 
+                                              misc::get_json_value<std::string>("url", it_s)));
+        }
+        delegate_(services);
+    }
 }
 
 }

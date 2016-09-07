@@ -34,8 +34,8 @@ void http_post::add_content(
 	}
 	data_ += "--" + boundary_ + "\r\n";
 	data_ += "Content-Disposition: form-data; name=\"" + name + "\";";
-	data_ += " filename=\"" + filename + "\"\r\n";
-	data_ += "Content-Transfer-Encoding: binary\r\n\r\n";
+	data_ += " filename=\"" + filename + "\"\r\n\r\n";
+	//data_ += "Content-Transfer-Encoding: binary\r\n\r\n";
 	data_.insert(data_.end(), bytes.begin(), bytes.end());
 	data_ += "\r\n";
 }
@@ -44,7 +44,7 @@ void http_post::end()
 {
 	if (open_) {
 		open_ = false;
-		data_ += "--" + boundary_ + "--\r\n";
+  	    data_ += "--" + boundary_ + "--\r\n";
 	}
 }
 

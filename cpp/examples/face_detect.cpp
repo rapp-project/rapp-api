@@ -52,11 +52,16 @@ int main(int argc, char* argv[])
          * we show the size of the vector to know how many faces have 
          * been found.
          */
-		auto callback = [&](std::vector<rapp::object::face> faces)
-						{std::cout << "found " << faces.size() << " faces!" << std::endl;};
+		auto callback = [&](std::vector<rapp::object::face> faces) { 
+            std::cout << "found " << faces.size() << " faces!" << std::endl;
+        };
 
         /**
          * We make a call to face_detection class to detect faces in the file
+         *
+         * We need : #a rapp::object::picture
+         *           #a bool: If true, detection will take less time but it will be less accurate.
+         *           #callback
          */
 		ctrl.make_call<rapp::cloud::face_detection>(pic, false, callback);
        

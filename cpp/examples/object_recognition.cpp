@@ -51,11 +51,15 @@ int main(int argc, char* argv[])
          * All it does is receive a string with the type of object that
          * it has been found        
         */
-		auto callback = [&](std::string objects)
-						{std::cout << "found " << objects << std::endl;};
+		auto callback = [&](std::string objects) {
+            std::cout << "found " << objects << std::endl;
+        };
 
         /**
          * We make a call to object_recognition class to recognise objects in the file
+         *
+         * We need: #a rapp::object::picture
+         *          #a callback
          */
 		ctrl.make_call<rapp::cloud::object_recognition>(pic, callback);
        

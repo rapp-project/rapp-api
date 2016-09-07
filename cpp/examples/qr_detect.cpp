@@ -52,16 +52,18 @@ int main(int argc, char* argv[])
          * we show the size of the vector to know how many qr_codes have 
          * been found.
          */
-		auto callback = [&](std::vector<rapp::object::qr_code> codes)
-						{
-							std::cout << "found " << codes.size() << " QR codes" << std::endl;
-							for (const auto code : codes) {
-								std::cout << code.label() << std::endl;
-							}
-						};
+		auto callback = [&](std::vector<rapp::object::qr_code> codes) {
+            std::cout << "found " << codes.size() << " QR codes" << std::endl;
+            for (const auto code : codes) {
+                std::cout << code.label() << std::endl;
+            }
+        };
 
 		/**
          * We make a call to qr_code_detection class to detect qr_codes in the file
+         *
+         * We need: # a rapp:object::picture
+         *          # a callback
          */
 		ctrl.make_call<rapp::cloud::qr_detection>(pic, callback);
 		return 0;

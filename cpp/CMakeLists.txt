@@ -66,6 +66,7 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/ontology/ontology.cpp
             ${INCLUDES}/cloud/vision/detection.cpp
             ${INCLUDES}/cloud/vision/recognition.cpp
+            ${INCLUDES}/cloud/weather_report/weather_report.cpp
             )
 
 # Begin searching for packgages we use in RAPP API
@@ -203,6 +204,7 @@ if (${BUILD_EXAMPLES})
 	#add_executable(config_example  ${EXAMPLES}/config.cpp)
     add_executable(cognitive_example  ${EXAMPLES}/cognitive_example.cpp)
     add_executable(geolocation        ${EXAMPLES}/geolocation.cpp)
+    add_executable(weather_report     ${EXAMPLES}/weather.cpp)
 
 	target_link_libraries(available_services ${LIBOBJ})
     target_link_libraries(face_detect        ${LIBOBJ})
@@ -220,6 +222,7 @@ if (${BUILD_EXAMPLES})
     target_link_libraries(cognitive_example  ${LIBOBJ})
     #target_link_libraries(email_example     ${LIBOBJ})
     target_link_libraries(geolocation        ${LIBOBJ})
+    target_link_libraries(weather_report     ${LIBOBJ})
 
     message(STATUS "Building examples, they will be placed in `${CMAKE_CURRENT_BINARY_DIR}`")
 else()
