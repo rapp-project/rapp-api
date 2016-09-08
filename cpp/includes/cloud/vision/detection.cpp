@@ -34,7 +34,7 @@ void face_detection::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "ontology_subclasses_of JSON: " << error <<std::endl;
+        std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
         auto it_faces = json_f.find("faces");
@@ -73,7 +73,7 @@ void hazard_detection_door_check::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "ontology_subclasses_of JSON: " << error <<std::endl;
+        std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
         delegate_(json_f["door_angle"]);
@@ -109,7 +109,7 @@ void human_detection::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "ontology_subclasses_of JSON: " << error <<std::endl;
+        std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
         auto it_human = json_f.find("humans");
@@ -148,7 +148,7 @@ void qr_detection::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "ontology_subclasses_of JSON: " << error <<std::endl;
+        std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
         unsigned int i = 0;

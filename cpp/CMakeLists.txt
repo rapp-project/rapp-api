@@ -79,6 +79,8 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/vision/detection.cpp
             ${INCLUDES}/cloud/vision/recognition.cpp
             ${INCLUDES}/cloud/weather_report/weather_report.cpp
+            ${INCLUDES}/cloud/navigation/path_planning/path_planning.cpp
+            ${INCLUDES}/cloud/news/news.cpp
             )
 
 # Begin searching for packgages we use in RAPP API
@@ -230,7 +232,9 @@ if (${BUILD_EXAMPLES})
                   config.cpp
                   cognitive_games.cpp
                   geolocation.cpp
-                  weather.cpp)
+                  weather.cpp
+                  path_planning.cpp
+                  news.cpp)
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
 
@@ -239,7 +243,7 @@ if (${BUILD_EXAMPLES})
                        COMMAND ${CMAKE_COMMAND} -E make_directory ${EXAMPLE_DIR})
     # symlink `/tests/data` instead of copying
     add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/${TESTS}/data ${EXAMPLE_DIR}/data)
+                       COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/tests/data ${EXAMPLE_DIR}/data)
     # iterate tests
     foreach(ITEM ${EXAMPLES})
         string(REPLACE ".cpp" "" TARGET ${ITEM})

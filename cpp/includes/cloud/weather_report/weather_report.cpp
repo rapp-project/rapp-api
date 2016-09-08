@@ -94,10 +94,10 @@ void weather_report_forecast::deserialise(std::string json) const
     }
     else {
         for (auto obj : json_f["forecast"]) {
-            std::vector<std::string> forecast = {misc::get_json_value<std::string>("high_temp", obj), 
-                                                 misc::get_json_value<std::string>("low_temp", obj), 
-                                                 misc::get_json_value<std::string>("description", obj), 
-                                                 misc::get_json_value<std::string>("date", obj)};
+            std::vector<std::string> forecast = {obj["high_temp"], 
+                                                 obj["low_temp"], 
+                                                 obj["description"], 
+                                                 obj["date"]};
             forecasts.push_back(forecast);
         }
         delegate_(forecasts);

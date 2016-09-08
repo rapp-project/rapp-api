@@ -52,7 +52,7 @@ path_upload_map::path_upload_map(
                                   const std::string map_name,
                                   std::function<void(std::string)> callback
                                 )
-: http_request("POST /hop/path_upload_map HTTP/1.1\r\n"), 
+: http_request("POST /hop/path_planning_upload_map HTTP/1.1\r\n"), 
   delegate_(callback)
 {
 
