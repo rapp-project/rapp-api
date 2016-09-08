@@ -90,25 +90,24 @@ bool http_response::check_http_header()
 
 	// did not receive a reply
 	if (!buffer_stream) {
-		boost::system::error_code err = boost::system::errc::make_error_code(
-                                                            boost::system::errc::no_message);
+		auto err = boost::system::errc::make_error_code(boost::system::errc::no_message);
         error_cb_(err);
         return false;
 	}
 	// reply is not HTTP Protocol
 	else if (http_version.substr(0, 5) != "HTTP/") {
-		boost::system::error_code err = boost::system::errc::make_error_code(
-                                                            boost::system::errc::protocol_not_supported);
+		auto err = boost::system::errc::make_error_code(boost::system::errc::protocol_not_supported);
         error_cb_(err);
 		return false; 
 	}
-    // TODO: if HTTP Reply is 404 = URL not found
-    // TODO: if HTTP Reply is 500 = bad header
-    // TODO: if HTTP Reply is 401 = Internal Server Error
+    // HTTP 400: bad request (bad header)
+    // HTTP 404: URL not found
+    // HTTP 500: Internal Server Error
+    // HTTP 401: Unauthorized Acces (rapp token)
 	// HTTP reply is not 200
 	else if (status_code != 200) {
-		boost::system::error_code err = boost::system::errc::make_error_code(
-                                                            boost::system::errc::protocol_error);
+		auto err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
+        std::cerr << http_version << " " << status_code << " " << status_message <<std::endl;
         error_cb_(err);
 		return false;
 	}

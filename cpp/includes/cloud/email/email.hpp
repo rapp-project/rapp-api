@@ -23,7 +23,8 @@ namespace cloud {
  * \brief fetch email(s)
  * \class email_fetch
  * \version 0.7.0
- * \date August 2016
+ * \date September 2016
+ * \author Maria Ramos Montero <m.ramos@ortelio.co.uk>
  */
 class email_fetch : public http_request
 {
@@ -49,7 +50,11 @@ public:
                  const unsigned int from_date,
                  const unsigned int to_date,
                  const unsigned int num_emails,
-                 std::function<void(std::string)> callback
+                 std::function<void(std::vector<std::tuple<std::string, 
+                                                           std::vector<std::string>,
+                                                           std::string,
+                                                           std::string,
+                                                           std::vector<std::string>>>)> callback
                 );
 
     /**
@@ -59,14 +64,19 @@ public:
     
 private:
     // 
-    std::function<void(std::vector<std::string>)> delegate_;
+    std::function<void(std::vector<std::tuple<std::string, 
+                                              std::vector<std::string>,
+                                              std::string,
+                                              std::string,
+                                              std::vector<std::string>>>)> delegate_;
 };
 
 /**
  * \brief send an email
  * \class email_send
  * \version 0.7.0
- * \date August 2016
+ * \date September 2016
+ * \author Maria Ramos Montero <m.ramos@ortelio.co.uk>
  */
 class email_send : public http_request
 {
@@ -92,9 +102,30 @@ public:
                  const std::string body,
                  const std::string subject,
                  const std::vector<rapp::types::byte> data,
-                 std::function<void(void)> callback
+                 std::function<void(std::string)> callback
                );
-	
+
+    /** 
+     * \brief construct in order to send email
+     * \param email: user's email address
+     * \param pwd: user's plain-text password
+     * \param server: email imap address
+     * \param port: email imap port
+     * \param recipients: vector of email addresses
+     * \param body: email body
+     * \param subject: email subject
+     * \param callback may receive a JSON reply of error(s)
+     */
+     email_send(
+                 const std::string email,
+                 const std::string pwd,
+                 const std::string server,
+                 const std::string port,
+                 const std::vector<std::string> recipients,
+                 const std::string body,
+                 const std::string subject,
+                 std::function<void(std::string)> callback
+               );
     /**
      * \brief handle platform's JSON reply
      */
@@ -102,7 +133,7 @@ public:
    
 private:
     /// 
-    std::function<void(void)> delegate_;
+    std::function<void(std::string)> delegate_;
 };
 }
 }

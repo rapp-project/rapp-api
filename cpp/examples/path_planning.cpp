@@ -50,10 +50,10 @@ int main()
 
     // We make a call to plan_upload_map.
     // 
-    // We need: #png_file: The map image png file.
-    //          #yaml_file: The map description yaml file.
-    //          #map_name: The map name.
-    //          #callback
+    // We need: \param png_file: The map image png file.
+    //          \param yaml_file: The map description yaml file.
+    //          \param map_name: The map name.
+    //          \param callback
     ctrl.make_call<rapp::cloud::path_upload_map>(png_file, yaml_file, "Example_map", callback_map);
 
 
@@ -64,8 +64,17 @@ int main()
     // All it does is receive a rapp::object::planned_path and 
     // shows if a plan has been found
     auto callback = [&](rapp::object::planned_path path) {
-         std::cout << path.get_plan() << std::endl;
-         std::cout << path.to_json() << std::endl;
+        uint8_t path_info = path.get_plan();
+        switch (path_info) {
+            case 0 :
+                std::cout << "Not path found" << std::endl;
+                break;
+            case 1:
+                std::cout << "Path found!" << std::endl;
+                break;
+            default :
+                std::cout << "Wrong map, robot or algorithm" << std::endl;
+        }
     };
 
     // Time stamp to use with the pose_stamped object
@@ -74,9 +83,9 @@ int main()
     // Pose_stamped start param
     //
     // This object is composed by msg_metadata and pose
-    // msg_metadata needs: #seq(int): defines data sequence
-    //                     #stamp(std::chrono) is message data generation time stamp
-    //                     #frameid(string) is data coordination frame
+    // msg_metadata needs: \param #seq(int): defines data sequence
+    //                     \param stamp(std::chrono) is message data generation time stamp
+    //                     \param frameid(string) is data coordination frame
     // pose needs: #rapp::object::point is the position (x, y, z)
     //             #rapp::object::quaternion is the orientation (x, y, z, w)
     rapp::object::pose_stamped start(rapp::object::msg_metadata(0, t, ""),
@@ -90,12 +99,12 @@ int main()
 
     // We make a call to plan_path_2d.
     // 
-    // We need: #map_name (String): The map name to use.
-    //          #robot_type (String): The robot type. 
-    //          #algorithm {String}: The path planning algorithm to apply.
-    //          #start: Start pose of the robot. (rapp::object::pose_stamped)
-    //          #goal: Goal pose of the robot. (rapp::object::pose_stamped)
-    //          #callback
+    // We need: \param map_name (String): The map name to use.
+    //          \param robot_type (String): The robot type. 
+    //          \param algorithm {String}: The path planning algorithm to apply.
+    //          \param start: Start pose of the robot. (rapp::object::pose_stamped)
+    //          \param goal: Goal pose of the robot. (rapp::object::pose_stamped)
+    //          \param callback
     ctrl.make_call<rapp::cloud::plan_path_2d>("Example_map", "NAO", "dijkstra", start, goal, callback);
 
     return 0;

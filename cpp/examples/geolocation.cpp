@@ -18,7 +18,6 @@
 #include "cloud/geolocation/geolocation.hpp"
 #include <iostream>
 
-
 int main(int argc, char* argv[])
 {
     /**
@@ -33,16 +32,16 @@ int main(int argc, char* argv[])
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
      * All it does is receive all the variables about geolocation
-     *and print them on stdout.
+     * and print them on stdout.
      */
-    auto callback = []( std::string city,
-                        std::string country,
-                        std::string country_code,
-                        float       latitude,
-                        float       longtitude,
-                        std::string timezone,
-                        std::string zip) {
-
+    auto callback = [](std::string city,
+                       std::string country,
+                       std::string country_code,
+                       float       latitude,
+                       float       longtitude,
+                       std::string timezone,
+                       std::string zip)
+    {
         std::cout << "City: " << city <<"\n"
                   << "Country: " << country <<"\n"
                   << "Country Code: " << country_code <<"\n"
@@ -50,7 +49,6 @@ int main(int argc, char* argv[])
                   << "Longtitude: " << longtitude <<"\n"
                   << "Timezone: " << timezone <<"\n"
                   << "Zip: " << zip << std::endl;
-
     };
 
     /**
@@ -67,10 +65,6 @@ int main(int argc, char* argv[])
      * as template type the actual cloud call, in this case the `geolocation` class.
      * This method will **block** until its complete.
      */
-     ctrl.make_call<rapp::cloud::geolocation>(ipaddr,
-                                              engine,
-                                              callback);
-
+     ctrl.make_call<rapp::cloud::geolocation>(ipaddr, engine, callback);
      return 0;
-
 }

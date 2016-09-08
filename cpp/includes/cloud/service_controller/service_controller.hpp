@@ -113,7 +113,7 @@ protected:
 	/// \brief handle asio errors
 	void default_error_handler(boost::system::error_code error) const
 	{
-        std::cerr << error.message() << std::endl;
+        std::cerr << "asio error: " << error.message() << std::endl;
 	}
 
 private:

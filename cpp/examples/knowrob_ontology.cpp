@@ -27,14 +27,13 @@
  *                          ...
  * More info: http://knowrob.org
  */
-
 int main(int argc, char* argv[])
 {
     if (argc > 1) {
         std::cout << "query sub/super classes of: " << argv[1] << std::endl;
         std::string query = argv[1];
 
-       /**
+       /*
         * Construct the platform info setting the hostname/IP, port and authentication token
         * Then proceed to create a cloud controller.
         * We'll use this object to create cloud calls to the platform.
@@ -42,7 +41,7 @@ int main(int argc, char* argv[])
         rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
 		rapp::cloud::service_controller ctrl(info);
 
-        /**
+        /*
          * Construct a lambda, std::function or bind your own functor.
          * In this example we'll pass an inline lambda as the callback.
          * All it does is receive a list of sub classes and print them on stdout.
@@ -54,7 +53,7 @@ int main(int argc, char* argv[])
             }
         };
 
-        /**
+        /*
          * Construct a lambda, std::function or bind your own functor.
          * In this example we'll pass an inline lambda as the callback.
          * All it does is receive a list of super classes and print them on stdout.
@@ -66,17 +65,21 @@ int main(int argc, char* argv[])
             }
         };
 
-        /**
+        /*
          * We make a call to ontology_subclasses_of to know the subclasses of the argument
          */
 		ctrl.make_call<rapp::cloud::ontology_subclasses_of>(query, true, subclass_cb);
 
-        /**
+        /*
          * We make a call to ontology_superclasses_of to know the superclasses of
          * the argument.
          */
 		ctrl.make_call<rapp::cloud::ontology_superclasses_of>(query, false, superclass_cb);
 
         return 0;
+    }
+    else {
+        std::cerr << "no ontology params given" << std::endl;
+        return 1;
     }
 }

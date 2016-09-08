@@ -73,7 +73,7 @@ set (SOURCES ${SOURCES}
 
             ${INCLUDES}/cloud/available_services/available_services.cpp
             ${INCLUDES}/cloud/cognitive_exercises/cognitive_exercises.cpp
-            #${INCLUDES}/cloud/email/email.cpp
+            ${INCLUDES}/cloud/email/email.cpp
             ${INCLUDES}/cloud/geolocation/geolocation.cpp
             ${INCLUDES}/cloud/ontology/ontology.cpp
             ${INCLUDES}/cloud/vision/detection.cpp
@@ -234,6 +234,7 @@ if (${BUILD_EXAMPLES})
                   geolocation.cpp
                   weather.cpp
                   path_planning.cpp
+                  email_handling.cpp
                   news.cpp)
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")

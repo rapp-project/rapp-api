@@ -60,13 +60,9 @@ void asio_handler<T>::read_status_line(const boost::system::error_code & err,
                                                   boost::asio::placeholders::error,
                                                   boost::asio::placeholders::bytes_transferred));
         }
-        else {
-            boost::system::error_code err = boost::system::errc::make_error_code(
-                                                                    boost::system::errc::protocol_error);
-            end(err);
-        }
     }
     else {
+        //error_cb_(err);
         end(err);
 	}
 }
@@ -98,6 +94,7 @@ void asio_handler<T>::read_headers(const boost::system::error_code & err,
         }
     }
     else {
+        //error_cb_(err);
         end(err);
 	}
 }
@@ -116,10 +113,10 @@ void asio_handler<T>::read_content(
         }
         // still data left to receive
         else {
-            unsigned int remaining = http_response::content_length() - http_response::bytes_received();
+            unsigned int left = http_response::content_length() - http_response::bytes_received();
             boost::asio::async_read(*socket_.get(),
                                     http_response::buffer_,
-                                    boost::asio::transfer_at_least(remaining),
+                                    boost::asio::transfer_at_least(left),
                                     boost::bind(&asio_handler::read_content, 
                                                 this, 
                                                 boost::asio::placeholders::error, 
@@ -128,6 +125,7 @@ void asio_handler<T>::read_content(
     }
     // error - normally EOF, meaning the server closed the connection
     else {
+        //error_cb_(err);
         end(err);
 	}
 }
