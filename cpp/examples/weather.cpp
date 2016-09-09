@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 RAPP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "cloud/service_controller/service_controller.hpp"
 #include "cloud/weather_report/weather_report.hpp"
-/**
- * \brief example to take the weather report of a city 
+/*
+ * \brief Example to take the weather report of a city 
  */
 int main()
 {
-   /**
+   /*
     * Construct the platform info setting the hostname/IP, port and authentication token
     * Then proceed to create a cloud controller.
     * We'll use this object to create cloud calls to the platform.
@@ -29,11 +28,9 @@ int main()
     rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
     rapp::cloud::service_controller ctrl(info);
 
-    /**
+    /*
      * Example of weather_report_current
-     */
-    
-    /**
+     *
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
      * All it does is receive a vector of string and we show all 
@@ -51,21 +48,16 @@ int main()
         std::cout << "Wind Direction: " << weather.at(8) << std::endl;
      };
 
-    /**
-     * We make a call to weather_report_current.
-     *
-     * We need:  # The desired city (String)
-     *           # The weather API to use. Defaults to "yweather" .
-     *           # The return value units.(Int)
-     *           # Callback
+    /*
+     * We make a call to weather_report_current to get the information
+     * about the weather in the city that we want
+     * For more information \see rapp::cloud::weather_report_current
      */
     ctrl.make_call<rapp::cloud::weather_report_current>("Athens", "", 1, callback);
    
-    /**
+    /*
      * Example of weather_report_forecast
-     */
-    
-    /**
+     *
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
      * All it does is receive a vector of string and we show all 
@@ -81,15 +73,11 @@ int main()
         }
      };
 
-    /**
-     * We make a call to weather_report_forecast.
-     *
-     * We need:  # The desired city (String)
-     *           # The weather API to use. Defaults to "yweather" .
-     *           # The return value units.(Int)
-     *           # Callback
+    /*
+     * We make a call to weather_report_forecast to get the weather in a city
+     * during the different parts of the day
+     * For more information \see rapp::cloud::weather_report_forecast
      */
     ctrl.make_call<rapp::cloud::weather_report_forecast>("Athens", "", 0, call_forecast);
-
     return 0;
 }

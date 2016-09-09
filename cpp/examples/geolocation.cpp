@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 RAPP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "cloud/service_controller/service_controller.hpp"
 #include "cloud/geolocation/geolocation.hpp"
 #include <iostream>
-
-int main(int argc, char* argv[])
+/*
+ * \brief The following example shows how to take the geolocation
+ * of your computer or robot
+ */
+int main()
 {
-    /**
+    /*
      * Construct the platform info setting the hostname/IP, port and authentication token
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
@@ -28,7 +30,7 @@ int main(int argc, char* argv[])
 	rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
 	rapp::cloud::service_controller ctrl(info);
 
-    /**
+    /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
      * All it does is receive all the variables about geolocation
@@ -51,20 +53,13 @@ int main(int argc, char* argv[])
                   << "Zip: " << zip << std::endl;
     };
 
-    /**
-     * Initialization of the parameters:
-     * \param ipaddr: our machine's ip address
-     * \param engine:Engine to use. Defaults to 'ip-api' (Currently the only supported)
-     */
-     std::string ipaddr = "81.145.182.225";
-     std::string engine = "ip-api";
-
-    /**
+    /*
      * Finally, we make the call.
      * The simplest way to use the `make_call` template function, specifying
      * as template type the actual cloud call, in this case the `geolocation` class.
      * This method will **block** until its complete.
+     * For more information \see rapp::cloud::geolocation
      */
-     ctrl.make_call<rapp::cloud::geolocation>(ipaddr, engine, callback);
+     ctrl.make_call<rapp::cloud::geolocation>("81.145.182.225", "ip-api", callback);
      return 0;
 }

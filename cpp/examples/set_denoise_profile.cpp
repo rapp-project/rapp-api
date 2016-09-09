@@ -1,59 +1,53 @@
+/**
+ * Copyright 2015 RAPP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * #http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "cloud/service_controller/service_controller.hpp"
-#include "cloud/speech/set_denoise_profile/set_denoise_profile.hpp"
+#include "cloud/speech/set_denoise_profile.hpp"
 #include "objects/audio/audio.hpp"
-#include <boost/filesystem.hpp>
-///
-/// set a denoise profile for a specific user
-/// argv[1] : audio file
-/// argv[2] : audio type (@see audio.hpp) e.g.: `microphone_wav`, 
-///                                             `nao_single_channel_wav`
-///                                             `nao_quad_channel_wav`
-///                                             `ogg`
-/// argv[3] : user (by default: `rapp`)
-///
-int main(int argc, char ** argv)
+/*
+ * \brief Example to take an audio for denoise
+ */
+int main()
 {
-    if (argc == 4) {
-        std::cout << "denoise file: " << argv[1] << std::endl;
-        std::string file = argv[1];
-        std::cout << "audio source: " << argv[2] << std::endl;
-        std::string type = argv[2];
-        std::cout << "denoise user: " << argv[3] << std::endl;
-        std::string user = argv[3];
-		std::string token = "my_token";
+    /*
+     * The audio is loaded from its path to a audio class.
+     * If you run the example inside examples folder, this path is valid.
+     * In other cases, you'll have to change it for a proper one.
+     */
+    rapp::object::audio audio("data/object_classes_audio_1.ogg");
 
-		if (!boost::filesystem::exists(file)) {
-			std::cerr << "file doesn't exist\r\n";
-			return 1;
-		}
+    /*
+     * We have to say the source of the audio. In the case of the 
+     * file above, its source is `nao_ogg`. In the case you take another
+     * example, be careful with what source it has.
+     * For more information /see rapp::cloud::set_noise_profile
+     */
+    std::string audio_source = "nao_ogg";
 
-        // Service Controller 
-        rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
-        rapp::cloud::service_controller ctrl(info);
+    /*
+     * Construct the platform info setting the hostname/IP, port and authentication token
+     * Then proceed to create a cloud controller.
+     * We'll use this object to create cloud calls to the platform.
+     */
+    rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
+    rapp::cloud::service_controller ctrl(info);
 
-        std::shared_ptr<rapp::object::audio> audio;
-
-        if (type == "microphone_wav")
-            audio = std::make_shared<rapp::object::microphone_wav>(file);
-
-        else if (type == "nao_single_channel_wav")
-            audio = std::make_shared<rapp::object::nao_single_channel_wav>(file);
-
-        else if (type == "nao_quad_channel_wav")
-            audio = std::make_shared<rapp::object::nao_quad_channel_wav>(file);
-
-        else if (type == "ogg")
-            audio = std::make_shared<rapp::object::ogg>(file);
-
-        else
-            throw std::runtime_error("uknown audio source");
-
-        if (audio) {
-            ctrl.make_call<rapp::cloud::set_denoise_profile>(audio, user);
-        }
-    }
-    else {
-        std::cerr << "incorrect params" << std::endl;
-	}
+    /*
+     * We make a call to set_denoise to give tha audio and the data needed.
+     * For more information \see rapp::cloud::set_denoise_profile
+     */
+    ctrl.make_call<rapp::cloud::set_denoise_profile>(audio.bytearray(), audio_source);
     return 0;
 }

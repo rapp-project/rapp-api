@@ -66,55 +66,5 @@ void audio::read_bytes(std::ifstream & bytestream)
     bytestream.read(&bytearray_[0], fileSize);
 }
 
-
-/// OGG Class specialisation
-
-ogg::ogg(const std::string filepath) 
-: audio(filepath){}
-
-ogg::ogg(std::ifstream & bytestream) 
-: audio(bytestream){}
-
-std::string ogg::audio_source() const
-{ return "nao_ogg";}
-
-
-/// WAV Class specialisation for a single channel
-nao_single_channel_wav::nao_single_channel_wav(const std::string filepath)
-: audio (filepath){}
-
-nao_single_channel_wav::nao_single_channel_wav(std::ifstream & bytestream)
-: audio (bytestream){}
-
-std::string nao_single_channel_wav::audio_source() const
-{ return "nao_wav_1_ch"; }
-
-
-
-/// WAV Class specialisation for quad channel
-nao_quad_channel_wav::nao_quad_channel_wav(const std::string filepath)
-: audio (filepath){}
-
-nao_quad_channel_wav::nao_quad_channel_wav(std::ifstream & bytestream)
-: audio (bytestream){}
-
-std::string nao_quad_channel_wav::audio_source() const
-{ return "nao_wav_4_ch";}
-
-
-/// WAV Single channel 16Khz > Headset audio source
-microphone_wav::microphone_wav(const std::string filepath)
-: audio (filepath){}
-
-microphone_wav::microphone_wav(std::ifstream & bytestream)
-: audio (bytestream){}
-
-microphone_wav::microphone_wav(std::vector<rapp::types::byte> bytearray)
-: audio(bytearray)
-{}
-
-std::string microphone_wav::audio_source() const
-{ return "headset";}
-
 }
 }

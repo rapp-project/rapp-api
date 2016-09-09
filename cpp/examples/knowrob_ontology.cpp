@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 RAPP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,8 @@
 #include "cloud/service_controller/service_controller.hpp"
 #include "cloud/ontology/ontology.hpp"
 #include <iostream>
-/**
- * query subclasses and superclass of of argv[1]
+/*
+ * This example does a query of subclasses and superclass of the argv[1]
  *
  * The arguments could be : Oven
  *                          Refrigerator
@@ -42,24 +42,14 @@ int main(int argc, char* argv[])
 		rapp::cloud::service_controller ctrl(info);
 
         /*
+         * The following example shows how to use ontology_subclasses_of
+         *
          * Construct a lambda, std::function or bind your own functor.
          * In this example we'll pass an inline lambda as the callback.
          * All it does is receive a list of sub classes and print them on stdout.
          */
         auto subclass_cb = [](std::vector<std::string> classes) { 
-            std::cout << "sub classes: " << std::endl;
-            for (const auto & str : classes) {
-                std::cout << str << std::endl;
-            }
-        };
-
-        /*
-         * Construct a lambda, std::function or bind your own functor.
-         * In this example we'll pass an inline lambda as the callback.
-         * All it does is receive a list of super classes and print them on stdout.
-         */
-        auto superclass_cb = [](std::vector<std::string> classes) { 
-            std::cout << "super classes: " << std::endl;
+            std::cout << "Sub classes: " << std::endl;
             for (const auto & str : classes) {
                 std::cout << str << std::endl;
             }
@@ -67,19 +57,35 @@ int main(int argc, char* argv[])
 
         /*
          * We make a call to ontology_subclasses_of to know the subclasses of the argument
+         * For more information \see rapp::cloud::ontology_subclasses_of
          */
 		ctrl.make_call<rapp::cloud::ontology_subclasses_of>(query, true, subclass_cb);
 
         /*
+         * The following example shows how to use ontology_superclasses_of
+         *
+         * Construct a lambda, std::function or bind your own functor.
+         * In this example we'll pass an inline lambda as the callback.
+         * All it does is receive a list of super classes and print them on stdout.
+         */
+        auto superclass_cb = [](std::vector<std::string> classes) { 
+            std::cout << "Super classes: " << std::endl;
+            for (const auto & str : classes) {
+                std::cout << str << std::endl;
+            }
+        };
+
+        /*
          * We make a call to ontology_superclasses_of to know the superclasses of
          * the argument.
+         * For more information \see rapp::cloud::ontology_superclasses_of
          */
 		ctrl.make_call<rapp::cloud::ontology_superclasses_of>(query, false, superclass_cb);
 
         return 0;
     }
     else {
-        std::cerr << "no ontology params given" << std::endl;
+        std::cerr << "No ontology params given" << std::endl;
         return 1;
     }
 }

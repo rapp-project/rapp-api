@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2015 RAPP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,23 +16,28 @@
 #include "../includes/cloud/service_controller/service_controller.hpp"
 #include "../includes/cloud/cognitive_exercises/cognitive_exercises.hpp"
 #include <iostream>
-///
-/// query subclasses and superclass of of argv[1]
-///
+/*
+ * \brief Example for all cognitive classes
+ */
 int main()
 {
-    // \param platform it has to be initialized with 
-    // the address, the port and the token of the server
+    /*
+     * \param platform it has to be initialized with 
+     * the address, the port and the token of the server
+     */
 	rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
 
-	// \param  service controler is initialized with 
-    // the platform data. It has to control the information
-    // between us and the server for having a response.
+    /*
+	 * \param  service controler is initialized with 
+     * the platform data. It has to control the information
+     * between us and the server for having a response.
+     */
 	rapp::cloud::service_controller ctrl(info);
 
-    // Example for class cognitive_test_selector
-    // \param functor is a callback for taking all the 
-    // data about the test
+    /*
+     * The following example shows how to use cognitive_test_selector class
+     * \param functor is a callback for taking all the data about the test
+     */
     auto functor = [](std::vector<std::string> questions,
                       std::vector<std::vector<std::string>> possible_ans,
                       std::vector<std::string> correct_ans,
@@ -61,58 +66,62 @@ int main()
         std::cout<< " ------ " << std::endl;
     };
 
-    // \brief A call is done to the controller to use
-    // cognitive_test_selector
-    //
-    // \param test_type (String): Cognitive Exercise test type.
-    // ('ArithmeticCts', 'AwarenessCts', 'ReasoningCts') 
-    // \param test_subtype (String): Use this to force select 
-    // from this subtype. Defaults to empty string "".
-    // \param test_diff (String): Use this to force select from 
-    // this difficulty. Defaults to empty string "".
-    // \param test_index (String): Use this to force select 
-    // from this id. Defaults to empty string "".
-    // \param functor is the callback that we made before. 
+    /*
+     * \brief A call is done to the controller to take the tests that
+     * we want.
+     * For more information \see rapp::cloud::cognitive_test_selector
+     */
     ctrl.make_call<rapp::cloud::cognitive_test_selector>("ArithmeticCts", 
                                                          "TransactionChangeCts", 
                                                          "1", 
                                                          "1", 
                                                          functor);
 
-    
-    // Example for class cognitive_record_performance
-    // callback - print json information
+    /*
+     * The following example shows how to use cognitive_record_performance
+     * class.
+     *
+     * In this example we'll pass an inline lambda as the callback.
+     * All it does is receive a string with the records of the test selected     
+     * */
     auto sb_cb = [](std::string json) { 
         std::cout << json << std::endl;
         std::cout<< " ------ " << std::endl;
     };
 
-    // \brief Call done to the controller to use cognitive_record_performance
-    // 
-    // \param test_instance (String): Cognitive Exercise test instance. 
-    // The full cognitive test entry name as returned by the cognitive_test_chooser web service.
-    // \param score (Integer): User's performance score on given test entry. 
+    /*
+     * \brief Call done to the controller to take the records of the test
+     * selected.
+     * For more information \see rapp::cloud::cognitive_record_performance
+     */
 	ctrl.make_call<rapp::cloud::cognitive_record_performance>("ArithmeticCts_stXqnGrc", 40, sb_cb);
 
-    //Example for class cognitive_get_history
-    // callback for take nlohmann::json::iterator
-    // With it, we read the content of the json given
+    /*
+     * The following example we use class cognitive_get_history to take
+     * all the results of the user in the test selected or all of them.
+     * 
+     * Like in the examples above, we use an inline lambda as the callback 
+     * With it, we read the content of the json given
+     */
     auto it_cb = [](std::string str) {
         std::cout << str << std::endl;        
         std::cout<< " ------ " << std::endl;
     };
 
-    // \brief Call done to the controller to use cognitive_get_history
-    //
-    // \param test_type (String): Cognitive Exercise test type. 
-    // \param from_time (Integer): Unix timestamp.
-    // \param to_time (Integer): Unix timestamp.
-    // \param callback for taking the values
+    /*
+     * \brief Call done to the controller to use cognitive_get_history and
+     * take the result of the test in a time given.
+     * For more information \see rapp::cloud::cognitive_get_history
+     */
     ctrl.make_call<rapp::cloud::cognitive_get_history>(0, 100000000, "", it_cb);
 
-    //Example for class cognitive_get_scores
-
-    // function to get the values of the class and see them
+    /*
+     * The following example we use class cognitive_get_score to take
+     * the scores in the test selected from a time given.
+     * 
+     * Like in the examples above, we use an inline lambda as the callback 
+     * With it, we read the tests selected and the results.
+     */
     auto call_scores = [](std::vector<std::string> t_c, std::vector<float> scores) {
         std::cout<< "Test_classes: "<<std::endl;
         for (std::string obj: t_c) {
@@ -125,12 +134,11 @@ int main()
         std::cout<< " ------ " << std::endl;
     };
 
-    // \brief Call done to the controller to use cognitive_get_score
-    //
-    // \param test_type (String): Cognitive Exercise test type.     
-    // \param up_to_time (Integer): Unix timestamp. Return scores that 
-    // have been recorder up to this time value
+    /*
+     * \brief Call done to the controller to use cognitive_get_scores and
+     * take the scores of the test in a time given.
+     * For more information \see rapp::cloud::cognitive_get_scores
+     */
     ctrl.make_call<rapp::cloud::cognitive_get_scores>(100000000, "", call_scores);
-
     return 0;
 }
