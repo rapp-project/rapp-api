@@ -18,6 +18,7 @@
 #include "includes.ihh"
 namespace rapp {
 namespace cloud {
+
 /**
  * \class speech_detection_sphinx4
  * \brief speech-to-text recognition using CMU sphinx4
@@ -44,10 +45,9 @@ public:
      * \param callback will be executed once the rapp cloud has responded
      */
     speech_detection_sphinx4(
-							  const std::vector<rapp::types::byte> audio_bytearray,
-                              const std::string audio_source,
+							  const std::vector<rapp::types::byte> audio_data,
+                              const rapp::types::audio_source audio_src,
                               const std::string language,
-							  const std::string user,
 							  const std::vector<std::string> grammar,
 							  const std::vector<std::string> words,
 							  const std::vector<std::string> sentences,

@@ -81,7 +81,7 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/weather_report/weather_report.cpp
             ${INCLUDES}/cloud/navigation/path_planning/path_planning.cpp
             ${INCLUDES}/cloud/news/news.cpp
-            ${INCLUDES}/cloud/speech/set_denoise_profile.cpp
+            ${INCLUDES}/cloud/speech/set_noise_profile.cpp
             ${INCLUDES}/cloud/speech/speech_detection_google.cpp
             ${INCLUDES}/cloud/speech/speech_detection_sphinx4.cpp
             )
@@ -237,7 +237,7 @@ if (${BUILD_EXAMPLES})
                   path_planning.cpp
                   email_handling.cpp
                   news.cpp
-                  set_denoise_profile.cpp
+                  set_noise_profile.cpp
                   speech_detection_google.cpp
                   speech_detection_sphinx.cpp)
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)

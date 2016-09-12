@@ -1,5 +1,5 @@
-#ifndef RAPP_CLOUD_SET_DENOISE_PROFILE
-#define RAPP_CLOUD_SET_DENOISE_PROFILE
+#ifndef RAPP_CLOUD_SET_NOISE_PROFILE
+#define RAPP_CLOUD_SET_NOISE_PROFILE
 /**
  * Copyright 2015 RAPP
  *
@@ -25,7 +25,7 @@ namespace cloud {
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class set_denoise_profile : public http_request
+class set_noise_profile : public http_request
 {
 public:
     /**
@@ -37,9 +37,9 @@ public:
      *                                                            "nao_wav_4_ch"
      *                                                            "headset"
      */
-    set_denoise_profile(
+    set_noise_profile(
 						 const std::vector<rapp::types::byte> audio_bytearray,
-                         std::string audio_source
+                         const rapp::types::audio_source audio_src
 					   );
 
     /**

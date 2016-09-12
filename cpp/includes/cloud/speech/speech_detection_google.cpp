@@ -4,7 +4,7 @@ namespace cloud {
 
 speech_detection_google::speech_detection_google(
                           const std::vector<rapp::types::byte> audio_bytearray,
-                          const std::string audio_source,
+                          const rapp::types::audio_source audio_src,
                           const std::string language,
                           std::function<void(std::vector<std::string>, 
                                              std::vector<std::vector<std::string>>)> callback
@@ -13,17 +13,33 @@ speech_detection_google::speech_detection_google(
   delegate_(callback)
 {
     http_request::make_multipart_form();
-    json json_doc = {{"audio_source", audio_source},
+    std::string audio_type;
+    std::string audio_format;
+    switch(audio_src) {
+        case 0: 
+            audio_type = "nao_ogg";
+            audio_format = "ogg";
+            break;
+        case 1:
+            audio_type = "nao_wav_1_ch";
+            audio_format = "wav";
+            break;
+        case 2:
+            audio_type = "nao_wav_4_ch";
+            audio_format = "wav";
+            break;
+        case 3:
+            audio_type = "headset";
+            audio_format = "wav";
+            break;
+        default:
+            std::cerr << "Error: not the correct audio source" <<std::endl;
+    }
+
+    json json_doc = {{"audio_source", audio_type},
                      {"language", language}};
     http_request::add_content("json", json_doc.dump(-1), true);
-    std::string audio_type;
-    if (audio_source == "nao_ogg") {
-        audio_type = "ogg";
-    }
-    else {
-        audio_type = "wav";
-    }
-    std::string fname = rapp::misc::random_boundary() + "." + audio_type;
+    std::string fname = rapp::misc::random_boundary() + "." + audio_format;
     http_request::add_content("file", fname, audio_bytearray);
     http_request::close();
 }
@@ -45,7 +61,6 @@ void speech_detection_google::deserialise(std::string json) const
         std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
-        std::cout << json << std::endl;
         delegate_(json_f["words"], json_f["alternatives"]);
     }
 }

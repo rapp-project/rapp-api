@@ -1,18 +1,12 @@
-#include "speech_detection_sphinx4.hpp"
+#include "set_noise_profile.hpp"
 namespace rapp {
 namespace cloud {
 
-speech_detection_sphinx4::speech_detection_sphinx4(
-                                                    const std::vector<rapp::types::byte> audio_bytearray,
-                                                    const rapp::types::audio_source audio_src,
-                                                    const std::string language,
-                                                    const std::vector<std::string> grammar,
-                                                    const std::vector<std::string> words,
-                                                    const std::vector<std::string> sentences,
-                                                    std::function<void(std::vector<std::string> words)> callback
-                                                  )
-: http_request("POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n"), 
-  delegate_(callback)
+set_noise_profile::set_noise_profile(
+                     const std::vector<rapp::types::byte> audio_bytearray,
+                     const rapp::types::audio_source audio_src
+                   )
+: http_request("POST /hop/set_noise_profile HTTP/1.1\r\n") 
 {
     http_request::make_multipart_form();
     std::string audio_type;
@@ -37,18 +31,14 @@ speech_detection_sphinx4::speech_detection_sphinx4(
         default:
             std::cerr << "Error: not the correct audio source" <<std::endl;
     }
-    json json_doc = {{"language", language},
-                     {"audio_source", audio_type},
-                     {"words", words},
-                     {"sentences", sentences},
-                     {"grammar", grammar}};
+    json json_doc = {{"audio_source", audio_type}};
     http_request::add_content("json", json_doc.dump(-1), true);
     std::string fname = rapp::misc::random_boundary() + "." + audio_format;
     http_request::add_content("file", fname, audio_bytearray);
     http_request::close();
 }
 
-void speech_detection_sphinx4::deserialise(std::string json) const
+void set_noise_profile::deserialise(std::string json) const
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
@@ -65,7 +55,7 @@ void speech_detection_sphinx4::deserialise(std::string json) const
         std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
-        delegate_(json_f["words"]);
+        std::cout << "Noise_profile created" << std::endl;
     }
 }
 

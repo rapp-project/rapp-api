@@ -22,21 +22,6 @@
 int main()
 {
     /*
-     * The audio is loaded from its path to a audio class.
-     * If you run the example inside examples folder, this path is valid.
-     * In other cases, you'll have to change it for a proper one.
-     */
-    rapp::object::audio audio("data/object_classes_audio_4.ogg");
-
-    /*
-     * We have to say the source of the audio. In the case of the 
-     * file above, its source is `headset`. In the case you take another
-     * example, be careful with what source it has.
-     * For more information /see rapp::cloud::speech_detection_google
-     */
-    std::string audio_source = "nao_ogg";
-
-    /*
      * Construct the platform info setting the hostname/IP, port and authentication token
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
@@ -73,10 +58,26 @@ int main()
     };
 
     /*
+     * The audio is loaded from its path to a audio class.
+     * If you run the example inside examples folder, this path is valid.
+     * In other cases, you'll have to change it for a proper one.
+     */
+    rapp::object::audio audio("data/object_classes_audio_4.ogg");
+
+    /*
+     * We have to say the source of the audio. In the case of the 
+     * file above, its source is `headset`. In the case you take another
+     * example, be careful with what source it has.
+     * For more information /see rapp::cloud::speech_detection_google
+     *                      /see rapp::types::audio_source
+     */
+    rapp::types::audio_source audio_src = rapp::types::nao_ogg;
+
+    /*
      * We make a call to speech_detection_google to detect the words said
      * in a audio with google tools.
      * For more information \see rapp::cloud::speech_detection_google
      */
-    ctrl.make_call<rapp::cloud::speech_detection_google>(audio.bytearray(), audio_source, "en", callback);
+    ctrl.make_call<rapp::cloud::speech_detection_google>(audio.bytearray(), audio_src, "en", callback);
     return 0;
 }

@@ -41,7 +41,7 @@ public:
 	 */
 	speech_detection_google(
 							  const std::vector<rapp::types::byte> audio_bytearray,
-                              const std::string audio_source,
+                              const rapp::types::audio_source audio_src,
 							  const std::string language,
                               std::function<void(std::vector<std::string>, 
                                                  std::vector<std::vector<std::string>>)> callback
