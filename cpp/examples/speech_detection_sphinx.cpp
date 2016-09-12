@@ -21,6 +21,7 @@
  */
 int main()
 {
+    using namespace std::string_literals;
     /*
      * Construct the platform info setting the hostname/IP, port and authentication token
      * Then proceed to create a cloud controller.
@@ -68,10 +69,10 @@ int main()
      *  \brief JSGF speech grammar format. It's an optional input, but with
      *  it we can achieve more accuracy in the recognition. 
      */
-    std::string jsgf  = "#JSGF V1.0;\n"; 
-                jsgf += "public <greet> = Yes | No; ";
-                //jsgf += "public <greet> = I | want | to;";
-                //jsgf += "public <complete> = <greet> (go | love | run);";
+    std::string jsgf =  "#JSGF V1.0;\r\n\r\n";
+                jsgf += "grammar simpleExample; \r\n\r\n";
+                jsgf += "public <greet> = Yes | No;\r\n";
+
     /*
      * We make a call to speech_detection_google to detect the words said
      * in a audio with sphinx4 tools.
@@ -80,9 +81,9 @@ int main()
     ctrl.make_call<rapp::cloud::speech_detection_sphinx4>(audio.bytearray(), 
                                                           audio_src, 
                                                           "en",
+                                                          std::vector<std::string>({{jsgf}}),
                                                           std::vector<std::string>({{"yes", "no"}}),
                                                           std::vector<std::string>({{}}),
-                                                          std::vector<std::string>({{jsgf}}),
                                                           callback);
     return 0;
 }

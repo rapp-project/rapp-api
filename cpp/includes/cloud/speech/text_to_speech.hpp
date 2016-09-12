@@ -23,13 +23,13 @@ namespace cloud {
  * \class text_to_speech
  * \brief request speech audio from text
  * \version 0.7.0
- * \date 15 August 2016
+ * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class text_to_speech : public caller, public http_request
+class text_to_speech : public http_request
 {
 public:
-    typedef rapp::object::microphone_wav wav_file;
+    typedef rapp::object::audio audio_file;
 	/**
 	 * \brief construct handler which will request speech audio from text
 	 * \param text is the text to be converted to audio
@@ -39,73 +39,17 @@ public:
 	text_to_speech(
 					 const std::string text,
 					 const std::string language,
-					 std::function<void(wav_file)> callback
-				  )
-	: http_header("POST /hop/ontology_subclasses_of HTTP/1.1\r\n"), 
-      http_post(http_header::get_boundary()), 
-      delegate_(callback)
-	{
-        boost::property_tree::ptree tree;
-        tree.put("text", text);
-        tree.put("language", language);
-
-        std::stringstream ss;
-        boost::property_tree::write_json(ss, tree, false);
-
-        std::string json = ss.str();
-        http_post::add_content("json", json, false); 
-        http_post::end();
-     }
+					 std::function<void(audio_file)> callback
+				  );
 
     /**
      * \brief handle platform's JSON reply
      */
-    void deserialise(std::string json) const
-    {
-        std::stringstream ss(json);
-        std::vector<rapp::types::byte> bytearray;
-        try {
-            boost::property_tree::ptree tree;
-            boost::property_tree::read_json(ss, tree);
-
-		    // capture audio payload (base64-encoded)	
-            for (auto child : tree.get_child("payload")) {
-                // base64-encoded audio
-                std::string result = child.second.get_value<std::string>();
-                std::string decoded = rapp::misc::decode64(result);
-                std::copy(decoded.begin(), decoded.end(), std::back_inserter(bytearray));
-            }
-
-			// get platform errors
-            for (auto child : tree.get_child("error")) {
-                const std::string value = child.second.get_value<std::string>();
-                if (!value.empty()) {
-                    std::cerr << "text_to_speech JSON error: " << value << std::endl;
-                }
-            }
-	    }
-        catch (boost::property_tree::json_parser::json_parser_error & je) {
-            std::cerr << "text_to_speech::handle_reply Error parsing: " << je.filename() 
-                      << " on line: " << je.line() << std::endl;
-            std::cerr << je.message() << std::endl;
-        }
-        // create wav file and move it to the delegate
-        auto wav = rapp::object::microphone_wav(bytearray);
-        delegate_(std::move(wav));
-    }
-
-    /**
-    * \brief method to fill the buffer with http_post and http_header information
-    * \param info is the data of the platform    
-    */
-    boost::asio::streambuf fill_buffer(rapp::cloud::platform info)
-    {
-           return std::move(http_request::fill_buffer(info));
-    }
+    void deserialise(std::string json) const;
 
 private:
     /// 
-    std::function<void(wav_file wav)> delegate_;
+    std::function<void(audio_file wav)> delegate_;
 };
 }
 }
