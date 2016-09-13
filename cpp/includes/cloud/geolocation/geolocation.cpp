@@ -40,7 +40,7 @@ void geolocation::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "geolocation JSON: " << error <<std::endl;
+        std::cerr << "Error JSON: " << error <<std::endl;
     }
     else {
         delegate_(json_f["city"],

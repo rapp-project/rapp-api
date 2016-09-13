@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 #include "cloud/service_controller/service_controller.hpp"
-#include "cloud/speech/speech_detection_google.hpp"
+#include "cloud/speech/speech_recognition_sphinx4.hpp"
 #include "objects/audio/audio.hpp"
 /*
- * \brief Example to recognise words from an audio file with Google 
+ * \brief Example to recognise words from an audio file with Sphinx4
  */
 int main()
 {
+    using namespace std::string_literals;
     /*
      * Construct the platform info setting the hostname/IP, port and authentication token
      * Then proceed to create a cloud controller.
@@ -32,13 +33,10 @@ int main()
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
-     * All it does is receive a vector of rapp::object::face and
-     * we show the size of the vector to know how many faces have 
-     * been found.
+     * All it does is receive a vector with the words that they have
+     * been recognized.
      */
-    auto callback = [&](std::vector<std::string> words, 
-                        std::vector<std::vector<std::string>> alternatives) 
-    { 
+    auto callback = [&](std::vector<std::string> words) { 
             if (words.size() != 0) {
                 std::cout << "Words: " << std::endl;
                 for (auto each_word : words) {
@@ -48,13 +46,6 @@ int main()
             else {
                 std::cout << "No words found" << std::endl;
             }
-            if (alternatives.size() != 0) {
-                std::cout << "Alternatives: " << std::endl;
-                std::cout << alternatives.size() << "found" << std::endl;
-            }
-            else {
-                std::cout << "No alternatives found" << std::endl;
-            }
     };
 
     /*
@@ -62,22 +53,36 @@ int main()
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
      */
-    rapp::object::audio audio("data/object_classes_audio_4.ogg");
+    rapp::object::audio audio("data/yes-no.wav");
 
     /*
      * We have to say the source of the audio. In the case of the 
-     * file above, its source is `headset`. In the case you take another
+     * file above, its source is `nao_ogg`. In the case you take another
      * example, be careful with what source it has.
-     * For more information /see rapp::cloud::speech_detection_google
+     * For more information /see rapp::cloud::speech_recognition_sphinx4
      *                      /see rapp::types::audio_source
      */
-    rapp::types::audio_source audio_src = rapp::types::nao_ogg;
+    rapp::types::audio_source audio_src = rapp::types::nao_wav_1_ch;
 
     /*
-     * We make a call to speech_detection_google to detect the words said
-     * in a audio with google tools.
-     * For more information \see rapp::cloud::speech_detection_google
+     *  \brief JSGF speech grammar format. It's an optional input, but with
+     *  it we can achieve more accuracy in the recognition. 
      */
-    ctrl.make_call<rapp::cloud::speech_detection_google>(audio.bytearray(), audio_src, "en", callback);
+    std::string jsgf =  "#JSGF V1.0;\r\n\r\n";
+                jsgf += "grammar simpleExample; \r\n\r\n";
+                jsgf += "public <greet> = Yes | No;\r\n";
+
+    /*
+     * We make a call to speech_recognition_google to detect the words said
+     * in a audio with sphinx4 tools.
+     * For more information \see rapp::cloud::speech_recognition_sphinx
+     */
+    ctrl.make_call<rapp::cloud::speech_recognition_sphinx4>(audio.bytearray(), 
+                                                            audio_src, 
+                                                            "en",
+                                                            std::vector<std::string>({{jsgf}}),
+                                                            std::vector<std::string>({{"yes", "no"}}),
+                                                            std::vector<std::string>({{}}),
+                                                            callback);
     return 0;
 }

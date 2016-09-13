@@ -82,8 +82,9 @@ set (SOURCES ${SOURCES}
             ${INCLUDES}/cloud/navigation/path_planning/path_planning.cpp
             ${INCLUDES}/cloud/news/news.cpp
             ${INCLUDES}/cloud/speech/set_noise_profile.cpp
-            ${INCLUDES}/cloud/speech/speech_detection_google.cpp
-            ${INCLUDES}/cloud/speech/speech_detection_sphinx4.cpp
+            ${INCLUDES}/cloud/speech/speech_recognition_google.cpp
+            ${INCLUDES}/cloud/speech/speech_recognition_sphinx4.cpp
+            ${INCLUDES}/cloud/speech/text_to_speech.cpp
             )
 
 # Begin searching for packgages we use in RAPP API
@@ -229,7 +230,7 @@ if (${BUILD_EXAMPLES})
                   #speech_to_text.cpp
                   knowrob_ontology.cpp
                   picture_handling.cpp
-                  #text_to_speech.cpp
+                  text_to_speech.cpp
                   config.cpp
                   cognitive_games.cpp
                   geolocation.cpp
@@ -238,8 +239,8 @@ if (${BUILD_EXAMPLES})
                   email_handling.cpp
                   news.cpp
                   set_noise_profile.cpp
-                  speech_detection_google.cpp
-                  speech_detection_sphinx.cpp)
+                  speech_recognition_google.cpp
+                  speech_recognition_sphinx4.cpp)
     set(EXAMPLE_DIR ${EXAMPLE_DIR} examples)
     message(STATUS "Building examples, they will be placed under `${CMAKE_CURRENT_BINARY_DIR}/${EXAMPLE_DIR}`")
 

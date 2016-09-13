@@ -1,14 +1,14 @@
-#include "speech_detection_google.hpp"
+#include "speech_recognition_google.hpp"
 namespace rapp {
 namespace cloud {
 
-speech_detection_google::speech_detection_google(
-                          const std::vector<rapp::types::byte> audio_bytearray,
-                          const rapp::types::audio_source audio_src,
-                          const std::string language,
-                          std::function<void(std::vector<std::string>, 
-                                             std::vector<std::vector<std::string>>)> callback
-                       )
+speech_recognition_google::speech_recognition_google(
+                                                      const std::vector<rapp::types::byte> audio_bytearray,
+                                                      const rapp::types::audio_source audio_src,
+                                                      const std::string language,
+                                                      std::function<void(std::vector<std::string>, 
+                                                                         std::vector<std::vector<std::string>>)> callback
+                                                    )
 : http_request("POST /hop/speech_detection_google HTTP/1.1\r\n"), 
   delegate_(callback)
 {
@@ -44,7 +44,7 @@ speech_detection_google::speech_detection_google(
     http_request::close();
 }
 
-void speech_detection_google::deserialise(std::string json) const
+void speech_recognition_google::deserialise(std::string json) const
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
@@ -58,7 +58,7 @@ void speech_detection_google::deserialise(std::string json) const
     }
     auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
-        std::cerr << "error JSON: " << error <<std::endl;
+        std::cerr << "error JSON: " << error << std::endl;
     }
     else {
         delegate_(json_f["words"], json_f["alternatives"]);

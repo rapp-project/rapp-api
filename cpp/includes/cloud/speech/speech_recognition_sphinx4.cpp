@@ -1,16 +1,16 @@
-#include "speech_detection_sphinx4.hpp"
+#include "speech_recognition_sphinx4.hpp"
 namespace rapp {
 namespace cloud {
 
-speech_detection_sphinx4::speech_detection_sphinx4(
-                                                    const std::vector<rapp::types::byte> audio_bytearray,
-                                                    const rapp::types::audio_source audio_src,
-                                                    const std::string language,
-                                                    const std::vector<std::string> grammar,
-                                                    const std::vector<std::string> words,
-                                                    const std::vector<std::string> sentences,
-                                                    std::function<void(std::vector<std::string> words)> callback
-                                                  )
+speech_recognition_sphinx4::speech_recognition_sphinx4(
+                                                        const std::vector<rapp::types::byte> audio_bytearray,
+                                                        const rapp::types::audio_source audio_src,
+                                                        const std::string language,
+                                                        const std::vector<std::string> grammar,
+                                                        const std::vector<std::string> words,
+                                                        const std::vector<std::string> sentences,
+                                                        std::function<void(std::vector<std::string> words)> callback
+                                                      )
 : http_request("POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n"), 
   delegate_(callback)
 {
@@ -48,7 +48,7 @@ speech_detection_sphinx4::speech_detection_sphinx4(
     http_request::close();
 }
 
-void speech_detection_sphinx4::deserialise(std::string json) const
+void speech_recognition_sphinx4::deserialise(std::string json) const
 {
     if (json.empty()) {
         throw std::runtime_error("empty json reply");

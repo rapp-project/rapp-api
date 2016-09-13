@@ -56,10 +56,7 @@ public:
 
     /// \brief Save audio to filepath
     bool save(const std::string filepath);
-
-    /// \brief Get the audio source
-    std::string audio_source() const;
-
+    
 private:
 
     /// \brief Delete empty constructor    

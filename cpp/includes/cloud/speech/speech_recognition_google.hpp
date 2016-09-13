@@ -1,4 +1,4 @@
-#ifndef RAPP_CLOUD_SPEECH_TO_TEXT_GOOGLE
+#ifndef RAPP_CLOUD_SPEECH_TO_TEXT_GOOGLE 
 #define RAPP_CLOUD_SPEECH_TO_TEXT_GOOGLE
 /**
  * Copyright 2015 RAPP
@@ -19,13 +19,13 @@
 namespace rapp {
 namespace cloud {
 /**
- * \class speech_detection_google
+ * \class speech_recognition_google
  * \brief delegate speech-to-text to Google via RAPP
  * \version 0.7.0
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speech_detection_google : public http_request
+class speech_recognition_google : public http_request
 {
 public:
 	/**
@@ -39,13 +39,13 @@ public:
      * \param language defines the language used for speech recognition (e.g., 'en', 'gr', etc.)
      * \param callback is the functor/lambda/function pointer delegate that will receive the result
 	 */
-	speech_detection_google(
-							  const std::vector<rapp::types::byte> audio_bytearray,
-                              const rapp::types::audio_source audio_src,
-							  const std::string language,
-                              std::function<void(std::vector<std::string>, 
-                                                 std::vector<std::vector<std::string>>)> callback
-						   );
+	speech_recognition_google(
+							   const std::vector<rapp::types::byte> audio_bytearray,
+                               const rapp::types::audio_source audio_src,
+							   const std::string language,
+                               std::function<void(std::vector<std::string>, 
+                                                  std::vector<std::vector<std::string>>)> callback
+	  					     );
     /**
 	 * \brief handle rapp-platform JSON reply
 	 */

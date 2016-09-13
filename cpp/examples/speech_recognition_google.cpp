@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 #include "cloud/service_controller/service_controller.hpp"
-#include "cloud/speech/speech_detection_sphinx4.hpp"
+#include "cloud/speech/speech_recognition_google.hpp"
 #include "objects/audio/audio.hpp"
 /*
- * \brief Example to recognise words from an audio file with Sphinx4
+ * \brief Example to recognise words from an audio file with Google 
  */
 int main()
 {
-    using namespace std::string_literals;
     /*
      * Construct the platform info setting the hostname/IP, port and authentication token
      * Then proceed to create a cloud controller.
@@ -33,11 +32,12 @@ int main()
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
-     * All it does is receive a vector of rapp::object::face and
-     * we show the size of the vector to know how many faces have 
-     * been found.
+     * All it does is receive two vectors with the words that they 
+     * are recognized and possible alternatives.
      */
-    auto callback = [&](std::vector<std::string> words) { 
+    auto callback = [&](std::vector<std::string> words, 
+                        std::vector<std::vector<std::string>> alternatives) 
+    { 
             if (words.size() != 0) {
                 std::cout << "Words: " << std::endl;
                 for (auto each_word : words) {
@@ -47,6 +47,13 @@ int main()
             else {
                 std::cout << "No words found" << std::endl;
             }
+            if (alternatives.size() != 0) {
+                std::cout << "Alternatives: " << std::endl;
+                std::cout << alternatives.size() << "found" << std::endl;
+            }
+            else {
+                std::cout << "No alternatives found" << std::endl;
+            }
     };
 
     /*
@@ -54,36 +61,22 @@ int main()
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
      */
-    rapp::object::audio audio("data/yes-no.wav");
+    rapp::object::audio audio("data/object_classes_audio_4.ogg");
 
     /*
      * We have to say the source of the audio. In the case of the 
-     * file above, its source is `nao_ogg`. In the case you take another
+     * file above, its source is `headset`. In the case you take another
      * example, be careful with what source it has.
-     * For more information /see rapp::cloud::speech_detection_sphinx4
+     * For more information /see rapp::cloud::speech_recognition_google
      *                      /see rapp::types::audio_source
      */
-    rapp::types::audio_source audio_src = rapp::types::nao_wav_1_ch;
+    rapp::types::audio_source audio_src = rapp::types::nao_ogg;
 
     /*
-     *  \brief JSGF speech grammar format. It's an optional input, but with
-     *  it we can achieve more accuracy in the recognition. 
+     * We make a call to speech_recognition_google to detect the words said
+     * in a audio with google tools.
+     * For more information \see rapp::cloud::speech_recognition_google
      */
-    std::string jsgf =  "#JSGF V1.0;\r\n\r\n";
-                jsgf += "grammar simpleExample; \r\n\r\n";
-                jsgf += "public <greet> = Yes | No;\r\n";
-
-    /*
-     * We make a call to speech_detection_google to detect the words said
-     * in a audio with sphinx4 tools.
-     * For more information \see rapp::cloud::speech_detection_sphinx
-     */
-    ctrl.make_call<rapp::cloud::speech_detection_sphinx4>(audio.bytearray(), 
-                                                          audio_src, 
-                                                          "en",
-                                                          std::vector<std::string>({{jsgf}}),
-                                                          std::vector<std::string>({{"yes", "no"}}),
-                                                          std::vector<std::string>({{}}),
-                                                          callback);
+    ctrl.make_call<rapp::cloud::speech_recognition_google>(audio.bytearray(), audio_src, "en", callback);
     return 0;
 }

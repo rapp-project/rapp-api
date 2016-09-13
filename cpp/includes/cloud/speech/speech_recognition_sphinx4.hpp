@@ -1,4 +1,4 @@
-#ifndef RAPP_CLOUD_SPEECH_TO_TEXT_SPHINX4
+#ifndef RAPP_CLOUD_SPEECH_TO_TEXT_SPHINX4 
 #define RAPP_CLOUD_SPEECH_TO_TEXT_SPHINX4
 /**
  * Copyright 2015 RAPP
@@ -20,13 +20,13 @@ namespace rapp {
 namespace cloud {
 
 /**
- * \class speech_detection_sphinx4
+ * \class speech_recognition_sphinx4
  * \brief speech-to-text recognition using CMU sphinx4
  * \version 0.7.0
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speech_detection_sphinx4 : public http_request
+class speech_recognition_sphinx4 : public http_request
 {
 public:
     /**
@@ -44,15 +44,15 @@ public:
      * \param sentences will be under consideration
      * \param callback will be executed once the rapp cloud has responded
      */
-    speech_detection_sphinx4(
-							  const std::vector<rapp::types::byte> audio_data,
-                              const rapp::types::audio_source audio_src,
-                              const std::string language,
-							  const std::vector<std::string> grammar,
-							  const std::vector<std::string> words,
-							  const std::vector<std::string> sentences,
-							  std::function<void(std::vector<std::string> words)> callback
-						    );
+    speech_recognition_sphinx4(
+                                 const std::vector<rapp::types::byte> audio_data,
+                                 const rapp::types::audio_source audio_src,
+                                 const std::string language,
+                                 const std::vector<std::string> grammar,
+                                 const std::vector<std::string> words,
+                                 const std::vector<std::string> sentences,
+                                 std::function<void(std::vector<std::string> words)> callback
+                              );
     /**
 	 * \brief handle the rappl-platform JSON reply
 	 */ 

@@ -130,10 +130,10 @@ void cognitive_get_history::deserialise(std::string json) const
 
 /// Class cognitive_get_scores
 cognitive_get_scores::cognitive_get_scores(
-                                           unsigned int up_to_time,
-                                           const std::string test_type,
-                                           std::function<void(std::vector<std::string>, std::vector<float>)> callback
-                                        )
+                                            unsigned int up_to_time,
+                                            const std::string test_type,
+                                            std::function<void(std::vector<std::string>, std::vector<float>)> callback
+                                          )
 : http_request("POST /hop/cognitive_get_scores HTTP/1.1\r\n"), 
   delegate_(callback)
 {

@@ -53,10 +53,6 @@ bool audio::save(const std::string filepath)
         return false;
 }
 
-std::string audio::audio_source() const
-{ return ""; }
-
-
 void audio::read_bytes(std::ifstream & bytestream)
 {
     bytestream.seekg(0, std::ios_base::end);
