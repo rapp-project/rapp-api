@@ -478,66 +478,19 @@ BOOST_AUTO_TEST_CASE(object_audio_test)
 {
     // audio tests
     std::vector<std::string> infiles = { "tests/data/object_classes_audio_1.ogg", 
-                                         "tests/data/object_classes_audio_2.wav",
-                                         "tests/data/object_classes_audio_3.wav" };
+                                         "tests/data/object_classes_audio_2.wav" 
+                                       };
 
-    rapp::object::audio t1(infiles.at(1));
-    std::ifstream bytes1(infiles.at(1), std::ios::in | std::ios::binary | std::ios::ate);
+    rapp::object::audio t1(infiles.at(0));
+    std::ifstream bytes1(infiles.at(0), std::ios::in | std::ios::binary | std::ios::ate);
     rapp::object::audio t1_ifstrm(bytes1);
 
     BOOST_CHECK(t1 == t1_ifstrm);
 
-    rapp::object::audio t2(infiles.at(2));
+    rapp::object::audio t2(infiles.at(1));
     rapp::object::audio t2_cpy = t2;
 
     BOOST_CHECK( t2 == t2_cpy );
-
-    //ogg
-    rapp::object::ogg og1(infiles.at(0));
-    rapp::object::ogg og2(og1);
-
-    BOOST_CHECK(og1 == og2);
-    BOOST_CHECK( og1 != t1 );
-
-    BOOST_CHECK_EQUAL(og1.audio_source(), "nao_ogg");
-
-    //microphone_wav
-    rapp::object::microphone_wav microphone1(infiles.at(2));
-    std::ifstream bytes2(infiles.at(2), std::ios::in | std::ios::binary | std::ios::ate);
-    rapp::object::microphone_wav microphone2(bytes2);
-    BOOST_CHECK(microphone1 == microphone2);
-
-    rapp::object::microphone_wav microphone3(microphone1);
-    BOOST_CHECK(microphone1 == microphone3);
-
-    BOOST_CHECK_EQUAL(microphone3.audio_source(), "headset");
-
-    rapp::object::microphone_wav microphone4(microphone3.bytearray());
-    BOOST_CHECK(microphone3 == microphone4);
-
-    rapp::object::microphone_wav microphone5 = microphone1;
-    BOOST_CHECK(microphone1 == microphone5);
-
-    BOOST_CHECK(microphone1 != og1);
-
-    //nao_single_channel_wav
-    rapp::object::nao_single_channel_wav naos1(infiles.at(1));
-    rapp::object::nao_single_channel_wav naos2(naos1);
-    BOOST_CHECK(naos1 == naos2);
-
-    BOOST_CHECK_EQUAL(naos2.audio_source(), "nao_wav_1_ch");
-
-    BOOST_CHECK(naos1 != t2);
-
-    //nao_quad_channel_wav
-    rapp::object::nao_quad_channel_wav naoq1(infiles.at(1));
-    rapp::object::nao_quad_channel_wav naoq2(naoq1);
-    BOOST_CHECK(naoq1 == naoq2);
-
-    BOOST_CHECK_EQUAL(naoq2.audio_source(), "nao_wav_4_ch");
-
-    BOOST_CHECK(naoq1 != t2);
-
 }
 
 BOOST_AUTO_TEST_SUITE_END()

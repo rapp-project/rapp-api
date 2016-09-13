@@ -15,8 +15,6 @@ void available_services::deserialise(std::string json)
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
     }
-
-    std::vector<service> services;
     nlohmann::json json_f;
     try {
         json_f = json::parse(json);
@@ -29,6 +27,7 @@ void available_services::deserialise(std::string json)
          std::cerr << "error JSON: " << error << std::endl; 
     }
     else {
+        std::vector<service> services;
         for (auto it_s : json_f["services"]) {
             services.push_back(std::make_pair(misc::get_json_value<std::string>("name", it_s), 
                                               misc::get_json_value<std::string>("url", it_s)));

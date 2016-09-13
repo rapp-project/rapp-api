@@ -47,6 +47,7 @@ std::string read_json_file(const std::string file)
     }
     catch (std::exception & e) {
         std::cerr << e.what() << std::endl;
+        return "error";
     }
 }
 

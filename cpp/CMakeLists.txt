@@ -194,7 +194,8 @@ if (${BUILD_TESTS})
     set(TESTS ${TESTS} tests)
     set(TESTFILES ${TESTFILES} asio_classes.cpp 
                                json_classes.cpp 
-                               object_classes.cpp)
+                               object_classes.cpp
+                               cloud_calls.cpp)
     set(TEST_DIR ${TEST_DIR} tests)
     message(STATUS "Building tests, they will be placed under directory `${CMAKE_CURRENT_BINARY_DIR}/${TEST_DIR}`")
     # create "/tests"
@@ -226,8 +227,8 @@ if (${BUILD_EXAMPLES})
                   human_detect.cpp
                   hazard_detect.cpp
                   qr_detect.cpp
+                  light_detection.cpp
                   object_recognition.cpp
-                  #speech_to_text.cpp
                   knowrob_ontology.cpp
                   picture_handling.cpp
                   text_to_speech.cpp

@@ -27,7 +27,6 @@ cognitive_test_selector::cognitive_test_selector(
  */
 void cognitive_test_selector::deserialise(std::string json) const
 {
-    std::cout << json << std::endl;
     if (json.empty()) {
         throw std::runtime_error("empty json reply");
     }

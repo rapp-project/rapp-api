@@ -45,11 +45,11 @@ void face_detection::deserialise(std::string json) const
     }
 }
 
-/// Class hazard_detection_door_check
-hazard_detection_door_check::hazard_detection_door_check(
-                                                          const rapp::object::picture & image,
-                                                          std::function<void(double door_angle)> callback
-                                                        )
+/// Class door_angle_detection
+door_angle_detection::door_angle_detection(
+                                            const rapp::object::picture & image,
+                                            std::function<void(double door_angle)> callback
+                                          )
 : http_request("POST /hop/hazard_detection_door_check HTTP/1.1\r\n"), 
   delegate_(callback)
 {
@@ -59,7 +59,7 @@ hazard_detection_door_check::hazard_detection_door_check(
     http_request::close();
 }
 
-void hazard_detection_door_check::deserialise(std::string json) const
+void door_angle_detection::deserialise(std::string json) const
 {
    if (json.empty()) {
         throw std::runtime_error("empty json reply");
@@ -77,6 +77,41 @@ void hazard_detection_door_check::deserialise(std::string json) const
     }
     else {
         delegate_(json_f["door_angle"]);
+    }
+}
+
+/// Class light_detection
+light_detection::light_detection(
+                                  const rapp::object::picture & image,
+                                  std::function<void(int light_level)> callback
+                                )
+: http_request("POST /hop/hazard_detection_light_check HTTP/1.1\r\n"), 
+  delegate_(callback)
+{
+    http_request::make_multipart_form();
+    std::string fname = rapp::misc::random_boundary() + "." + image.type();
+    http_request::add_content("file", fname, image.bytearray());
+    http_request::close();
+}
+
+void light_detection::deserialise(std::string json) const
+{
+   if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+    nlohmann::json json_f;
+    try {
+        json_f = json::parse(json);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+    }
+    auto error = misc::get_json_value<std::string>("error", json_f);
+    if (!error.empty()) {
+        std::cerr << "error JSON: " << error <<std::endl;
+    }
+    else {
+        delegate_(json_f["light_level"]);
     }
 }
 

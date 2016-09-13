@@ -154,8 +154,7 @@ BOOST_AUTO_TEST_CASE(cloud_http_post_test)
     const auto bytes = pic->bytearray();
     std::string string_post4 = "--" + boundary_example + "\r\n"
                              + "Content-Disposition: form-data; name=\"blah\";"
-                             + " filename=\"" + file + "\"\r\n"
-                             + "Content-Transfer-Encoding: binary\r\n\r\n";
+                             + " filename=\"" + file + "\"\r\n\r\n";
     string_post4.insert(string_post4.end(), bytes.begin(), bytes.end());
     string_post4 += "\r\n";                     
 

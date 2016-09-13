@@ -29,7 +29,6 @@ namespace cloud {
 class face_detection : public http_request
 {
 public:
-
     /**
      * \brief constructor
      * \param image is the input image \see rapp::object::picture
@@ -46,21 +45,19 @@ public:
 	 * \brief handle the rapp-platform JSON reply
 	 */
     void deserialise(std::string json) const;
-
 private:
-     
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<rapp::object::face>)> delegate_;
 };
 
 /**
- * \class hazard_detection_door_check
+ * \class door_angle_detection
  * \brief detect open doors
  * \version 0.7.0
  * \date September 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class hazard_detection_door_check : public http_request
+class door_angle_detection : public http_request
 {
 public:
     /**
@@ -69,19 +66,48 @@ public:
     * \param callback is the function that will receive a vector of detected qr(s)
     * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
     */
-    hazard_detection_door_check(
-                                  const rapp::object::picture & image,
-                                  std::function<void(double door_angle)> callback
-                                );
+    door_angle_detection(
+                          const rapp::object::picture & image,
+                          std::function<void(double door_angle)> callback
+                        );
     
 	/**
 	 * \brief handle the rapp-platform JSON reply
 	 */
     void deserialise(std::string json) const;
-
 private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(double)> delegate_;
+};
+
+/**
+ * \class light_detection 
+ * \brief detect the level of light
+ * \version 0.7.0
+ * \date September 2016
+ * \author Maria Ramos <m.ramos@ortelio.co.uk>
+ */
+class light_detection : public http_request
+{
+public:
+    /**
+    * \brief Constructor
+    * \param image is a picture object pointer
+    * \param callback is the function that will receive a vector of detected qr(s)
+    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
+    */
+    light_detection(
+                     const rapp::object::picture & image,
+                     std::function<void(int light_level)> callback
+                   );
+    
+	/**
+	 * \brief handle the rapp-platform JSON reply
+	 */
+    void deserialise(std::string json) const;
+private:
+    /// The callback called upon completion of receiving the detected faces
+    std::function<void(int)> delegate_;
 };
 
 /**
@@ -108,7 +134,6 @@ public:
 	 * \brief handle the rapp-platform JSON reply
 	 */
     void deserialise(std::string json) const;
-
 private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<rapp::object::human>)> delegate_;
@@ -138,7 +163,6 @@ public:
 	 * \brief handle the rapp-platform JSON reply
 	 */
     void deserialise(std::string json) const;
-
 private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<rapp::object::qr_code>)> delegate_;

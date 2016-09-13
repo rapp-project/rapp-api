@@ -33,8 +33,9 @@ int main()
      * The image is loaded from its path to a picture class.
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
+     * You can test no light with `object_classes_picture_4.jpg` file
      */
-    auto pic = rapp::object::picture("data/object_classes_picture_3.png");
+    auto pic = rapp::object::picture("data/object_classes_picture_5.jpg");
 
     /*
      * Construct a lambda, std::function or bind your own functor.
@@ -42,14 +43,14 @@ int main()
      * All it does is receive a double and we show the angle of the door
      * in the case that a hazard is found.         
      */
-    auto callback = [&](double door_angle) {
-        std::cout << "Door angle: " << door_angle  << std::endl;
+    auto callback = [&](int light_level) {
+        std::cout << "Light level: " << light_level  << std::endl;
     };
 
     /*
      * We make a call to hazard_detection class to detect hazards in the file
      * For more information \see rapp::cloud::door_angle_detection
      */
-    ctrl.make_call<rapp::cloud::door_angle_detection>(pic, callback);
+    ctrl.make_call<rapp::cloud::light_detection>(pic, callback);
     return 0;
 }
