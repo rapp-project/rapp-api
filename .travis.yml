@@ -1,7 +1,7 @@
 # RAPP API Travis Continuous Integration Configuration File
 # Author: Maria Ramos <m.ramos@ortelio.co.uk>
 # 
-language: generic 
+language: cpp 
 sudo: required
 dist: trusty
 compiler:
