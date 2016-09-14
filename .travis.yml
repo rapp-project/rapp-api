@@ -35,4 +35,6 @@ install: true # Use this to install any prerequisites or dependencies necessary 
 script: # All commands must exit with code 0 on success. Anything else is considered failure.
     - mkdir -p cpp/build
     - cd cpp/build
-    - cmake .. -DBUILD_TESTS=ON && make && make test
+    - cmake .. -DBUILD_TESTS=ON 
+    - make
+    - make test
