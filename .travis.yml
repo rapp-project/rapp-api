@@ -22,5 +22,3 @@ script: # All commands must exit with code 0 on success. Anything else is consid
     - mkdir -p cpp/build
     - cd cpp/build
     - cmake .. -DBUILD_TESTS=ON && make && make test
-
-after_success:
