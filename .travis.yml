@@ -8,9 +8,23 @@ compiler:
     - g++
 os:
     - linux
+
 branches:
     only:
-        -cpp_dev
+    - cpp_dev
+
+branches:
+    except:
+    - master
+    - cpp
+    - api_stable
+    - cpp-wut
+    - devel
+    - js
+    - ortelio_devel_merge
+    - ortelio
+    - /^wut-*$/
+    - /^wut_*$/
 
 before_install: 
     - sudo apt-get update
