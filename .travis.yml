@@ -1,7 +1,7 @@
 # RAPP API Travis Continuous Integration Configuration File
 # Author: Maria Ramos <m.ramos@ortelio.co.uk>
 # 
-language: cpp 
+language: g++ 
 sudo: required
 dist: trusty
 compiler:
@@ -27,12 +27,15 @@ branches:
     - /^wut_*$/
 
 before_install: 
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     - sudo apt-get update
     - sudo apt-get install gcc-5 g++-5 libboost1.55-all-dev cmake -y
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
+    - sudo update-alternatives --set g++ /usr/bin/g++-4.9
 
-install: true # Use this to install any prerequisites or dependencies necessary to run your build
+install: true
 
-script: # All commands must exit with code 0 on success. Anything else is considered failure.
+script:
     - mkdir -p cpp/build
     - cd cpp/build
     - cmake .. -DBUILD_TESTS=ON 

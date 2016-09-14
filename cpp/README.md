@@ -2,11 +2,12 @@
 -----------------------
 
 1. [Building](#Building)
-1. [Options](#options)
-1. [Installing](#installing)
-1. [Testing](#testing)
-1. [Examples](#examples)
-1. [Help](#help)
+1. [Options](#Options)
+1. [Installing](#Installing)
+1. [Testing](#Testing)
+1. [Examples](#Examples)
+1. [Older g++](#Older g++)
+1. [Help](#Help)
 
 [![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api)
 
@@ -104,7 +105,7 @@ The source files for the examples are under `/rapp-api/cpp/examples` and if you 
 will be built under `/rapp-api/cpp/build/examples/`.
 
 
-## OS with old gcc/g++
+## Older g++
 
 Some OSes do not ship with a newer *g++* (versions 4.9 and up), or you may be for whatever reason stuck with an older version.
 
