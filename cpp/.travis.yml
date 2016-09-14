@@ -1,0 +1,26 @@
+# RAPP API Travis Continuous Integration Configuration File
+# Author: Maria Ramos <m.ramos@ortelio.co.uk>
+# 
+language: generic 
+sudo: required
+dist: trusty
+compiler:
+    - g++
+os:
+    - linux
+branches:
+    only:
+        -cpp_dev
+
+before_install: 
+    - sudo apt-get update
+    - sudo apt-get install gcc-4.9 g++-4.9 libboost-dev-all cmake -y
+
+install: true # Use this to install any prerequisites or dependencies necessary to run your build
+
+script: # All commands must exit with code 0 on success. Anything else is considered failure.
+    - mkdir build
+    - cd build
+    - cmake .. -DBUILD_TESTS=ON && make && make test
+
+after_success:
