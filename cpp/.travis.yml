@@ -19,8 +19,8 @@ before_install:
 install: true # Use this to install any prerequisites or dependencies necessary to run your build
 
 script: # All commands must exit with code 0 on success. Anything else is considered failure.
-    - mkdir build
-    - cd build
+    - mkdir -p cpp/build
+    - cd cpp/build
     - cmake .. -DBUILD_TESTS=ON && make && make test
 
 after_success:
