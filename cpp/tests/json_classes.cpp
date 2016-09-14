@@ -82,7 +82,6 @@ BOOST_AUTO_TEST_CASE(time_json_test)
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
-
 BOOST_AUTO_TEST_CASE(point_json_test)
 {
     std::string string = read_json_file("tests/data/json_classes_point.json");
@@ -132,7 +131,6 @@ BOOST_AUTO_TEST_CASE(quaternion_json_test)
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
-
 BOOST_AUTO_TEST_CASE(pose_json_test)
 {
     std::string string = read_json_file("tests/data/json_classes_pose.json");
@@ -164,7 +162,6 @@ BOOST_AUTO_TEST_CASE(pose_json_test)
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
-
 BOOST_AUTO_TEST_CASE(msg_metadata_json_test)
 {
     std::string string = read_json_file("tests/data/json_classes_msg_metadata.json");
@@ -192,7 +189,6 @@ BOOST_AUTO_TEST_CASE(msg_metadata_json_test)
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
-
 BOOST_AUTO_TEST_CASE(pose_stamped_json_test)
 {
     std::string string = read_json_file("tests/data/json_classes_pose_stamped.json");
@@ -239,7 +235,6 @@ BOOST_AUTO_TEST_CASE(pose_stamped_json_test)
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
-
 BOOST_AUTO_TEST_CASE(planned_path_json_test)
 {
     std::string string = read_json_file("tests/data/json_classes_planned_path.json");
@@ -259,7 +254,6 @@ BOOST_AUTO_TEST_CASE(planned_path_json_test)
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
-
 BOOST_AUTO_TEST_CASE(human_json_test)
 {
     std::string string = read_json_file("tests/data/json_classes_human.json");
@@ -280,7 +274,6 @@ BOOST_AUTO_TEST_CASE(human_json_test)
  * then test with hardcoded values from JSON
  * and finally test serialisation produces the same JSON
  */
-
 BOOST_AUTO_TEST_CASE(face_json_test)
 {
     std::string string = read_json_file("tests/data/json_classes_face.json");

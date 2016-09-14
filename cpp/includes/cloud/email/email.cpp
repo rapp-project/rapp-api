@@ -12,10 +12,10 @@ email_fetch::email_fetch(
                            const unsigned int to_date,
                            const unsigned int num_emails,
                            std::function<void(std::vector<std::tuple<std::string, 
-                                                          std::vector<std::string>,
-                                                          std::string,
-                                                          std::string,
-                                                          std::vector<std::string>>>)> callback
+                                                                     std::vector<std::string>,
+                                                                     std::string,
+                                                                     std::string,
+                                                                     std::vector<std::string>>>)> callback
                         )
 : http_request("POST /hop/email_fetch HTTP/1.1\r\n"), 
   delegate_(callback)
