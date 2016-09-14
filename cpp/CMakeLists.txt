@@ -130,10 +130,10 @@ if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
     # for more info see: https://www.danirod.es/blog/i386-elf-gcc-on-mac.html
     # if the host platform is Linux/GCC then by default it will produce ELF 32bit binaries.
     if (${RAPP_STATIC})
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -fPIC")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
     # static library - atom CPU - same as before, ELF targets need Linux/GCC host platform
     elseif (${OPEN_NAO})
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -fPIC -m32 -march=atom -mtune=atom")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC -m32 -march=atom -mtune=atom")
     endif()
     # set target, add library - link with Boost and OpenSSL
     set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static)
@@ -151,7 +151,7 @@ else()
     # use shared boost - build shared libs - set correct flags
     set(Boost_USE_STATIC_LIBS OFF)
     set(BUILD_SHARED_LIBS ON)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -fPIC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
     # build library first
     set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)

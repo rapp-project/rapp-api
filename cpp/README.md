@@ -100,9 +100,11 @@ make test
 
 ## Examples
 
-The source files for the examples are under `/rapp-api/cpp/examples`
+The source files for the examples are under `/rapp-api/cpp/examples` and if you use the flag `-DBUILD_EXAMPLES=ON` they
+will be built under `/rapp-api/cpp/build/examples/`.
 
-# OS with old gcc/g++
+
+## OS with old gcc/g++
 
 Some OSes do not ship with a newer *g++* (versions 4.9 and up), or you may be for whatever reason stuck with an older version.
 
