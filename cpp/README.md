@@ -1,8 +1,10 @@
-WORK IN PROGRESS - use branch `master` or `cpp`.
+# RAPP API (C++14)
+-----------------------
 
-# RAPP API (C++11)
+[![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api)
 
-The C++ API code is portable, since it relies on cross-platform libraries: 
+The RAPP API for C++ uses C++14 features and allows your apps to access the RAPP platform.
+It is portablei and relies on cross-platform libraries: 
 [lib BOOST](http://www.boost.org) and [C++ STL](https://en.wikipedia.org/wiki/Standard_Template_Library).
 
 It uses asynchronous execution, inspired (and supported) by BOOST ASIO.

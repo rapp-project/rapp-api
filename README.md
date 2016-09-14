@@ -1,6 +1,7 @@
 # RAPP-API
 --------------------
 
+
 ## Synopsis
 
 The below table presents the up-to-date available RAPP Platform Service calls, throught the relevant RAPP-API (Python, JavaScript, C++)
