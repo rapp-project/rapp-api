@@ -1,6 +1,13 @@
 # RAPP API (C++14)
 -----------------------
 
+1. [Building](#Building)
+1. [Options](#options)
+1. [Installing](#installing)
+1. [Testing](#testing)
+1. [Examples](#examples)
+1. [Help](#help)
+
 [![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api)
 
 The RAPP API for C++ uses C++14 features and allows your apps to access the RAPP platform.
@@ -17,7 +24,7 @@ by *daisy-chanining* delegates via subsequent callbacks.
 All callback schemes use the new C++11 `std::function` therefore you can pass 
 *lambdas, function pointers, class members and struct functors* as callbacks.
 
-# Building
+## Building
 
 For the C++ RAPP API, please note you need to satisfy these *dependencies*:
 * A modern C++11 enabled compiler (g++, clang) 
@@ -32,71 +39,80 @@ $ cmake ..
 $ make
 ```
 
+You should end up with a library and/or tests and examples under your build directory.
+
+## Options
+
 *Note* that you can pass a variety of CMake arguments to suit your needs:
 
-* `-DBUILD_RAPP_SHARED_LIBS=ON` enabled by default, will create a shared library
-* `-DBUILD_RAPP_STATIC_LIBS=ON` optional, will create a static library
-* `-DBUILD_TESTS=ON`            optional, compile various tests - run with `make test`
-* `-DBUILD_EXAMPLES=ON`         optional, compile various examples (see directory `build`)
-* `-DCMAKE_BUILD_TYPE=Debug`    optional, enable debug symbols - default is `Release`
-* `-DSTATIC_LIBSTD=ON`          optional, compile statically against `libstdc++`
-* `-DOPEN_NAO=ON`               optional & experimental, building for OpenNAO requires additional flags
+* `-DRAPP_SHARED=ON`		                        (Default: compile a shared librapp)
+* `-DRAPP_STATIC=ON`		                        (Optional: compile a static librapp)
+* `-DBUILD_TESTS=ON`                                (Optional: compile various tests - run with `make test`)
+* `-DBUILD_EXAMPLES=ON`                             (Optional: compile various examples)
+* `-DCMAKE_BUILD_TYPE=Debug`                        (Optional: enable debug symbols)
+* `-DSTATIC_LIBSTD=ON`                              (Optional: compile statically against libstdc++)
+* `-DOPEN_NAO=ON`                                   (Optional: compiling on OpenNAO requires additional CXX flags)
+* `-DCMAKE_INSTALL_PREFIX=/usr`	                    (Optional: specify the library install directory
+* `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl`       (Optional: specify OpenSSL root directory)
+* `-DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/` (Optional: specify OpenSSL library directory)
 
-# Installing
+All of those arguments are optional, however depending on your scenario you may have to adjust.
+For example, building for a NAO robot the convenience flag `-DOPEN_NAO=ON` will create a static library optimising for an ATOM cpu
+using i386 architecture.
 
-You may install if you wish to (as root or with `sudo`):
+## Installing
+
+You may install if you wish to (as root or using `sudo`):
+
 ```
 make install
 ```
 
-The static and shared library will be installed in `/usr/local/lib/`
-whereas the headers are installed in `/usr/local/include/`.
-If you wish to change the location, simply edit the appropriate lines in the `CMakeLists.txt`.
+The produced library will be installed in `/usr/local/lib/` whereas the headers are installed in `/usr/local/include/` by default.
+If you wish to change the location then run:
 
-The global include header is:
 ```
-#include <rapp/rapp>
+-DCMAKE_INSTALL_PREFIX=/otheridr
 ```
 
-You can of course include specific headers if you wish to.
+*Bear in mind* that this only changes the library installation location and **not** the header install location.
 
-To link with the `api` use the `librapp.so` (shared library) or with the static version `librapp.a`.
-For linking instructions, please have a look at CMake helpfiles.
+## Testing
 
-# Testing
+Enable tests when you run cmake by:
 
-Simply run:
+```
+cmake .. -DBUILD_TESTS=ON
+```
+
+This will create a `rapp-api/cpp/build/tests` directory to all the corresponding source files in `rapp-api/cpp/tests`.
+There are three types of tests:
+
+1. JSON (de)serialisation tests.
+2. Class unit tests.
+3. Cloud functionality tests.
+
+To execute them, type:
 
 ```
 make test
 ```
 
-in your build directory.
-Any complains about a file not found, means you have to copy the file from under `testdata` into `build`.
-For cloud tests, you must make sure there is a RAPP platform instance running and accessible, and pointed to
-by your config files.
+## Examples
 
+The source files for the examples are under `/rapp-api/cpp/examples`
 
 # OS with old gcc/g++
 
-Some OSes do not ship with a newer *g++* (versions 4.8 and up), 
-or you may be for whatever reason stuck with an older version.
+Some OSes do not ship with a newer *g++* (versions 4.9 and up), or you may be for whatever reason stuck with an older version.
 
 In this case, and assuming you do not want to build a newer g++ in the Robot OS,
 you can build the API with a statically linked libstdc on another machine, and then transfer the binary file.
 
-To do so use `-DSTATIC_LIBSTD=ON -DBUILD_RAPP_STATIC_LIBS=ON`.
+To do so use the cmake flag `-DRAPP_STATIC=ON` by building on a modern machine with *g++* >= 4.9.
 
-For `OpenNao` you may have to also enable `-DOPEN_NAO=ON` which adds two more link flags (`-lc++ -lcxxrt`)
-and attempts to build for `i386` cpu-architecture.
+## Help
 
-Additional flags should be added in the `CMakeLists.txt` if you plan on doing a *multiarch* compilation.
-For example, building for OpenNAO, might require a `CXXFLAGS -m32` (already included in the `-DOPEN_NAO=ON`).
-
-We haven't as of yet, tested the API on `arm` platforms.
-
-# Bugs/Help
-
-If you run into any bugs or issues, please report them on github, or using [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
+If you run into any bugs or issues, please report them on github. 
+You may chat with us using [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
