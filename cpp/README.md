@@ -99,6 +99,8 @@ To execute them, type:
 make test
 ```
 
+*Warning*: do not run individual tests from within the `/rapp-api/cpp/build/tests` directory!
+
 ## Examples
 
 The source files for the examples are under `/rapp-api/cpp/examples` and if you use the flag `-DBUILD_EXAMPLES=ON` they

@@ -81,8 +81,8 @@ int main()
                                                             audio_src, 
                                                             "en",
                                                             std::vector<std::string>({{jsgf}}),
-                                                            std::vector<std::string>({{"yes", "no"}}),
-                                                            std::vector<std::string>({{}}),
+                                                            std::vector<std::string>({"yes", "no"}),
+                                                            std::vector<std::string>({""}),
                                                             callback);
     return 0;
 }

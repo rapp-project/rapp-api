@@ -37,17 +37,14 @@ std::string read_json_file(const std::string file)
         throw std::runtime_error("empty file param");
     }
     std::ifstream t(file);
-    try {
-        std::string str((std::istreambuf_iterator<char>(t)),
-                         std::istreambuf_iterator<char>());
-        if (str.empty()) {
-            throw std::runtime_error("empty JSON string");
-        }
-        return str;
+    if (t.good()) {
+	std::stringstream buffer;
+	buffer << t.rdbuf();
+	t.close();
+	return buffer.str();
     }
-    catch (std::exception & e) {
-        std::cerr << e.what() << std::endl;
-        return "error";
+    else {
+        throw std::runtime_error("failed to open ifsteam");
     }
 }
 
@@ -96,7 +93,7 @@ BOOST_AUTO_TEST_CASE(point_json_test)
     BOOST_CHECK_EQUAL(point_obj.y, 0.9999999776482582);
     BOOST_CHECK_EQUAL(point_obj.z, 0.0);
 
-    nlohmann::json::object_t out = {{ "position", point_obj.to_json() }};
+    nlohmann::json::object_t out = {{"position", point_obj.to_json()}};
     BOOST_CHECK(json == out);
 }
 

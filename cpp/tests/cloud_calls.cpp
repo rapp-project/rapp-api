@@ -1,5 +1,6 @@
 #define BOOST_TEST_MODULE ServiceTest
 #include <boost/test/unit_test.hpp>
+#include <fstream>
 #include "../includes/misc/json.hpp"
 #include "../includes/cloud/service_controller/service_controller.hpp"
 #include "../includes/cloud/available_services/available_services.hpp"
@@ -180,40 +181,51 @@ BOOST_AUTO_TEST_CASE(geolocation_cloud_test)
 BOOST_AUTO_TEST_CASE(navigation_cloud_test)
 {
     //Load a json file into a string
-    std::ifstream file("tests/data/json_classes_planned_path.json");
-    std::string json_str((std::istreambuf_iterator<char>(file)),
-                          std::istreambuf_iterator<char>());
-    try {
-         if (json_str.empty()) {
-            throw std::runtime_error("empty JSON string");
-        }
+    std::ifstream t("tests/data/json_classes_planned_path.json");
+    std::string json_string;
+    if (t.good()) {
+        std::stringstream buffer;
+        buffer << t.rdbuf();
+        t.close();
+        json_string = buffer.str();
     }
-    catch (std::exception & e) {
-        std::cerr << e.what() << std::endl;
+    else {
+        throw std::runtime_error("failed to open ifsteam");
     }
     //plan_path_2d
     auto path_call = [] (rapp::object::planned_path pp) {
-        std::chrono::nanoseconds t(1464949299093018853);
-        auto time0 = rapp::object::time(t);
-        auto header0 = rapp::object::msg_metadata(0 , time0, "map");
-        auto quat =rapp::object::quaternion(0, 
+        std::chrono::nanoseconds tim2(1464949299093018853);
+        auto time1 = rapp::object::time(tim2);
+        auto header1 = rapp::object::msg_metadata(0 , time1, "map");
+        auto quat1 = rapp::object::quaternion(0, 
                                             0, 
                                             0.17576372515799546, 
                                             0.9844323810798712);
 
-        auto point = rapp::object::point(0.9999999776482582, 
+        auto point1 = rapp::object::point(0.9999999776482582, 
                                          0.9999999776482582, 
                                          0);
-
-        auto pose0 = rapp::object::pose( point, quat);
-        auto ps_obj0 = rapp::object::pose_stamped(header0, pose0);
-        BOOST_CHECK(pp.get_path().at(0) == ps_obj0);
+        auto pose1 = rapp::object::pose(point1, quat1);
+        auto ps_obj1 = rapp::object::pose_stamped(header1, pose1);
+        BOOST_CHECK(pp.get_path().at(0) == ps_obj1);
         BOOST_CHECK_EQUAL(pp.get_plan(), 1);
     };
-    rapp::object::pose_stamped start;
-    rapp::object::pose_stamped goal;
+    std::chrono::nanoseconds tim(1464949299093018853);
+    auto time0 = rapp::object::time(tim);
+    auto header0 = rapp::object::msg_metadata(0 , time0, "map");
+    auto quat = rapp::object::quaternion(0, 
+                                        0, 
+                                        0.17576372515799546, 
+                                        0.9844323810798712);
+
+    auto point = rapp::object::point(0.9999999776482582, 
+                                     0.9999999776482582, 
+                                     0);
+    auto pose0 = rapp::object::pose(point, quat);
+    rapp::object::pose_stamped start(header0, pose0);
+    rapp::object::pose_stamped goal(header0, pose0);
     rapp::cloud::plan_path_2d pp2d("map", "robot", "algorithm", start, goal, path_call);
-    pp2d.deserialise(json_str);
+    pp2d.deserialise(json_string);
     //path_upload_map
     auto upload_call = [] (std::string error) {
         BOOST_CHECK_EQUAL(error, "");
