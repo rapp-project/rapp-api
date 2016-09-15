@@ -37,9 +37,14 @@ int main(int argc, char* argv[])
      */
     auto callb = [](std::string error) { 
         if(error.empty()) {
-            std::cout << "Message sent correctly"; 
+            std::cout << "Message sent correctly" << std::endl; 
         }
     };
+    
+    /*
+     * We can attach files to the email, in this case, an image.
+     */
+    auto pic = rapp::object::picture("data/object_classes_picture_1.png");
 
     /*
      * The following example will send an email using your credentials.
@@ -50,15 +55,16 @@ int main(int argc, char* argv[])
     ctrl.make_call<rapp::cloud::email_send>("rappemailtest@gmail.com",
                                             "XXX",
                                             "smtp.gmail.com",
-                                            "465",
-                                            std::vector<std::string>({{"m.ramos@ortelio.co.uk"}}),
+                                            "587",
+                                            std::vector<std::string>({{"your@email.com"}}),
                                             "body mail",
                                             "test",
+                                            pic.bytearray(),
                                             callb);
     /*
      * The following example will fetch your email from the server, using \param email address,
      * The \param 1469865600 is a UNIX timestamp equivalent to:07/30/2016 @ 8:00am (UTC)
-     * The \param 1473292800 is a UNIX timestamp equivalent to:09/08/2016 @ 0:00am (UTC)
+     * The \param 1473940800 is a UNIX timestamp equivalent to:09/15/2016 @ 12:00am (UTC)
      */
     auto call_fetch = [](std::vector<std::tuple<std::string, 
                                                 std::vector<std::string>,
@@ -71,9 +77,9 @@ int main(int argc, char* argv[])
                                              "XXX",
                                              "imap.gmail.com",
                                              "993",
-                                             "UNSEEN",
+                                             "ALL",
                                              1470009600, 
-                                             1473352399,
-                                             5,
+                                             1473940800,
+                                             7,
                                              call_fetch);
 } 
