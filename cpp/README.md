@@ -100,6 +100,9 @@ make test
 ```
 
 *Warning*: do not run individual tests from within the `/rapp-api/cpp/build/tests` directory!
+*NOTE*: all examples and test have been checked with `valgrind --leak-check=full` under Ubuntu 14.04 and found
+to have no memory leaks or segfaults.
+If you do happen to run across such issues, please report them on GitHub.
 
 ## Examples
 
