@@ -91,17 +91,6 @@ set (SOURCES ${SOURCES}
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
 
-###
-# Find Boost - we use it for a variety of operations
-#
-find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex filesystem REQUIRED)
-if (Boost_FOUND)
-		
-		set(Boost_USE_STATIC_LIBS OFF)
-    include_directories(${Boost_INCLUDE_DIR})
-    message(STATUS "Using Boost Version: ${Boost_VERSION}")
-    message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
-endif()
 
 ###
 # Find libcrypt / libssl - we use it for TLS/SSL sockets
@@ -123,22 +112,38 @@ add_library(lrapp OBJECT ${SOURCES})
 #   Static Library - only if asked - may be needed for NAO, Intel Atom, older ARM platforms
 ###
 if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
+    # set target, add library - link with Boost and OpenSSL
+    set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
+
+    ###
+    # Find Boost - we use it for a variety of operations
+    #
+    message(STATUS "Searching for static Boost")
+    set_target_properties(${LIBTARGET} PROPERTIES LINK_SEARCH_START_STATIC 1)
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+    find_package(Boost 1.49 COMPONENTS system REQUIRED)
+    if (Boost_FOUND)
+        set(Boost_USE_STATIC_LIBS ON)
+        set(BUILD_SHARED_LIBS OFF)
+        include_directories(${Boost_INCLUDE_DIR})
+        message(STATUS "Using Boost Version: ${Boost_VERSION}")
+        message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
+        target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+    endif()
+    set_target_properties(${LIBTARGET} PROPERTIES LINK_SEARCH_END_STATIC 1)
+
     set(Boost_USE_STATIC_LIBS ON)
     set(BUILD_SHARED_LIBS OFF)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
-    # static library - platform target (if this is running from Darwin/OSX it will fail without `i386-elf-gcc`)
-    # for more info see: https://www.danirod.es/blog/i386-elf-gcc-on-mac.html
-    # if the host platform is Linux/GCC then by default it will produce ELF 32bit binaries.
+
     if (${RAPP_STATIC})
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -fPIC")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
     # static library - atom CPU - same as before, ELF targets need Linux/GCC host platform
     elseif (${OPEN_NAO})
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -fPIC -m32 -march=atom -mtune=atom")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC -march=atom -mtune=atom")
     endif()
-    # set target, add library - link with Boost and OpenSSL
-    set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static)
-    add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-    target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+
     message(STATUS "Building Static library: lib${LIBTARGET}")
     # install library
     install(TARGETS ${LIBTARGET}  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
@@ -148,10 +153,23 @@ if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
 #   Shared Library - By default
 ###
 else()
+    ###
+    # Find Boost - we use it for a variety of operations
+    #
+    message(STATUS "Searching for shared Boost")
+    find_package(Boost 1.49 COMPONENTS system REQUIRED)
+    if (Boost_FOUND)
+        set(Boost_USE_STATIC_LIBS OFF)
+        set(BUILD_SHARED_LIBS OFF)
+        include_directories(${Boost_INCLUDE_DIR})
+        message(STATUS "Using Boost Version: ${Boost_VERSION}")
+        message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
+    endif()
+
     # use shared boost - build shared libs - set correct flags
     set(Boost_USE_STATIC_LIBS OFF)
     set(BUILD_SHARED_LIBS ON)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -Wall -fPIC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
     # build library first
     set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
@@ -187,6 +205,7 @@ install(DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAM
 #   build tests - run with `make test`
 ###
 if (${BUILD_TESTS})
+    find_package(Boost 1.49 COMPONENTS unit_test_framework REQUIRED)
     enable_testing()
     set(TESTS ${TESTS} tests)
     set(TESTFILES ${TESTFILES} asio_classes.cpp 
@@ -205,6 +224,7 @@ if (${BUILD_TESTS})
     foreach(ITEM ${TESTFILES})
         string(REPLACE ".cpp" "" TARGET ${ITEM})
         add_executable(${TARGET} ${TESTS}/${ITEM})
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
         target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET})
         add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
         add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})

@@ -44,11 +44,12 @@ inline std::string random_boundary()
     std::string chars("abcdefghijklmnopqrstuvwxyz"
                       "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                       "1234567890");
-    boost::random::random_device rng;
+    std::random_device rng;
+    std::mt19937 gen(rng());
     std::string uid;
 
     // Randomly chose 16 characters
-    boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
+    std::uniform_int_distribution<> index_dist(0, (chars.size() - 1));
     for (int i = 0; i < 16; ++i){
         uid.push_back(chars[index_dist(rng)]);
     }

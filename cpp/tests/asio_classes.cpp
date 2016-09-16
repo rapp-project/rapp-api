@@ -43,20 +43,6 @@ BOOST_AUTO_TEST_SUITE(cloud_classes_test)
  */
 BOOST_AUTO_TEST_CASE(cloud_response_test)
 {
-
-    std::string buf = "Buffer_Example";
-    auto obj1 = std::make_unique<rapp::cloud::http_response>(buf);
-    BOOST_CHECK(obj1);
-    auto obj2 = std::make_unique<rapp::cloud::http_response>(buf);
-    BOOST_CHECK(obj2);
-    BOOST_CHECK_EQUAL(obj2->to_string(), obj1->to_string());
-
-    auto obj3 = std::make_unique<rapp::cloud::http_response>(buf);
-    std::string str_obj3 = obj3->to_string();
-    std::string str_hard = "Buffer_Example";
-
-    BOOST_CHECK_EQUAL(str_obj3, str_hard);
-
     // header has zero content-length
     std::string hardcoded_header = "GET /tutorials/other/top-20-mysql-best-practices/ HTTP/1.1\r\n"; 
                 hardcoded_header += "Host: net.tutsplus.com\r\n";
@@ -65,16 +51,17 @@ BOOST_AUTO_TEST_CASE(cloud_response_test)
                 hardcoded_header += "Content-Length: 9\r\n";
                 hardcoded_header += "Cache-Control: no-cache\r\n\r\n";
 
-    unsigned int length = 0;
-    unsigned int length_response = obj1->content_length();
-    BOOST_CHECK_EQUAL(length, length_response);
+    std::string buf = hardcoded_header;
+    auto obj1 = std::make_unique<rapp::cloud::http_response>(buf);
 
-    auto obj4 = std::make_unique<rapp::cloud::http_response>(hardcoded_header);
-    BOOST_CHECK(obj4);
+    BOOST_CHECK(obj1);
+    BOOST_CHECK_EQUAL(9, obj1->content_length());
 
-    unsigned int length2 = 9;
-    unsigned int length_response2 = obj4->content_length();
-    BOOST_CHECK_EQUAL(length2, length_response2);
+    auto obj2 = std::make_unique<rapp::cloud::http_response>(buf);
+    BOOST_CHECK(obj2);
+    BOOST_CHECK_EQUAL(9, obj2->content_length());
+
+    //BOOST_CHECK_EQUAL(*obj2, *obj1);
 }
 
 /**

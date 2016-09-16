@@ -16,32 +16,24 @@ http_response::http_response(std::string arg)
 unsigned int http_response::content_length()
 {
     if (!once_) {
-        http_response::reply_string = to_string();
+        using namespace boost::algorithm;
+        reply_string = to_string();
+        std::vector<std::string> lines;
+        boost::split(lines, reply_string, boost::is_any_of("\r\n"));
+        
+        auto it = std::find_if(lines.begin(), lines.end(), [](std::string line) {
+            return icontains<std::string, std::string>(line, "Content-Length");
+        });
 
-        // NOTE: A BOOST REGEX is a BAD choice, it is slow - replace this with a non-regex solution!
-        static const boost::regex reg("Content-Length:\\s[-0-9]+", boost::regex::icase);
-        boost::match_results<std::string::const_iterator> results;
-
-        // TODO: search for the `Content-Length:` keyword
-        //       get the sustring from the end of it, to the first \r\n
-        //       try casting it to an unsigned integer
-
-        // search for matching regex
-        if (boost::regex_search(reply_string, results, reg)) {
-            if (results.size() > 0) {
-                std::string key = results[0];
-                key.erase(std::remove(key.begin(), key.end(), '\n'), key.end());
-
-                // find the `: `
-                std::string hay = ": ";
-                std::size_t i = key.find(hay);
-                if (i != std::string::npos) {
-                    content_length_ = boost::lexical_cast<std::size_t>(key.substr(i+hay.size(), 
-                                                                       std::string::npos));
-                }
-            }
+        if (it != lines.end()) {
+            std::string line = *it;
+            std::size_t begin = line.find(":") + 1;
+            std::size_t end = line.find("\r\n");
+            std::string key = line.substr(begin, (end - begin));
+            key.erase(std::remove_if(key.begin(), key.end(), ::isspace), key.end());
+            content_length_ = boost::lexical_cast<unsigned int>(key);
+            once_ = true;
         }
-        once_ = true;
     }
 	return content_length_;
 }
