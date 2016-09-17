@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-
-add_subdirectory(cloud)
-add_subdirectory(config)
-add_subdirectory(misc)
-add_subdirectory(objects)

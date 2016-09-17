@@ -20,21 +20,20 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 
-#include "../includes/objects/human/human.hpp"
-#include "../includes/objects/face/face.hpp"
-#include "../includes/objects/qr_code/qr_code.hpp"
-#include "../includes/objects/picture/picture.hpp"
-#include "../includes/objects/audio/audio.hpp"
-#include "../includes/objects/time/time.hpp"
-#include "../includes/objects/point/point.hpp"
-#include "../includes/objects/quaternion/quaternion.hpp"
-#include "../includes/objects/pose/pose.hpp"
-#include "../includes/objects/msg_metadata/msg_metadata.hpp"
-#include "../includes/objects/pose_stamped/pose_stamped.hpp"
-#include "../includes/objects/planned_path/planned_path.hpp"
+#include <rapp/objects/human.hpp>
+#include <rapp/objects/face.hpp>
+#include <rapp/objects/qr_code.hpp>
+#include <rapp/objects/picture.hpp>
+#include <rapp/objects/audio.hpp>
+#include <rapp/objects/time.hpp>
+#include <rapp/objects/point.hpp>
+#include <rapp/objects/quaternion.hpp>
+#include <rapp/objects/pose.hpp>
+#include <rapp/objects/msg_metadata.hpp>
+#include <rapp/objects/pose_stamped.hpp>
+#include <rapp/objects/planned_path.hpp>
 
 BOOST_AUTO_TEST_SUITE(object_classes_test)
-
 
 /**
  * \brief TEST for time object

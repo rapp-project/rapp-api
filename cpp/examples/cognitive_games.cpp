@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "../includes/cloud/service_controller/service_controller.hpp"
-#include "../includes/cloud/cognitive_exercises/cognitive_exercises.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/cognitive_exercises.hpp>
 #include <iostream>
 /*
  * \brief Example for all cognitive classes

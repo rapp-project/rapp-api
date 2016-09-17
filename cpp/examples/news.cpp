@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/news/news.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/news.hpp>
 /*
  *\brief Example of how to get news about what you need  
  */

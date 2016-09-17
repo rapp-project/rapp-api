@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/vision/detection.hpp"
-#include "objects/picture/picture.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/vision_detection.hpp>
+#include <rapp/objects/picture.hpp>
 /*
  * \brief example to detect humans in a image 
  */

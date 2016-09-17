@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/available_services/available_services.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/available_services.hpp>
 #include <iostream>
 /*
  * \brief Example to show how available_services works

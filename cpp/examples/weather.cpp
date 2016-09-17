@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/weather_report/weather_report.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/weather_report.hpp>
 /*
  * \brief Example to take the weather report of a city 
  */

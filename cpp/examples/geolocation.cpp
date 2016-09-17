@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/geolocation/geolocation.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/geolocation.hpp>
 #include <iostream>
 /*
  * \brief The following example shows how to take the geolocation

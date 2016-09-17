@@ -1,8 +1,0 @@
-#include <vector>
-#include <string>
-#include <unordered_set>
-
-#include "objects/pose_stamped/pose_stamped.hpp"
-#include "misc/json.hpp"
-
-using json = nlohmann::json;

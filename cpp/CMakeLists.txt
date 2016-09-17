@@ -36,7 +36,7 @@ set(LIBRARY_PATH ${LIBRARY_PATH}
 # header paths
 set(INCLUDE_HEADERS ${INCLUDE_HEADERS} /usr/include/)
 include_directories(SYSTEM ${INCLUDE_HEADERS})
-set(INCLUDES ${INCLUDES} includes)
+set(INCLUDES ${INCLUDES} rapp)
 
 # set root at `/includes`
 add_subdirectory(${INCLUDES})
@@ -45,52 +45,48 @@ set(CMAKE_MACOSX_RPATH 1)
 message("Build directory: ${CMAKE_CURRENT_BINARY_DIR}")
 
 # include everything from "/includes"
-include_directories("includes")
+include_directories(".")
 
 # Library-only Executables -
 set (SOURCES ${SOURCES} 
-            ${INCLUDES}/cloud/asio/asio_timer.cpp
-            ${INCLUDES}/cloud/asio/asio_http.cpp
-            ${INCLUDES}/cloud/asio/asio_https.cpp
-            ${INCLUDES}/cloud/asio/http_header.cpp
-            ${INCLUDES}/cloud/asio/http_post.cpp
-            ${INCLUDES}/cloud/asio/http_request.cpp
-            ${INCLUDES}/cloud/asio/http_response.cpp
-
-            ${INCLUDES}/config/config.cpp
-            ${INCLUDES}/objects/time/time.cpp
-            ${INCLUDES}/objects/quaternion/quaternion.cpp
-            ${INCLUDES}/objects/point/point.cpp
-            ${INCLUDES}/objects/pose/pose.cpp
-            ${INCLUDES}/objects/msg_metadata/msg_metadata.cpp
-            ${INCLUDES}/objects/pose_stamped/pose_stamped.cpp
-            ${INCLUDES}/objects/planned_path/planned_path.cpp
-            ${INCLUDES}/objects/human/human.cpp
-            ${INCLUDES}/objects/face/face.cpp
-            ${INCLUDES}/objects/picture/picture.cpp
-            ${INCLUDES}/objects/audio/audio.cpp
-            ${INCLUDES}/objects/qr_code/qr_code.cpp
-
-            ${INCLUDES}/cloud/available_services/available_services.cpp
-            ${INCLUDES}/cloud/cognitive_exercises/cognitive_exercises.cpp
-            ${INCLUDES}/cloud/email/email.cpp
-            ${INCLUDES}/cloud/geolocation/geolocation.cpp
-            ${INCLUDES}/cloud/ontology/ontology.cpp
-            ${INCLUDES}/cloud/vision/detection.cpp
-            ${INCLUDES}/cloud/vision/recognition.cpp
-            ${INCLUDES}/cloud/weather_report/weather_report.cpp
-            ${INCLUDES}/cloud/navigation/path_planning/path_planning.cpp
-            ${INCLUDES}/cloud/news/news.cpp
-            ${INCLUDES}/cloud/speech/set_noise_profile.cpp
-            ${INCLUDES}/cloud/speech/speech_recognition_google.cpp
-            ${INCLUDES}/cloud/speech/speech_recognition_sphinx4.cpp
-            ${INCLUDES}/cloud/speech/text_to_speech.cpp
-            )
+             ${INCLUDES}/cloud/asio/asio_timer.cpp
+             ${INCLUDES}/cloud/asio/asio_http.cpp
+             ${INCLUDES}/cloud/asio/asio_https.cpp
+             ${INCLUDES}/cloud/asio/http_header.cpp
+             ${INCLUDES}/cloud/asio/http_post.cpp
+             ${INCLUDES}/cloud/asio/http_request.cpp
+             ${INCLUDES}/cloud/asio/http_response.cpp
+             ${INCLUDES}/config/config.cpp
+             ${INCLUDES}/objects/time.cpp
+             ${INCLUDES}/objects/quaternion.cpp
+             ${INCLUDES}/objects/pose.cpp
+             ${INCLUDES}/objects/point.cpp
+             ${INCLUDES}/objects/msg_metadata.cpp
+             ${INCLUDES}/objects/pose_stamped.cpp
+             ${INCLUDES}/objects/planned_path.cpp
+             ${INCLUDES}/objects/human.cpp
+             ${INCLUDES}/objects/face.cpp
+             ${INCLUDES}/objects/picture.cpp
+             ${INCLUDES}/objects/audio.cpp
+             ${INCLUDES}/objects/qr_code.cpp
+             ${INCLUDES}/cloud/available_services.cpp
+             ${INCLUDES}/cloud/cognitive_exercises.cpp
+             ${INCLUDES}/cloud/email.cpp
+             ${INCLUDES}/cloud/geolocation.cpp
+             ${INCLUDES}/cloud/ontology.cpp
+             ${INCLUDES}/cloud/vision_detection.cpp
+             ${INCLUDES}/cloud/vision_recognition.cpp
+             ${INCLUDES}/cloud/weather_report.cpp
+             ${INCLUDES}/cloud/path_planning.cpp
+             ${INCLUDES}/cloud/news.cpp
+             ${INCLUDES}/cloud/set_noise_profile.cpp
+             ${INCLUDES}/cloud/speech_recognition_google.cpp
+             ${INCLUDES}/cloud/speech_recognition_sphinx4.cpp
+             ${INCLUDES}/cloud/text_to_speech.cpp )
 
 # Begin searching for packgages we use in RAPP API
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
-
 
 ###
 # Find libcrypt / libssl - we use it for TLS/SSL sockets
@@ -111,7 +107,7 @@ add_library(lrapp OBJECT ${SOURCES})
 ###
 #   Static Library - only if asked - may be needed for NAO, Intel Atom, older ARM platforms
 ###
-if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
+if (${RAPP_STATIC})
     # set target, add library - link with Boost and OpenSSL
     set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
@@ -119,7 +115,6 @@ if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
     ###
     # Find Boost - we use it for a variety of operations
     #
-    message(STATUS "Searching for static Boost")
     set_target_properties(${LIBTARGET} PROPERTIES LINK_SEARCH_START_STATIC 1)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
     find_package(Boost 1.49 COMPONENTS system REQUIRED)
@@ -127,28 +122,41 @@ if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
         set(Boost_USE_STATIC_LIBS ON)
         set(BUILD_SHARED_LIBS OFF)
         include_directories(${Boost_INCLUDE_DIR})
-        message(STATUS "Using Boost Version: ${Boost_VERSION}")
-        message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
         target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     endif()
     set_target_properties(${LIBTARGET} PROPERTIES LINK_SEARCH_END_STATIC 1)
 
-    set(Boost_USE_STATIC_LIBS ON)
-    set(BUILD_SHARED_LIBS OFF)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
 
-    if (${RAPP_STATIC})
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
-    # static library - atom CPU - same as before, ELF targets need Linux/GCC host platform
-    elseif (${OPEN_NAO})
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC -march=atom -mtune=atom")
+###
+#  Open Nao requires special instructions for ATOM
+###
+elseif(${OPEN_NAO})
+    ###
+    # set target, add library - link with Boost and OpenSSL
+    #
+    set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
+
+    ###
+    # Find Boost - we use it for a variety of operations
+    #
+    find_package(Boost 1.55 COMPONENTS system REQUIRED)
+    if (Boost_FOUND)
+        set(Boost_USE_STATIC_LIBS OFF)
+        set(BUILD_SHARED_LIBS ON)
+        include_directories(${Boost_INCLUDE_DIR})
+        target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     endif()
 
-    message(STATUS "Building Static library: lib${LIBTARGET}")
-    # install library
-    install(TARGETS ${LIBTARGET}  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-    # symbolic link library version to the generic name
-    install(CODE "EXECUTE_PROCESS(COMMAND ln -sf lib${LIBTARGET} librapp.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
+    ###
+    #
+    #
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC -O3 -ffast-math -march=atom -mtune=atom -mfpmath=sse -m32 -ffast-math")
+    # -flto -funroll-loops -mfpmath=sse -fschedule-insns -fsched-pressure
+    # ^^ more optimisations
 ###
 #   Shared Library - By default
 ###
@@ -156,50 +164,50 @@ else()
     ###
     # Find Boost - we use it for a variety of operations
     #
-    message(STATUS "Searching for shared Boost")
     find_package(Boost 1.49 COMPONENTS system REQUIRED)
     if (Boost_FOUND)
         set(Boost_USE_STATIC_LIBS OFF)
         set(BUILD_SHARED_LIBS OFF)
         include_directories(${Boost_INCLUDE_DIR})
-        message(STATUS "Using Boost Version: ${Boost_VERSION}")
-        message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
     endif()
 
     # use shared boost - build shared libs - set correct flags
     set(Boost_USE_STATIC_LIBS OFF)
     set(BUILD_SHARED_LIBS ON)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
+
     # build library first
     set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+    #set_target_properties(${LIBTARGET} PROPERTIES INSTALL_oPATH "${CMAKE_INSTALL_PREFIX}/lib")
+
     message(STATUS "Building Shared library: lib${LIBTARGET}")
-    # install library 
-	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-    # symbolic link library version to the generic name
-    install(CODE "EXECUTE_PROCESS(COMMAND ln -sf lib${LIBTARGET} librapp.so WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
+
 endif()
 
-###
-#   Installation Directory - default or user defined
-###
-# user has set install location
-if (CMAKE_INSTALL_PREFIX)
-	message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}`")
-# user did not set it - revert to "/usr/local"
-else()
-	set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} "/usr/local/")
-    message(STATUS "Installing library in `${CMAKE_INSTALL_PREFIX}`")
-endif()	
 
-# Produce message
-if (CMAKE_INSTALL_PREFIX)
-	message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include`")
-endif()
+message(STATUS "Using Boost Version: ${Boost_VERSION}")
+message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 
-# Header install dir
-install(DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+###
+# RPATH
+#
+set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+
+# install library 
+install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+
+# symbolic link library version to the generic name
+install(CODE "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/lib${LIBTARGET}.so ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
+message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}`")
+
+# Headers go under /usr/loca/include
+message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include`")
+install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
 
 ###
 #   build tests - run with `make test`
@@ -207,6 +215,7 @@ install(DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAM
 if (${BUILD_TESTS})
     find_package(Boost 1.49 COMPONENTS unit_test_framework REQUIRED)
     enable_testing()
+    add_definitions(-DBOOST_TEST_DYN_LINK)
     set(TESTS ${TESTS} tests)
     set(TESTFILES ${TESTFILES} asio_classes.cpp 
                                json_classes.cpp 
@@ -272,44 +281,47 @@ if (${BUILD_EXAMPLES})
     foreach(ITEM ${EXAMPLES})
         string(REPLACE ".cpp" "" TARGET ${ITEM})
         add_executable(${TARGET} ${EXAMPLE_DIR}/${ITEM})
-        target_link_libraries(${TARGET} ${LIBTARGET})
+        target_link_libraries(${TARGET} ${LIBTARGET} ${CMAKE_THREAD_LIBS_INIT})
         add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${EXAMPLE_DIR}/.)
         add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
     endforeach(ITEM)
-
 else()
     message(STATUS "Not Building examples. Enable them with `-DBUILD_EXAMPLES=ON`")
 endif()
 
-
-ADD_DEFINITIONS(-DBOOST_TEST_DYN_LINK) 
+####
 set(CMAKE_COLOR_MAKEFILE on)
 set(CMAKE_VERBOSE_MAKEFILE off)
 
+####
 # Get from arguments if Debug is requested
+#
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_BUILD_TYPE Debug)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     message(STATUS "Building: ${CMAKE_BUILD_TYPE}. Ommit flag to change to `Release`")
 else()
     set(CMAKE_BUILD_TYPE Release)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
     message(STATUS "Building: ${CMAKE_BUILD_TYPE}. Add flag `-DCMAKE_BUILD_TYPE=Debug` to switch to `Debug`")
 endif()
 
 message (STATUS "Platform is `${CMAKE_SYSTEM_NAME}`" )
 
-# Linux should be the default OS/Platform for RAPP::API
+####
+# Linux should be the default OS/Platform for RAPP::API 
+# We need g++ 4.9 or higher, else json won't work
+# We could support 4.8.4 using c++1y only if we change json library.
+#
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # get compiler version
     execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
     # Check GCC supports C++14
     if (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9)
-        message(STATUS "COMPILER: g++ version >= 4.9 using C++14")  
+        message(STATUS "Compiler: g++ version >= 4.9 using C++14")  
     elseif ()
         message (FATAL_ERROR "g++ version >= 4.9 is required")
     endif()
-    
 # OSX platform
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     # get clang version
@@ -319,11 +331,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     elseif ()
         message(FATAL_ERROR "Clang version >= 3.0 is required")
     endif()
-
 # Intel Compiler May run on Linux - Maybe we should support it
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     message (FATAL_ERROR "unsupported compiler")
-
 # We cannot support Microsoft Visual Studio - We cannot support Win32 platforms
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message (FATAL_ERROR "unsupported compiler")

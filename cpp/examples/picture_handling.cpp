@@ -1,4 +1,4 @@
-#include "objects/picture/picture.hpp"
+#include <rapp/objects/picture.hpp>
 #include <memory>
 ///
 /// Open a picture and load it into an object

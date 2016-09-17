@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "cloud/service_controller/service_controller.hpp"
-#include "objects/picture/picture.hpp"
-#include "cloud/email/email.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/objects/picture.hpp>
+#include <rapp/cloud/email.hpp>
 #include <iostream>
 
 int main(int argc, char* argv[])

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/speech/text_to_speech.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/text_to_speech.hpp>
 /*
  * \brief Example to recognise words from an audio file with Google 
  */

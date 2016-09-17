@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/vision/detection.hpp"
-#include "objects/picture/picture.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/vision_detection.hpp>
+#include <rapp/objects/picture.hpp>
 /*
  * \brief example to detect faces in a picture
  */

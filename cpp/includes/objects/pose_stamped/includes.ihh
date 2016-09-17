@@ -1,5 +1,0 @@
-#include "objects/pose/pose.hpp"
-#include "objects/msg_metadata/msg_metadata.hpp"
-#include "misc/json.hpp"
-
-using json = nlohmann::json;

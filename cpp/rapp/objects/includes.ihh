@@ -1,0 +1,16 @@
+#include <iostream>
+#include <istream>
+#include <ostream>
+#include <fstream>
+#include <vector> 
+#include <stdexcept>
+#include <typeinfo>
+#include <unordered_set>
+#include <chrono>
+
+#include <boost/algorithm/string.hpp> 
+
+//#include <rapp/objects/globals.hpp>
+#include <rapp/misc/json.hpp>
+
+using json = nlohmann::json; 

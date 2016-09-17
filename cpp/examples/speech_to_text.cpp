@@ -1,6 +1,6 @@
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/speech/speech_detection_sphinx4/speech_detection_sphinx4.hpp"
-#include "objects/audio/audio.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/speech_detection_sphinx4.hpp>
+#include <rapp/objects/audio.hpp>
 #include <boost/program_options.hpp>
 #include <string>
 #include <fstream>

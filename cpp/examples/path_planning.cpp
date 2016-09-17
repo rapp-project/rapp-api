@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/navigation/path_planning/path_planning.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/path_planning.hpp>
 /*
  * \brief Example for upload a map and find a path for a robot
  * between two points in that map.

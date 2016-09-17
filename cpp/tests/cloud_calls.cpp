@@ -1,21 +1,21 @@
 #define BOOST_TEST_MODULE ServiceTest
 #include <boost/test/unit_test.hpp>
 #include <fstream>
-#include "../includes/misc/json.hpp"
-#include "../includes/cloud/service_controller/service_controller.hpp"
-#include "../includes/cloud/available_services/available_services.hpp"
-#include "../includes/cloud/cognitive_exercises/cognitive_exercises.hpp"
-#include "../includes/cloud/geolocation/geolocation.hpp"
-#include "../includes/cloud/navigation/path_planning/path_planning.hpp"
-#include "../includes/cloud/news/news.hpp"
-#include "../includes/cloud/ontology/ontology.hpp"
-#include "../includes/cloud/speech/speech_recognition_google.hpp"
-#include "../includes/cloud/speech/speech_recognition_sphinx4.hpp"
-#include "../includes/cloud/speech/text_to_speech.hpp"
-#include "../includes/cloud/vision/detection.hpp"
-#include "../includes/cloud/vision/recognition.hpp"
-#include "../includes/cloud/weather_report/weather_report.hpp"
-#include "../includes/cloud/email/email.hpp"
+#include <rapp/misc/json.hpp>
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/available_services.hpp>
+#include <rapp/cloud/cognitive_exercises.hpp>
+#include <rapp/cloud/geolocation.hpp>
+#include <rapp/cloud/path_planning.hpp>
+#include <rapp/cloud/news.hpp>
+#include <rapp/cloud/ontology.hpp>
+#include <rapp/cloud/speech_recognition_google.hpp>
+#include <rapp/cloud/speech_recognition_sphinx4.hpp>
+#include <rapp/cloud/text_to_speech.hpp>
+#include <rapp/cloud/vision_detection.hpp>
+#include <rapp/cloud/vision_recognition.hpp>
+#include <rapp/cloud/weather_report.hpp>
+#include <rapp/cloud/email.hpp>
 
 BOOST_AUTO_TEST_SUITE (cloud_calls)
 

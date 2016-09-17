@@ -18,16 +18,16 @@
 #include <iostream>
 #include <fstream>
 #include <boost/test/unit_test.hpp>
-#include "../includes/misc/json.hpp"
-#include "../includes/objects/time/time.hpp"
-#include "../includes/objects/point/point.hpp"
-#include "../includes/objects/quaternion/quaternion.hpp"
-#include "../includes/objects/pose/pose.hpp"
-#include "../includes/objects/msg_metadata/msg_metadata.hpp"
-#include "../includes/objects/pose_stamped/pose_stamped.hpp"
-#include "../includes/objects/planned_path/planned_path.hpp"
-#include "../includes/objects/human/human.hpp"
-#include "../includes/objects/face/face.hpp"
+#include <rapp/misc/json.hpp>
+#include <rapp/objects/time.hpp>
+#include <rapp/objects/point.hpp>
+#include <rapp/objects/quaternion.hpp>
+#include <rapp/objects/pose.hpp>
+#include <rapp/objects/msg_metadata.hpp>
+#include <rapp/objects/pose_stamped.hpp>
+#include <rapp/objects/planned_path.hpp>
+#include <rapp/objects/human.hpp>
+#include <rapp/objects/face.hpp>
 
 /// \brief function to read a json file and it is converted 
 //  into a string param

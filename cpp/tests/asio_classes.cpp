@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE ObjectTest
+#define BOOST_TEST_MODULE ASIOTest
 /**
  * Copyright 2015 RAPP
  *
@@ -16,12 +16,12 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "../includes/cloud/asio/http_response.hpp"
-#include "../includes/cloud/asio/http_header.hpp"
-#include "../includes/cloud/asio/http_post.hpp"
-#include "../includes/cloud/asio/http_request.hpp"
-#include "../includes/cloud/asio/platform.hpp"
-#include "../includes/objects/picture/picture.hpp"
+#include <rapp/cloud/asio/http_response.hpp>
+#include <rapp/cloud/asio/http_header.hpp>
+#include <rapp/cloud/asio/http_post.hpp>
+#include <rapp/cloud/asio/http_request.hpp>
+#include <rapp/cloud/asio/platform.hpp>
+#include <rapp/objects/picture.hpp>
 
 BOOST_AUTO_TEST_SUITE(cloud_classes_test)
 

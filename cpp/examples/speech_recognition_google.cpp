@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cloud/service_controller/service_controller.hpp"
-#include "cloud/speech/speech_recognition_google.hpp"
-#include "objects/audio/audio.hpp"
+#include <rapp/cloud/service_controller.hpp>
+#include <rapp/cloud/speech_recognition_google.hpp>
+#include <rapp/objects/audio.hpp>
 /*
  * \brief Example to recognise words from an audio file with Google 
  */
