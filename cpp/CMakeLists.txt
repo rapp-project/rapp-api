@@ -14,10 +14,6 @@
 #       -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/ (Optional: specify OpenSSL library directory)
 #
 # After succesfull compilation, run as su/sudo: `make install`
-# Warning: you cannot cross-compile across platforms without having setup both correct universal libraries (e.g., boost i386 on a amd64 system)
-#          as well as the correct tools to compile an ELF from a Darwin/OSX platform.
-#          It is outside the scope of RAPP to do that; if you need to compile for other platforms please make sure you have
-#          setup your environment to do so and then modify this CMakeLists.txt for the correct target platform.
 # 
 PROJECT(rapp)
 set (RAPP_VERSION_MAJOR 0)
@@ -96,7 +92,15 @@ if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
     message(STATUS "Using OpenSSL Version: ${OPENSSL_VERSION}")
 	message(STATUS "OpenSSL Headers: ${OPENSSL_INCLUDE_DIR}")
-    message(STATUS "OpenSSL Libraries: ${OPENSSL_LIBRARIES}")
+endif()
+###
+# Find Boost - we use it for a variety of operations
+#
+find_package(Boost 1.55 COMPONENTS system REQUIRED)
+if (Boost_FOUND)
+	set(Boost_USE_STATIC_LIBS OFF)
+	set(BUILD_SHARED_LIBS ON)
+	include_directories(${Boost_INCLUDE_DIR})
 endif()
 
 ###
@@ -104,110 +108,75 @@ endif()
 #
 add_library(lrapp OBJECT ${SOURCES})
 
+
 ###
-#   Static Library - only if asked - may be needed for NAO, Intel Atom, older ARM platforms
+#   Static Library - only if asked 
+#	Use only if you want complete static linking
 ###
 if (${RAPP_STATIC})
+	#
+	# RPATH
+	#
+	set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+	#
     # set target, add library - link with Boost and OpenSSL
+	#
     set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-
-    ###
-    # Find Boost - we use it for a variety of operations
-    #
-    set_target_properties(${LIBTARGET} PROPERTIES LINK_SEARCH_START_STATIC 1)
-    set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-    find_package(Boost 1.49 COMPONENTS system REQUIRED)
-    if (Boost_FOUND)
-        set(Boost_USE_STATIC_LIBS ON)
-        set(BUILD_SHARED_LIBS OFF)
-        include_directories(${Boost_INCLUDE_DIR})
-        target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
-    endif()
-    set_target_properties(${LIBTARGET} PROPERTIES LINK_SEARCH_END_STATIC 1)
-
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
-
-###
-#  Open Nao requires special instructions for ATOM
-###
+    target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+	#
+	# set linking to fully static (libc, libstdc++, etc)
+	#
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}-static")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
+#
+#####################################################################################
+#  Open NAO: requires special instructions for Intel ATOM
+#  Current NAO is Gentoo 2.6.33.9-rt31-aldebaran-rt
+#
 elseif(${OPEN_NAO})
-    ###
+    #
     # set target, add library - link with Boost and OpenSSL
     #
     set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-    add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
-
+	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
+    target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     ###
-    # Find Boost - we use it for a variety of operations
+	# No need to build static library, but the apps will have to statically link
     #
-    find_package(Boost 1.55 COMPONENTS system REQUIRED)
-    if (Boost_FOUND)
-        set(Boost_USE_STATIC_LIBS OFF)
-        set(BUILD_SHARED_LIBS ON)
-        include_directories(${Boost_INCLUDE_DIR})
-        target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
-    endif()
-
-    ###
-    #
-    #
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC -O3 -ffast-math -march=atom -mtune=atom -mfpmath=sse -m32 -ffast-math")
-    # -flto -funroll-loops -mfpmath=sse -fschedule-insns -fsched-pressure
-    # ^^ more optimisations
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+    set(CMAKE_CXX_FLAGS 
+	"${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC -Os -s -O2 -march=atom -mtune=atom -mfpmath=sse -fschedule-insns -fsched-pressure")
+    # 
 ###
 #   Shared Library - By default
 ###
 else()
-    ###
-    # Find Boost - we use it for a variety of operations
-    #
-    find_package(Boost 1.49 COMPONENTS system REQUIRED)
-    if (Boost_FOUND)
-        set(Boost_USE_STATIC_LIBS OFF)
-        set(BUILD_SHARED_LIBS OFF)
-        include_directories(${Boost_INCLUDE_DIR})
-    endif()
-
+	#
+	# RPATH
+	#
+	set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+	#
     # use shared boost - build shared libs - set correct flags
-    set(Boost_USE_STATIC_LIBS OFF)
-    set(BUILD_SHARED_LIBS ON)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall -fPIC")
-
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
+	#
     # build library first
     set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
-    #set_target_properties(${LIBTARGET} PROPERTIES INSTALL_oPATH "${CMAKE_INSTALL_PREFIX}/lib")
-
+    set_target_properties(${LIBTARGET} PROPERTIES INSTALL_oPATH "${CMAKE_INSTALL_PREFIX}/lib")
     message(STATUS "Building Shared library: lib${LIBTARGET}")
-
+	#
 endif()
-
 
 message(STATUS "Using Boost Version: ${Boost_VERSION}")
 message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
-
-###
-# RPATH
-#
-set(CMAKE_SKIP_BUILD_RPATH  FALSE)
-set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-
-# install library 
-install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-
-# symbolic link library version to the generic name
-install(CODE "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/lib${LIBTARGET}.so ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
-message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}`")
-
-# Headers go under /usr/loca/include
-message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include`")
-install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
 
 ###
 #   build tests - run with `make test`
@@ -242,7 +211,6 @@ if (${BUILD_TESTS})
 else()
     message(STATUS "Not Building tests. Enable them with `-DBUILD_TESTS=ON`")
 endif()
-
 
 ###
 #   build examples
@@ -339,5 +307,32 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message (FATAL_ERROR "unsupported compiler")
 endif()
 
+###
+# Various info
+#
 message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
-message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
+message(STATUS "CXX Link Flags: " ${CMAKE_EXE_LINKER_FLAGS})
+message(STATUS "C compiler: " ${CMAKE_C_COMPILER})
+message(STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
+
+###
+# Install library 
+# BUG: it builds examples even though we didn't ask it to!!!
+#
+install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+#
+# symbolic link library version to the generic name
+#
+if(${RAPP_STATIC})
+	install(CODE 
+			"EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/lib${LIBTARGET}.a ${CMAKE_INSTALL_PREFIX}/lib/librapp.a)")
+else()
+	install(CODE 
+			"EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/lib${LIBTARGET}.so ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
+endif()
+message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
+#
+# Headers go under /usr/loca/include
+#
+install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
+message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
