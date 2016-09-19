@@ -217,6 +217,7 @@ endif()
 ###
 if (${BUILD_EXAMPLES})
     set (EXAMPLES available_services.cpp
+                  batch.cpp
                   face_detect.cpp
                   human_detect.cpp
                   hazard_detect.cpp
