@@ -165,6 +165,7 @@ else()
 	#
     # use shared boost - build shared libs - set correct flags
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 	#
     # build library first
     set(LIBTARGET ${LIBTARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
@@ -202,7 +203,7 @@ if (${BUILD_TESTS})
     foreach(ITEM ${TESTFILES})
         string(REPLACE ".cpp" "" TARGET ${ITEM})
         add_executable(${TARGET} ${TESTS}/${ITEM})
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
         target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET})
         add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
         add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})

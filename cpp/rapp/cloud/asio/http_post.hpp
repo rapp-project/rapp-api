@@ -18,7 +18,7 @@
 #include "includes.ihh"
 namespace rapp {
 namespace types {    
-typedef char byte;
+    typedef char byte;
 }
 namespace cloud {
 /**

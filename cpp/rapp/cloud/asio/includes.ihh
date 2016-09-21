@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <atomic>
 
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
