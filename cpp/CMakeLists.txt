@@ -167,7 +167,7 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
 	#
     # build library first
-    set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    set(LIBTARGET ${LIBTARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set_target_properties(${LIBTARGET} PROPERTIES INSTALL_oPATH "${CMAKE_INSTALL_PREFIX}/lib")

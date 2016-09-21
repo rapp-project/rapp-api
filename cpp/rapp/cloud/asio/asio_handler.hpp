@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 #include "includes.ihh"
+#include <boost/asio/ssl.hpp>
 #include "http_response.hpp"
 #include "asio_timer.hpp"
 

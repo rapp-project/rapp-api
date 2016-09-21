@@ -7,8 +7,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/system/error_code.hpp>
 

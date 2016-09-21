@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 #include "includes.ihh"
+#include <boost/asio.hpp>
 namespace rapp{
 namespace cloud {
 /**

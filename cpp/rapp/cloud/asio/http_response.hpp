@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 #include "includes.ihh"
+#include <boost/asio.hpp>
+
 namespace rapp {
 namespace cloud {
 typedef boost::system::error_code error_code;
