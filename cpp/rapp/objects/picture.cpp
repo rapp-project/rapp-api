@@ -13,6 +13,19 @@ picture::picture(const std::string filepath)
     }
 }
 
+picture::picture(std::vector<rapp::types::byte> data)
+: bytearray_(data)
+{
+    if ((unsigned int)bytearray_[0] == 0xFFFFFF89 
+         && (unsigned int)bytearray_[1] == 0x00000050) {
+        imgtype_ = "png";
+    }
+    if ((unsigned int)bytearray_[0] == 0xFFFFFFFF 
+         && (unsigned int)bytearray_[1] == 0xFFFFFFD8) {
+        imgtype_ = "jpg";
+    }
+}
+
 picture::picture(std::ifstream & bytestream)
 {
     opencb_(bytestream);
@@ -61,10 +74,12 @@ void picture::opencb_(std::ifstream & bytestream)
     bytestream.seekg(0, std::ios_base::beg);
     bytestream.read(&bytearray_[0], fileSize);
     // Check Magic Number to find picture format
-    if ((unsigned int)bytearray_[0] == 0xFFFFFF89 && (unsigned int)bytearray_[1] == 0x00000050) {
+    if ((unsigned int)bytearray_[0] == 0xFFFFFF89 
+         && (unsigned int)bytearray_[1] == 0x00000050) {
         imgtype_ = "png";
     }
-    if ((unsigned int)bytearray_[0] == 0xFFFFFFFF && (unsigned int)bytearray_[1] == 0xFFFFFFD8) {
+    if ((unsigned int)bytearray_[0] == 0xFFFFFFFF 
+        && (unsigned int)bytearray_[1] == 0xFFFFFFD8) {
         imgtype_ = "jpg";
     }
 }
