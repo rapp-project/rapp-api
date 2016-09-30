@@ -13,7 +13,6 @@ object_recognition::object_recognition(
     std::string fname = rapp::misc::random_boundary() + "." + image.type();
     http_request::add_content("file", fname, image.bytearray());
     http_request::close();
-
 }
 /**
  * \brief handle the rapp-platform JSON reply
