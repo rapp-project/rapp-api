@@ -18,6 +18,7 @@
 PROJECT(rapp)
 set (RAPP_VERSION_MAJOR 0)
 set (RAPP_VERSION_MINOR 7)
+set (RAPP_VERSION_BUILD 0)
 cmake_minimum_required(VERSION 2.8)
 
 # library paths
@@ -117,6 +118,7 @@ if (${RAPP_STATIC})
 	#
 	# RPATH
 	#
+	message(STATUS "${CMAKE_DL_LIBS}")
 	set(CMAKE_SKIP_BUILD_RPATH  FALSE)
 	set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
@@ -124,9 +126,9 @@ if (${RAPP_STATIC})
 	#
     # set target, add library - link with Boost and OpenSSL
 	#
-    set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_BUILD})
     add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-    target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+    target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
 	#
 	# set linking to fully static (libc, libstdc++, etc)
 	#
@@ -141,7 +143,7 @@ elseif(${OPEN_NAO})
     #
     # set target, add library - link with Boost and OpenSSL
     #
-    set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    set(LIBTARGET ${LIBRARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_BUILD})
 	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     ###
@@ -164,11 +166,12 @@ else()
 	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 	#
     # use shared boost - build shared libs - set correct flags
+    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC -Wl,-rpath;/home/nao/.lib")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 	#
     # build library first
-    set(LIBTARGET ${LIBTARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    set(LIBTARGET ${LIBTARGET} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_BUILD})
     add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set_target_properties(${LIBTARGET} PROPERTIES INSTALL_oPATH "${CMAKE_INSTALL_PREFIX}/lib")
@@ -323,16 +326,20 @@ message(STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
 # Install library 
 # BUG: it builds examples even though we didn't ask it to!!!
 #
-install(TARGETS ${LIBTARGET} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+set(LIB_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_BUILD})
 #
 # symbolic link library version to the generic name
 #
-if(${RAPP_STATIC})
+if((${RAPP_STATIC}) OR (${OPEN_NAO}))
+    install(TARGETS ${LIBTARGET} DESTINATION 
+        "${CMAKE_INSTALL_PREFIX}/lib/")
 	install(CODE 
-			"EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/lib${LIBTARGET}.a ${CMAKE_INSTALL_PREFIX}/lib/librapp.a)")
+        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.${LIB_VERSION}.a ${CMAKE_INSTALL_PREFIX}/lib/librapp.a)")
 else()
+    install(TARGETS ${LIBTARGET} DESTINATION 
+        "${CMAKE_INSTALL_PREFIX}/lib/")
 	install(CODE 
-			"EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/lib${LIBTARGET}.so ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
+        "EXECUTE_PROCESS(COMMAND ln -sf ${CMAKE_INSTALL_PREFIX}/lib/librapp.${LIB_VERSION}.so ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)")
 endif()
 message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
 #
