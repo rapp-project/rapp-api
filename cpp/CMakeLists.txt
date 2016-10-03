@@ -97,7 +97,7 @@ endif()
 ###
 # Find Boost - we use it for a variety of operations
 #
-find_package(Boost 1.55 COMPONENTS system REQUIRED)
+find_package(Boost COMPONENTS system REQUIRED)
 if (Boost_FOUND)
 	set(Boost_USE_STATIC_LIBS OFF)
 	set(BUILD_SHARED_LIBS ON)
@@ -347,3 +347,11 @@ message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}/lib`")
 #
 install(DIRECTORY ${INCLUDES}/ DESTINATION "${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}" FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh" PATTERN "*.impl")
 message(STATUS "Installing Headers in: `${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}`")
+
+#Install package
+configure_file(rapp-config.cmake
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake"
+  COPYONLY
+)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME}/cmake")
