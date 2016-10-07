@@ -151,7 +151,7 @@ elseif(${OPEN_NAO})
     #
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
     set(CMAKE_CXX_FLAGS 
-	"${CMAKE_CXX_FLAGS}-std=c++1y -Wall -fPIC -Os -s -O2 -march=atom -mtune=atom -mfpmath=sse -fschedule-insns -fsched-pressure")
+	"${CMAKE_CXX_FLAGS}-std=gnu++1y -Wall -fPIC -Os -s -O2 -march=atom -mtune=atom -mfpmath=sse -fschedule-insns -fsched-pressure")
     # 
 ###
 #   Shared Library - By default
