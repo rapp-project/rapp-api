@@ -1,15 +1,15 @@
 # RAPP API 0.7.0
 -----------------------
 
-1. [Building](#Building)
-1. [CMake Options](#CMake Options)
-1. [Installing](#Installing)
-1. [Testing](#Testing)
-1. [Examples](#Examples)
-1. [Older gcc/g++](#Older gcc/g++)
-1. [Tutorials](#Tutorials)
-1. [Documentation](#Documentation)
-1. [Help](#Help)
+* [Building](#Building)
+* [CMake Options](#CMake Options)
+* [Installing](#Installing)
+* [Testing](#Testing)
+* [Examples](#Examples)
+* [Older gcc/g++](#Older gcc/g++)
+* [Tutorials](#Tutorials)
+* [Documentation](#Documentation)
+* [Help](#Help)
 
 [![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api) [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -27,7 +27,7 @@ by *daisy-chanining* delegates via subsequent callbacks.
 All callback schemes use the `std::function` therefore you can pass 
 *lambdas, function pointers, class members and struct functors* as callbacks.
 
-##Building
+#Building
 
 For the C++ RAPP API, please note you need to satisfy these *dependencies*:
 * A modern C++11 enabled compiler (g++, clang) 
@@ -44,7 +44,7 @@ $ make
 
 You should end up with a library and/or tests and examples under your build directory.
 
-##CMake Options
+#CMake Options
 
 *Note* that you can pass a variety of CMake arguments to suit your needs:
 
@@ -63,7 +63,7 @@ All of those arguments are optional, however depending on your scenario you may 
 For example, building for a NAO robot the convenience flag `-DOPEN_NAO=ON` will create a static library optimising for an ATOM cpu
 using i386 architecture.
 
-##Installing
+#Installing
 
 You may install if you wish to (as root or using `sudo`):
 
@@ -81,7 +81,7 @@ If you wish to install to another location or a user directory then run:
 
 *Bear in mind* that this only changes the library installation location and **not** the header install location.
 
-##Testing
+#Testing
 
 Enable tests when you run cmake by:
 
@@ -107,12 +107,12 @@ make test
 to have no memory leaks or segfaults.
 If you do happen to run across such issues, please open an issue on GitHub.
 
-##Examples
+#Examples
 
 The source files for the examples are under `/rapp-api/cpp/examples` and if you use the flag `-DBUILD_EXAMPLES=ON` they
 will be built under `/rapp-api/cpp/build/examples/`.
 
-##Older gcc/g++
+#Older gcc/g++
 
 Some OSes do not ship with a newer *g++* (versions 4.9 and up), or you may be for whatever reason stuck with an older version.
 
@@ -121,7 +121,7 @@ you can build the API with a statically linked libstdc on another machine, and t
 
 To do so use the cmake flag `-DRAPP_STATIC=ON` by building on a modern machine with *g++* >= 4.9.
 
-##Tutorials
+#Tutorials
 
 We have created two repositories with extensive tutorials and examples, ranging from simple use to advanced projects.
 Those tutorials go through every single cloud and object class, and describe how to build applications for Aldebaran's NAO.
@@ -129,7 +129,7 @@ Those tutorials go through every single cloud and object class, and describe how
 * https://github.com/ortelio/rapp_beginner_tutorials.git
 * https://github.com/ortelio/rapp_advanced_tutorials.git
 
-##Documentation
+#Documentation
 
 - C++ API cloud classes
   - [Available Services](#available-services)
@@ -151,7 +151,7 @@ Those tutorials go through every single cloud and object class, and describe how
     - [Path Plan 2D](#path-planning-2d) 
     - [Path Upload Map](#path-upload-map)
 
-###available-services
+##available-services
 
 A call which will return a list of pairs of strings, the first string naming the service name and the second defining the URL.
 
@@ -163,7 +163,7 @@ A call which will return a list of pairs of strings, the first string naming the
 
 See example: `rapp-api/cpp/examples/available_services.cpp`
 
-###cognitive-exercises
+##cognitive-exercises
 
 A series of classes which are used to play cognitive games.
 Types of games are:
@@ -251,7 +251,7 @@ A call used to quqery scores.
 See example `rapp-api/cpp/examples/cognitive_games.cpp`
 
 
-###email
+##email
 
 The platform supports sending and receiving email, when using your own
 email account.
@@ -300,8 +300,7 @@ The callback functor may receive a JSON of errros.
 **Return values**
 - `std::string`: a JSON of errors (will default to empty if no errrors)
 
-
-###geolocation
+##geolocation
 
 Quering your location based on the IP of the robot.
 Requires that you can establish what the external interface/address is.
@@ -323,7 +322,7 @@ Callback functor receives return values.
 
 See example `rapp-api/cpp/examples/geolocation.cpp`
 
-###ontology
+##ontology
 
 The Platform supports querying a KnowRob/RoboEarth instance.
 Eeach type of query returns an XML URI, which you'll have to visit and parse
@@ -375,7 +374,7 @@ The callback functor will receive the return values.
 
 See example `rapp-api/cpp/examples/knowrob_ontology.cpp`
 
-###path-planning
+##path-planning
 
 The platform offers a path planning service.
 The requirement is that you must upload a map, and index the name of the map.
@@ -387,7 +386,9 @@ You may then request a path using that map and certain parameters.
 ###path-upload-map
 
 
-##Help
+
+
+#Help
 
 If you run into any bugs or issues, please report them on github. 
 Alternatively, hit us up on Gitter: [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
