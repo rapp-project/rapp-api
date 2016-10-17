@@ -150,6 +150,19 @@ Those tutorials go through every single cloud and object class, and describe how
   - [Path Planning](#path-planning)
     - [Path Plan 2D](#path-planning-2d) 
     - [Path Upload Map](#path-upload-map)
+  - [Speech Servises](#speech)
+    - [Google S2T](#speech-google)
+    - [CMU Sphinx S2T](#speech-cmusphinx)
+    - [Set Noise](#set-noise)
+    - [Text to Speech](#tts)
+  - [Vision Services](#vision)
+    - [Door Angle Detection](#vision-door-angle)
+    - [Face Detection](#vision-face-detect)
+    - [Human Detection](#vision-human-detect)
+    - [Light Detection](#vision-light-detect)
+    - [QR Code Detection](#vision-qrcode-detect)
+    - [Object Recognition](#vision-object-recognition)
+  - [Weather](#weather)
 
 ##available-services
 
@@ -382,11 +395,206 @@ You may then request a path using that map and certain parameters.
 
 ###path-planning-2d
 
+Request a 2D plan from the platform.
+*Note*: see classes:
+- `rapp::object::planned_path` which is the return class type
+- `rapp::object::pose_stamped` which is the argument class type used
+
+**Input arguments**
+- `const std::string map_name`: the name of the map
+- `const std::string robot_type`: the type of your robot
+- `const std::string algorithm`: the algorithm used (e.g., *dijkstra*)
+- `const rapp::object::pose_stamped start`: the starting pose of the robot
+- `const rapp::object::pose_stamped goal`: the goal/target pose of the robot
+
+As always, the callback functor will receive the return values.
+
+**Return values**
+- `rapp::object::planned_path`: the discovered path
+
+See example: `rapp-api/cpp/examples/path_planning.cpp`
 
 ###path-upload-map
 
+This call will upload a 2D PNG map to the platform.
+A list of maps and their descriptors can be found in the [platform](https://github.com/rapp-project/rapp-platform/tree/master/rapp_path_planning/rapp_map_server/maps).
+The overall idea is to represent boundaries and obstacles with pixels, 
+and set the appropriate YAML meta-data.
+
+**Input arguments**
+- `const rapp::object::picture & png_file`: the map PNG file
+- `const rapp::object::yaml & yaml_file`: a YAML file
+- `const std::string map_name`: a unique map name
+
+As always, the callback functor will receive the return values.
+
+**Return values** Optional
+- `std::string`: a JSON string with an error if one occurs
+
+See example: `rapp-api/cpp/examples/path_planning.cpp`
 
 
+#speech
+
+The Platform offers speech-to-text (S2T) services,
+as well as a text-to-speech (TTS) service.
+A requirement is that a noise profile must be set in order
+to enable better performance.
+
+##speech-google
+
+Uses the free Google Speech Recognition [API](https://cloud.google.com/speech/).
+Requires that you have obtained an audio file as a WAV or OGG.
+
+**Input arguments**
+- `const std::vector<rapp::types::byte> audio_bytearray`: a vector of bytes which make up an audio file
+- `const rapp::types::audio_source audio_src`: type of audio (nao_ogg, nao_wav_1_ch, nao_wav_4_ch, headset)
+- `const std::string language`: language locale (e.g., en, gr, etc.)
+
+The callback functor will receive the return values.
+**Return values**
+- `std::vector<std::string>`: words recognised
+- `std::vector<std::vector<std::string>>`: alternative sentences recognised
+
+See example: `rapp-api/cpp/examples/speech_recognition_google.cpp`
+
+##speech-cmusphinx
+
+Uses a CMU [Sphinx4](http://cmusphinx.sourceforge.net/wiki/sphinx4:webhome) Backend to
+process and recognise speech as text. Requires that you have obtained an audio file as a WAV or OGG.
+
+**Input arguments**
+- `const std::vector<rapp::types::byte> audio_data`: audio data bytes, taken from a `rapp::object::audio`
+- `const rapp::types::audio_source audio_src`: type of audio (nao_ogg, nao_wav_1_ch, nao_wav_4_ch, headset)
+- `const std::string language`: language locale (e.g., en, gr, etc.)
+- `const std::vector<std::string> grammar`: a [JSGF](http://cmusphinx.sourceforge.net/doc/sphinx4/edu/cmu/sphinx/jsgf/JSGFGrammar.html) grammar data-file with rule definitions
+- `const std::vector<std::string> words`: keywords to search for in the audio data
+- `const std::vector<std::string> sentences`: sentences to search for in the audio data
+
+As always, the callback functor will receive the return values.
+
+**Return values**
+- `std::vector<std::string> words`: a list of rezognised words
+
+See example: `rapp-api/cpp/examples/speech_recognition_sphinx4.cpp`
+
+##set-noise
+
+Sets the noise profile for CMU Sphinx4 cloud service.
+Requires that you have obtained an audio file as a WAV or OGG,
+which contains only backround, environment or microphone noise.
+
+**Input arguments**
+- `const std::vector<rapp::types::byte> audio_bytearray`: the audio data file (WAV, OGG) with the noise
+- `const rapp::types::audio_source audio_src`: the audio type (nao_ogg, nao_wav_1_ch, nao_wav_4_ch, headset)
+
+*Note*: there is no callback functor or return value in this class.
+
+##tts
+
+Uses the [Espeak and MBrola](http://espeak.sourceforge.net/mbrola.html) backend
+to generate audio files (WAV) from a queried text.
+
+**Input arguments**
+- `const std::string text`: the string containing the text you want
+- `const std::string language`: the language used
+
+Callback functor will receive the audio file.
+
+**Return values**
+- `rapp::object::audio`: an audio file with the speech requested.
+
+See xample: `rapp-api/cpp/examples/set_noise_profile.cpp`
+
+#vision
+
+The platforms offers a variety of Computer Vision (CV) services,
+which are organised in two categories: *detection* and *recognition*.
+
+##vision-door-angle
+
+Find if a door is open, and to what degree.
+
+**Input arguments**
+- `const rapp::object::picture & image`: an imagine used to detect an open door
+
+As always, the callback functor will receive the return values.
+
+**Return values**
+- `double door_angle`: degrees of open door angle
+
+See example: `rapp-api/cpp/examples/hazard_detect.cpp`
+
+##vision-face-detect
+
+Detect faces in an image.
+
+**Input arguments**
+- `const rapp::object::picture & image`: the image data being used for detection
+- `bool fast`: set true to run faster but less accurately
+
+As always, the callback functor will receive the return values.
+
+**Return values**
+- `std::vector<rapp::object::face>`: a list of detected faces
+
+See example: `rapp-api/cpp/examples/face_detect.cpp`
+
+##vision-human-detect
+
+Detect humans in an image.
+
+**Input arguments**
+- `const rapp::object::picture & image`: the image data being used for detection
+
+As always, the callback functor will receive the return values.
+
+**Return values**
+- `std::vector<rapp::object::human>`: list of humans detected
+
+See example: `rapp-api/cpp/examples/human_detect.cpp`
+
+##vision-light-detect
+
+Detect light level (luminoscity)
+
+**Input arguments**
+- `const rapp::object::picture & image`: the image data being used for detection
+
+As always, the callback functor will receive the return values.
+
+**Return values**
+- `int light_level`: luminoscity level
+
+See example: `rapp-api/cpp/examples/light_detection.cpp`
+
+##vision-qrcode-detect
+
+Detect and scan QR code.
+
+**Input arguments**
+- `const rapp::object::picture & image`: the image data being used for detection
+
+As always, the callback functor will receive the return values.
+
+**Return values**
+- `std::vector<rapp::object::qr_code>`: list of qr objects detected
+
+See example: `rapp-api/cpp/examples/qr_detect.cpp`
+
+##vision-object-recognition
+
+Recognise Objects using [Caffee](http://caffe.berkeleyvision.org/).
+
+**Input arguments**
+- `const rapp::object::picture & image`: the image data being used for object recognition
+
+As always, the callback functor will receive the return values.
+
+**Return values**
+- `std::string`: the topmost object classification class
+
+See example: `rapp-api/cpp/examples/object_recognition.cpp`
 
 #Help
 

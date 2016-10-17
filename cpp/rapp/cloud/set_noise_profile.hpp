@@ -48,7 +48,6 @@ public:
      * \brief handle platform reply (error notifications only)
      */
     void deserialise(std::string json) const;
-
 };
 }
 }

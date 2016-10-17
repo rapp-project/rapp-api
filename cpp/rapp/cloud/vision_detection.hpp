@@ -25,6 +25,36 @@
 namespace rapp {
 namespace cloud {
 /**
+ * \class door_angle_detection
+ * \brief detect open doors
+ * \version 0.7.0
+ * \date September 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ */
+class door_angle_detection : public http_request
+{
+public:
+    /**
+    * \brief Constructor
+    * \param image is a picture object pointer
+    * \param callback is the function that will receive a vector of detected qr(s)
+    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
+    */
+    door_angle_detection(
+                          const rapp::object::picture & image,
+                          std::function<void(double door_angle)> callback
+                        );
+    
+	/**
+	 * \brief handle the rapp-platform JSON reply
+	 */
+    void deserialise(std::string json) const;
+private:
+    /// The callback called upon completion of receiving the detected faces
+    std::function<void(double)> delegate_;
+};
+
+/**
  * \class face_detection
  * \brief Asynchronous Service which will request the cloud to detect faces
  * \version 0.7.0
@@ -53,36 +83,6 @@ public:
 private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<rapp::object::face>)> delegate_;
-};
-
-/**
- * \class door_angle_detection
- * \brief detect open doors
- * \version 0.7.0
- * \date September 2016
- * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- */
-class door_angle_detection : public http_request
-{
-public:
-    /**
-    * \brief Constructor
-    * \param image is a picture object pointer
-    * \param callback is the function that will receive a vector of detected qr(s)
-    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
-    */
-    door_angle_detection(
-                          const rapp::object::picture & image,
-                          std::function<void(double door_angle)> callback
-                        );
-    
-	/**
-	 * \brief handle the rapp-platform JSON reply
-	 */
-    void deserialise(std::string json) const;
-private:
-    /// The callback called upon completion of receiving the detected faces
-    std::function<void(double)> delegate_;
 };
 
 /**
