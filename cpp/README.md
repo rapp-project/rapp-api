@@ -1,15 +1,15 @@
 # RAPP API 0.7.0
 -----------------------
 
-* [Building](#Building)
-* [CMake Options](#CMake Options)
-* [Installing](#Installing)
-* [Testing](#Testing)
-* [Examples](#Examples)
-* [Older gcc/g++](#Older gcc/g++)
-* [Tutorials](#Tutorials)
-* [Documentation](#Documentation)
-* [Help](#Help)
+- [Building](#Building)
+- [CMake Options](#CMake Options)
+- [Installing](#Installing)
+- [Testing](#Testing)
+- [Examples](#Examples)
+- [Older gcc/g++](#Older gcc/g++)
+- [Tutorials](#Tutorials)
+- [Documentation](#Documentation)
+- [Help](#Help)
 
 [![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api) [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
