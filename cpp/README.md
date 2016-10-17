@@ -1,15 +1,16 @@
 # RAPP API 0.7.0
 -----------------------
 
-- [Building](#Building)
-- [CMake Options](#CMake Options)
-- [Installing](#Installing)
-- [Testing](#Testing)
-- [Examples](#Examples)
-- [Older gcc/g++](#Older gcc/g++)
-- [Tutorials](#Tutorials)
-- [Documentation](#Documentation)
-- [Help](#Help)
+- Contents
+    - [Building](#Building)
+    - [CMake Options](#CMake Options)
+    - [Installing](#Installing)
+    - [Testing](#Testing)
+    - [Examples](#Examples)
+    - [Older gcc/g++](#Older gcc/g++)
+    - [Tutorials](#Tutorials)
+    - [Documentation](#Documentation)
+    - [Help](#Help)
 
 [![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api) [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -150,12 +151,12 @@ Those tutorials go through every single cloud and object class, and describe how
   - [Path Planning](#path-planning)
     - [Path Plan 2D](#path-planning-2d) 
     - [Path Upload Map](#path-upload-map)
-  - [Speech Servises](#speech)
+  - [Speech Services](#speech-services)
     - [Google S2T](#speech-google)
     - [CMU Sphinx S2T](#speech-cmusphinx)
     - [Set Noise](#set-noise)
     - [Text to Speech](#tts)
-  - [Vision Services](#vision)
+  - [Vision Services](#vision-services)
     - [Door Angle Detection](#vision-door-angle)
     - [Face Detection](#vision-face-detect)
     - [Human Detection](#vision-human-detect)
