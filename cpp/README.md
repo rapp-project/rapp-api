@@ -6,7 +6,9 @@
 1. [Installing](#Installing)
 1. [Testing](#Testing)
 1. [Examples](#Examples)
-1. [Older g++](#Older g++)
+1. [Older gcc/g++](#Older gcc/g++)
+1. [Tutorials](#Tutorials)
+1. [Documentation](#Documentation)
 1. [Help](#Help)
 
 [![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api) [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -110,7 +112,7 @@ The source files for the examples are under `/rapp-api/cpp/examples` and if you 
 will be built under `/rapp-api/cpp/build/examples/`.
 
 
-## Older g++
+## Older gcc/g++
 
 Some OSes do not ship with a newer *g++* (versions 4.9 and up), or you may be for whatever reason stuck with an older version.
 
@@ -118,6 +120,33 @@ In this case, and assuming you do not want to build a newer g++ in the Robot OS,
 you can build the API with a statically linked libstdc on another machine, and then transfer the binary file.
 
 To do so use the cmake flag `-DRAPP_STATIC=ON` by building on a modern machine with *g++* >= 4.9.
+
+## Tutorials
+
+We have created two repositories with extensive tutorials and examples, ranging from simple use to advanced projects.
+
+* https://github.com/ortelio/rapp_beginner_tutorials.git
+* https://github.com/ortelio/rapp_advanced_tutorials.git
+
+## Documentation
+
+- C++ API cloud classes
+  - [Available Services](#available-services-class)
+
+- C++ API object classes
+  - [Audio](#audio-class)
+
+###available-services-class
+
+A call which will return a list of pairs of strings, the first string naming the service name and the second defining the URL.
+
+**Input arguments**
+- ```std::function<void(std::vector<service>)> callback``` : a callback functor receiving the list of services
+
+**Notes**
+- The `service` type is defined as ```typedef std::pair<std::string, std::string> service```
+
+See example: `rapp-api/cpp/examples/available_services.cpp`
 
 ## Help
 

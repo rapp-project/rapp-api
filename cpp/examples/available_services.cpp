@@ -34,20 +34,19 @@ int main(int argc, char* argv[])
      * In this example we'll pass an inline lambda as the callback.
      * All it does is receive a list of services and print them on stdout.
      */
-	auto cb = [](std::vector<std::pair<std::string, std::string>> services) {
+    auto cb = [](std::vector<std::pair<std::string, std::string>> services) {
          std::cout << "available services: " << std::endl;
          for (const auto & pair : services) {
             std::cout << pair.first << " " << pair.second << std::endl;
          }
      };
 
-	/*
+    /*
      * Finally we make the call.
-     * The simplest way to use the `make_call` template function, specifying
+     * The simplest way is to use the `make_call` template function, specifying
      * as template type the actual cloud call, in this case the `available_services` class.
-     * This method will **block** until its complete.
-     * For more information \see rapp::cloud::available_services
+     * This method will **block** the service controller queue until its complete.
      */
-	ctrl.make_call<rapp::cloud::available_services>(cb);
-	return 0;
+    ctrl.make_call<rapp::cloud::available_services>(cb);
+        return 0;
 }
