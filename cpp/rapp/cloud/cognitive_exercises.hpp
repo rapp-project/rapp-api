@@ -33,8 +33,15 @@ namespace cloud {
 class cognitive_test_selector : public http_request
 {
 public:
-
-	/// callback functor
+    /**
+     * [0] array questions
+     * [1] possible answers
+     * [2] correcrt answers
+     * [3] test instance names
+     * [4] exercise type
+     * [5] exercise sub type
+     * [6] error message
+     */
 	typedef std::function<void(std::vector<std::string>,
                                std::vector<std::vector<std::string>>,
                                std::vector<std::string>,
@@ -44,9 +51,11 @@ public:
 
 	/**
 	 * \brief handler obtains a cognitive test from cloud.rapp
-	 * \param user set the user
-     * \param test_type set the test type
-     * \param callback receives arrays of strings and strings
+     * \param test_type sets the type of test
+     * \param test_subtype sets the test sub-type
+     * \param test_diff sets the difficulty value
+     * \param test_index sets the exercise index
+     * \param callback receives a `functor` type
 	 */
 	cognitive_test_selector(
 							const std::string test_type,

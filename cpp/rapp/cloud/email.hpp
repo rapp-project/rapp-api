@@ -85,8 +85,8 @@ public:
      * \brief construct in order to send email
      * \param email: user's email address
      * \param pwd: user's plain-text password
-     * \param server: email imap address
-     * \param port: email imap port
+     * \param server: email SMTP address
+     * \param port: email SMTP port
      * \param recipients: vector of email addresses
      * \param body: email body
      * \param subject: email subject
