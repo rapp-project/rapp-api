@@ -33,9 +33,11 @@
     - [QR Code Detection](#vision-qrcode-detect)
     - [Object Recognition](#vision-object-recognition)
   - [Weather](#weather)
+    - [Current Report](#weather-report-current)
 
 ## Available Services
-A call which will return a list of pairs of strings, the first string naming the service name and the second defining the URL.
+Class `rapp::cloud::available_services` in `rapp/cloud/available_services.hpp`.
+A cloud call which will return a list of pairs of strings, the first string naming the service name and the second defining the URL.
 
 **Input arguments**
 - `std::function<void(std::vector<service>)> callback` : a callback functor receiving the list of services
@@ -53,9 +55,12 @@ Types of games are:
 - AwarenessCts
 - ReasoningCts
 
-### cognitive-test-selector
+All classes of cognitive exercises are in `rapp/cloud/cognitive_exercises.hpp`
 
+### cognitive-test-selector
+Class `rapp::cloud::cognitive_test_selector`
 A call which will select a test.
+
 **Input arguments**
 - `const std::string test_type`: sets the type of test
 - `const std::string test_subtype`: sets the test sub-type
@@ -88,6 +93,7 @@ The items in the functor represent the return values.
 See example `rapp-api/cpp/examples/cognitive_games.cpp`
 
 ### cognitive-record-performance
+Class `rapp::cloud::cognitive_record_performance`
 A call used to record performance for a user.
 
 **Input arguments**
@@ -101,6 +107,7 @@ A call used to record performance for a user.
 See example `rapp-api/cpp/examples/cognitive_games.cpp`
 
 ### cognitive-get-history
+Class `rapp::cloud::cognitive_get_history`
 A call used to obtain user's history.
 
 **Input arguments**
@@ -115,6 +122,7 @@ A call used to obtain user's history.
 See example `rapp-api/cpp/examples/cognitive_games.cpp`
 
 ### cognitive-get-scores
+Class `rapp::cloud::cognitive_get_scores`
 A call used to quqery scores.
 
 **Input arguments**
@@ -131,8 +139,10 @@ See example `rapp-api/cpp/examples/cognitive_games.cpp`
 ## Email
 The platform supports sending and receiving email, when using your own
 email account.
+All email-related classes are in `rapp/cloud/email.hpp`
 
 ### email-fetch
+Class `rapp::cloud::email_fetch`
 Request to fetch email from your account.
 
 **Input arguments**
@@ -157,6 +167,7 @@ The callback functor receives the return values.
 See example `rapp-api/cpp/examples/email_handling.cpp`
 
 ### email-send
+Class `rapp::cloud::email_send`
 Request an email to be sent.
 
 **Input arguments**
@@ -177,6 +188,8 @@ The callback functor may receive a JSON of errros.
 ## Geolocation
 Quering your location based on the IP of the robot.
 Requires that you can establish what the external interface/address is.
+Header is in `rapp/cloud/geolocation.hpp`
+Class `rapp::cloud::geolocation`
 
 **Input arguments**
 - `const std::string ipaddr`: the robot's IP address
@@ -195,12 +208,18 @@ Callback functor receives return values.
 
 See example `rapp-api/cpp/examples/geolocation.cpp`
 
+## News
+## News
+TODO
+
 ## Ontology
 The Platform supports querying a KnowRob/RoboEarth instance.
 Eeach type of query returns an XML URI, which you'll have to visit and parse
 in order to obtain meaningful meta-data.
+All classes are in `rapp/cloud/ontology.hpp`
 
 ### ontology-subclasses-of
+Class `rapp::cloud::ontology_subclasses_of`
 Query the sub-classes of a class.
 
 **Input arguments**
@@ -215,6 +234,7 @@ The callback functor will receive the return values.
 See example `rapp-api/cpp/examples/knowrob_ontology.cpp`
 
 ### ontology-superclasses-of
+Class `rapp::cloud::ontology_superclasses_of`
 Query the super-classes of a class.
 
 **Input arguments**
@@ -229,6 +249,7 @@ The callback functor will receive the return values.
 See example `rapp-api/cpp/examples/knowrob_ontology.cpp`
 
 ### ontology-is-subsuperclass-of
+Class `rapp::cloud::ontology_is_subsuperclass_of`
 Query if a sub-class is the super-class of another entity.
 
 **Input arguments**
@@ -247,8 +268,10 @@ See example `rapp-api/cpp/examples/knowrob_ontology.cpp`
 The platform offers a path planning service.
 The requirement is that you must upload a map, and index the name of the map.
 You may then request a path using that map and certain parameters.
+All classes are in `rapp/cloud/path_planning.hpp`
 
 ### path-planning-2d
+Class `rapp::cloud::plan_path_2d`
 Request a 2D plan from the platform.
 *Note*: see classes:
 - `rapp::object::planned_path` which is the return class type
@@ -269,6 +292,7 @@ As always, the callback functor will receive the return values.
 See example: `rapp-api/cpp/examples/path_planning.cpp`
 
 ### path-upload-map
+Class `rapp::cloud::path_upload_map`
 This call will upload a 2D PNG map to the platform.
 A list of maps and their descriptors can be found in the [platform](https://github.com/rapp-project/rapp-platform/tree/master/rapp_path_planning/rapp_map_server/maps).
 The overall idea is to represent boundaries and obstacles with pixels, 
@@ -293,6 +317,7 @@ A requirement is that a noise profile must be set in order
 to enable better performance.
 
 ## speech-google
+Class `rapp::cloud::speech_recognition_google`
 Uses the free Google Speech Recognition [API](https://cloud.google.com/speech/).
 Requires that you have obtained an audio file as a WAV or OGG.
 
@@ -309,6 +334,7 @@ The callback functor will receive the return values.
 See example: `rapp-api/cpp/examples/speech_recognition_google.cpp`
 
 ## speech-cmu-sphinx4
+Class `rapp::cloud::speech_recognition_sphinx4`
 Uses a CMU [Sphinx4](http://cmusphinx.sourceforge.net/wiki/sphinx4:webhome) Backend to
 process and recognise speech as text. Requires that you have obtained an audio file as a WAV or OGG.
 
@@ -328,6 +354,7 @@ As always, the callback functor will receive the return values.
 See example: `rapp-api/cpp/examples/speech_recognition_sphinx4.cpp`
 
 ## set-noise
+Class `rapp::cloud::set_noise_profile`
 Sets the noise profile for CMU Sphinx4 cloud service.
 Requires that you have obtained an audio file as a WAV or OGG,
 which contains only backround, environment or microphone noise.
@@ -339,6 +366,7 @@ which contains only backround, environment or microphone noise.
 *Note*: there is no callback functor or return value in this class.
 
 ## text-to-speech
+Class `rapp::cloud::text_to_speech` in `rapp/cloud/text_to_speech.hpp`.
 Uses the [Espeak and MBrola](http://espeak.sourceforge.net/mbrola.html) backend
 to generate audio files (WAV) from a queried text.
 
@@ -356,8 +384,10 @@ See example: `rapp-api/cpp/examples/set_noise_profile.cpp`
 # Vision Services
 The platforms offers a variety of Computer Vision (CV) services,
 which are organised in two categories: *detection* and *recognition*.
+Each respective category is in `rapp/cloud/vision_detection.hpp` and `rapp/cloud/vision_recognition.hpp`.
 
 ## vision-door-angle
+Class `rapp::cloud::door_angle_detection`
 Find if a door is open, and to what degree.
 
 **Input arguments**
@@ -371,6 +401,7 @@ As always, the callback functor will receive the return values.
 See example: `rapp-api/cpp/examples/hazard_detect.cpp`
 
 ## vision-face-detect
+Class `rapp::cloud::face_detection`
 Detect faces in an image.
 
 **Input arguments**
@@ -385,6 +416,7 @@ As always, the callback functor will receive the return values.
 See example: `rapp-api/cpp/examples/face_detect.cpp`
 
 ## vision-human-detect
+Class `rapp::cloud::human_detection`
 Detect humans in an image.
 
 **Input arguments**
@@ -398,6 +430,7 @@ As always, the callback functor will receive the return values.
 See example: `rapp-api/cpp/examples/human_detect.cpp`
 
 ## vision-light-detect
+Class `rapp::cloud::light_detection`
 Detect light level (luminoscity)
 
 **Input arguments**
@@ -411,6 +444,7 @@ As always, the callback functor will receive the return values.
 See example: `rapp-api/cpp/examples/light_detection.cpp`
 
 ## vision-qrcode-detect
+Class `rapp::cloud::qr_detection`
 Detect and scan QR code.
 
 **Input arguments**
@@ -424,7 +458,8 @@ As always, the callback functor will receive the return values.
 See example: `rapp-api/cpp/examples/qr_detect.cpp`
 
 ## vision-object-recognition
-Recognise Objects using [Caffee](http://caffe.berkeleyvision.org/).
+Class `rapp::cloud::object_recognition`
+Recognise Objects using Berkley's [Caffee](http://caffe.berkeleyvision.org/) framework.
 
 **Input arguments**
 - `const rapp::object::picture & image`: the image data being used for object recognition
@@ -436,3 +471,55 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/object_recognition.cpp`
 
+# Weather
+The platform enables 3rd party weather reports and forecasting.
+The classes are in `rapp/cloud/weather_report.hpp`
+
+## weather-report-current
+Class `rapp::cloud::weather_report_current`
+Queries the current weather given certain arguments.
+
+**Input arguments**
+- `const std::string city`: current city location
+- `const std::string weather_reporter`: weather engine (Optional: defaults to Yahoo if empty)
+- `const unsigned int metric`: set to 1 for true, 0 for false
+
+The callback functor will receive the return values.
+
+**Return values**
+- `std::vector<std::string>`: a list of report data.
+
+The `std::string` entries in the return vector are:
+- Date
+- Temperature
+- Description
+- Humidity
+- Visibility
+- Pressure
+- Wind speed
+- Wind Temperature
+- Wind Direction
+
+See example `rapp-api/cpp/examples/weather.cpp`
+
+## weather-report-forecast
+Class `rapp::cloud::weather_report_forecast`
+Queries the weather engine for a forecast.
+
+**Input arguments**
+- `const std::string city`: current city
+- `const std::string weather_reporter`: weather engine (Optional: defaults to Yahoo if empty)
+- `const unsigned int metric`: set to 1 for true, 0 for false
+
+The callback functor will receive the return values.
+
+**Return values**
+- `std::vector<std::vector<std::string>>`: a list of report data.
+
+The `std::string` entries in the return vector are:
+- High Temperature
+- Low Temperature
+- Description
+- Date
+
+See example `rapp-api/cpp/examples/weather.cpp`
