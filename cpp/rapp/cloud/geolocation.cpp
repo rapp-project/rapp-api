@@ -3,16 +3,17 @@ namespace rapp {
 namespace cloud {
 
 geolocation::geolocation(
-             const std::string ipaddr,
-             const std::string engine,
-             std::function<void(std::string,
-                                std::string,
-                                std::string,
-                                float,
-                                float,
-                                std::string,
-                                std::string)> callback           )
-
+                         const std::string ipaddr,
+                         const std::string engine,
+                         std::function<void(std::string,
+                                            std::string,
+                                            std::string,
+                                            float,
+                                            float,
+                                            std::string,
+                                            std::string,
+                                            std::string)> callback           
+                         )
 : http_request("POST /hop/geolocation HTTP/1.1\r\n"), 
   delegate_(callback)
 {
@@ -48,6 +49,7 @@ void geolocation::deserialise(std::string json) const
                   json_f["country_code"], 
                   json_f["latitude"], 
                   json_f["longtitude"], 
+                  json_f["region"],
                   json_f["timezone"],
                   json_f["zip"]);
     }

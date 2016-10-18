@@ -2,6 +2,10 @@
 -----------------------
 
 - C++ API cloud classes
+  - [Authentication](#authentication)
+    - [Login User](#login-user)
+    - [Register User from Platform](#register-user-from-platform)
+    - [Register User from Store](#register-user-from-store)
   - [Available Services](#available-services)
   - [Cognitive Exercices](#cognitive-exercises)
     - [Test Selector](#cognitive-test-selector)
@@ -34,6 +38,67 @@
     - [Object Recognition](#vision-object-recognition)
   - [Weather](#weather)
     - [Current Report](#weather-report-current)
+- C++ API object classes
+  -[Audio](#audio)
+  -[Face](#face)
+  -[Globals](#globals)
+  -[Human](#human)
+  -[Msg Metadata](#msg-metadata)
+  -[Picture](#picture)
+  -[Planned Path](#planned-path)
+  -[Point](#point)
+  -[Pose](#pose)
+  -[Pose stamped](#pose-stamped)
+  -[Qr Code](#qr-code)
+  -[Quaternion](#quaternion)
+  -[Time](#time)
+  -[Yaml](#yaml)
+
+##Authentication
+A serie of classes which are used to register and login in RAPP-Platform or RAPP-Store.
+All classes of authentication in `rapp/cloud/authentication.hpp`
+
+### login-user
+Class `rapp::cloud::login_user`
+An existing user login in the Platform or Store.
+
+**Input arguments**
+- `std::string username`: Account username
+- `std::string password`: Account password
+- `std::string device_token`: The device from which a user tries to login.
+- `std::function<void(std::string)> callback`: a callback functor which receive the return values.
+
+**Return values**
+- `std::string token`: Token used for accessing RAPP-Platform resources.
+
+### register-user-from-platform
+Class `rapp::cloud::register_user_from_platform`
+Add new platform user using RAPP-Platform credentials.
+
+**Input arguments**
+- `std::string creator_username`: Robot admin account username of RAPP-Platform.
+- `std::string creator_password`: Robot admin account password of RAPP-Platform.
+- `std::string new_user_username`: New user's account username.
+- `std::string new_user_password`: New user's account password.
+- `std::string language`: The language choosen by the user.
+- `std::function<void(std::string)> callback`: a callback functor which receive the return values.
+
+**Return arguments**
+- `std::string suggested_username`: Suggested username if the provided one already exists.
+
+### register-user-from-store
+Class `rapp::cloud::register_user_from_store`
+Add new platform user using RAPP-Platform credentials.
+
+**Input arguments**
+- `std::string username`: New user's account username.
+- `std::string password`: New user's account password.
+- `std::string device_token`: Creator device token from RAPP Store. 
+- `std::string language`: The language choosen by the user.
+- `std::function<void(std::string)> callback`: a callback functor which receive the return values.
+
+**Return arguments**
+- `std::string suggested_username`: Suggested username if the provided one already exists.
 
 ## Available Services
 Class `rapp::cloud::available_services` in `rapp/cloud/available_services.hpp`.
@@ -154,8 +219,18 @@ Request to fetch email from your account.
 - `const unsigned int from_date`: fetch from date (UNIX timestamp)
 - `const unsigned int to_date`: fetch to date (UNIX timestamp)
 - `const unsigned int num_emails`: limit number of emails
+- `function callback`: receives the return value (see below)
 
-The callback functor receives the return values.
+The `function callback` complete: 
+
+```
+std::function<void(std::vector<std::tuple<std::string, 
+                                          std::vector<std::string>,
+                                          std::string,
+                                          std::string,
+                                          std::vector<std::string>>>)> callback
+```
+
 
 **Return values**
 - `std::string`: sender address
@@ -179,8 +254,7 @@ Request an email to be sent.
 - `const std::string body`: actual email body (plaintext or html)
 - `const std::string subject`: email subject
 - `const std::vector<rapp::types::byte> data`: a vector of attachments, of raw binary data
-
-The callback functor may receive a JSON of errros.
+- `std::function<void(std::string)> callback`: The callback functor may receive a JSON of errors.
 
 **Return values**
 - `std::string`: a JSON of errors (will default to empty if no errrors)
@@ -194,8 +268,20 @@ Class `rapp::cloud::geolocation`
 **Input arguments**
 - `const std::string ipaddr`: the robot's IP address
 - `const std::string engine`: the query engine (use `ip-api`)
+- `function callback`: receives the return value (see below)
 
-Callback functor receives return values.
+The `function callback` complete: 
+
+```
+std::function<void(std::string,
+                   std::string,
+                   std::string,
+                   float,
+                   float,
+                   std::string,
+                   std::string,
+                   std::string)> callback
+```
 
 **Return values**
 - `std::string`: City
@@ -209,9 +295,24 @@ Callback functor receives return values.
 See example `rapp-api/cpp/examples/geolocation.cpp`
 
 ## News
-## News
-TODO
+For searching for news articles employing various news search engine APIs. 
+Header is in `rapp/cloud/news.hpp`
+Class `rapp::cloud::news_explore`
 
+**Input arguments**
+- `const std::string news_engine`: The news search engine to use. If not set, default value is `eventregistry`
+- `const std::vector<std::string> keywords`: The list with desired words.
+- `const std::vector<std::string> exclude_titles`: Reject list of previously read articles to avoid duplicates. If not set, default value is `[]`.
+- `const std::string region`: To specify a region. Optional.
+- `const std::string topic`: Main topic of the news. Optional.
+- `const unsigned int num_news`: Number of news stories. If it is not set, default value is `1`.
+- `std::function<void(std::vector<std::vector<std::string>>)> callback`: Callback functor receives return values.
+
+**Return values**
+- `std::vector<std::vector<std::string>>`: Vector of stories. Each story is composed of `title`, `content`, `publisher`, `publishedDate` and `url`.
+
+See example `rapp-api/cpp/examples/news.cpp`
+ 
 ## Ontology
 The Platform supports querying a KnowRob/RoboEarth instance.
 Eeach type of query returns an XML URI, which you'll have to visit and parse
@@ -225,8 +326,7 @@ Query the sub-classes of a class.
 **Input arguments**
 - `std::string ontology_class`: the entity being queried
 - `bool recursive`: set to true if you wish to search recursively
-
-The callback functor will receive the return values.
+- `std::function<void(std::vector<std::string>)> callback`:The callback functor will receive the return values.
 
 **Return values**
 - `std::vector<std::string>`: a list of subclasses
@@ -240,8 +340,7 @@ Query the super-classes of a class.
 **Input arguments**
 - `const std::string ontology_class`: the entity being queried
 - `bool recursive`: set to true if you wish to search recursively
-
-The callback functor will receive the return values.
+- `std::function<void(std::vector<std::string>)> callback`:The callback functor will receive the return values.
 
 **Return values**
 - `std::vector<std::string>`: a list of subclasses
@@ -256,8 +355,7 @@ Query if a sub-class is the super-class of another entity.
 - `const std::string parent_class`: the super-class queried
 - `const std::string child_class`: the sub-class queried
 - `bool recursive`: set to true for a recursive search
-
-The callback functor will receive the return values.
+- `std::function<void(bool result)> callback`: The callback functor will receive the return values.
 
 **Return values**
 - `std::vector<bool>`: true if the subclass is the super class of the query, false if not
@@ -283,8 +381,7 @@ Request a 2D plan from the platform.
 - `const std::string algorithm`: the algorithm used (e.g., *dijkstra*)
 - `const rapp::object::pose_stamped start`: the starting pose of the robot
 - `const rapp::object::pose_stamped goal`: the goal/target pose of the robot
-
-As always, the callback functor will receive the return values.
+- `std::function<void(rapp::object::planned_path)> callback`: The callback functor will receive the return values.
 
 **Return values**
 - `rapp::object::planned_path`: the discovered path
@@ -302,8 +399,7 @@ and set the appropriate YAML meta-data.
 - `const rapp::object::picture & png_file`: the map PNG file
 - `const rapp::object::yaml & yaml_file`: a YAML file
 - `const std::string map_name`: a unique map name
-
-As always, the callback functor will receive the return values.
+- `std::function<void(std::string)> callback`: The callback functor will receive the return values.
 
 **Return values** Optional
 - `std::string`: a JSON string with an error if one occurs
@@ -325,8 +421,14 @@ Requires that you have obtained an audio file as a WAV or OGG.
 - `const std::vector<rapp::types::byte> audio_bytearray`: a vector of bytes which make up an audio file
 - `const rapp::types::audio_source audio_src`: type of audio (nao_ogg, nao_wav_1_ch, nao_wav_4_ch, headset)
 - `const std::string language`: language locale (e.g., en, gr, etc.)
+- `function callback`: it will receive the return values (see below).
 
-The callback functor will receive the return values.
+The function callback complete:
+
+```
+std::function<void(std::vector<std::string>, std::vector<std::vector<std::string>>)> callback
+```
+
 **Return values**
 - `std::vector<std::string>`: words recognised
 - `std::vector<std::vector<std::string>>`: alternative sentences recognised
@@ -345,11 +447,10 @@ process and recognise speech as text. Requires that you have obtained an audio f
 - `const std::vector<std::string> grammar`: a [JSGF](http://cmusphinx.sourceforge.net/doc/sphinx4/edu/cmu/sphinx/jsgf/JSGFGrammar.html) grammar data-file with rule definitions
 - `const std::vector<std::string> words`: keywords to search for in the audio data
 - `const std::vector<std::string> sentences`: sentences to search for in the audio data
-
-As always, the callback functor will receive the return values.
+- `std::function<void(std::vector<std::string> words)> callback`: The callback functor will receive the return values.
 
 **Return values**
-- `std::vector<std::string> words`: a list of rezognised words
+- `std::vector<std::string> words`: a list of recognised words
 
 See example: `rapp-api/cpp/examples/speech_recognition_sphinx4.cpp`
 
@@ -373,8 +474,7 @@ to generate audio files (WAV) from a queried text.
 **Input arguments**
 - `const std::string text`: the string containing the text you want
 - `const std::string language`: the language used
-
-Callback functor will receive the audio file.
+- `std::function<void(audio_file)> callback`: Callback functor will receive the audio file.
 
 **Return values**
 - `rapp::object::audio`: an audio file with the speech requested.
@@ -392,8 +492,7 @@ Find if a door is open, and to what degree.
 
 **Input arguments**
 - `const rapp::object::picture & image`: an imagine used to detect an open door
-
-As always, the callback functor will receive the return values.
+- `std::function<void(double door_angle)> callback`: The callback functor will receive the return values.
 
 **Return values**
 - `double door_angle`: degrees of open door angle
@@ -407,8 +506,7 @@ Detect faces in an image.
 **Input arguments**
 - `const rapp::object::picture & image`: the image data being used for detection
 - `bool fast`: set true to run faster but less accurately
-
-As always, the callback functor will receive the return values.
+- `std::function<void(std::vector<rapp::object::face>)> callback`: The callback functor will receive the return values.
 
 **Return values**
 - `std::vector<rapp::object::face>`: a list of detected faces
@@ -421,8 +519,7 @@ Detect humans in an image.
 
 **Input arguments**
 - `const rapp::object::picture & image`: the image data being used for detection
-
-As always, the callback functor will receive the return values.
+- `std::function<void(std::vector<rapp::object::human>)> callback`: The callback functor will receive the return values.
 
 **Return values**
 - `std::vector<rapp::object::human>`: list of humans detected
@@ -435,8 +532,7 @@ Detect light level (luminoscity)
 
 **Input arguments**
 - `const rapp::object::picture & image`: the image data being used for detection
-
-As always, the callback functor will receive the return values.
+- `std::function<void(int light_level)> callback`: The callback functor will receive the return values.
 
 **Return values**
 - `int light_level`: luminoscity level
@@ -449,8 +545,7 @@ Detect and scan QR code.
 
 **Input arguments**
 - `const rapp::object::picture & image`: the image data being used for detection
-
-As always, the callback functor will receive the return values.
+- `std::function<void(std::vector<rapp::object::qr_code>)> callback`: the callback functor will receive the return values.
 
 **Return values**
 - `std::vector<rapp::object::qr_code>`: list of qr objects detected
@@ -463,8 +558,7 @@ Recognise Objects using Berkley's [Caffee](http://caffe.berkeleyvision.org/) fra
 
 **Input arguments**
 - `const rapp::object::picture & image`: the image data being used for object recognition
-
-As always, the callback functor will receive the return values.
+- `std::function<void(std::string)> callback`: The callback functor will receive the return values.
 
 **Return values**
 - `std::string`: the topmost object classification class
@@ -483,8 +577,13 @@ Queries the current weather given certain arguments.
 - `const std::string city`: current city location
 - `const std::string weather_reporter`: weather engine (Optional: defaults to Yahoo if empty)
 - `const unsigned int metric`: set to 1 for true, 0 for false
+- `functor callback`: receives a `functor` type (see below)
 
-The callback functor will receive the return values.
+The `functor` is type-defined as:
+
+```
+ typedef std::function<void(std::vector<std::string>)> functor;
+```
 
 **Return values**
 - `std::vector<std::string>`: a list of report data.
@@ -510,8 +609,13 @@ Queries the weather engine for a forecast.
 - `const std::string city`: current city
 - `const std::string weather_reporter`: weather engine (Optional: defaults to Yahoo if empty)
 - `const unsigned int metric`: set to 1 for true, 0 for false
+- `forecast_functor callback`: receives a `functor` type (see below)
 
-The callback functor will receive the return values.
+The `forecast_functor` is type-defined as:
+
+```
+typedef std::function<void(std::vector<std::vector<std::string>>)> forecast_functor;
+```
 
 **Return values**
 - `std::vector<std::vector<std::string>>`: a list of report data.
@@ -523,3 +627,131 @@ The `std::string` entries in the return vector are:
 - Date
 
 See example `rapp-api/cpp/examples/weather.cpp`
+
+-------------------
+
+##audio
+Class `rapp::object::audio` in `rapp-api/cpp/rapp/objects/audio.hpp`.
+Class which wraps around raw bytes of an audiofile.
+
+**Constructor arguments**
+-`audio(const std::string filepath)`: Path of an audio file. 
+-`audio(std::ifstream & bytestream)`: File stream of an audio.
+-`audio(std::vector<rapp::types::byte> bytearray)`: Raw data bytes of the audio file.
+-`audio(const audio &) = default`: Copy constructor
+
+**Methods of the class**
+- `std::vector<rapp::types::byte> bytearray() const`: Get audio as array of bytes
+- `bool operator==(const audio & rhs) const`: Compare if the audios are equal.
+- `bool operator!=(const audio & rhs) const`: Compare if audios are not the same.
+- `audio & operator=(const audio &) = default`: Assignment operator.
+- `bool save(const std::string filepath)`: Save audio to filepath.
+
+##face
+Class `rapp::objects::face` in `rapp-api/cpp/rapp/objects/face.hpp`
+Class which describes a face cartesian coordinate.
+
+**Constructor arguments**
+- `face(float top_left_x, float top_left_y, float bottom_right_x, float bottom_right_y)`: Construct using face coordinates. The coordinates will be x and y from the top left and bottom right points of the rectangle formed by the face.
+- `face() = default`: Empty constructor
+- `face(const face &) = default`: Copy constructor
+- `face(const json::const_iterator & face_it)`: Constructor using the information from JSON
+
+**Methods of the class**
+- `json::object_t to_json() const`: Return a JSON object
+- `bool operator==(const face & rhs) const`: Equality operator
+- `float get_left_x() const`: Return the top left x coordinate
+- `float get_left_y() const`: Return the top left y coordinate
+- `float get_right_x() const`: Return the bottom right x coordinate
+- `float get_right_y() const`: Return the bottom left y coordinate
+
+##globals
+Class `rapp::types` in `rapp/cpp/rapp/objects/globals.hpp`
+Class to add global common types.
+
+**Types**
+- `byte`
+- `audio_source`
+
+##human
+Class `rapp::objects::human` in `rapp-api/cpp/rapp/objects/human.hpp`
+To describe the human coordinates.
+
+**Constructor arguments**
+- `human(float top_left_x, float top_left_y, float bottom_right_x, float bottom_right_y)`: Construct using human coordinates. The coordinates will be x and y from the top left and bottom right points of the rectangle formed by the human.
+- `human() = default`: Empty constructor
+- `human(const human &) = default`: Copy constructor
+- `human(const json::const_iterator & human_it)`: Constructor using JSON
+
+**Methods of the class**
+- `json::object_t to_json() const`: Return a JSON object
+- `bool operator==(const human & rhs) const`: Equality operator
+- `float get_left_x() const`: Return top left x coordinate
+- `float get_left_y() const`: Return top left y coordinate
+- `float get_right_x() const`: Return bottom right x coordinate
+- `float get_right_y() const`: Return bottom right y coordinate
+
+##msg_metadata
+Class `rapp::objects::msg_metadata` in `rapp-api/cpp/rapp/objects/msg_metadata.hpp`
+Encapsulates metadata of another class (e.g. pose)
+
+**Constructor arguments**
+- `msg_metadata(int seq, rapp::object::time stamp, std::string frameid)`: Construct using data sequence `seq`, message data generation time stamp `stamp` and data coordination fram `frameid`.
+- `msg_metadata() = default`: Empty constructor
+- `msg_metadata(const rapp::object::msg_metadata &) = default`: Copy constructor
+- `msg_metadata(const json::const_iterator & metadata)`: Constructor using JSON
+
+**Methods of the class**
+- `json::object_t to_json() const`: Return a JSON object
+- `rapp::object::time get_time() const`: Return the parameter `stamp`
+- `int get_seq() const`: Return the parameter `seq`
+- `std::string get_frame() const`: Return the parameter `frameid`
+- `bool operator==(const rapp::object::msg_metadata & rhs) const`: Equality operator
+
+##picture
+Class `rapp::objects::picture` in `rapp-api/cpp/rapp/objects/picture.hpp`
+Class which wraps around raw bytes of a picture.
+
+**Constructor arguments**
+- `picture(const std::string filepath)`: Construct from a file path
+- `picture(std::ifstream & bytestream)`: Construct using a open file stream
+- `picture(std::vector<rapp::types::byte> data)`: Constructor using the raw bytes of a file 
+- `picture(const picture &) = default`: Copy constructor
+
+**Methods of the class**
+- `picture & operator=(const picture &) = default`: Assignment operator
+- `bool operator==(const picture & rhs) const`: Equality operator
+- `bool operator!=(const picture & rhs) const`: Inequality operator
+- `std::vector<rapp::types::byte> bytearray() const`: Return the array of bytes of the image
+- `std::string type() const`: Return image type. Only PNG and JPG supported.
+- `bool save(const std::string filepath)`: Save picture to a filepath
+
+##planned-path
+Class `rapp::objects::planned_path` in `rapp-api/cpp/objects/planned_path.hpp`
+Class which encapsulate collision free path planning service response. *For more information see [path_planning class](#path-planning). 
+
+**Constructor arguments**
+- `planned_path(uint8_t plan_found, std::string planning_error, std::vector<pose_stamped> path)`: Constructor using a definition of success/error code `plan_found`, an error description `planning_error` and a vector of [pose_stamped](#pose-stamped) which are the path for the robot `path`.
+- `planned_path() = default`: Empty Constructor
+- `planned_path(const rapp::object::planned_path &) = default`: Copy constructor
+- `planned_path(const json & arg)`: Constructor using JSON
+
+**Methods of the class**
+- `json to_json() const`: Return a JSON object
+- `bool operator==(const rapp::object::planned_path & rhs) const`: Equality operator
+- `uint8_t get_plan() const`: Return the parameter `plan_found`
+- `std::string get_error() const`: Return the parameter `planning_error`
+- `std::vector<rapp::object::pose_stamped> get_path() const`: Return the parameter `path`
+
+##point
+
+##pose
+
+##pose-stamped
+
+##qr-code
+
+##quaternion
+
+##time
+

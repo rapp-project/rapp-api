@@ -50,22 +50,22 @@ public:
     /// \brief Constructor using `json for modern C++`
     face(const json::const_iterator & face_it);
    
-    /// \brief Method to pass the information to a json format
+    /// \return json object
     json::object_t to_json() const;
 
     /// \brief Equality operator
     bool operator==(const face & rhs) const;
     
-    /// \brief Method to get the top_left_x__ param
+    /// \return top_left_x__ param
     float get_left_x() const;
 
-    /// \brief Method to get the top_left_y__ param
+    /// \return top_left_y__ param
     float get_left_y() const;
 
-    /// \brief Method to get the bottom_right_x__ param
+    /// \return bottom_right_x__ param
     float get_right_x() const;
 
-    /// \brief Method to get the bottom_right_y__param
+    /// \return bottom_right_y__param
     float get_right_y() const;
 
 private:

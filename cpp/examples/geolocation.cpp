@@ -41,6 +41,7 @@ int main()
                        std::string country_code,
                        float       latitude,
                        float       longtitude,
+                       std::string region,
                        std::string timezone,
                        std::string zip)
     {
@@ -49,6 +50,7 @@ int main()
                   << "Country Code: " << country_code <<"\n"
                   << "Latitude: " << latitude <<"\n"
                   << "Longtitude: " << longtitude <<"\n"
+                  << "Region: " << region << "\n"
                   << "Timezone: " << timezone <<"\n"
                   << "Zip: " << zip << std::endl;
     };

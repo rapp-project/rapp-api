@@ -16,6 +16,7 @@
 #include <rapp/cloud/vision_recognition.hpp>
 #include <rapp/cloud/weather_report.hpp>
 #include <rapp/cloud/email.hpp>
+#include <rapp/cloud/authentication.hpp>
 
 BOOST_AUTO_TEST_SUITE (cloud_calls)
 
@@ -142,6 +143,7 @@ BOOST_AUTO_TEST_CASE(geolocation_cloud_test)
                         std::string country_c,
                         float lat,
                         float longt,
+                        std::string region,
                         std::string time,
                         std::string zip)     
     {
@@ -150,6 +152,7 @@ BOOST_AUTO_TEST_CASE(geolocation_cloud_test)
         BOOST_CHECK_EQUAL(country_c, "country_code");
         BOOST_CHECK_EQUAL(lat, 1);
         BOOST_CHECK_EQUAL(longt, 2);
+        BOOST_CHECK_EQUAL(region, "region");
         BOOST_CHECK_EQUAL(time, "timezone");
         BOOST_CHECK_EQUAL(zip, "zip");
     };
@@ -161,6 +164,7 @@ BOOST_AUTO_TEST_CASE(geolocation_cloud_test)
                 "country_code" : "country_code",
                 "latitude" : 1,
                 "longtitude" : 2,
+                "region" : "region",
                 "timezone" : "timezone",
                 "zip" : "zip",
                 "error" : ""
@@ -552,7 +556,8 @@ BOOST_AUTO_TEST_CASE(weather_cloud_test)
  * is correct comparing with a json file done manually 
  * \note: the name of the variables are the initial of
  *  the classes or words corresponding with json.
- */BOOST_AUTO_TEST_CASE(email_cloud_test)
+ */
+BOOST_AUTO_TEST_CASE(email_cloud_test)
 {
     //Class email_fetch
     auto fetch_call = [] (std::vector<std::tuple<std::string, 
@@ -592,5 +597,58 @@ BOOST_AUTO_TEST_CASE(weather_cloud_test)
               })"_json;
     std::string j2_string = j2.dump(-1);
     es.deserialise(j2_string);
+}
+
+/*
+ * \brief check all the authentication classes 
+ * A callback is done to check that the desearilization
+ * is correct comparing with a json file done manually 
+ * \note: the name of the variables are the initial of
+ *  the classes or words corresponding with json.
+ */
+BOOST_AUTO_TEST_CASE(authentication_cloud_test)
+{
+    //Class login_user
+    auto login_call = [] (std::string token)
+    {
+        BOOST_CHECK_EQUAL(token, "token");
+    };
+    rapp::cloud::login_user lu("user", "pass", "dev_token", login_call);
+    auto j1 = R"(
+              {
+                  "token" : "token",
+                  "error" : ""
+              })"_json;
+    std::string j1_string = j1.dump(-1);
+    lu.deserialise(j1_string);
+
+    //Class register_user_from_platform
+    auto platform_call = [] ( std::string suggested_name)
+    {
+        BOOST_CHECK_EQUAL(suggested_name, "s_name");
+    };
+    rapp::cloud::register_user_from_platform rufp("creator_user", "creator_pass", "user_name", "user_pass", "english", platform_call);
+    auto j2 = R"(
+              {
+                  "suggested_username" : "s_name",
+                  "error" : ""
+              })"_json;
+    std::string j2_string = j2.dump(-1);
+    rufp.deserialise(j2_string);
+
+    //Class register_user_from_store
+    auto store_call = [] (std::string suggested_name)
+    {
+        BOOST_CHECK_EQUAL(suggested_name, "another");
+    };
+    rapp::cloud::register_user_from_store rufs("name", "pass", "token", "english", store_call);
+    auto j3 = R"(
+              {
+                  "suggested_username" : "another",
+                  "error" : ""
+              })"_json;
+    std::string j3_string = j3.dump(-1);
+    rufs.deserialise(j3_string);
+
 }
 BOOST_AUTO_TEST_SUITE_END()

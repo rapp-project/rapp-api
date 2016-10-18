@@ -36,7 +36,7 @@ public:
     /// \brief Construct using an open file stream
     picture(std::ifstream & bytestream);
 
-    /// \brief ...
+    /// \brief Constructor using the raw bytes of a file
     picture(std::vector<rapp::types::byte> data);
 
     /// \brief Copy constructor

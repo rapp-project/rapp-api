@@ -66,6 +66,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/objects/picture.cpp
              ${INCLUDES}/objects/audio.cpp
              ${INCLUDES}/objects/qr_code.cpp
+             ${INCLUDES}/cloud/authentication.cpp
              ${INCLUDES}/cloud/available_services.cpp
              ${INCLUDES}/cloud/cognitive_exercises.cpp
              ${INCLUDES}/cloud/email.cpp

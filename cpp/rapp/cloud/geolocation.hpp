@@ -43,6 +43,7 @@ public:
                                     float,
                                     float,
                                     std::string,
+                                    std::string,
                                     std::string)> callback
                );
 
@@ -59,6 +60,7 @@ private:
                        std::string,
                        float,
                        float,
+                       std::string,
                        std::string,
                        std::string)> delegate_;
 };

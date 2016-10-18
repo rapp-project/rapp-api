@@ -6,7 +6,7 @@ namespace types {
 
 /**
  * \brief clarification 
- * TODO make this unsigned char
+ * TODO: use unsigned char. 
  */
 typedef char byte;
 

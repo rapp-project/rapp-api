@@ -51,19 +51,19 @@ public:
     /// \brief Constructor using `json for modern C++`
     planned_path(const json & arg);
     
-    /// \brief Method to pass the information to a json object
+    /// \return a json object
     json to_json() const;
    
 	/// \brief Equality operator
     bool operator==(const rapp::object::planned_path & rhs) const;
 
-    /// \brief Method to get param plan_found_
+    /// \return param plan_found_
     uint8_t get_plan() const;
 
-    /// \brief Method to get param planning_error
+    /// \return param planning_error
     std::string get_error() const;
 
-    /// \brief Method to get param path_
+    /// \return the param path_
     std::vector<rapp::object::pose_stamped> get_path() const;
 
 private:

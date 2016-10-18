@@ -51,16 +51,16 @@ public:
 	/// \brief construct using `json for modern C++`
     msg_metadata(const json::const_iterator & metadata);
        
-    /// \brief method to pass the params to a json object
+    /// \return a json object
     json::object_t to_json() const; 
 
-    /// \brief method to get the param stamp_
+    /// return the param stamp_
     rapp::object::time get_time() const;
 
-    /// \brief method to get the param seq_
+    /// \return the param seq_
     int get_seq() const;
 
-    /// \brief method to get the param frameid_
+    /// \return the param frameid_
     std::string get_frame() const;
 
     /** 
