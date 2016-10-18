@@ -39,8 +39,8 @@ The following dependencies are **required** to build the C++ API:
 
 On a Ubuntu/Debian machine you can install all dependencies using (you milage may vary depending on distro version)
 
-```
-$ sudo apt-get install cmake gcc-4.9 libboost-all-dev
+```shell
+sudo apt-get install cmake gcc-4.9 libboost-all-dev
 ```
 
 The API internally uses and ships with [Nlohmann's JSON](https://github.com/nlohmann/json) library,
@@ -51,11 +51,11 @@ which you can find under `rapp-api/cpp/rapp/misc/json.hpp`
 For the C++ RAPP API, please note you need to satisfy these *dependencies*.
 To build:
 
-```
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
+```shell
+mkdir build
+cd build
+cmake ..
+make
 ```
 
 You should end up with a library and/or tests and examples under your build directory.
@@ -83,7 +83,7 @@ using i386 architecture.
 
 You may install if you wish to (as root or using `sudo`):
 
-```
+```shell
 make install
 ```
 
@@ -91,7 +91,7 @@ The produced library will be installed in `/usr/local/lib/` whereas the headers 
 
 If you wish to install to another location or a user directory then run:
 
-```
+```shell
 -DCMAKE_INSTALL_PREFIX=/other/dir
 ```
 
@@ -101,7 +101,7 @@ If you wish to install to another location or a user directory then run:
 
 Enable tests when you run cmake with:
 
-```
+```shell
 cmake .. -DBUILD_TESTS=ON
 ```
 
@@ -114,7 +114,7 @@ There are three types of tests:
 
 To execute them, type:
 
-```
+```shell
 make test
 ```
 

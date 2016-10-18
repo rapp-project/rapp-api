@@ -22,9 +22,9 @@
     - [Path Upload Map](#path-upload-map)
   - [Speech Services](#speech-services)
     - [Google S2T](#speech-google)
-    - [CMU Sphinx S2T](#speech-cmusphinx)
+    - [CMU Sphinx S2T](#speech-cmu-sphinx4)
     - [Set Noise](#set-noise)
-    - [Text to Speech](#tts)
+    - [Text to Speech](#text-to-speech)
   - [Vision Services](#vision-services)
     - [Door Angle Detection](#vision-door-angle)
     - [Face Detection](#vision-face-detect)
@@ -34,8 +34,7 @@
     - [Object Recognition](#vision-object-recognition)
   - [Weather](#weather)
 
-##available-services
-
+## Available Services
 A call which will return a list of pairs of strings, the first string naming the service name and the second defining the URL.
 
 **Input arguments**
@@ -46,8 +45,7 @@ A call which will return a list of pairs of strings, the first string naming the
 
 See example: `rapp-api/cpp/examples/available_services.cpp`
 
-##cognitive-exercises
-
+## Cognitive Exercises
 A series of classes which are used to play cognitive games.
 Types of games are:
 
@@ -55,7 +53,7 @@ Types of games are:
 - AwarenessCts
 - ReasoningCts
 
-###cognitive-test-selector
+### cognitive-test-selector
 
 A call which will select a test.
 **Input arguments**
@@ -89,8 +87,7 @@ The items in the functor represent the return values.
 
 See example `rapp-api/cpp/examples/cognitive_games.cpp`
 
-###cognitive-record-performance
-
+### cognitive-record-performance
 A call used to record performance for a user.
 
 **Input arguments**
@@ -103,8 +100,7 @@ A call used to record performance for a user.
 
 See example `rapp-api/cpp/examples/cognitive_games.cpp`
 
-###cognitive-get-history
-
+### cognitive-get-history
 A call used to obtain user's history.
 
 **Input arguments**
@@ -118,8 +114,7 @@ A call used to obtain user's history.
 
 See example `rapp-api/cpp/examples/cognitive_games.cpp`
 
-###cognitive-get-scores
-
+### cognitive-get-scores
 A call used to quqery scores.
 
 **Input arguments**
@@ -133,14 +128,11 @@ A call used to quqery scores.
 
 See example `rapp-api/cpp/examples/cognitive_games.cpp`
 
-
-##email
-
+## Email
 The platform supports sending and receiving email, when using your own
 email account.
 
-###email-fetch
-
+### email-fetch
 Request to fetch email from your account.
 
 **Input arguments**
@@ -164,8 +156,7 @@ The callback functor receives the return values.
 
 See example `rapp-api/cpp/examples/email_handling.cpp`
 
-###email-send
-
+### email-send
 Request an email to be sent.
 
 **Input arguments**
@@ -183,8 +174,7 @@ The callback functor may receive a JSON of errros.
 **Return values**
 - `std::string`: a JSON of errors (will default to empty if no errrors)
 
-##geolocation
-
+## Geolocation
 Quering your location based on the IP of the robot.
 Requires that you can establish what the external interface/address is.
 
@@ -205,14 +195,12 @@ Callback functor receives return values.
 
 See example `rapp-api/cpp/examples/geolocation.cpp`
 
-##ontology
-
+## Ontology
 The Platform supports querying a KnowRob/RoboEarth instance.
 Eeach type of query returns an XML URI, which you'll have to visit and parse
 in order to obtain meaningful meta-data.
 
-###ontology-subclasses-of
-
+### ontology-subclasses-of
 Query the sub-classes of a class.
 
 **Input arguments**
@@ -226,8 +214,7 @@ The callback functor will receive the return values.
 
 See example `rapp-api/cpp/examples/knowrob_ontology.cpp`
 
-###ontology-superclasses-of
-
+### ontology-superclasses-of
 Query the super-classes of a class.
 
 **Input arguments**
@@ -241,8 +228,7 @@ The callback functor will receive the return values.
 
 See example `rapp-api/cpp/examples/knowrob_ontology.cpp`
 
-###ontology-is-subsuperclass-of
-
+### ontology-is-subsuperclass-of
 Query if a sub-class is the super-class of another entity.
 
 **Input arguments**
@@ -257,14 +243,12 @@ The callback functor will receive the return values.
 
 See example `rapp-api/cpp/examples/knowrob_ontology.cpp`
 
-##path-planning
-
+## Path Planning
 The platform offers a path planning service.
 The requirement is that you must upload a map, and index the name of the map.
 You may then request a path using that map and certain parameters.
 
-###path-planning-2d
-
+### path-planning-2d
 Request a 2D plan from the platform.
 *Note*: see classes:
 - `rapp::object::planned_path` which is the return class type
@@ -284,8 +268,7 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/path_planning.cpp`
 
-###path-upload-map
-
+### path-upload-map
 This call will upload a 2D PNG map to the platform.
 A list of maps and their descriptors can be found in the [platform](https://github.com/rapp-project/rapp-platform/tree/master/rapp_path_planning/rapp_map_server/maps).
 The overall idea is to represent boundaries and obstacles with pixels, 
@@ -303,16 +286,13 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/path_planning.cpp`
 
-
-#speech
-
+# Speech Services
 The Platform offers speech-to-text (S2T) services,
 as well as a text-to-speech (TTS) service.
 A requirement is that a noise profile must be set in order
 to enable better performance.
 
-##speech-google
-
+## speech-google
 Uses the free Google Speech Recognition [API](https://cloud.google.com/speech/).
 Requires that you have obtained an audio file as a WAV or OGG.
 
@@ -328,8 +308,7 @@ The callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/speech_recognition_google.cpp`
 
-##speech-cmusphinx
-
+## speech-cmu-sphinx4
 Uses a CMU [Sphinx4](http://cmusphinx.sourceforge.net/wiki/sphinx4:webhome) Backend to
 process and recognise speech as text. Requires that you have obtained an audio file as a WAV or OGG.
 
@@ -348,8 +327,7 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/speech_recognition_sphinx4.cpp`
 
-##set-noise
-
+## set-noise
 Sets the noise profile for CMU Sphinx4 cloud service.
 Requires that you have obtained an audio file as a WAV or OGG,
 which contains only backround, environment or microphone noise.
@@ -360,8 +338,7 @@ which contains only backround, environment or microphone noise.
 
 *Note*: there is no callback functor or return value in this class.
 
-##tts
-
+## text-to-speech
 Uses the [Espeak and MBrola](http://espeak.sourceforge.net/mbrola.html) backend
 to generate audio files (WAV) from a queried text.
 
@@ -374,15 +351,13 @@ Callback functor will receive the audio file.
 **Return values**
 - `rapp::object::audio`: an audio file with the speech requested.
 
-See xample: `rapp-api/cpp/examples/set_noise_profile.cpp`
+See example: `rapp-api/cpp/examples/set_noise_profile.cpp`
 
-#vision
-
+# Vision Services
 The platforms offers a variety of Computer Vision (CV) services,
 which are organised in two categories: *detection* and *recognition*.
 
-##vision-door-angle
-
+## vision-door-angle
 Find if a door is open, and to what degree.
 
 **Input arguments**
@@ -395,8 +370,7 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/hazard_detect.cpp`
 
-##vision-face-detect
-
+## vision-face-detect
 Detect faces in an image.
 
 **Input arguments**
@@ -410,8 +384,7 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/face_detect.cpp`
 
-##vision-human-detect
-
+## vision-human-detect
 Detect humans in an image.
 
 **Input arguments**
@@ -424,8 +397,7 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/human_detect.cpp`
 
-##vision-light-detect
-
+## vision-light-detect
 Detect light level (luminoscity)
 
 **Input arguments**
@@ -438,8 +410,7 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/light_detection.cpp`
 
-##vision-qrcode-detect
-
+## vision-qrcode-detect
 Detect and scan QR code.
 
 **Input arguments**
@@ -452,8 +423,7 @@ As always, the callback functor will receive the return values.
 
 See example: `rapp-api/cpp/examples/qr_detect.cpp`
 
-##vision-object-recognition
-
+## vision-object-recognition
 Recognise Objects using [Caffee](http://caffe.berkeleyvision.org/).
 
 **Input arguments**
