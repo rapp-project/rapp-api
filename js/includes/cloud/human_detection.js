@@ -4,6 +4,23 @@ var path = require('path');
 var __cloudDir = path.join(__dirname);
 var __objectsDir = path.join(__dirname, '..', 'objects');
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
+const config = require("../../config/config");
+
+if (config.protocol === "https")
+{
+    var request = require('request').defaults({
+	    secureProtocol: 'TLSv1_2_method',
+	    rejectUnauthorized: false
+	});
+}
+else if (config.protocol === "http")
+{
+    var request = require("request");
+}
+else
+{
+    console.log("please choose one of: http or https(for TLS_1.2) as protocols");
+}
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
 RAPPObject.human = require(path.join(__objectsDir, 'human.js'));
 
@@ -24,10 +41,6 @@ RAPPCloud.prototype.human_detection = function ( image, image_format, callback )
     var formData = require('form-data');
 	var randomstring = require('randomstring');
 	var fs = require('fs');
-	var request = require('request').defaults({
-	  secureProtocol: 'TLSv1_2_method',
-	  rejectUnauthorized: false
-	});
 
     var cloud = this;
     var object = new RAPPObject( );
