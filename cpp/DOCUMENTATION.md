@@ -273,7 +273,7 @@ All classes are in `rapp/cloud/path_planning.hpp`
 ### path-planning-2d
 Class `rapp::cloud::plan_path_2d`
 Request a 2D plan from the platform.
-*Note*: see classes:
+*Note* see classes:
 - `rapp::object::planned_path` which is the return class type
 - `rapp::object::pose_stamped` which is the argument class type used
 
