@@ -1,16 +1,16 @@
 # RAPP API 0.7.0
 -----------------------
 
-- Contents
-    - [Building](#Building)
-    - [CMake Options](#CMake Options)
-    - [Installing](#Installing)
-    - [Testing](#Testing)
-    - [Examples](#Examples)
-    - [Older gcc/g++](#Older gcc/g++)
-    - [Tutorials](#Tutorials)
-    - [Documentation](#Documentation)
-    - [Help](#Help)
+## Contents
+- [Building](#building)
+- [CMake Options](#cmake Options)
+- [Installing](#installing)
+- [Testing](#Testing)
+- [Examples](#Examples)
+- [Older gcc/g++](#Older gcc/g++)
+- [Tutorials](#Tutorials)
+- [Documentation](#Documentation)
+- [Help](#Help)
 
 [![Build Status](https://travis-ci.org/rapp-project/rapp-api.svg?branch=cpp_dev)](https://travis-ci.org/rapp-project/rapp-api) [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -28,7 +28,7 @@ by *daisy-chanining* delegates via subsequent callbacks.
 All callback schemes use the `std::function` therefore you can pass 
 *lambdas, function pointers, class members and struct functors* as callbacks.
 
-#Building
+## Building
 
 For the C++ RAPP API, please note you need to satisfy these *dependencies*:
 * A modern C++11 enabled compiler (g++, clang) 
@@ -45,7 +45,7 @@ $ make
 
 You should end up with a library and/or tests and examples under your build directory.
 
-#CMake Options
+## CMake Options
 
 *Note* that you can pass a variety of CMake arguments to suit your needs:
 
@@ -64,7 +64,7 @@ All of those arguments are optional, however depending on your scenario you may 
 For example, building for a NAO robot the convenience flag `-DOPEN_NAO=ON` will create a static library optimising for an ATOM cpu
 using i386 architecture.
 
-#Installing
+## Installing
 
 You may install if you wish to (as root or using `sudo`):
 
