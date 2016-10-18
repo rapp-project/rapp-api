@@ -10,9 +10,9 @@ const homeDir = require('home-dir');
  */
 function RAPPCloud ()
 {
-    var token_path = homeDir() + "/.config/rapp_platform/tokens/app";
-    this.token = fs.readFileSync(token_path, 'utf8').toString().replace(/\n$/, '');
-//    this.token = "rapp_token";
+//    var token_path = homeDir() + "/.config/rapp_platform/tokens/app";
+//    this.token = fs.readFileSync(token_path, 'utf8').toString().replace(/\n$/, '');
+    this.token = "rapp_token";
     this.cloud_url = config.protocol + "://" + config.rapp_platform_ip + ":" + config.rapp_platform_port;
 }
 
