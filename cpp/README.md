@@ -2,6 +2,7 @@
 -----------------------
 
 ## Contents
+- [Dependencies](#dependencies)
 - [Building](#building)
 - [CMake Options](#cmake-options)
 - [Installing](#installing)
@@ -28,14 +29,28 @@ by *daisy-chanining* delegates via subsequent callbacks.
 All callback schemes use the `std::function` therefore you can pass 
 *lambdas, function pointers, class members and struct functors* as callbacks.
 
+## Dependencies
+
+The following dependencies are **required** to build the C++ API:
+
+* gcc/g++ >= 4.9
+* boost >= 1.49
+* cmake >= 2.8
+
+On a Ubuntu/Debian machine you can install all dependencies using (you milage may vary depending on distro version)
+
+```
+$ sudo apt-get install cmake gcc-4.9 libboost-all-dev
+```
+
+The API internally uses and ships with [Nlohmann's JSON](https://github.com/nlohmann/json) library,
+which you can find under `rapp-api/cpp/rapp/misc/json.hpp`
+
 ## Building
 
-For the C++ RAPP API, please note you need to satisfy these *dependencies*:
-* A modern C++11 enabled compiler (g++, clang) 
-* BOOST library higher than 1.49
-* CMake higher than 2.8
-
+For the C++ RAPP API, please note you need to satisfy these *dependencies*.
 To build:
+
 ```
 $ mkdir build
 $ cd build
@@ -84,13 +99,13 @@ If you wish to install to another location or a user directory then run:
 
 ## Testing
 
-Enable tests when you run cmake by:
+Enable tests when you run cmake with:
 
 ```
 cmake .. -DBUILD_TESTS=ON
 ```
 
-This will create a `rapp-api/cpp/build/tests` directory to all the corresponding source files in `rapp-api/cpp/tests`.
+This will create a `rapp-api/cpp/build/tests` directory for each file in `rapp-api/cpp/tests`.
 There are three types of tests:
 
 * JSON (de)serialisation tests.
@@ -104,14 +119,18 @@ make test
 ```
 
 *_Warning_*: do not run individual tests from within the `/rapp-api/cpp/build/tests` directory!
+
 *_Note_*: all examples and test have been checked with `valgrind --leak-check=full` under Ubuntu 14.04 and found
 to have no memory leaks or segfaults.
+
 If you do happen to run across such issues, please open an issue on GitHub.
 
 ## Examples
 
-The source files for the examples are under `/rapp-api/cpp/examples` and if you use the flag `-DBUILD_EXAMPLES=ON` they
+The source files for the examples are under `/rapp-api/cpp/examples` and if you use the CMake option flag `-DBUILD_EXAMPLES=ON` they
 will be built under `/rapp-api/cpp/build/examples/`.
+
+You can run them individually, or use them as templates.
 
 ## Old Compilers
 
