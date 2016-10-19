@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/set_noise_profile.hpp>
+#include <rapp/cloud/speech_recognition.hpp>
 #include <rapp/objects/audio.hpp>
 /*
  * \brief Example to take an audio for denoise

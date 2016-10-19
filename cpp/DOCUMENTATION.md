@@ -39,20 +39,20 @@
   - [Weather](#weather)
     - [Current Report](#weather-report-current)
 - C++ API object classes
-  -[Audio](#audio)
-  -[Face](#face)
-  -[Globals](#globals)
-  -[Human](#human)
-  -[Msg Metadata](#msg-metadata)
-  -[Picture](#picture)
-  -[Planned Path](#planned-path)
-  -[Point](#point)
-  -[Pose](#pose)
-  -[Pose stamped](#pose-stamped)
-  -[Qr Code](#qr-code)
-  -[Quaternion](#quaternion)
-  -[Time](#time)
-  -[Yaml](#yaml)
+  - [Audio](#audio)
+  - [Face](#face)
+  - [Globals](#globals)
+  - [Human](#human)
+  - [Msg Metadata](#msg-metadata)
+  - [Picture](#picture)
+  - [Planned Path](#planned-path)
+  - [Point](#point)
+  - [Pose](#pose)
+  - [Pose stamped](#pose-stamped)
+  - [Qr Code](#qr-code)
+  - [Quaternion](#quaternion)
+  - [Time](#time)
+  - [Yaml](#yaml)
 
 ##Authentication
 A serie of classes which are used to register and login in RAPP-Platform or RAPP-Store.
@@ -65,8 +65,8 @@ An existing user login in the Platform or Store.
 **Input arguments**
 - `std::string username`: Account username
 - `std::string password`: Account password
-- `std::string device_token`: The device from which a user tries to login.
-- `std::function<void(std::string)> callback`: a callback functor which receive the return values.
+- `std::string device_token`: The device from which a user tries to login
+- `std::function<void(std::string)> callback`: a callback functor which receive the return values
 
 **Return values**
 - `std::string token`: Token used for accessing RAPP-Platform resources.
@@ -76,12 +76,12 @@ Class `rapp::cloud::register_user_from_platform`
 Add new platform user using RAPP-Platform credentials.
 
 **Input arguments**
-- `std::string creator_username`: Robot admin account username of RAPP-Platform.
-- `std::string creator_password`: Robot admin account password of RAPP-Platform.
-- `std::string new_user_username`: New user's account username.
-- `std::string new_user_password`: New user's account password.
-- `std::string language`: The language choosen by the user.
-- `std::function<void(std::string)> callback`: a callback functor which receive the return values.
+- `std::string creator_username`: Robot admin account username of RAPP-Platform
+- `std::string creator_password`: Robot admin account password of RAPP-Platform
+- `std::string new_user_username`: New user's account username
+- `std::string new_user_password`: New user's account password
+- `std::string language`: The language choosen by the user
+- `std::function<void(std::string)> callback`: a callback functor which receive the return values
 
 **Return arguments**
 - `std::string suggested_username`: Suggested username if the provided one already exists.
@@ -630,7 +630,7 @@ See example `rapp-api/cpp/examples/weather.cpp`
 
 -------------------
 
-##audio
+##Audio
 Class `rapp::object::audio` in `rapp-api/cpp/rapp/objects/audio.hpp`.
 Class which wraps around raw bytes of an audiofile.
 
@@ -647,8 +647,8 @@ Class which wraps around raw bytes of an audiofile.
 - `audio & operator=(const audio &) = default`: Assignment operator.
 - `bool save(const std::string filepath)`: Save audio to filepath.
 
-##face
-Class `rapp::objects::face` in `rapp-api/cpp/rapp/objects/face.hpp`
+##Face
+Class `rapp::object::face` in `rapp-api/cpp/rapp/objects/face.hpp`
 Class which describes a face cartesian coordinate.
 
 **Constructor arguments**
@@ -665,7 +665,7 @@ Class which describes a face cartesian coordinate.
 - `float get_right_x() const`: Return the bottom right x coordinate
 - `float get_right_y() const`: Return the bottom left y coordinate
 
-##globals
+##Globals
 Class `rapp::types` in `rapp/cpp/rapp/objects/globals.hpp`
 Class to add global common types.
 
@@ -673,8 +673,8 @@ Class to add global common types.
 - `byte`
 - `audio_source`
 
-##human
-Class `rapp::objects::human` in `rapp-api/cpp/rapp/objects/human.hpp`
+##Human
+Class `rapp::object::human` in `rapp-api/cpp/rapp/objects/human.hpp`
 To describe the human coordinates.
 
 **Constructor arguments**
@@ -691,8 +691,8 @@ To describe the human coordinates.
 - `float get_right_x() const`: Return bottom right x coordinate
 - `float get_right_y() const`: Return bottom right y coordinate
 
-##msg_metadata
-Class `rapp::objects::msg_metadata` in `rapp-api/cpp/rapp/objects/msg_metadata.hpp`
+##Msg_metadata
+Class `rapp::object::msg_metadata` in `rapp-api/cpp/rapp/objects/msg_metadata.hpp`
 Encapsulates metadata of another class (e.g. pose)
 
 **Constructor arguments**
@@ -708,8 +708,8 @@ Encapsulates metadata of another class (e.g. pose)
 - `std::string get_frame() const`: Return the parameter `frameid`
 - `bool operator==(const rapp::object::msg_metadata & rhs) const`: Equality operator
 
-##picture
-Class `rapp::objects::picture` in `rapp-api/cpp/rapp/objects/picture.hpp`
+##Picture
+Class `rapp::object::picture` in `rapp-api/cpp/rapp/objects/picture.hpp`
 Class which wraps around raw bytes of a picture.
 
 **Constructor arguments**
@@ -726,8 +726,8 @@ Class which wraps around raw bytes of a picture.
 - `std::string type() const`: Return image type. Only PNG and JPG supported.
 - `bool save(const std::string filepath)`: Save picture to a filepath
 
-##planned-path
-Class `rapp::objects::planned_path` in `rapp-api/cpp/objects/planned_path.hpp`
+##Planned-path
+Class `rapp::object::planned_path` in `rapp-api/cpp/objects/planned_path.hpp`
 Class which encapsulate collision free path planning service response. *For more information see [path_planning class](#path-planning). 
 
 **Constructor arguments**
@@ -743,15 +743,103 @@ Class which encapsulate collision free path planning service response. *For more
 - `std::string get_error() const`: Return the parameter `planning_error`
 - `std::vector<rapp::object::pose_stamped> get_path() const`: Return the parameter `path`
 
-##point
+##Point
+Class `rapp::object::point` in `rapp-api/cpp/rapp/objects/point.hpp`
+Class which encapsulate the point position vector.
 
-##pose
+**Constructor arguments**
+- `point(double x, double y, double z)`: Constructor using code coordinates (x,y,z)
+- `point() = default`: Empty constructor
+- `point(const rapp::object::point &) = default`: Copy constructor
+- `point(const json::const_iterator & position)`: Constructor using JSON 
 
-##pose-stamped
+**Methods of the class**
+- `json::object_t to_json() const`: Return a JSON object
+- `bool operator==(const rapp::object::point & rhs) const`: Equality operator
+- `get_x() const`: Return parameter `x`
+- `get_y() const`: Return parameter `y`
+- `get_z() const`: Return parameter `z`
 
-##qr-code
+##Pose
+Class `rapp::object::pose` in `rapp-api/cpp/rapp/objects/pose.hpp`
+Class which encapsulates the robot pose vectors (position and orientation).
 
-##quaternion
+**Constructor arguments**
+- `pose(rapp::object::point position, rapp::object::quaternion orientation)`: Constructor using position and orientation components. The parameter `position` is a vector of position coordinates and the parameter `orientation` is a vector of orientation (quaternion) coordinates.
+- `pose() = default`: Empty constructor 
+- `pose(const rapp::object::pose &) = default`: Copy constructor
+- `pose(const json::const_iterator & pose)`: Constructor using JSON
 
-##time
+**Methods of the class**
+- `bool operator==(const pose & rhs) const`: Equality operator
+- `json::object_t to_json() const`: Return a JSON object
+- `rapp::object::point get_position() const`: Return the `position` parameter.
+- `rapp::object::quaternion get_orientation() const`: Return the `orientation` parameter.
 
+##Pose-stamped
+Class `rapp::object::pose_stamped` in `rapp-api/cpp/rapp/objects/pose_stamped.hpp`
+Class which encapsulates the robot pose with message header component.
+
+**Constructor arguments**
+     * \brief 
+     * \param header defines pose metadata (sequence, frame_id, stamp)
+     * \param pose is robot pose definition (position & orientation)
+     */
+- `pose_stamped(const rapp::object::msg_metadata header, const rapp::object::pose pose)`: Construct using robot pose and message header component. The parameter `header` defines pose metadata (see [msg_metadata class](#msg_metadata)  and the parameter `pose` is the robot pose definition (see [pose class](#pose)).
+- `pose_stamped() = default`: Empty constructor
+- `pose_stamped(const rapp::object::pose_stamped &) = default`: Copy constructor
+- `pose_stamped(const json::const_iterator & stamped)`: Constructor using JSON
+
+**Methods of the class**
+- `json::object_t to_json() const`: Return a JSON object
+- `rapp::object::msg_metadata get_header() const`: Return a msg_metadata object
+- `rapp::object::pose get_pose() const`: Return a pose object
+- `bool operator==(const rapp::object::pose_stamped & rhs) const`: Equality operator
+
+##Qr-code
+Class `rapp::object::qr_code` in `rapp-api/cpp/rapp/objects/qr_code.hpp`
+Class which encapsulates a QR code.
+
+**Constructor arguments**
+- `qr_code(float centre_x, float centre_y, std::string label)`: Construct using code coordinates (a rectangle) and a label (URL, email, string, etc). Parameters `centre_x` and `centre_y` are the coordinates and `label` is the message embedded in the QR.
+- `qr_code() = default`: Empty constructor
+- `qr_code(const qr_code &) = default`: Copy constructor
+
+**Methods of the class**
+- `json::object_t to_json() const`: Return a JSON object
+- `bool operator==(const qr_code & rhs) const`: Equality operator
+- `std::string label() const`: Return the parameter `label`.
+
+##Quaternion
+Class `rapp::object::quaternion` in `rapp-api/cpp/rapp/objects/quaternion.hpp`
+Class which encapsulates a quaternion vector.
+
+**Constructor arguments**
+- `quaternion(double x, double y, double z, double w)`: Constructor using code coordinates (x, y, z, w).
+- `quaternion() = default`: Empty constructor
+- `quaternion(const rapp::object::quaternion &) = default`: Copy constructor
+- `quaternion(const json::const_iterator & orientation)`: Constructor using JSON
+
+**Methods of the class**
+- `json::object_t to_json() const`: Return a JSON object
+- `bool operator==(const rapp::object::quaternion & rhs) const`: Equality operator
+- `get_x() const`: Return parameter `x`
+- `get_y() const`: Return parameter `y`
+- `get_z() const`: Return parameter `z`
+- `get_w() const`: Return parameter `w`
+
+##Time
+Class `rapp::object::time` in `rapp-api/cpp/rapp/objects/time.hpp`
+Class which wraps arpund time stamp (UNIX Epoch).
+
+**Constructor arguments**
+- `time(std::chrono::nanoseconds timepoint)`: Construct using second and nanoseconds. 
+- `time() = default`: Empty constructor
+- `time(const rapp::object::time &) = default`: Copy constructor
+- `time(const json::const_iterator & stamp)`: Constructor using JSON
+
+**Methods of the class**
+- `json::object_t to_json() const`: Return a JSON object
+- `bool operator==(const rapp::object::time & rhs) const`: Equality operator
+- `uint32_t seconds() const`: Return `seconds` parameter
+- `uint32_t nanoseconds() const`: Return `nanoseconds` parameter

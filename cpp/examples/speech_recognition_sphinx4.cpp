@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/speech_recognition_sphinx4.hpp>
+#include <rapp/cloud/speech_recognition.hpp>
 #include <rapp/objects/audio.hpp>
 /*
  * \brief Example to recognise words from an audio file with Sphinx4

@@ -54,13 +54,13 @@ public:
     /// \brief Equality operator
     bool operator==(const pose & rhs) const;
     
-    /// \brief Method to pass information to a json object
+    /// \return a json object
     json::object_t to_json() const;
    
-    /// \brief Method to get position_ parameter
+    /// \return position_ parameter
     rapp::object::point get_position() const;
 
-    /// \brief Method to get orientation_ param
+    /// \return orientation_ param
     rapp::object::quaternion get_orientation() const;
 
 private:

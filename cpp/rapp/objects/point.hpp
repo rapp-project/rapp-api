@@ -46,12 +46,22 @@ public:
     /// \brief Construct using library "json for modern c++"
     point(const json::const_iterator & position);
    
-    /// \brief method to pass the information to a json object
+    /// \return a JSON object
     json::object_t to_json() const;
    
     /// \brief Equality operator
     bool operator==(const rapp::object::point & rhs) const;
-  
+
+    /// \return parameter x
+    double get_x() const;
+
+    /// \return parameter y
+    double get_y() const;
+
+    /// \return parameter z
+    double get_z() const;
+
+private:
     /// members
 	double x = 0;
     double y = 0;

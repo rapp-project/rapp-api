@@ -49,5 +49,25 @@ bool quaternion::operator==(const rapp::object::quaternion & rhs) const
 
 }
 
+double quaternion::get_x() const
+{
+    return x;
+}
+
+double quaternion::get_y() const
+{
+    return y;
+}
+
+double quaternion::get_z() const
+{
+    return z;
+}
+
+double quaternion::get_w() const
+{
+    return w;
+}
+
 }
 }

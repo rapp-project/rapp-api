@@ -41,6 +41,20 @@ bool point::operator==(const rapp::object::point & rhs) const
            (this->z == rhs.z);
 }
 
+double point::get_x() const
+{
+    return x;
+}
+
+double point::get_y() const
+{
+    return y;
+}
+
+double point::get_z() const
+{
+    return z;
+}
 
 }
 }

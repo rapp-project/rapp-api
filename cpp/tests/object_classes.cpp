@@ -102,8 +102,8 @@ BOOST_AUTO_TEST_CASE(object_point_test)
     BOOST_CHECK(point4 == point5);
 
     //to check that the variable is the same
-    BOOST_CHECK_EQUAL(point1.x, 0.9999999776482582);
-    BOOST_CHECK_EQUAL(point1.y, 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point1.get_x(), 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point1.get_y(), 0.9999999776482582);
 
 }
 
@@ -130,8 +130,8 @@ BOOST_AUTO_TEST_CASE(object_quaternion_test)
     auto quat3 = rapp::object::quaternion(quat2);
     BOOST_CHECK(quat2 == quat3);
 
-    BOOST_CHECK_EQUAL(quat3.z, 0.3062984133859556);
-    BOOST_CHECK_EQUAL(quat3.w, 0.9519355450644997);
+    BOOST_CHECK_EQUAL(quat3.get_z(), 0.3062984133859556);
+    BOOST_CHECK_EQUAL(quat3.get_w(), 0.9519355450644997);
 
     auto quat4 = quat3;
     BOOST_CHECK(quat3 == quat4);
@@ -168,12 +168,12 @@ BOOST_AUTO_TEST_CASE(object_pose_test)
 
     const auto quat1 = pose3.get_orientation();
     BOOST_CHECK(quat1 == quat);
-    BOOST_CHECK_EQUAL(quat1.w, 0.9844323810798712);
-    BOOST_CHECK_EQUAL(quat1.z, 0.17576372515799546);
+    BOOST_CHECK_EQUAL(quat1.get_w(), 0.9844323810798712);
+    BOOST_CHECK_EQUAL(quat1.get_z(), 0.17576372515799546);
 
     const auto point1 = pose3.get_position();
     BOOST_CHECK(point == point1);
-    BOOST_CHECK_EQUAL( point1.x, 0.9999999776482582);
+    BOOST_CHECK_EQUAL( point1.get_x(), 0.9999999776482582);
 
     auto pose4 = pose3;
     BOOST_CHECK(pose3 == pose4);

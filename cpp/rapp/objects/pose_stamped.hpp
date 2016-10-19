@@ -51,13 +51,13 @@ public:
     /// \brief Construct using `json for modern c++`
     pose_stamped(const json::const_iterator & stamped);
 
-    /// \brief Method to pass the information into a json object
+    /// \return a json object
     json::object_t to_json() const;
 
-    /// \brief Method to get the param header_
+    /// \return param header_
     rapp::object::msg_metadata get_header() const; 
 
-    /// \brief Method to get the param pose_
+    /// \return the param pose_
     rapp::object::pose get_pose() const;
 
     /// \brief Equality operator

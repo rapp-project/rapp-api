@@ -89,9 +89,9 @@ BOOST_AUTO_TEST_CASE(point_json_test)
     BOOST_CHECK(position != json.end());
 
     rapp::object::point point_obj = rapp::object::point(position);
-    BOOST_CHECK_EQUAL(point_obj.x, 0.9999999776482582);
-    BOOST_CHECK_EQUAL(point_obj.y, 0.9999999776482582);
-    BOOST_CHECK_EQUAL(point_obj.z, 0.0);
+    BOOST_CHECK_EQUAL(point_obj.get_x(), 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point_obj.get_y(), 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point_obj.get_z(), 0.0);
 
     nlohmann::json::object_t out = {{"position", point_obj.to_json()}};
     BOOST_CHECK(json == out);
@@ -113,10 +113,10 @@ BOOST_AUTO_TEST_CASE(quaternion_json_test)
     BOOST_CHECK(orientation != json.end());
     
     rapp::object::quaternion quat_obj = rapp::object::quaternion(orientation);
-    BOOST_CHECK_EQUAL(quat_obj.x, 0.0);
-    BOOST_CHECK_EQUAL(quat_obj.y, 0.0);
-    BOOST_CHECK_EQUAL(quat_obj.z, 0.3062984133859556);
-    BOOST_CHECK_EQUAL(quat_obj.w, 0.9519355450644997);
+    BOOST_CHECK_EQUAL(quat_obj.get_x(), 0.0);
+    BOOST_CHECK_EQUAL(quat_obj.get_y(), 0.0);
+    BOOST_CHECK_EQUAL(quat_obj.get_z(), 0.3062984133859556);
+    BOOST_CHECK_EQUAL(quat_obj.get_w(), 0.9519355450644997);
 
     nlohmann::json::object_t out = {{ "orientation", quat_obj.to_json()}};
     BOOST_CHECK(json == out);
@@ -139,14 +139,14 @@ BOOST_AUTO_TEST_CASE(pose_json_test)
 
     rapp::object::pose pose_obj = rapp::object::pose(pose_it);
     auto quat_obj = pose_obj.get_orientation();
-    BOOST_CHECK_EQUAL(quat_obj.x, 0);
-    BOOST_CHECK_EQUAL(quat_obj.z, 0.17576372515799546);
-    BOOST_CHECK_EQUAL(quat_obj.w, 0.9844323810798712);
+    BOOST_CHECK_EQUAL(quat_obj.get_x(), 0);
+    BOOST_CHECK_EQUAL(quat_obj.get_z(), 0.17576372515799546);
+    BOOST_CHECK_EQUAL(quat_obj.get_w(), 0.9844323810798712);
 
     auto point_obj = pose_obj.get_position();
-    BOOST_CHECK_EQUAL(point_obj.x, 0.9999999776482582);
-    BOOST_CHECK_EQUAL(point_obj.y, 0.9999999776482582);
-    BOOST_CHECK_EQUAL(point_obj.z, 0);
+    BOOST_CHECK_EQUAL(point_obj.get_x(), 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point_obj.get_y(), 0.9999999776482582);
+    BOOST_CHECK_EQUAL(point_obj.get_z(), 0);
 
     nlohmann::json::object_t out = {{ "pose" ,pose_obj.to_json()}};
     BOOST_CHECK(json == out);

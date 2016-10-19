@@ -54,6 +54,19 @@ public:
     /// \brief Equality operator
     bool operator==(const rapp::object::quaternion & rhs) const;
 	
+    /// \return parameter x
+    double get_x() const;
+
+    /// \return parameter y
+    double get_y() const;
+
+    /// \return parameter z
+    double get_z() const;
+
+    /// \return parameter w
+    double get_w() const;
+
+private:
     /// members
     double x = 0;
     double y = 0;

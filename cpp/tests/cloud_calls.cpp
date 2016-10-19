@@ -9,8 +9,7 @@
 #include <rapp/cloud/path_planning.hpp>
 #include <rapp/cloud/news.hpp>
 #include <rapp/cloud/ontology.hpp>
-#include <rapp/cloud/speech_recognition_google.hpp>
-#include <rapp/cloud/speech_recognition_sphinx4.hpp>
+#include <rapp/cloud/speech_recognition.hpp>
 #include <rapp/cloud/text_to_speech.hpp>
 #include <rapp/cloud/vision_detection.hpp>
 #include <rapp/cloud/vision_recognition.hpp>

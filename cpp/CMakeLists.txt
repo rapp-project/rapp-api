@@ -77,9 +77,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/weather_report.cpp
              ${INCLUDES}/cloud/path_planning.cpp
              ${INCLUDES}/cloud/news.cpp
-             ${INCLUDES}/cloud/set_noise_profile.cpp
-             ${INCLUDES}/cloud/speech_recognition_google.cpp
-             ${INCLUDES}/cloud/speech_recognition_sphinx4.cpp
+             ${INCLUDES}/cloud/speech_recognition.cpp
              ${INCLUDES}/cloud/text_to_speech.cpp )
 
 # Begin searching for packgages we use in RAPP API
