@@ -22,7 +22,7 @@ else
     console.log("please choose one of: http or https(for TLS_1.2) as protocols");
 }
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
-RAPPObject.qrCode = require(path.join(__objectsDir, 'qrCode.js'));
+RAPPObject.qr_code = require(path.join(__objectsDir, 'qr_code.js'));
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
