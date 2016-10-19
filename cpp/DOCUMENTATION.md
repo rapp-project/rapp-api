@@ -52,7 +52,6 @@
   - [Qr Code](#qr-code)
   - [Quaternion](#quaternion)
   - [Time](#time)
-  - [Yaml](#yaml)
 
 ##Authentication
 A serie of classes which are used to register and login in RAPP-Platform or RAPP-Store.
@@ -670,8 +669,8 @@ Class `rapp::types` in `rapp/cpp/rapp/objects/globals.hpp`
 Class to add global common types.
 
 **Types**
-- `byte`
-- `audio_source`
+- `byte`: To clarify memory variables
+- `audio_source`: To select between the differents audio types (wav, ogg, etc.)
 
 ##Human
 Class `rapp::object::human` in `rapp-api/cpp/rapp/objects/human.hpp`
