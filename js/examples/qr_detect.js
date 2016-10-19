@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the qr_detection JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.qr_detection = require('rapp-platform-api/includes/cloud/qr_detection');
+var RAPPCloud = require('../includes/cloud/RAPPCloud');
+RAPPCloud.qr_detection = require('../includes/cloud/qr_detection');
 var services = new RAPPCloud( );
 
 /** 
@@ -12,13 +12,15 @@ var services = new RAPPCloud( );
 function handler ( codes )
 {
     if ( codes.length ) {
-		console.log ( 'Found ' + codes.length + ' codes!');
+		console.log ( "Found " + codes.length + " qr codes!");
 		for (var i=0; i<codes.length; i++) {
-			console.log(codes[i].label() + ' ');
+            console.log("qr code " + (i+1) + ":");
+			console.log("    centre: {x: " + codes[i].get_centre_x() + ", y: " + codes[i].get_centre_y() + "}");
+            console.log("    label: " + codes[i].get_label() + " ");
 		}
 	}
 	else
-		console.log ( 'No qrCodes detected');
+		console.log ( 'No qr codes detected');
 }
 
 services.qr_detection( '../../testdata/qrcode.png', 'png', handler );
