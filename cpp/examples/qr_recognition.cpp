@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <rapp/cloud/service_controller.hpp>
-#include <rapp/cloud/vision_detection.hpp>
+#include <rapp/cloud/vision_recognition.hpp>
 #include <rapp/objects/picture.hpp>
 /*
  * \brief Example to detect qr in a file
@@ -54,6 +54,6 @@ int main()
      * We make a call to qr_code_detection class to detect qr_codes in the file
      * For more information \see rapp::cloud::qr_detection
      */
-    ctrl.make_call<rapp::cloud::qr_detection>(pic, callback);
+    ctrl.make_call<rapp::cloud::qr_recognition>(pic, callback);
     return 0;
 } 

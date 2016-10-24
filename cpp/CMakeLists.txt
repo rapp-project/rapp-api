@@ -232,7 +232,7 @@ if (${BUILD_EXAMPLES})
                   face_detect.cpp
                   human_detect.cpp
                   hazard_detect.cpp
-                  qr_detect.cpp
+                  qr_recognition.cpp
                   light_detection.cpp
                   object_recognition.cpp
                   knowrob_ontology.cpp

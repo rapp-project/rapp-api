@@ -457,13 +457,13 @@ BOOST_AUTO_TEST_CASE(vision_cloud_test)
               })"_json;
     std::string j4_string = j4.dump(-1);
     hd.deserialise(j4_string);
-    //Class qr_detection
+    //Class qr_recognition
     auto qr_call = [] (std::vector<rapp::object::qr_code> qrs) {
         BOOST_CHECK_EQUAL(qrs.at(0).label(), "label");
         rapp::object::qr_code qr2(1 ,2, "label");
         BOOST_CHECK(qrs.at(0) == qr2);
     };
-    rapp::cloud::qr_detection qd(pic, qr_call);
+    rapp::cloud::qr_recognition qd(pic, qr_call);
     auto j5 = R"(
               {
                 "qr_centers":[{ 

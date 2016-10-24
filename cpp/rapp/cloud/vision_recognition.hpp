@@ -17,6 +17,7 @@
  */
 #include "includes.ihh"
 #include <rapp/objects/picture.hpp>
+#include <rapp/objects/qr_code.hpp>
 #include <rapp/cloud/asio/http_request.hpp>
 namespace rapp {
 namespace cloud {
@@ -49,6 +50,37 @@ private:
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::string)> delegate_;
 };
+
+/**
+ * \class qr_recognition
+ * \brief service request to detect QR codes
+ * \version 0.7.0
+ * \date September 2016
+ * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
+ */
+class qr_recognition : public http_request
+{
+public:
+    /**
+    * \brief Constructor
+    * \param image is a picture object pointer
+    * \param callback is the function that will receive a vector of detected qr(s)
+    * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
+    */
+    qr_recognition(
+                  const rapp::object::picture & image,
+                  std::function<void(std::vector<rapp::object::qr_code>)> callback
+                );
+    /**
+	 * \brief handle the rapp-platform JSON reply
+	 */
+    void deserialise(std::string json) const;
+private:
+    /// The callback called upon completion of receiving the detected faces
+    std::function<void(std::vector<rapp::object::qr_code>)> delegate_;
+};
+
+
 
 }
 }
