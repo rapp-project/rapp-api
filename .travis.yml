@@ -39,6 +39,5 @@ script:
     - mkdir -p cpp/build
     - cd cpp/build
     - cmake .. -DBUILD_TESTS=ON 
-    - make
-    - ./tests/cloud_calls
+    - make install
     - make test
