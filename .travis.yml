@@ -39,6 +39,6 @@ script:
     - mkdir -p cpp/build
     - cd cpp/build
     - cmake .. -DBUILD_TESTS=ON 
-    - make
-    #- sudo make install
     - make test
+    #- sudo make install
+    #- make test
