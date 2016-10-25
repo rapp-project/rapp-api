@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the email_fetch JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.email_fetch = require('rapp-platform-api/includes/cloud/email_fetch');
+var RAPPCloud = require('../includes/cloud/RAPPCloud');
+RAPPCloud.email_fetch = require('../includes/cloud/email_fetch');
 
 var services = new RAPPCloud( );
 /** 

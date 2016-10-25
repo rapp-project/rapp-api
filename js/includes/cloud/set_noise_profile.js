@@ -30,11 +30,10 @@ else
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param file is the input audio file
- * @param user is a string with the username
  * @param audio_source is a string with the audio source type
  */
 
-RAPPCloud.prototype.set_noise_profile = function ( file, audio_source )
+RAPPCloud.prototype.set_noise_profile = function (file, audio_source)
 {
     var formData = require('form-data');
 	var randomstring = require('randomstring');

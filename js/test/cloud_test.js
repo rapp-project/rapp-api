@@ -12,12 +12,12 @@ RAPPCloud.ontology_is_subsuperclass_of = require(path.join(__cloudDir, 'ontology
 RAPPCloud.face_detection = require(path.join(__cloudDir, 'face_detection.js'));
 RAPPCloud.qr_detection = require(path.join(__cloudDir, 'qr_detection.js'));
 RAPPCloud.human_detection = require(path.join(__cloudDir, 'human_detection.js'));
-RAPPCloud.hazard_detection_door_check = require(path.join(__cloudDir, 'hazard_detection_door_check.js'));
-RAPPCloud.hazard_detection_light_check = require(path.join(__cloudDir, 'hazard_detection_light_check.js'));
+RAPPCloud.hazard_detection_door = require(path.join(__cloudDir, 'hazard_detection_door.js'));
+RAPPCloud.hazard_detection_light = require(path.join(__cloudDir, 'hazard_detection_light.js'));
 RAPPCloud.object_recognition_caffe = require(path.join(__cloudDir, 'object_recognition_caffe.js'));
 RAPPCloud.set_noise_profile = require(path.join(__cloudDir, 'set_noise_profile.js'));
-RAPPCloud.speech_detection_sphinx4 = require(path.join(__cloudDir, 'speech_detection_sphinx4.js'));
-RAPPCloud.speech_detection_google = require(path.join(__cloudDir, 'speech_detection_google.js'));
+RAPPCloud.speech_recognition_sphinx4 = require(path.join(__cloudDir, 'speech_recognition_sphinx4.js'));
+RAPPCloud.speech_recognition_google = require(path.join(__cloudDir, 'speech_recognition_google.js'));
 RAPPCloud.text_to_speech = require(path.join(__cloudDir, 'text_to_speech.js'));
 RAPPCloud.available_services = require(path.join(__cloudDir, 'available_services.js'));
 RAPPCloud.cognitive_test_chooser = require(path.join(__cloudDir, 'cognitive_test_chooser.js'));
@@ -72,15 +72,15 @@ describe('#human_detection()', function(){
   });
 });
 
-describe('#hazard_detection_door_check()', function(){
-  it('should in all cases create a hazard_detection_door_check object given an image, the image type and a callback function', function(done){
+describe('#hazard_detection_door()', function(){
+  it('should in all cases create a hazard_detection_door object given an image, the image type and a callback function', function(done){
     services.face_detection( path.join(__dirname, '../../testdata/door_1.png'), "jpg", done());
   });
 });
 
-describe('#hazard_detection_light_check()', function(){
-  it('should in all cases create a hazard_detection_light_check object given an image, the image type and a callback function', function(done){
-    services.hazard_detection_light_check( path.join(__dirname, '../../testdata/lamp_on.jpg'), "jpg", done());
+describe('#hazard_detection_light()', function(){
+  it('should in all cases create a hazard_detection_light object given an image, the image type and a callback function', function(done){
+    services.hazard_detection_light( path.join(__dirname, '../../testdata/lamp_on.jpg'), "jpg", done());
   });
 });
 
@@ -96,15 +96,15 @@ describe('#set_noise_profile()', function(){
   });
 });
 
-describe('#speech_detection_sphinx4()', function(){
-  it('should in all cases create a speech_detection_sphinx4 object given an audio file, the language, a user token, the audio source type, a grammar, a pool of words, a pool of sentences and a callback function as arguments', function(done){
-    services.speech_detection_sphinx4( path.join(__dirname, '../../testdata/recording_sentence2.ogg'), "en", "rapp", "nao_ogg", [], ["check", "my", "emails", "robot"], ["check", "my", "emails", "robot"], done());
+describe('#speech_recognition_sphinx4()', function(){
+  it('should in all cases create a speech_recognition_sphinx4 object given an audio file, the language, a user token, the audio source type, a grammar, a pool of words, a pool of sentences and a callback function as arguments', function(done){
+    services.speech_recognition_sphinx4( path.join(__dirname, '../../testdata/recording_sentence2.ogg'), "en", "rapp", "nao_ogg", [], ["check", "my", "emails", "robot"], ["check", "my", "emails", "robot"], done());
   });  
 });
 
-describe('#speech_detection_google()', function(){
-  it('should in all cases create a speech_detection_google object given an audio file, the audio source type, a user token, a language and a callback function as arguments', function(done){
-    services.speech_detection_google( path.join(__dirname, '../../testdata/recording_sentence2.ogg'), "nao_ogg", "rapp", "en", done());
+describe('#speech_recognition_google()', function(){
+  it('should in all cases create a speech_recognition_google object given an audio file, the audio source type, a user token, a language and a callback function as arguments', function(done){
+    services.speech_recognition_google( path.join(__dirname, '../../testdata/recording_sentence2.ogg'), "nao_ogg", "rapp", "en", done());
   });  
 });
 

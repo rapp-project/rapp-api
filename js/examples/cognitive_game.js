@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 // Import the cognitive_record_performance JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.cognitive_test_chooser = require('rapp-platform-api/includes/cloud/cognitive_test_chooser');
-RAPPCloud.cognitive_record_performance = require('rapp-platform-api/includes/cloud/cognitive_record_performance');
-RAPPCloud.cognitive_get_history = require('rapp-platform-api/includes/cloud/cognitive_get_history');
-RAPPCloud.cognitive_get_scores = require('rapp-platform-api/includes/cloud/cognitive_get_scores');
+var RAPPCloud = require('../includes/cloud/RAPPCloud');
+RAPPCloud.cognitive_test_chooser = require('../includes/cloud/cognitive_test_chooser');
+RAPPCloud.cognitive_record_performance = require('../includes/cloud/cognitive_record_performance');
+RAPPCloud.cognitive_get_history = require('../includes/cloud/cognitive_get_history');
+RAPPCloud.cognitive_get_scores = require('../includes/cloud/cognitive_get_scores');
 var services = new RAPPCloud( );
 
 /** 
