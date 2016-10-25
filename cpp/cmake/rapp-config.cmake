@@ -1,8 +1,7 @@
 # - Config file for the RAPP package
 # It defines the following variables
-#  RAPP_INCLUDE_DIRS - include directories for FooBar
+#  RAPP_INCLUDE_DIRS - include directories for RAPP
 #  RAPP_LIBRARIES    - libraries to link against
-#  RAPP_EXECUTABLE   - the bar executable
 
 # Compute paths
 get_filename_component(RAPP_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)

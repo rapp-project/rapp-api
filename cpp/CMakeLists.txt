@@ -126,10 +126,10 @@ if (${RAPP_STATIC})
 	#
     # set target, add library - link with Boost and OpenSSL
 	#
-    set(LIBTARGET ${LIBRARGET} rapp)
+    set(LIBTARGET ${LIBTARGET} rapp)
+    add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
     set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING}
                                                   SOVERSION ${RAPP_VERSION_STRING})
-    add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
 	#
 	# set linking to fully static (libc, libstdc++, etc)
@@ -145,7 +145,7 @@ elseif(${OPEN_NAO})
     #
     # set target, add library - link with Boost and OpenSSL
     #
-    set(LIBTARGET ${LIBRARGET} rapp)
+    set(LIBTARGET ${LIBTARGET} rapp)
 	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
     set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING}
                                                   SOVERSION ${RAPP_VERSION_STRING})
@@ -330,7 +330,7 @@ message(STATUS "CXX compiler: " ${CMAKE_CXX_COMPILER})
 ###
 # Install library 
 #
-set(LIB_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_BUILD})
+set(LIB_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
 #
 # symbolic link library version to the generic name
 #
