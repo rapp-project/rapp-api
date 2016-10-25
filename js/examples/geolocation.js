@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the geolocation JS API Services & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud');
-RAPPCloud.geolocation = require('../includes/cloud/geolocation');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.geolocation = require('rapp-platform-api/includes/cloud/geolocation');
 
 var services = new RAPPCloud( );
 
