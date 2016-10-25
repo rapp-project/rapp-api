@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the news_explore JS API Services & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud');
-RAPPCloud.news_explore = require('../includes/cloud/news_explore');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.news_explore = require('rapp-platform-api/includes/cloud/news_explore');
 
 var services = new RAPPCloud( );
 

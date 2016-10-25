@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the speech_recognition_google JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud');
-RAPPCloud.speech_recognition_google = require('../includes/cloud/speech_recognition_google');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.speech_recognition_google = require('rapp-platform-api/includes/cloud/speech_recognition_google');
 
 var services = new RAPPCloud( );
 

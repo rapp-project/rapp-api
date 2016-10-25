@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 // Import the ontology related JS API Services & Init the RAPPCloud Object
-var RAPPCloud = require('../includes/cloud/RAPPCloud');
-RAPPCloud.ontology_subclasses_of = require('../includes/cloud/ontology_subclasses_of');
-RAPPCloud.ontology_superclasses_of = require('../includes/cloud/ontology_superclasses_of');
-RAPPCloud.ontology_is_subsuperclass_of = require('../includes/cloud/ontology_is_subsuperclass_of');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.ontology_subclasses_of = require('rapp-platform-api/includes/cloud/ontology_subclasses_of');
+RAPPCloud.ontology_superclasses_of = require('rapp-platform-api/includes/cloud/ontology_superclasses_of');
+RAPPCloud.ontology_is_subsuperclass_of = require('rapp-platform-api/includes/cloud/ontology_is_subsuperclass_of');
 
 var services = new RAPPCloud( );
 var query = 'Oven';
