@@ -109,7 +109,6 @@ endif()
 #
 add_library(lrapp OBJECT ${SOURCES})
 
-
 ###
 #   Static Library - only if asked 
 #	Use only if you want complete static linking
@@ -118,7 +117,6 @@ if (${RAPP_STATIC})
 	#
 	# RPATH
 	#
-	message(STATUS "${CMAKE_DL_LIBS}")
 	set(CMAKE_SKIP_BUILD_RPATH  TRUE)
 	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib/")
@@ -188,32 +186,36 @@ message(STATUS "Boost Headers: ${Boost_INCLUDE_DIRS}")
 #   build tests - run with `make test`
 ###
 if (${BUILD_TESTS})
-    find_package(Boost 1.49 COMPONENTS unit_test_framework REQUIRED)
-    enable_testing()
-    add_definitions(-DBOOST_TEST_DYN_LINK)
-    set(TESTS ${TESTS} tests)
-    set(TESTFILES ${TESTFILES} asio_classes.cpp 
-                               json_classes.cpp 
-                               object_classes.cpp
-                               cloud_calls.cpp)
-    set(TEST_DIR ${TEST_DIR} tests)
-    message(STATUS "Building tests, they will be placed under directory `${CMAKE_CURRENT_BINARY_DIR}/${TEST_DIR}`")
-    # create "/tests"
-    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E make_directory ${TEST_DIR})
-    # symlink `/tests/data` instead of copying
-    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/${TESTS}/data ${TEST_DIR}/data)
-    # iterate tests
-    foreach(ITEM ${TESTFILES})
-        string(REPLACE ".cpp" "" TARGET ${ITEM})
-        add_executable(${TARGET} ${TESTS}/${ITEM})
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
-        target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET})
-        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
-        add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
-        add_test(${TARGET} ${TEST_DIR}/${TARGET})
-    endforeach(ITEM)
+    if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
+        message(WARNING "Not going to build tests using Static/Open NAO library, use shared library for testing")
+    else()
+        find_package(Boost 1.49 COMPONENTS unit_test_framework REQUIRED)
+        enable_testing()
+        add_definitions(-DBOOST_TEST_DYN_LINK)
+        set(TESTS ${TESTS} tests)
+        set(TESTFILES ${TESTFILES} asio_classes.cpp 
+                                   json_classes.cpp 
+                                   object_classes.cpp
+                                   cloud_calls.cpp)
+        set(TEST_DIR ${TEST_DIR} tests)
+        message(STATUS "Building tests, they will be placed under directory `${CMAKE_CURRENT_BINARY_DIR}/${TEST_DIR}`")
+        # create "/tests"
+        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E make_directory ${TEST_DIR})
+        # symlink `/tests/data` instead of copying
+        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/${TESTS}/data ${TEST_DIR}/data)
+        # iterate tests
+        foreach(ITEM ${TESTFILES})
+            string(REPLACE ".cpp" "" TARGET ${ITEM})
+            add_executable(${TARGET} ${TESTS}/${ITEM})
+            set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+            target_link_libraries(${TARGET} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} ${LIBTARGET})
+            add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET} ${TEST_DIR}/.)
+            add_custom_command(TARGET ${TARGET} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove ${TARGET})
+            add_test(${TARGET} ${TEST_DIR}/${TARGET})
+        endforeach(ITEM)
+    endif()
 else()
     message(STATUS "Not Building tests. Enable them with `-DBUILD_TESTS=ON`")
 endif()
