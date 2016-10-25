@@ -539,7 +539,7 @@ Detect light level (luminoscity)
 See example: `rapp-api/cpp/examples/light_detection.cpp`
 
 ## vision-qrcode-detect
-Class `rapp::cloud::qr_detection`
+Class `rapp::cloud::qr_recognition`
 Detect and scan QR code.
 
 **Input arguments**
@@ -549,7 +549,7 @@ Detect and scan QR code.
 **Return values**
 - `std::vector<rapp::object::qr_code>`: list of qr objects detected
 
-See example: `rapp-api/cpp/examples/qr_detect.cpp`
+See example: `rapp-api/cpp/examples/qr_recognition.cpp`
 
 ## vision-object-recognition
 Class `rapp::cloud::object_recognition`

@@ -68,9 +68,9 @@ public:
     * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
     */
     qr_recognition(
-                  const rapp::object::picture & image,
-                  std::function<void(std::vector<rapp::object::qr_code>)> callback
-                );
+                    const rapp::object::picture & image,
+                    std::function<void(std::vector<rapp::object::qr_code>)> callback
+                  );
     /**
 	 * \brief handle the rapp-platform JSON reply
 	 */
@@ -80,7 +80,67 @@ private:
     std::function<void(std::vector<rapp::object::qr_code>)> delegate_;
 };
 
+/**
+ * \class learn_object
+ * \brief learn object gives by the user
+ * \version 0.7.0
+ * \date October 2016
+ * \author Maria Ramos <m.ramos@ortelio.co.uk>
+ */
+class learn_object : public http_request
+{
+public:
+    /**
+    * \brief Constructor
+    * \param image is a picture object pointer
+    * \param callback is the function that will receive a string
+    */
+    learn_object(
+                  const rapp::object::picture &image,
+                  const std::string user,
+                  const std::string name,
+                  std::function<void(int)> callback
+                );
+    
+	/**
+	 * \brief handle the rapp-platform JSON reply
+	 */
+    void deserialise(std::string json) const;
 
+private:
+    /// The callback called upon completion of receiving the detected faces
+    std::function<void(int)> delegate_;
+};
+
+/**
+ * \class clear_object
+ * \brief Clears operational memory for selected user
+ * \version 0.7.0
+ * \date October 2016
+ * \author Maria Ramos <m.ramos@ortelio.co.uk>
+ */
+class clear_object : public http_request
+{
+public:
+    /**
+    * \brief Constructor
+    * \param image is a picture object pointer
+    * \param callback is the function that will receive a string
+    */
+    clear_object(
+                  const std::string user,
+                  std::function<void(int)> callback
+                );
+    
+	/**
+	 * \brief handle the rapp-platform JSON reply
+	 */
+    void deserialise(std::string json) const;
+
+private:
+    /// The callback called upon completion of receiving the detected faces
+    std::function<void(int)> delegate_;
+};
 
 }
 }

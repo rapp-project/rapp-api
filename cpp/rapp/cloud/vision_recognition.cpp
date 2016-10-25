@@ -39,10 +39,10 @@ void object_recognition::deserialise(std::string json) const
 }
 
 qr_recognition::qr_recognition(
-                            const rapp::object::picture & image,
-                            std::function<void(std::vector<rapp::object::qr_code>)> callback
-                          )
-: http_request("POST /hop/qr_recognition HTTP/1.1\r\n"), 
+                               const rapp::object::picture & image,
+                               std::function<void(std::vector<rapp::object::qr_code>)> callback
+                             )
+: http_request("POST /hop/qr_detection HTTP/1.1\r\n"), 
   delegate_(callback)
 {
     http_request::make_multipart_form();
@@ -77,5 +77,82 @@ void qr_recognition::deserialise(std::string json) const
         delegate_(qr_codes);
     }
 }
+
+learn_object::learn_object(
+                            const rapp::object::picture &image,
+                            const std::string user,
+                            const std::string name,
+                            std::function<void(int)> callback
+                          )
+: http_request("POST /hop/ HTTP/1.1\r\n"), 
+  delegate_(callback)
+{
+    http_request::make_multipart_form();
+    std::string fname = rapp::misc::random_boundary() + "." + image.type();
+    json json_doc = {{"user", user},
+                     {"name", name}};
+    http_request::add_content("json", json_doc.dump(-1), true);
+    http_request::add_content("file", fname, image.bytearray());
+    http_request::close();
+}
+    
+void learn_object:: deserialise(std::string json) const {
+
+   if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+    nlohmann::json json_f;
+    try {
+        json_f = json::parse(json);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+    }
+    auto error = misc::get_json_value<std::string>("error", json_f);
+    if (!error.empty()) {
+        std::cerr << "error JSON: " << error <<std::endl;
+    }
+    else {
+        delegate_(json_f["result"]);
+    }
+
+}
+
+clear_object::clear_object(
+                            const std::string user,
+                            std::function<void(int)> callback
+                          )
+: http_request("POST /hop/ HTTP/1.1\r\n"), 
+  delegate_(callback)
+{
+    http_request::make_multipart_form();
+    json json_doc = {{"user", user}};
+    http_request::add_content("json", json_doc.dump(-1), true);
+    http_request::close();
+}
+    
+void clear_object:: deserialise(std::string json) const {
+
+   if (json.empty()) {
+        throw std::runtime_error("empty json reply");
+    }
+    nlohmann::json json_f;
+    try {
+        json_f = json::parse(json);
+    }
+    catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
+    }
+    auto error = misc::get_json_value<std::string>("error", json_f);
+    if (!error.empty()) {
+        std::cerr << "error JSON: " << error <<std::endl;
+    }
+    else {
+        delegate_(json_f["result"]);
+    }
+
+}
+
+
 }
 }
