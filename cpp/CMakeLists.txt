@@ -128,8 +128,7 @@ if (${RAPP_STATIC})
 	#
     set(LIBTARGET ${LIBTARGET} rapp)
     add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING}
-                                                  SOVERSION ${RAPP_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING})
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
 	#
 	# set linking to fully static (libc, libstdc++, etc)
@@ -147,8 +146,7 @@ elseif(${OPEN_NAO})
     #
     set(LIBTARGET ${LIBTARGET} rapp)
 	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING}
-                                                  SOVERSION ${RAPP_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING})
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     ###
 	# No need to build static library, but the apps will have to statically link
@@ -176,10 +174,9 @@ else()
     # build library first
     set(LIBTARGET ${LIBTARGET} rapp)
     add_library(${LIBTARGET} SHARED $<TARGET_OBJECTS:lrapp>)
-    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING}
-                                                  SOVERSION ${RAPP_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING} SOVERSION ${RAPP_VERSION_STRING})
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
-    set_target_properties(${LIBTARGET} PROPERTIES INSTALL_oPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    set_target_properties(${LIBTARGET} PROPERTIES INSTALL_PATH "${CMAKE_INSTALL_PREFIX}/lib")
     message(STATUS "Building Shared library: lib${LIBTARGET}")
 	#
 endif()
