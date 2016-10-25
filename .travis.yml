@@ -40,4 +40,5 @@ script:
     - cd cpp/build
     - cmake .. -DBUILD_TESTS=ON 
     - make
+    - ./tests/cloud_calls
     - make test
