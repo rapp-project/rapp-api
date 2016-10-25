@@ -74,7 +74,7 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function ( parent, child, rec
 			if(json_obj.error){  // Check for Errors  
 				console.log('ontology_is_subsuperclass_of JSON error: ' + json_obj.error);
 			}
-			_delegate( parent, child, json_obj.result);
+			_delegate( json_obj.result);
 		} catch (e) {
 			console.log('ontology_is_subsuperclass_of::handle_reply Error parsing: ');
 			return console.error(e);

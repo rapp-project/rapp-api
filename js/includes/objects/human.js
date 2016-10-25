@@ -60,15 +60,15 @@ RAPPObject.prototype.Human = (function(){   // immediate function
 	/**
 	 * @function is_equal
      * @description Check Equality
-     * @param rhs is the Human object to which this object is compared for equality
+     * @param human2 is the Human object to which this object is compared for equality
      */	
-	Human.prototype.is_equal = function (rhs) 
+	Human.prototype.is_equal = function (human2) 
 	{
 		// It has access to the private space and it's children!
-		return ( humans[this.i]._top_left_x === humans[rhs.i]._top_left_x &&
-                 humans[this.i]._top_left_y === humans[rhs.i]._top_left_y &&
-                 humans[this.i]._bottom_right_x === humans[rhs.i]._bottom_right_x &&
-                 humans[this.i]._bottom_right_y === humans[rhs.i]._bottom_right_y );
+		return ( humans[this.i]._top_left_x === humans[human2.i]._top_left_x &&
+                 humans[this.i]._top_left_y === humans[human2.i]._top_left_y &&
+                 humans[this.i]._bottom_right_x === humans[human2.i]._bottom_right_x &&
+                 humans[this.i]._bottom_right_y === humans[human2.i]._bottom_right_y );
 	};
 
     /**

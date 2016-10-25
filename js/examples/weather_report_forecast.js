@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the weather_report_forecast JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.weather_report_forecast = require('rapp-platform-api/includes/cloud/weather_report_forecast');
+var RAPPCloud = require('../includes/cloud/RAPPCloud');
+RAPPCloud.weather_report_forecast = require('../includes/cloud/weather_report_forecast');
 
 var services = new RAPPCloud( );
 

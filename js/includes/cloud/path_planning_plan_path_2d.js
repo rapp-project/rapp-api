@@ -84,28 +84,13 @@ RAPPCloud.prototype.path_planning_plan_path_2d = function ( map_name, robot_type
     		// path: if plan_found is true, this is an array of waypoints from start to goal, where the first one equals start and the last one equals goal.
     		// error (String): Error message, if one occures.
 
-		
 			if(json_obj.error){  // Check for Errors  
 				console.log('path_planning_plan_path_2d JSON error: ' + json_obj.error);
 			}
-			switch (json_obj.plan_found)
-			{
-				case 0:
-	        		console.log("Path Cannot be planned.");
-	        		break;
-	        	case 1:
-	        		_delegate(json_obj.path);
-	        		break;
-	        	case 2:
-	        		console.log("Wrong map name.");
-	        		break;
-	        	case 3:
-	        		console.log("Wrong robot type.");
-	        		break;
-	        	case 4:
-	        		console.log("Wrong algorithm.");
-	        		break;
-	        }
+			if (json_obj.plan_found === '1')
+                _delegate(json_obj.path);
+            else if (typeof json_obj.plan_found !== 'undefined')
+                _delegate(json_obj.plan_found);
 		} catch (e) {
 			console.log('path_planning_plan_path_2d::handle_reply Error parsing: ');
 			return console.error(e);

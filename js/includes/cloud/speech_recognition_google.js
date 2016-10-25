@@ -24,7 +24,7 @@ else
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  *
- * @class speech_detection_google
+ * @class speech_recognition_google
  * @description Asynchronous Service which will request the cloud to process speech-to-text
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
@@ -34,7 +34,7 @@ else
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, language, callback )
+RAPPCloud.prototype.speech_recognition_google = function ( audio, audio_source, language, callback )
 {
     var formData = require('form-data');
 	var randomstring = require('randomstring');
@@ -78,7 +78,7 @@ RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, la
 			var i;
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors  
-				console.log('speech_detection_google JSON error: ' + json_obj.error);
+				console.log('speech_recognition_google JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"words":["check","minus"],"alternatives":[["check","-"],["check","my","mail"],["Tech","-"],["take","-"],["10","-"],["check","cashing"],["check","in"],["check","cash"]],"error":""}
 			var possible_vectors = new Array(json_obj.alternatives.length + 1);
@@ -98,7 +98,7 @@ RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, la
 			}
 			_delegate(possible_vectors);
 		} catch (e) {
-			console.log('speech_detection_google::handle_reply Error parsing: ');
+			console.log('speech_recognition_google::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -111,4 +111,4 @@ RAPPCloud.prototype.speech_detection_google = function ( audio, audio_source, la
 
 
 /// Export
-module.exports = RAPPCloud.speech_detection_google;
+module.exports = RAPPCloud.speech_recognition_google;
