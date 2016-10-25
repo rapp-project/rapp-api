@@ -60,15 +60,15 @@ RAPPObject.prototype.Face = (function(){   // immediate function
 	/**
 	 * @function is_equal
      * @description Check Equality
-     * @param rhs is the Face object to which this object is compared for equality
-     */	
-	Face.prototype.is_equal = function (rhs)
+     * @param face2 is the Face object to which this object is compared for equality
+     */
+	Face.prototype.is_equal = function (face2)
 	{
 		// It has access to the private space and it's children!
-		return ( faces[this.i]._top_left_x === faces[rhs.i]._top_left_x &&
-                 faces[this.i]._top_left_y === faces[rhs.i]._top_left_y &&
-                 faces[this.i]._bottom_right_x === faces[rhs.i]._bottom_right_x &&
-                 faces[this.i]._bottom_right_y === faces[rhs.i]._bottom_right_y );
+		return ( faces[this.i]._top_left_x === faces[face2.i]._top_left_x &&
+                 faces[this.i]._top_left_y === faces[face2.i]._top_left_y &&
+                 faces[this.i]._bottom_right_x === faces[face2.i]._bottom_right_x &&
+                 faces[this.i]._bottom_right_y === faces[face2.i]._bottom_right_y );
 	};
 
     /**

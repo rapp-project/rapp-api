@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-// Import the speech_detection_sphinx4 JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.speech_detection_sphinx4 = require('rapp-platform-api/includes/cloud/speech_detection_sphinx4');
+// Import the speech_recognition_sphinx4 JS API Service & Init the RAPPCloud Object
+var RAPPCloud = require('../includes/cloud/RAPPCloud');
+RAPPCloud.speech_recognition_sphinx4 = require('../includes/cloud/speech_recognition_sphinx4');
 
 var services = new RAPPCloud( );
 
@@ -32,7 +32,7 @@ var sentences = //["tuesday", "monday"];
 					   //["Τρίτη", "Δευτέρα"];					   
 
 /** 
- * This is the method that will handle the reply by the services.speech_detection_sphinx4
+ * This is the method that will handle the reply by the services.speech_recognition_sphinx4
  * Do what you want with it - REMEMBER: The service is Asynchronous!!!
  */
  
@@ -48,7 +48,7 @@ function handler ( words_detected )
 		console.log ( 'No words found');
 }
 
-services.speech_detection_sphinx4( audio,           // audio file
+services.speech_recognition_sphinx4( audio,           // audio file
 								"en",            // Language
 								//"headset",
 								//"nao_wav_1_ch",
