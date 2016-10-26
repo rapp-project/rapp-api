@@ -35,9 +35,8 @@
   - [Weather](#weather)
     - [Current Report](#weather-report-current)
 - JS API object classes
-  -[Face](#face)
-  -[Human](#human)
-  -[Qr Code](#qr-code)
+  - [Face](#face)
+  - [Human](#human)
 
 ## Available Services
 Method `RAPPCloud.prototype.available_services` in `rapp-api/js/includes/cloud/available_services.js`.
