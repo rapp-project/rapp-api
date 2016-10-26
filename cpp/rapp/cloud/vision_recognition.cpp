@@ -186,7 +186,6 @@ void object_detection_find_objects::deserialise(std::string json) const {
         std::cerr << "error JSON: " << error <<std::endl;
     }
     else {
-        // @BUG
         auto it_center = json_f.find("found_centers");
         for (auto it = it_center->begin(); it != it_center->end(); it++) {
             auto it_points = it->find("position");

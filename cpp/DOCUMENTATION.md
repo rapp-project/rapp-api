@@ -36,6 +36,10 @@
     - [Light Detection](#vision-light-detect)
     - [QR Code Detection](#vision-qrcode-detect)
     - [Object Recognition](#vision-object-recognition)
+    - [Object Detection Learn Object](#vision-object-detection-learn-object)
+    - [Object Detection Clear Models](#vision-object-detection-clear-models)
+    - [Object Detection Load Models](#vision-object-detection-load-models)
+    - [Object Detection Find Objects](#vision-object-detection-find-objects)
   - [Weather](#weather)
     - [Current Report](#weather-report-current)
 - C++ API object classes
@@ -563,6 +567,70 @@ Recognise Objects using Berkley's [Caffee](http://caffe.berkeleyvision.org/) fra
 - `std::string`: the topmost object classification class
 
 See example: `rapp-api/cpp/examples/object_recognition.cpp`
+
+##vision-object-detection-learn-object
+Class `rapp::cloud::object_detection_learn_object`
+Learn objects give by the user.
+
+**Input arguments**
+- `const rapp::object::picture & image`: the image data with the object we want to be learnt.
+- `const std::string name`: the name of the object
+- `const std::string user`: the user name
+- `std::function<void(int)> callback`: The callback functor will receive the return values.
+
+**Return values**
+- `int`: the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+
+See example: `rapp-api/cpp/examples/object_recognition_my_own_models.cpp`
+
+##vision-object-detection-clear-models
+Class `rapp::cloud::object_detection_clear_models`
+Clears operational memory for selected user.
+
+**Input arguments**
+- `const std::string user`: the user name
+- `std::function<void(int)> callback`: The callback functor will receivee the return values.
+
+**Return values**
+- `int`: the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+
+See example: `rapp-api/cpp/examples/object_recognition_my_own_models.cpp`
+
+##vision-object-detection-load-models
+Class `rapp::cloud::object_detection_load_models`
+Load one or more models to operational memory. This operation should be done at least once before first recognition request.
+
+**Input arguments**
+- `const std::string user`: the user name
+- `const std::vector<std::string> names`: The object names that are going to load
+- `std::function<void(int)> callback`: The callback functor will receivee the return values
+
+**Return values**
+- `int`: the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+
+See example: `rapp-api/cpp/examples/object_recognition_my_own_models.cpp`
+
+##vision-object-detection-find-objects
+Class `rapp::cloud::object_detection_find_objects`
+When set of models is loaded to operational memory, user can provide query image to detect objects on. 
+If any object of known type is recognized, its center point in query image, model name and recognition score (certainty) is returned.
+
+**Input arguments**
+- `const rapp::object::picture & image`: The image to find the objects
+- `const std::string user`: The user name
+- `const int limit`: the limit search to N best matches
+- `std::function<void(std::vector<std::string>,
+                      std::vector<rapp::object::point>, 
+                      std::vector<double>,
+                      int)> callback`: The callback functor will receive the return values.
+
+**Return values**
+- `std::vector<std::string>`: List of the found objects' names
+- `std::vector<rapp::object::point>`: List of centroids in the image of the objects found
+- `std::vector<double>`: List of scores of the found objects
+- `int`: the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+
+See example: `rapp-api/cpp/examples/object_recognition_my_own_models.cpp`
 
 # Weather
 The platform enables 3rd party weather reports and forecasting.

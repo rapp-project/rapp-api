@@ -75,7 +75,6 @@ public:
                                    const std::string user,
                                    std::function<void(int)> callback
                                  );
-    
 	/**
 	 * \brief handle the rapp-platform JSON reply
 	 */
