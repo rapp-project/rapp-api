@@ -380,7 +380,7 @@ BOOST_AUTO_TEST_CASE(speech_cloud_test)
  * \note: the name of the variables are the initial of
  *  the classes or words corresponding with json.
  */
-BOOST_AUTO_TEST_CASE(vision_cloud_test)
+BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
 {
     //Class face_detection
     auto face_call = [] (std::vector<rapp::object::face> faces) {
@@ -457,37 +457,6 @@ BOOST_AUTO_TEST_CASE(vision_cloud_test)
               })"_json;
     std::string j4_string = j4.dump(-1);
     hd.deserialise(j4_string);
-    //Class qr_recognition
-    auto qr_call = [] (std::vector<rapp::object::qr_code> qrs) {
-        BOOST_CHECK_EQUAL(qrs.at(0).label(), "label");
-        rapp::object::qr_code qr2(1 ,2, "label");
-        BOOST_CHECK(qrs.at(0) == qr2);
-    };
-    rapp::cloud::qr_recognition qd(pic, qr_call);
-    auto j5 = R"(
-              {
-                "qr_centers":[{ 
-                                "x": 1, 
-                                "y": 2
-                              }], 
-                "qr_messages":["label"],
-                "error" : ""
-              })"_json;
-    std::string j5_string = j5.dump(-1);
-    qd.deserialise(j5_string);
-    //Class object_recognition
-    auto object_call = [] (std::string object) {
-        BOOST_CHECK_EQUAL(object, "something");
-    };
-    rapp::cloud::object_recognition objr(pic, object_call);
-    auto j6 = R"(
-              {
-                "object_class" : "something",
-                "error" : ""
-              })"_json;
-    std::string j6_string = j6.dump(-1);
-    objr.deserialise(j6_string);
-
 }
 
 /*
@@ -622,7 +591,7 @@ BOOST_AUTO_TEST_CASE(authentication_cloud_test)
     lu.deserialise(j1_string);
 
     //Class register_user_from_platform
-    auto platform_call = [] ( std::string suggested_name)
+    auto platform_call = [](std::string suggested_name)
     {
         BOOST_CHECK_EQUAL(suggested_name, "s_name");
     };
@@ -648,6 +617,119 @@ BOOST_AUTO_TEST_CASE(authentication_cloud_test)
               })"_json;
     std::string j3_string = j3.dump(-1);
     rufs.deserialise(j3_string);
-
 }
+
+/**/
+BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
+{
+    //Class qr_recognition
+    auto qr_call = [] (std::vector<rapp::object::qr_code> qrs) {
+        BOOST_CHECK_EQUAL(qrs.at(0).label(), "label");
+        rapp::object::qr_code qr2(1 ,2, "label");
+        BOOST_CHECK(qrs.at(0) == qr2);
+    };
+    auto pic_qr = rapp::object::picture("tests/data/asio_classes_qr_code_1.png");
+    rapp::cloud::qr_recognition qd(pic_qr, qr_call);
+    auto j1 = R"(
+              {
+                "qr_centers":[{ 
+                                "x": 1, 
+                                "y": 2
+                              }], 
+                "qr_messages":["label"],
+                "error" : ""
+              })"_json;
+    std::string j1_string = j1.dump(-1);
+    qd.deserialise(j1_string);
+
+    //Class object_recognition
+    auto object_call = [] (std::string object) {
+        BOOST_CHECK_EQUAL(object, "something");
+    };
+    auto pic = rapp::object::picture("tests/data/object_classes_picture_2.jpg");
+    rapp::cloud::object_recognition objr(pic, object_call);
+    auto j2 = R"(
+              {
+                "object_class" : "something",
+                "error" : ""
+              })"_json;
+    std::string j2_string = j2.dump(-1);
+    objr.deserialise(j2_string);
+
+    //Class object_detection_learn_object
+    auto learn_call = [] (int result)
+    {
+        BOOST_CHECK_EQUAL(result, 0);
+    };
+    rapp::cloud::object_detection_learn_object odlo(pic, "cat", "user", learn_call);
+    auto j3 = R"(
+              {
+                  "result" : 0,
+                  "error" : ""
+              })"_json;
+    std::string j3_string = j3.dump(-1);
+    odlo.deserialise(j3_string);
+
+    //Class object_detection_clear_models
+    auto clear_call = [] (int result)
+    {
+        BOOST_CHECK_EQUAL(result, 0);
+    };
+    rapp::cloud::object_detection_clear_models odcm("user", clear_call);
+    auto j4 = R"(
+              {
+                  "result" : 0,
+                  "error" : ""
+              })"_json;
+    std::string j4_string = j4.dump(-1);
+    odcm.deserialise(j4_string);
+
+    //Class object_detection_load_models
+    auto load_call = [] (int result) {
+        BOOST_CHECK_EQUAL(result, 0);
+    };
+
+    std::vector<std::string> names = {"cat"};
+    rapp::cloud::object_detection_load_models odlm("user", names, load_call);
+    auto j5 = R"(
+              {
+                  "result" : 0,
+                  "error" : ""
+              })"_json;
+    std::string j5_string = j5.dump(-1);
+    odlm.deserialise(j5_string);
+
+    //Class object_detection_find_objects 
+    auto find_call = [] (std::vector<std::string> found_names,
+                         std::vector<rapp::object::point> found_points, 
+                         std::vector<double> scores,
+                         int result)
+    {
+        BOOST_CHECK_EQUAL(found_names.at(0), "cat");
+        BOOST_CHECK_EQUAL(found_points.at(0).get_x(), 0.999);      
+        BOOST_CHECK_EQUAL(found_points.at(0).get_y(), 0.999);
+        BOOST_CHECK_EQUAL(found_points.at(0).get_z(), 0);
+        BOOST_CHECK_EQUAL(scores.at(0), 0.9);
+        BOOST_CHECK_EQUAL(result, 0);
+    };
+    rapp::cloud::object_detection_find_objects odfo(pic, "user", 1, find_call);
+    auto j6 = R"(
+              {
+                "found_names": ["cat"],
+                "found_centers": [{"position": {
+                                                  "x": 0.999,
+                                                  "y": 0.999, 
+                                                  "z": 0.0
+                                               }
+                                }],
+                "found_scores": [0.9],
+                "result": 0,
+                "error": ""
+              })"_json;
+    //std::cout << j6 <<std::endl;
+    std::string j6_string = j6.dump(-1);
+    //std::cout << j6_string;
+    odfo.deserialise(j6_string);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

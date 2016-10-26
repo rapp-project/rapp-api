@@ -234,6 +234,7 @@ if (${BUILD_EXAMPLES})
                   qr_recognition.cpp
                   light_detection.cpp
                   object_recognition.cpp
+                  object_recognition_my_own_models.cpp
                   knowrob_ontology.cpp
                   picture_handling.cpp
                   text_to_speech.cpp
