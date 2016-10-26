@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the object_recognition_caffe JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-arapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.object_recognition_caffe = require('rapp-platform-arapp-platform-api/includes/cloud/object_recognition_caffe');
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.object_recognition_caffe = require('rapp-platform-api/includes/cloud/object_recognition_caffe');
 var services = new RAPPCloud();
 
 

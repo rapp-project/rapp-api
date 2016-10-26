@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-// Import the face_detection JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-arapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.set_noise_profile = require('rapp-platform-arapp-platform-api/includes/cloud/set_noise_profile');
+// Import the set_noise_profile JS API Service & Init the RAPPCloud Object
+var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
+RAPPCloud.set_noise_profile = require('rapp-platform-api/includes/cloud/set_noise_profile');
 var services = new RAPPCloud( );
 
 services.set_noise_profile ("../../testdata/denoise_source.wav",
