@@ -1,6 +1,6 @@
 {
   "name": "rapp-platform-api",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "description": "Containes RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.",
   "engines": {
     "node": ">= 0.10.0"
@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rapp-project/rapp-api.git"
+    "url": "git+https://github.com/rapp-project/rapp-api"
   },
   "keywords": [
     "robotics",
