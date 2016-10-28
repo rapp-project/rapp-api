@@ -34,7 +34,7 @@ int main()
      * If you run the example inside examples folder, this path is valid.
      * In other cases, you'll have to change it for a proper one.
      */
-    auto pic = rapp::object::picture("data/object_classes_picture_5.jpg");
+    auto pic = rapp::object::picture("data/object_classes_picture_2.jpg");
     /*
      * Construct a lambda, std::function or bind your own functor.
      * In this example we'll pass an inline lambda as the callback.
@@ -56,11 +56,45 @@ int main()
                 break;
         }
     };
+
+    /*
+     * Construct a lambda, std::function or bind your own functor.
+     * In this example we'll pass an inline lambda as the callback.
+     * All it does is receive the data of the objects found. 
+    */
+    auto find_cb = [](std::vector<std::string> obj_names,
+                     std::vector<rapp::object::point> points, 
+                     std::vector<double> scores,
+                     int result) 
+    {
+        std::cout << "Number of objects found: " << obj_names.size() << std::endl;
+        std::cout << "Size vector points: " << points.size() << std::endl;
+        std::cout << "Size of scores: " << scores.size() << std::endl;
+        std::cout << "Result: " << result << std::endl; 
+    };
     /*
      * We make a call to learn_object class to learn objects from the file
-     * For more information \see rapp::cloud::learn_object
+     * For more information \see rapp::cloud::object_detection_learn_object
      */
     ctrl.make_call<rapp::cloud::object_detection_learn_object>(pic, "cat", "rapp", callback);
+
+    /*
+     * Before finding objects, we load them beforehand.
+     * In this vector we say the names of the objects to load
+     */
+    std::vector<std::string> names = {"cat"};
+
+    /*
+     * We make a call to load_models class to load objects from the file
+     * For more information \see rapp::cloud::object_detection_load_models
+     */
+    ctrl.make_call<rapp::cloud::object_detection_load_models>("rapp", names, callback);
+
+    /*
+     * We make a call to find_objects in the picture sent
+     * For more information \see rapp::cloud::object_detection_find_objects
+     */
+    ctrl.make_call<rapp::cloud::object_detection_find_objects>(pic, "rapp", 1, find_cb);
 
     /*
      * We make a call to clear_model class to clear the memory

@@ -721,14 +721,18 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
                                                   "y": 0.999, 
                                                   "z": 0.0
                                                }
+                                },
+                                 {"position": {
+                                                  "x": 0.899,
+                                                  "y": 0.799, 
+                                                  "z": 0.0
+                                               }
                                 }],
                 "found_scores": [0.9],
                 "result": 0,
                 "error": ""
               })"_json;
-    //std::cout << j6 <<std::endl;
     std::string j6_string = j6.dump(-1);
-    //std::cout << j6_string;
     odfo.deserialise(j6_string);
 }
 
