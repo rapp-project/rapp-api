@@ -2,27 +2,23 @@
 # It defines the following variables
 #  RAPP_INCLUDE_DIRS - include directories for RAPP
 #  RAPP_LIBRARIES    - libraries to link against
+#  RAPP_STATIC_LIBRARIES - static libraries to link against
 
-# Compute paths
-get_filename_component(RAPP_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-set(RAPP_CMAKE_DIR "${RAPP_CMAKE_DIR}/../../../")
-get_filename_component(RAPP_CMAKE_DIR ${RAPP_CMAKE_DIR} ABSOLUTE)
-
-if(EXISTS ${RAPP_CMAKE_DIR}/lib/librapp.a) 
+if(EXISTS ${CMAKE_INSTALL_PREFIX}/lib/librapp.a) 
   set(RAPP_STATIC_LIBRARIES
-    ${RAPP_CMAKE_DIR}/lib/librapp.a
-    CACHE INTERNAL "" FORCE
+      ${CMAKE_INSTALL_PREFIX}/lib/librapp.a
+      CACHE INTERNAL "" FORCE
   )
 endif()
 
-if(EXISTS ${RAPP_CMAKE_DIR}/lib/librapp.so)
+if(EXISTS ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)
   set(RAPP_LIBRARIES
-    ${RAPP_CMAKE_DIR}/lib/librapp.so
-    CACHE INTERNAL "" FORCE
+      ${CMAKE_INSTALL_PREFIX}/lib/librapp.so
+      CACHE INTERNAL "" FORCE
   )
 endif()
 
 set(RAPP_INCLUDE_DIRS
-${RAPP_CMAKE_DIR}/include
-CACHE INTERNAL "" FORCE
+    ${CMAKE_INSTALL_PREFIX}/include
+    CACHE INTERNAL "" FORCE
 )
