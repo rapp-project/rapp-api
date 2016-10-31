@@ -13,30 +13,29 @@ The below table presents the up-to-date available RAPP Platform Service calls, t
 | :-------------------------------: | :---:    | :----------: | :---:    |
 | Face detection                    | ✓        |  ✓           | ✓        |
 | Qr detection                      | ✓        |  ✓           | ✓        |
-| Text to Speech                    | ✗        |  ✓           | ✓        |
+| Text to Speech                    | ✓        |  ✓           | ✓        |
 | De-noise profile                  | ✓        |  ✓           | ✓        |
 | Speech to Text (sphinx4)          | ✓        |  ✓           | ✓        |
-| Speech to Text (google)           | ✗        |  ✓           | ✓        |
+| Speech to Text (google)           | ✓        |  ✓           | ✓        |
 | Object Recognition Caffe          | ✓        |  ✓           | ✓        |
 | Available services                | ✓        |  ✓           | ✓        |
 | Ontology subclasses of            | ✓        |  ✓           | ✓        |
 | Ontology superclasses of          | ✓        |  ✓           | ✓        |
 | Ontology is subsuperclass of      | ✓        |  ✓           | ✓        |
-| Cognitive test chooser            | ✗        |  ✓           | ✓        |
-| Cognitive get history             | ✗        |  ✓           | ✓        |
-| Cognitive get scores              | ✗        |  ✓           | ✓        |
-| Record cognitive test performance | ✗        |  ✓           | ✓        |
-| Send email                        | ✗        |  ✓           | ✓        |
-| Fetch received emails             | ✗        |  ✓           | ✓        |
-| News stories                      | ✗        |  ✓           | ✓        |
-| Geolocation                       | ✗        |  ✓           | ✓        |
-| Weather report current            | ✗        |  ✓           | ✓        |
-| Weather report forecast           | ✗        |  ✓           | ✓        |
-| Hazard detection light-check      | ✗        |  ✓           | ✓        |
-| Hazard detection door-check       | ✗        |  ✓           | ✓        |
-| Path planning upload-map          | ✗        |  ✓           | ✓        |
-| Path planning plan-path-2d        | ✗        |  ✓           | ✓        |
-
+| Cognitive test chooser            | ✓        |  ✓           | ✓        |
+| Cognitive get history             | ✓        |  ✓           | ✓        |
+| Cognitive get scores              | ✓        |  ✓           | ✓        |
+| Record cognitive test performance | ✓        |  ✓           | ✓        |
+| Send email                        | ✓        |  ✓           | ✓        |
+| Fetch received emails             | ✓        |  ✓           | ✓        |
+| News stories                      | ✓        |  ✓           | ✓        |
+| Geolocation                       | ✓        |  ✓           | ✓        |
+| Weather report current            | ✓        |  ✓           | ✓        |
+| Weather report forecast           | ✓        |  ✓           | ✓        |
+| Hazard detection light-check      | ✓        |  ✓           | ✓        |
+| Hazard detection door-check       | ✓        |  ✓           | ✓        |
+| Path planning upload-map          | ✓        |  ✓           | ✓        |
+| Path planning plan-path-2d        | ✓        |  ✓           | ✓        |
 
 Information on RAPP Platform front-end Web Services can he found [here](https://github.com/rapp-project/rapp-platform/tree/master/rapp_web_services/services).
 
@@ -59,6 +58,7 @@ Each language API has a `README.md` with detailed instructions on how to use it.
 - Alexander Giokas, **[a.gkiokas@ortelio.co.uk]**
 - Konstaninos Panayiotou, **[klpanagi@gmail.com]**
 - Lazaros Penteridis, **[lp@ortelio.co.uk]**
+- Maria Ramos, **[m.ramos@ortelio.co.uk]**
 
 ## Contributing
 
