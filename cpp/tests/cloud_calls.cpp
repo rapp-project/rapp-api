@@ -708,7 +708,6 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
         BOOST_CHECK_EQUAL(found_names.at(0), "cat");
         BOOST_CHECK_EQUAL(found_points.at(0).get_x(), 0.999);      
         BOOST_CHECK_EQUAL(found_points.at(0).get_y(), 0.999);
-        BOOST_CHECK_EQUAL(found_points.at(0).get_z(), 0);
         BOOST_CHECK_EQUAL(scores.at(0), 0.9);
         BOOST_CHECK_EQUAL(result, 0);
     };
@@ -716,18 +715,14 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
     auto j6 = R"(
               {
                 "found_names": ["cat"],
-                "found_centers": [{"position": {
-                                                  "x": 0.999,
-                                                  "y": 0.999, 
-                                                  "z": 0.0
-                                               }
-                                },
-                                 {"position": {
-                                                  "x": 0.899,
-                                                  "y": 0.799, 
-                                                  "z": 0.0
-                                               }
-                                }],
+                "found_centers": [{
+                                      "x": 0.999,
+                                      "y": 0.999, 
+                                 },
+                                 {
+                                      "x": 0.899,
+                                      "y": 0.799, 
+                                 }],
                 "found_scores": [0.9],
                 "result": 0,
                 "error": ""

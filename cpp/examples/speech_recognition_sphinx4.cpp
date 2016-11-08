@@ -68,9 +68,9 @@ int main()
      *  \brief JSGF speech grammar format. It's an optional input, but with
      *  it we can achieve more accuracy in the recognition. 
      */
-    std::string jsgf =  "#JSGF V1.0;\r\n\r\n";
-                jsgf += "grammar simpleExample; \r\n\r\n";
-                jsgf += "public <greet> = Yes | No;\r\n";
+    //std::string jsgf =  "#JSGF V1.0;\r\n\r\n";
+    //            jsgf += "grammar simpleExample; \r\n\r\n";
+    std::string jsgf = "public <greet> = Yes | No;\r\n";
 
     /*
      * We make a call to speech_recognition_google to detect the words said

@@ -53,7 +53,7 @@ int main()
      * about the weather in the city that we want
      * For more information \see rapp::cloud::weather_report_current
      */
-    ctrl.make_call<rapp::cloud::weather_report_current>("Athens", "", 1, callback);
+    ctrl.make_call<rapp::cloud::weather_report_current>("Athens", "", 0, callback);
    
     /*
      * Example of weather_report_forecast

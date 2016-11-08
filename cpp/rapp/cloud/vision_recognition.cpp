@@ -162,9 +162,11 @@ object_detection_find_objects::object_detection_find_objects(
   delegate_(callback)
 {
     http_request::make_multipart_form();
+    std::string fname = rapp::misc::random_boundary() + "." + image.type();
     json json_doc = {{"user", user},
                      {"limit", limit}};
     http_request::add_content("json", json_doc.dump(-1), true);
+    http_request::add_content("file", fname, image.bytearray());
     http_request::close();
 }
 
@@ -177,6 +179,7 @@ void object_detection_find_objects::deserialise(std::string json) const {
     nlohmann::json json_f;
     try {
         json_f = json::parse(json);
+        std::cout << "JSON: " << json_f << std::endl;
     }
     catch (std::exception & e) {
         std::cerr << e.what() << std::endl;
@@ -188,8 +191,7 @@ void object_detection_find_objects::deserialise(std::string json) const {
     else {
         auto it_center = json_f.find("found_centers");
         for (auto it = it_center->begin(); it != it_center->end(); it++) {
-            auto it_points = it->find("position");
-            points.push_back(rapp::object::point(it_points));
+            points.push_back(rapp::object::point(it));
         }
         delegate_(json_f["found_names"],
                   points, 

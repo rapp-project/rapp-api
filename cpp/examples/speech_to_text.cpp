@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 
         // we have the required params set
         if (checks == 4) {
-			rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
+			rapp::cloud::platform info = {"10.130.7.99", "9001", "rapp_token"}; 
 			rapp::cloud::service_controller ctrl(info);
 
             std::shared_ptr<rapp::object::audio> audio;

@@ -76,10 +76,10 @@ int main(int argc, char* argv[])
     ctrl.make_call<rapp::cloud::email_fetch>("rappemailtest@gmail.com",
                                              "XXX",
                                              "imap.gmail.com",
-                                             "993",
+                                             "",
                                              "ALL",
-                                             1470009600, 
-                                             1473940800,
-                                             7,
+                                             0, 
+                                             100000000,
+                                             2,
                                              call_fetch);
 } 
