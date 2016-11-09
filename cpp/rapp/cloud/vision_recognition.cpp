@@ -179,7 +179,6 @@ void object_detection_find_objects::deserialise(std::string json) const {
     nlohmann::json json_f;
     try {
         json_f = json::parse(json);
-        std::cout << "JSON: " << json_f << std::endl;
     }
     catch (std::exception & e) {
         std::cerr << e.what() << std::endl;

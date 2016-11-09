@@ -717,11 +717,13 @@ BOOST_AUTO_TEST_CASE(vision_recognition_cloud_test)
                 "found_names": ["cat"],
                 "found_centers": [{
                                       "x": 0.999,
-                                      "y": 0.999, 
+                                      "y": 0.999,
+                                      "z": 0 
                                  },
                                  {
                                       "x": 0.899,
-                                      "y": 0.799, 
+                                      "y": 0.799,
+                                      "z": 0 
                                  }],
                 "found_scores": [0.9],
                 "result": 0,
