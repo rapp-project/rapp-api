@@ -18,7 +18,7 @@
 PROJECT(rapp)
 set (RAPP_VERSION_MAJOR 0)
 set (RAPP_VERSION_MINOR 7)
-set (RAPP_VERSION_PATCH 0)
+set (RAPP_VERSION_PATCH 1)
 set (RAPP_VERSION_STRING ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
 cmake_minimum_required(VERSION 2.8)
 
@@ -127,6 +127,7 @@ if (${RAPP_STATIC})
     set(LIBTARGET ${LIBTARGET} rapp)
     add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
     set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${RAPP_VERSION_STRING}")
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_DL_LIBS})
 	#
 	# set linking to fully static (libc, libstdc++, etc)
@@ -145,6 +146,7 @@ elseif(${OPEN_NAO})
     set(LIBTARGET ${LIBTARGET} rapp)
 	add_library(${LIBTARGET} STATIC $<TARGET_OBJECTS:lrapp>)
     set_target_properties(${LIBTARGET} PROPERTIES VERSION ${RAPP_VERSION_STRING})
+    set_target_properties(${LIBTARGET} PROPERTIES SUFFIX ".a.${RAPP_VERSION_STRING}")
     target_link_libraries(${LIBTARGET} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     ###
 	# No need to build static library, but the apps will have to statically link
