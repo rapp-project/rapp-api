@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 
+const config = require("../../config/config");
+const fs = require("fs");
+const homeDir = require('home-dir');
+
 /**
  * Define the RAPP Cloud Services object
  * @namespace RAPPCloud
  */
-function RAPPCloud ( )
+function RAPPCloud ()
 {
-    var fs = require('fs');
-	this.token = fs.readFileSync('/home/leizer/.config/rapp_platform/application_token', 'utf8').toString().replace(/\n$/, '');
-    this.cloud_url = 'https://localhost:9001';
+//    var token_path = homeDir() + "/.config/rapp_platform/tokens/app";
+//    this.token = fs.readFileSync(token_path, 'utf8').toString().replace(/\n$/, '');
+    this.token = "rapp_token";
+    this.cloud_url = config.protocol + "://" + config.rapp_platform_ip + ":" + config.rapp_platform_port;
 }
 
 /// escape JSON strings when sending them over the socket

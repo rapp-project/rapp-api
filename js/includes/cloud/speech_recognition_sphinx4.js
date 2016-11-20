@@ -3,11 +3,28 @@
 var path = require('path');
 var __cloudDir = path.join(__dirname);
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
+const config = require("../../config/config");
+
+if (config.protocol === "https")
+{
+    var request = require('request').defaults({
+	    secureProtocol: 'TLSv1_2_method',
+	    rejectUnauthorized: false
+	});
+}
+else if (config.protocol === "http")
+{
+    var request = require("request");
+}
+else
+{
+    console.log("please choose one of: http or https(for TLS_1.2) as protocols");
+}
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
  *
- * @class speech_detection_sphinx4
+ * @class speech_recognition_sphinx4
  * @description Asynchronous Service which will request the cloud to process speech-to-text
  * @version 1
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
@@ -20,15 +37,11 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, audio_source, grammar, words, sentences, callback )
+RAPPCloud.prototype.speech_recognition_sphinx4 = function ( audio, language, audio_source, grammar, words, sentences, callback )
 {
     var formData = require('form-data');
 	var randomstring = require('randomstring');
 	var fs = require('fs');
-	var request = require('request').defaults({
-	  secureProtocol: 'TLSv1_2_method',
-	  rejectUnauthorized: false
-	});
 
     var cloud = this;
     var _delegate=callback;
@@ -94,7 +107,7 @@ RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, audio
 		try {
 			json_obj = JSON.parse(json);
 			if(json_obj.error){  // Check for Errors  
-				console.log('speech_detection_sphinx4 JSON error: ' + json_obj.error);
+				console.log('speech_recognition_sphinx4 JSON error: ' + json_obj.error);
 			}
 			// JSON reply is eg.: {"words":["check","my","emails"],"error":""}
 			for (i=0; i<json_obj.words.length; i++){
@@ -102,7 +115,7 @@ RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, audio
 			}
 			_delegate(words_vector);
 		} catch (e) {
-			console.log('speech_detection_sphinx4::handle_reply Error parsing: ');
+			console.log('speech_recognition_sphinx4::handle_reply Error parsing: ');
 			return console.error(e);
 		}
 	}
@@ -115,4 +128,4 @@ RAPPCloud.prototype.speech_detection_sphinx4 = function ( audio, language, audio
 
 
 /// Export
-module.exports = RAPPCloud.speech_detection_sphinx4;
+module.exports = RAPPCloud.speech_recognition_sphinx4;

@@ -3,6 +3,23 @@
 var path = require('path');
 var __cloudDir = path.join(__dirname);
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
+const config = require("../../config/config");
+
+if (config.protocol === "https")
+{
+    var request = require('request').defaults({
+	    secureProtocol: 'TLSv1_2_method',
+	    rejectUnauthorized: false
+	});
+}
+else if (config.protocol === "http")
+{
+    var request = require("request");
+}
+else
+{
+    console.log("please choose one of: http or https(for TLS_1.2) as protocols");
+}
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
@@ -20,11 +37,6 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 
 RAPPCloud.prototype.weather_report_current = function ( city, weather_reporter, metric, callback )
 {
-    var request = require('request').defaults({
-	  secureProtocol: 'TLSv1_2_method',
-	  rejectUnauthorized: false
-	});
-
     var cloud = this;
     var _delegate = callback;
     
@@ -53,17 +65,25 @@ RAPPCloud.prototype.weather_report_current = function ( city, weather_reporter, 
             console.log ( 'Error: ' + response.statusCode );
     });
     
-    function handle_reply( json )
+    function handle_reply(json)
     {
-		var json_obj;
-		try {
+        var json_obj;
+	console.log(json);
+        try {
 			json_obj = JSON.parse(json);
-			// JSON reply is: { weather_current: {date: '', temperature: '', weather_description: '', humidity: '', visibility: '', pressure: '', wind_speed: '', wind_temperature: '', wind_direction: ''}, error: ''}
+			// JSON reply is: { date: '', temperature: '', weather_description: '', humidity: '', visibility: '', pressure: '', wind_speed: '', wind_temperature: '', wind_direction: '', error: ''}
 		
 			if(json_obj.error){  // Check for Errors  
 				console.log('weather_report_current JSON error: ' + json_obj.error);
 			}
-			_delegate( json_obj.weather_current );
+
+            var weather_current = {};
+			for (var prop in json_obj){
+                if (prop !== error)
+                    weather_current[prop] = json_obj.prop;
+            }
+
+            _delegate(weather_current);
 		} catch (e) {
 			console.log('weather_report_current::handle_reply Error parsing: ');
 			return console.error(e);

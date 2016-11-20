@@ -38,27 +38,23 @@ npm install
 The examples located in the examples directory showcase how you may use the RAPPCloud services for your convenience.
 Provided you have succesfully installed the API in your system, you can require the service(s) that you want to use in your application, after requiring the RAPPCloud module as shown in the examples:
 
-```shell
+```js
 var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.qrDetector = require('rapp-platform-api/includes/cloud/qrDetector');
+RAPPCloud.qr_detection = require('rapp-platform-api/includes/cloud/qr_detection');
+RAPPCloud.face_detection = require('rapp-platform-api/includes/cloud/face_detection'); 
+var services = new RAPPCloud();
+
+services.qr_detection('../../testdata/qrcode.png', 'png', handler);
+services.face_detection('../../testdata/faces.png', 'png', handler);
 ```
 
 For the RAPP platform API objects you would have to point as well, to the respective directory in order to require them:
 
-```shell
-var RAPPObjects = require('rapp-platform-api/includes/cloud/RAPPObject');
+```js
+var RAPPObjects = require('rapp-platform-api/includes/objects/RAPPObject');
 RAPPObject.face = require('rapp-platform-api/includes/objects/face');
+var objects = new RAPPObject();
 ```
-
-
-##  Configurations
-
-On default the RAPP API connects on a RAPP Platform installed **LOCALLY**.
-TODO: Provide the configuration parameters to connect the API to:
-
-- The RAPP Platform Deployment Server.
-- The RAPP Platform Development Server.
-
 
 ## Directories
 
@@ -85,6 +81,8 @@ For the following to run you will also need to install the developer dependencie
 This package's source-code is documented using the [JSDoc](https://github.com/jsdoc3/jsdoc) javascript documentation generator.
 
 Generate documentation for the RAPP API Cloud Services only:
+
+For the documentation of all RAPP Cloud services and Objects see [here](https://github.com/rapp-project/rapp-api/tree/js/js/includes/README.md)
 
 ```shell
 npm run doc-cloud

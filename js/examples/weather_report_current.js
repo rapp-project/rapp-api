@@ -13,8 +13,9 @@ var services = new RAPPCloud( );
 function callback ( weather )
 {
 //    date: '', temperature: '', weather_description: '', humidity: '', visibility: '', pressure: '', wind_speed: '', wind_temperature: '', wind_direction: ''
-    var str = JSON.stringify(weather, null, 2);
-    console.log(str);
+//    var str = JSON.stringify(weather, null, 2);
+//    console.log(str);
+console.log(weather);    
 }
 
 services.weather_report_current( 'Athens', '', 0, callback );

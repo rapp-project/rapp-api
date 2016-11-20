@@ -3,6 +3,23 @@
 var path = require('path');
 var __cloudDir = path.join(__dirname);
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
+const config = require("../../config/config");
+
+if (config.protocol === "https")
+{
+    var request = require('request').defaults({
+	    secureProtocol: 'TLSv1_2_method',
+	    rejectUnauthorized: false
+	});
+}
+else if (config.protocol === "http")
+{
+    var request = require("request");
+}
+else
+{
+    console.log("please choose one of: http or https(for TLS_1.2) as protocols");
+}
 
 /**
  * @fileOverview Prototype the RAPPCloud Service Method.
@@ -24,11 +41,6 @@ RAPPCloud.prototype.cognitive_test_chooser = function ( test_type, callback, tes
     test_subtype = typeof test_subtype !== 'undefined' ? test_subtype : '';
     test_diff = typeof test_diff !== 'undefined' ? test_diff : '';
     test_index = typeof test_index !== 'undefined' ? test_index : '';
-    
-    var request = require('request').defaults({
-	  secureProtocol: 'TLSv1_2_method',
-	  rejectUnauthorized: false
-	});
 
     var cloud = this;
     var _delegate = callback;
