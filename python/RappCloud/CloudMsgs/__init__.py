@@ -35,3 +35,5 @@ from ObjectDetectionFindObjects import ObjectDetectionFindObjects
 from ObjectDetectionClearModels import ObjectDetectionClearModels
 from ObjectDetectionLoadModels import ObjectDetectionLoadModels
 from ObjectDetectionLearnObject import ObjectDetectionLearnObject
+from VisualLocalization import VisualLocalization
+from VisualLocalizationInit import VisualLocalizationInit
