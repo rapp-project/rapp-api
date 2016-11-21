@@ -152,7 +152,6 @@ We have created two repositories with extensive tutorials and examples, ranging 
 Those tutorials go through every single cloud and object class, and describe how to build applications for Aldebaran's NAO.
 
 * https://github.com/ortelio/rapp_beginner_tutorials.git
-* https://github.com/ortelio/rapp_advanced_tutorials.git
 
 ## Documentation
 

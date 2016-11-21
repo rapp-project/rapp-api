@@ -66,7 +66,6 @@ Each API implementation has a `README.md` with detailed instructions on how to u
 - [JavaScript](https://github.com/rapp-project/rapp-api/tree/master/js)
 - [Python](https://github.com/rapp-project/rapp-api/tree/master/python)
 
-
 ## Contributors
 
 - Alexander Giokas, **[a.gkiokas@ortelio.co.uk]**
