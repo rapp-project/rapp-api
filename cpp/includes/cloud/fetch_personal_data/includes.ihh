@@ -1,0 +1,4 @@
+#include <functional>
+#include <memory>
+#include "cloud/asio_service_http/asio_service_http.hpp"
+#include <boost/lexical_cast.hpp>

@@ -1,0 +1,6 @@
+#include "objects/globals.hpp"
+#include "objects/face/face.hpp"
+#include "objects/audio/audio.hpp"
+#include "objects/qr_code/qr_code.hpp"
+#include "objects/picture/picture.hpp"
+#include "objects/human/human.hpp"

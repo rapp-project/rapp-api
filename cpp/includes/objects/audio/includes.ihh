@@ -1,0 +1,8 @@
+#include <iostream>
+#include <istream>
+#include <ostream>
+#include <fstream>
+#include <vector> 
+#include <stdexcept>
+
+#include "objects/globals.hpp"

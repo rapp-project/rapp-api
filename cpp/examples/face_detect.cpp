@@ -1,28 +1,32 @@
-#include "../includes/service/service_controller/service_controller.hpp"
-#include "../includes/cloud/faceDetector/faceDetector.hpp"
-#include "../includes/objects/picture/picture.hpp"
-
-int main ( int argc, char* argv[] )
+#include "cloud/service_controller/service_controller.hpp"
+#include "cloud/vision/face_detection/face_detection.hpp"
+#include "objects/picture/picture.hpp"
+///
+/// Pass as param a PNG image
+///
+int main(int argc, char* argv[])
 {
-    /**
-     * @date 13-February-2015
-     * @author Alex Gkiokas
-     * This is now the default way of working with images
-     */
-    rapp::services::service_controller ctrl;
-    
-    if ( auto pic = std::make_shared<rapp::object::picture>( "Lenna.png" ) )
-    {
-        auto callback = [&]( std::vector<rapp::object::face> faces )
-                            { std::cout << "found " << faces.size() << " faces!" << std::endl; };
-                        
-        auto fdetect = std::make_shared<rapp::cloud::faceDetector>( pic, "jpg", callback );
-        
-        if ( fdetect )
-            ctrl.runJob ( fdetect );
-    }
-    else
-        std::cerr << "Error loading image" << std::endl;
+    if (argc == 3) {
+        std::cout << "face detect: " << argv[1] << std::endl;
+        std::string file  = argv[1];
+		std::string token = argv[2];
 
-    return 0;
+        // service controler
+        rapp::cloud::service_controller ctrl;
+
+        // load the image from argv[1]
+        if (auto pic = std::make_shared<rapp::object::picture>(file)) {
+            auto callback = [&](std::vector<rapp::object::face> faces)
+                            {std::cout << "found " << faces.size() << " faces!" << std::endl;};
+
+            auto fdetect = std::make_shared<rapp::cloud::face_detection>(pic, false, token, callback);
+            if (fdetect) {
+                ctrl.run_job(fdetect);
+            }
+        }
+        else {
+            std::cerr << "Error loading image: " << argv[1] << std::endl;
+        }
+        return 0;
+    }
 }

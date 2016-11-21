@@ -1,0 +1,85 @@
+{
+  "name": "rapp-platform-api",
+  "version": "0.6.3",
+  "description": "Containes RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "main": "rapp_platform_api.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "dependencies": {
+    "form-data": "~1.0.0-rc3",
+    "querystring": "^0.2.0",
+    "randomstring": "~1.1.3",
+    "request": "^2.72.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-jshint": "~0.11.3",
+    "grunt-jsdoc": "~1.1.0",
+    "grunt-shell": "~1.1.2",
+    "ink-docstrap": "~0.5.4",
+    "jsdoc": "~3.4.0",
+    "jshint": "~2.9.1",
+    "mocha": "~2.3.4",
+    "unit.js": "~2.0.0"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/mocha test",
+    "doc-cloud": "rm -rf doc/cloud && grunt doc-gen-cloud",
+    "doc-objects": "rm -rf doc/objects && grunt doc-gen-objects",
+    "doc": "npm run doc-cloud && npm run doc-objects",
+    "jshint": "node_modules/.bin/jshint includes"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rapp-project/rapp-api.git"
+  },
+  "keywords": [
+    "robotics",
+    "cloud",
+    "cloud robotics",
+    "web services",
+    "face detection",
+    "qr detection",
+    "human detection",
+    "text to speech",
+    "tts"
+  ],
+  "author": {
+    "name": "leizer",
+    "email": "lp@ortelio.co.uk"
+  },
+  "license": "Apache-2",
+  "bugs": {
+    "url": "https://github.com/rapp-project/rapp-api/issues"
+  },
+  "homepage": "https://github.com/rapp-project/rapp-api",
+  "_id": "rapp-api@0.6.2",
+  "_shasum": "e73813c3ffd97aebd680accaa44b8f511d59ac4b",
+  "_from": "rapp-api@latest",
+  "_npmVersion": "2.14.22",
+  "_nodeVersion": "0.10.25",
+  "_npmUser": {
+    "name": "leizer",
+    "email": "lp@ortelio.co.uk"
+  },
+  "dist": {
+    "shasum": "e73813c3ffd97aebd680accaa44b8f511d59ac4b",
+    "tarball": "https://registry.npmjs.org/rapp-api/-/rapp-platform-api-0.6.2.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "leizer",
+      "email": "lp@ortelio.co.uk"
+    }
+  ],
+  "_npmOperationalInternal": {
+    "host": "packages-13-west.internal.npmjs.com",
+    "tmp": "tmp/rapp-api-0.6.2.tgz_1457700493584_0.9652831763960421"
+  },
+  "_resolved": "https://registry.npmjs.org/rapp-api/-/rapp-api-0.6.2.tgz"
+}
