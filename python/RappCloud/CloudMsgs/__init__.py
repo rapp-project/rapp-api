@@ -37,3 +37,4 @@ from ObjectDetectionLoadModels import ObjectDetectionLoadModels
 from ObjectDetectionLearnObject import ObjectDetectionLearnObject
 from VisualLocalization import VisualLocalization
 from VisualLocalizationInit import VisualLocalizationInit
+from UserPersonalInfo import UserPersonalInfo

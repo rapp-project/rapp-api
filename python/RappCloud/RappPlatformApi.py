@@ -57,6 +57,7 @@ from CloudMsgs import ObjectDetectionLoadModels
 from CloudMsgs import ObjectDetectionLearnObject
 from CloudMsgs import VisualLocalization
 from CloudMsgs import VisualLocalizationInit
+from CloudMsgs import UserPersonalInfo
 
 from Service import RappPlatformService
 
@@ -969,3 +970,8 @@ class RappPlatformAPI():
             'status': response.status,
             'error': response.error
         }
+
+    def userPersonalInfo(self):
+        msg = UserPersonalInfo()
+        response = self.svc_caller.call(msg)
+        return response.serialize()
