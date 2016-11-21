@@ -10,22 +10,24 @@ namespace cloud {
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class available_services : public asio_service_http
+class available_services : public asio_http
 {
 public:
+	typedef std::pair<std::string, std::string> service;
     /**
      * \brief construct without any special parameters
      * \param callback will receive a vector of services strings
      */
-    available_services(
-                        const std::string token,
-                        std::function<void(std::vector<std::string>)> callback
-                      )
-    : asio_service_http(token), delegate_(callback)
+    available_services(std::function<void(std::vector<service>)> callback)
+    : asio_http(), delegate_(callback)
     {
-        header_ = "GET /hop/available_services HTTP/1.1\r\n";
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "GET /hop/available_services HTTP/1.1\r\n";
+
+		// bind base downcasted virtual method
         callback_ = std::bind(&available_services::handle_reply, this, std::placeholders::_1);
     }
+
 private:
     /**
      * \brief handle platform's JSON reply
@@ -33,12 +35,22 @@ private:
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
-        std::vector<std::string> services;
+        std::vector<service> services;
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+			// get services
             for (auto child : tree.get_child("services")) {
-                services.push_back(child.second.get_value<std::string>());
+				for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
+					std::string name, uri;
+					if (iter->first == "name") {
+						name = iter->second.get_value<std::string>();
+					}
+					else if (iter->first == "url") {
+						uri = iter->second.get_value<std::string>();
+					}
+					services.push_back(std::make_pair(name, uri));
+				}
             }
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
@@ -55,7 +67,7 @@ private:
         delegate_(std::move(services));
     }
     /// 
-    std::function<void(std::vector<std::string> services)> delegate_;
+    std::function<void(std::vector<service> services)> delegate_;
 };
 }
 }

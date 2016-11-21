@@ -9,31 +9,37 @@ namespace cloud {
  * \version 0.6.0
  * \date May 2016
  */
-class geolocation : public asio_service_http
+class geolocation : public asio_http
 {
 public:
     /**
      * \param ipaddr: the machine's ip
      * \param engine: the API (default ip-api)
-     * \param token: the rapp auth token
      * \param callback: receives a JSON reply
      */
     geolocation(
                  const std::string ipaddr,
                  const std::string engine,
-                 const std::string token,
                  std::function<void(std::string)> callback
                )
-	: asio_service_http(token), delegate_(callback)
+	: asio_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("ipaddr", ipaddr);
         tree.put("engine", engine);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
-        header_ = "POST /hop/geolocation HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+			   + ss.str();
+		
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/geolocation HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&geolocation::handle_reply, this, std::placeholders::_1);
 	}
 private:
@@ -45,6 +51,7 @@ private:
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
+
     /// 
     std::function<void(std::string)> delegate_;
 };

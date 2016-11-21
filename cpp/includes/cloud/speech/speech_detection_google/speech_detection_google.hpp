@@ -6,11 +6,11 @@ namespace cloud {
 /**
  * \class speech_detection_google
  * \brief delegate speech-to-text to Google via RAPP
- * \version 0.5.0
- * \date January 2016
+ * \version 0.6.0
+ * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speech_detection_google : public asio_service_http
+class speech_detection_google : public asio_http
 {
 public:
 	/**
@@ -25,28 +25,37 @@ public:
 							  const std::shared_ptr<rapp::object::audio> file,
 							  const std::string language,
 							  const std::string user,
-							  std::function<void(std::vector<std::string>,
-                                                 std::vector<std::string>)> callback
+							  std::function<void(std::vector<std::string>, std::vector<std::string>)> callback
 						   )
-	: rapp::services::asio_service_http (), delegate_(callback)
+	: asio_http(), delegate_(callback)
     {
         assert(file);
-        std::string boundary = random_boundary();
-        std::string fname =  random_boundary() + file->extension(); 
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname =  rapp::misc::random_boundary() + file->extension(); 
+
         boost::property_tree::ptree tree;
         tree.put("language", language);
         tree.put("user", user);
         tree.put("audio_source", file->audio_source());
-        std::stringstream ss;
+        
+		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n"
+
+		post_ += "--" + boundary + "\r\n"
+			  + ss.str();
+
+		post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
+
         auto bytes = file->bytearray();
         post_.insert( post_.end(), bytes.begin(), bytes.end() );
         post_ += "\r\n" + "--" + boundary + "--";
-        header_ =  "POST /hop/speech_detection_google HTTP/1.1\r\n";
-        header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/speech_detection_google HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&speech_detection_google::handle_reply, this, std::placeholders::_1);
     }
 private:
@@ -61,13 +70,16 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // JSON response is: { words: [], alternatives: [], error: '' } 
             for (auto child : tree.get_child("words")) {
                 words.push_back(child.second.get_value<std::string>());
 			}
+
 			for (auto child : tree.get_child("alternatives")) {
 				alternatives.push_back(child.second.get_value<std::string>());
 			}
+
             // Check for error response from platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();

@@ -7,10 +7,10 @@ namespace cloud {
  * \class set_denoise_profile
  * \brief setting the denoising audio profile for speech recognition 
  * \version 0.6.0
- * \date April 2016
+ * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class set_denoise_profile : public asio_service_http
+class set_denoise_profile : public asio_http
 {
 public:
     /**
@@ -18,35 +18,41 @@ public:
 	 * \note This class does not return something, it only captures an error
      * \param file is the noise audio file used for de-noising
      * \param user is the user denoise profile
-     * \param token is the rapp authentication token
      */
     set_denoise_profile(
 						 const std::shared_ptr<rapp::object::audio> file,
-                         const std::string user,
-                         const std::string token
+                         const std::string user
 					   )
-    : asio_service_http(token)
+    : asio_http()
     {
         assert(file);
-        std::string boundary = random_boundary();
-        std::string fname = random_boundary();
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname = rapp::misc::random_boundary();
+
         boost::property_tree::ptree tree;
         tree.put("user", user);
         tree.put("audio_source", file->audio_source());
         tree.put("filename", fname + "." + file->extension());
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str() + "\r\n";
-        post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\";\r\n"
+               + ss.str();
+
+		post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
+
         auto bytes = file->bytearray();
         post_.insert(post_.end(), bytes.begin(), bytes.end());
         post_ += "\r\n--" + boundary + "--";
-        header_ = "POST /hop/set_denoise_profile HTTP/1.1\r\n";
-        header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/set_denoise_profile HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&set_denoise_profile::handle_reply, this, std::placeholders::_1);
     }
 
@@ -60,6 +66,7 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // Check for error response from api.rapp.cloud
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();

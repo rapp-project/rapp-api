@@ -10,7 +10,7 @@ namespace cloud {
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_subclasses_of : public asio_service_http
+class ontology_subclasses_of : public asio_http
 {
 public:
     /**
@@ -22,18 +22,31 @@ public:
     ontology_subclasses_of(
                             std::string ontology_class,
                             bool recursive,
-                            std::function<void(std::vector<std::string>)> callback,
-							std::string token
+                            std::function<void(std::vector<std::string>)> callback
                           )
-    : asio_service_http(token), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
-        tree.put("recursive", boost::lexical_cast<std::string>(recursive));
+        tree.put("recursive", recursive);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
-        header_ = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote
+		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
+		
+		// close the multipart - no need for \r\n here, the json already has one
+        post_ += "--" + boundary + "--";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/ontology_subclasses_of HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&ontology_subclasses_of::handle_reply, this, std::placeholders::_1);
      }
 private:
@@ -47,10 +60,12 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // JSON reply is: { results: [], error: '' }
             for (auto child : tree.get_child("results")) {
                 classes.push_back(child.second.get_value<std::string>());
             }
+
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
@@ -76,7 +91,7 @@ private:
  * \date May 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_superclasses_of : public asio_service_http
+class ontology_superclasses_of : public asio_http
 {
 public:
     /**
@@ -87,18 +102,28 @@ public:
     ontology_superclasses_of(
                               const std::string ontology_class,
                               bool recursive,
-                              std::function<void(std::vector<std::string>)> callback,
-							  std::string token
+                              std::function<void(std::vector<std::string>)> callback
                             )
-    : asio_service_http(token), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
+		std::string boundary = rapp::misc::random_boundary();
         boost::property_tree::ptree tree;
         tree.put("ontology_class", ontology_class);
-        tree.put("recursive", boost::lexical_cast<std::string>(recursive));
+        tree.put("recursive", recursive);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
-        header_ = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote
+		post_ += rapp::misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
+		post_ += "--" + boundary + "--";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/ontology_superclasses_of HTTP/1.1\r\n";
+		head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&ontology_superclasses_of::handle_reply, this, std::placeholders::_1);
      }
 private:
@@ -112,10 +137,12 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // JSON reply is: { results: [], error: '' }
             for (auto child : tree.get_child("results")) {
                 classes.push_back(child.second.get_value<std::string>());
             }
+
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
@@ -131,6 +158,7 @@ private:
         }
         delegate__(classes);
     }
+
     /// The callback called upon completion of receiving the detected faces
     std::function<void(std::vector<std::string> classes)> delegate__;
 };
@@ -141,7 +169,7 @@ private:
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class ontology_is_subsuperclass_of : public asio_service_http
+class ontology_is_subsuperclass_of : public asio_http
 {
 public:
     /**
@@ -156,19 +184,30 @@ public:
                                    const std::string parent_class,
                                    const std::string child_class,
                                    bool recursive,
-                                   std::function<void(bool result)> callback,
-                                   const std::string token
+                                   std::function<void(bool result)> callback
                                 )
-    : asio_service_http(token), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("parent_class", parent_class);
         tree.put("child_class", child_class);
         tree.put("recursive", boost::lexical_cast<std::string>(recursive));
-        std::stringstream ss;
+
+		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
-        header_ = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote
+		post_ += misc::json_unquote_pdt_value<bool>()(ss.str(), recursive);
+		post_ += "--" + boundary + "--";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/ontology_is_subsuperclass_of HTTP/1.1\r\n";
+		head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&ontology_is_subsuperclass_of::handle_reply, this, std::placeholders::_1);
      }
 private:
@@ -183,10 +222,12 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             // JSON reply is: { results: [], trace: [], error: '' }
             for (auto child : tree.get_child( "result")) {
                 result = child.second.get_value<bool>();
             }
+
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
@@ -202,6 +243,7 @@ private:
         }
         delegate__(result);
     }
+
     /// The callback called upon completion of receiving the detected faces
     std::function<void(bool result)> delegate__;
 };

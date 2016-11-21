@@ -3,4 +3,11 @@
 #include "objects/audio/audio.hpp"
 #include "objects/qr_code/qr_code.hpp"
 #include "objects/picture/picture.hpp"
+
 #include "objects/human/human.hpp"
+#include "objects/time/time.hpp"
+#include "objects/point/point.hpp"
+#include "objects/quaternion/quaternion.hpp"
+#include "objects/pose/pose.hpp"
+#include "objects/msg_metadata/msg_metadata.hpp"
+#include "objects/pose_stamped/pose_stamped.hpp"

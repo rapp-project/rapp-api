@@ -1,0 +1,5 @@
+#include <vector>
+#include <string>
+
+#include "objects/pose_stamped/pose_stamped.hpp"
+#include "objects/msg_metadata/msg_metadata.hpp"

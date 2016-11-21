@@ -10,7 +10,7 @@ namespace cloud {
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class speech_detection_sphinx4 : public asio_service_http
+class speech_detection_sphinx4 : public asio_http
 {
 public:
     /**
@@ -22,7 +22,6 @@ public:
      * \param words will be searched for in the audio
      * \param sentences will be under consideration
      * \param callback will be executed once the rapp cloud has responded
-     * \param token is the rapp authentication token
      */
     speech_detection_sphinx4(
 							  const std::shared_ptr<rapp::object::audio> file,
@@ -31,19 +30,19 @@ public:
 							  const std::vector<std::string> grammar,
 							  const std::vector<std::string> words,
 							  const std::vector<std::string> sentences,
-							  std::function<void(std::vector<std::string> words)> callback,
-							  std::string token
+							  std::function<void(std::vector<std::string> words)> callback
 						    )
-	: asio_service_http(token), delegate_(callback)
+	: asio_http(), delegate_(callback)
     {
         assert(file);
-        // Create a new random boundary
-        std::string boundary = random_boundary();
-        std::string fname =  random_boundary() + file->extension(); 
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname =  rapp::misc::random_boundary() + file->extension(); 
+
         boost::property_tree::ptree tree;
         tree.put("language", language);
         tree.put("user", user);
         tree.put("audio_source", file->audio_source());
+
         boost::property_tree::ptree grammar_array;
         for (const auto gram : grammar) {
             boost::property_tree::ptree child;
@@ -51,6 +50,7 @@ public:
             grammar_array.push_back(std::make_pair("", child));
         }
         tree.add_child("grammar", grammar_array);
+
         boost::property_tree::ptree words_array;
         for (const auto word : words) {
             boost::property_tree::ptree child;
@@ -58,6 +58,7 @@ public:
             words_array.push_back(std::make_pair("", child));
         }
         tree.add_child("words", words_array);
+
         boost::property_tree::ptree sentence_array;
         for (const auto sents : sentences) {
             boost::property_tree::ptree child;
@@ -65,16 +66,26 @@ public:
             sentence_array.push_back(std::make_pair("", child));
         }
         tree.add_child("sentences", sentence_array);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ += "--" + boundary + "\r\n"
-            + "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n"
-            + "Content-Transfer-Encoding: binary\r\n\r\n";
+
+		post_  = "--" + boundary + "\r\n"
+			   + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+			   + ss.str();
+
+		post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
+              + "Content-Transfer-Encoding: binary\r\n\r\n";
+
         auto bytes = file->bytearray();
-        post_.insert( post_.end(), bytes.begin(), bytes.end() );
+        post_.insert(post_.end(), bytes.begin(), bytes.end());
         post_ += "\r\n--" + boundary + "--";
-        header_ =  "POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n";
-        header_ += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/speech_detection_sphinx4 HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&speech_detection_sphinx4::handle_reply, this, std::placeholders::_1);
     }
 

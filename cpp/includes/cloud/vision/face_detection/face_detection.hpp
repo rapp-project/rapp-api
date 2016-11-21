@@ -10,7 +10,7 @@ namespace cloud {
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class face_detection : public asio_service_http
+class face_detection : public asio_http
 {
 public:
     /**
@@ -20,37 +20,48 @@ public:
      * \param callback is the function that will receive a vector of detected face(s) 
      */
     face_detection(
-                    const std::shared_ptr<rapp::object::picture> image,
+                    const rapp::object::picture & image,
                     bool fast,
-					const std::string token,
                     std::function<void(std::vector<rapp::object::face>)> callback
                   )
-    : asio_service_http(token), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
-        assert(image);
-        std::string boundary = random_boundary();
-        std::string fname = random_boundary()+"."+image->type();
+		// random boundary
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname = rapp::misc::random_boundary()+"."+image.type();
+
+		// setup the POST preamble
         boost::property_tree::ptree tree;
-        tree.put("file", fname);
-        tree.put("fast", boost::lexical_cast<std::string>(fast));
+        tree.put("fast", fast);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+		
 		// set the `fast` param
         post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str() + "\r\n";
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// unquote JSON PDT values
+		post_ += misc::json_unquote_pdt_value<bool>()(ss.str(), fast);
+
         // Create the Multi-form POST field 
-        post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\"; filename\"" + fname + "\"\r\n"
+		post_ += "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
+              + "Content-Type: image/" + image.type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
-        // Append binary data
-        auto imagebytes = image->bytearray();
+
+		// Append binary data
+        auto imagebytes = image.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
-        post_ += "\r\n--" + boundary + "--";
-        // Form the Header
-        header_ = "POST /hop/face_detection HTTP/1.1\r\n";
-                + "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
-        // bind the base class callback, to our handle_reply
+
+		// close the multipart
+		post_ += "\r\n";
+        post_ += "--" + boundary + "--";
+		
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/face_detection HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
+		// bind the base class callback, to our handle_reply
         callback_ = std::bind(&face_detection::handle_reply, this, std::placeholders::_1);
     }
 
@@ -65,9 +76,11 @@ private:
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
             for (auto child : tree.get_child("faces")) {
                 std::pair<float,float> up_left;
                 std::pair<float,float> down_right;
+
                 for (auto iter = child.second.begin(); iter!= child.second.end(); ++iter) {
                     if (iter->first == "up_left_point") {
                         for (auto it : iter->second) {
@@ -95,6 +108,7 @@ private:
                                                    std::get<0>(down_right),
                                                    std::get<1>(down_right)));
             }
+
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();

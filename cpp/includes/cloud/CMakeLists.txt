@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
-add_subdirectory(asio_handler)
-add_subdirectory(asio_service_http)
-add_subdirectory(asio_socket)
-add_subdirectory(asio_socket_https)
+add_subdirectory(asio)
 add_subdirectory(service_controller)
 
 add_subdirectory(available_services)
-add_subdirectory(fetch_personal_data)
 
 add_subdirectory(ontology)
 add_subdirectory(speech)

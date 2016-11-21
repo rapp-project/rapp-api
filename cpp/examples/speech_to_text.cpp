@@ -65,7 +65,6 @@ int main(int argc, char* argv[])
         po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
         po::notify(vm);
 
-		std::string token = "my_token";
         int checks = 0;
         std::string audio_file, audio_source, lang, user, jsgf = "";
         std::vector<std::string> words = {}, sentences = {};
@@ -110,7 +109,9 @@ int main(int argc, char* argv[])
 
         // we have the required params set
         if (checks == 4) {
-            rapp::cloud::service_controller ctrl;
+			rapp::cloud::platform_info info = {"localhost", "9001", "mytoken"}; 
+			rapp::cloud::service_controller ctrl(info);
+
             std::shared_ptr<rapp::object::audio> audio;
             std::vector<std::string> gram;
 
@@ -126,25 +127,26 @@ int main(int argc, char* argv[])
                 throw std::runtime_error("uknown audio source");
 
             assert(audio);
-            if (!jsgf.empty())
+            if (!jsgf.empty()) {
                 gram.push_back(load_jsgf(jsgf));
-
+            }
             if (audio) {
+                // the callback
                 auto callback = [&](std::vector<std::string> words)
                                 {
                                     for (const auto & str : words)
                                         std::cout << str << " ";
                                     std::cout << std::endl;
                                 };
-                auto sphinx4_call = std::make_shared<rapp::cloud::speech_detection_sphinx4>(audio,        // audio file
-                                                                                            lang,         // Language
-                                                                                            user,         // user
-                                                                                            gram,         // grammar
-                                                                                            words,        // words
-                                                                                            sentences,    // sentences
-                                                                                            callback,
-																							token);
-                ctrl.run_job(sphinx4_call);
+
+                // make the call
+                ctrl.make_call<rapp::cloud::speech_detection_sphinx4>(audio,
+                                                                      lang,
+                                                                      user,
+                                                                      gram,
+                                                                      words,      
+                                                                      sentences,
+                                                                      callback);
             }
         }
         else {

@@ -2,14 +2,16 @@
 # @author Alex Giokas <a.gkiokas@ortelio.co.uk>
 # 
 # Command line arguments you can use:
-#       -DBUILD_RAPP_SHARED_LIBS=ON (Default: compile a shared librapp)
-#       -DBUILD_RAPP_STATIC_LIBS=ON (Optional: compile a static librapp)
-#       -DBUILD_TESTS=ON            (Optional: compile various tests - run with `make test`)
-#       -DBUILD_EXAMPLES=ON         (Optional: compile various examples)
-#       -DCMAKE_BUILD_TYPE=Debug    (Optional: enable debug symbols)
-#       -DSTATIC_LIBSTD=ON          (Optional: compile statically against libstdc++)
-#       -DOPEN_NAO=ON               (Optional: compiling on OpenNAO requires additional CXX flags)
-#		-DCMAKE_INSTALL_PREFIX=/usr	(Optional: specify the library install directory
+#       -DBUILD_RAPP_SHARED=ON		                    (Default: compile a shared librapp)
+#       -DBUILD_RAPP_STATIC=ON		                    (Optional: compile a static librapp)
+#       -DBUILD_TESTS=ON                                (Optional: compile various tests - run with `make test`)
+#       -DBUILD_EXAMPLES=ON                             (Optional: compile various examples)
+#       -DCMAKE_BUILD_TYPE=Debug                        (Optional: enable debug symbols)
+#       -DSTATIC_LIBSTD=ON                              (Optional: compile statically against libstdc++)
+#       -DOPEN_NAO=ON                                   (Optional: compiling on OpenNAO requires additional CXX flags)
+#		-DCMAKE_INSTALL_PREFIX=/usr	                    (Optional: specify the library install directory
+#       -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl       (Optional: specify OpenSSL root directory)
+#       -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib/ (Optional: specify OpenSSL library directory)
 #
 # After succesfull compilation, run as su/sudo: `make install`
 # 
@@ -34,16 +36,17 @@ set(CMAKE_MACOSX_RPATH 1)
 include_directories("includes")
 
 # Library-only Executables -
-set (SOURCES ${SOURCES} ${INCLUDES}/cloud/service_controller/service_controller.cpp
-                        ${INCLUDES}/cloud/asio_service_http/asio_service_http.cpp
-                        ${INCLUDES}/cloud/asio_handler/asio_handler.cpp
-                        ${INCLUDES}/cloud/asio_socket_https/asio_socket_https.cpp)
+set (SOURCES ${SOURCES} 
+             ${INCLUDES}/cloud/asio/asio_handler/asio_handler.cpp
+             ${INCLUDES}/cloud/asio/asio_http/asio_http.cpp
+             ${INCLUDES}/cloud/asio/asio_https/asio_https.cpp
+	     ${INCLUDES}/config/config.cpp)
 
 # Find PThreads (needed by Boost)
 find_package(Threads REQUIRED)
 
 # Find Boost
-find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex REQUIRED)
+find_package(Boost 1.49 COMPONENTS system thread random unit_test_framework program_options regex filesystem REQUIRED)
 if (Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
     message(STATUS "Using Boost Version: ${Boost_VERSION}")
@@ -55,7 +58,7 @@ find_package(OpenSSL REQUIRED)
 if(OPENSSL_FOUND)
     include_directories(${OPENSSL_INCLUDE_DIR})
     message(STATUS "Using OpenSSL Version: ${OPENSSL_VERSION}")
-	message(STATUS "OpenSSL Headers: ${OPENSSL_INCLUDE_DIR}")
+    message(STATUS "OpenSSL Headers: ${OPENSSL_INCLUDE_DIR}")
 endif()
 
 # Set library sources
@@ -63,31 +66,35 @@ add_library(lrapp OBJECT ${SOURCES})
 
 # user has set install location
 if (CMAKE_INSTALL_PREFIX)
-	message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}`")
+    message(STATUS "Installing library in: `${CMAKE_INSTALL_PREFIX}`")
 # user did not set it - revert to "/usr/local"
 else()
-	set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} "/usr/local/")
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} "/usr/local/")
     message(STATUS "Installing library in `${CMAKE_INSTALL_PREFIX}`")
 endif()	
 
 # Static Library - only if asked
-if (${RAPP_STATIC})
-	message(STATUS "Building Static library")
+if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
+    message(STATUS "Building Static library")
+    set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_STATIC_RUNTIME ON)
+    set(BOOST_ALL_DYN_LINK OFF)  
     add_library (rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static STATIC $<TARGET_OBJECTS:lrapp>)
     target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static)
-	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-	install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static.a librapp.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
-endif()
-
+    install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+    install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static.a librapp.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
 # Shared Library - By default or if asked
-if ((${RAPP_SHARED}) OR (NOT (${RAPP_STATIC})))
-	message(STATUS "Building Shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
+elseif (${RAPP_SHARED})
+    message(STATUS "Building Shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
+    set(Boost_USE_STATIC_LIBS OFF)
+    set(Boost_USE_STATIC_RUNTIME OFF)
+    set(BOOST_ALL_DYN_LINK ON)
     add_library(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} SHARED $<TARGET_OBJECTS:lrapp>)
-    target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES})
+    target_link_libraries(rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} ${Boost_LIBRARIES} ${OPENSSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
     set(LIBOBJ ${LIBOBJ} rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
-	install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
-	install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.so librapp.so WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
+    install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+    install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.so librapp.so WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
 endif()
 
 if (CMAKE_INSTALL_PREFIX)
@@ -95,10 +102,10 @@ if (CMAKE_INSTALL_PREFIX)
 endif()
 
 # Header install dir
-install (DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
+install (DIRECTORY ${INCLUDES}/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.hpp" PATTERN "*.ihh")
 
 # Install Global header
-install (FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}) #copy global include header
+install (FILES ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}) #copy global include header
 
 if (${BUILD_EXAMPLES})
     set (EXAMPLES ${EXAMPLES} examples)
@@ -110,6 +117,11 @@ if (${BUILD_EXAMPLES})
     add_executable(picture          ${EXAMPLES}/picture_example.cpp)
     add_executable(asio_tls         ${EXAMPLES}/asio_tls.cpp)
     add_executable(text_to_speech   ${EXAMPLES}/text_to_speech.cpp)
+    add_executable(service_example  ${EXAMPLES}/service_example1.cpp)
+	add_executable(config_example	${EXAMPLES}/config.cpp)
+	add_executable(available_services ${EXAMPLES}/available_services.cpp)
+	add_executable(cognitive_example  ${EXAMPLES}/cognitive_example.cpp)
+	add_executable(planner_example 	${EXAMPLES}/path_planner.cpp)
 
     target_link_libraries(face_detect       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(qr_detect         ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
@@ -118,6 +130,12 @@ if (${BUILD_EXAMPLES})
     target_link_libraries(set_denoise       ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
 	target_link_libraries(asio_tls	        ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
     target_link_libraries(text_to_speech    ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+    target_link_libraries(service_example   ${LIBOBJ} ${CMAKE_THREAD_LIBS_INIT} ${Boost_LIBRARIES})
+	target_link_libraries(config_example	${LIBOBJ})
+	target_link_libraries(available_services ${LIBOBJ})
+	target_link_libraries(cognitive_example ${LIBOBJ})
+	target_link_libraries(planner_example ${LIBOBJ})
+
     message(STATUS "Building examples, they will be placed in `${CMAKE_CURRENT_BINARY_DIR}`")
 else()
     message(STATUS "Not Building examples - enable with `-DBUILD_EXAMPLES=ON`")
@@ -129,14 +147,19 @@ if (${BUILD_TESTS})
     enable_testing ()
     add_executable(object_test           ${TESTS}/object_test.cpp)
     add_executable(service_test          ${TESTS}/service_test.cpp)
+    add_executable(serialise_test        ${TESTS}/serialise.cpp)
+
     add_test(unit_object_test            object_test) 
     add_test(unit_service_test           service_test)
+    add_test(json_serialise_test         serialise_test)
+
     target_link_libraries(object_test    ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     target_link_libraries(service_test   ${CMAKE_THREAD_LIBS_INIT} 
                                          ${Boost_SYSTEM_LIBRARY}
                                          ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY} 
                                          rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
+    target_link_libraries(serialise_test rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR})
     message(STATUS "Building tests, they will be placed in the `${CMAKE_CURRENT_BINARY_DIR}`")
 else()
     message(STATUS "Not Building tests - enable with `-DBUILD_TESTS=ON`")
@@ -165,19 +188,23 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     elseif ()
         message (FATAL_ERROR "g++ version >= 4.7 is required")
     endif()
+
     if (${STATIC_LIBSTD})
-        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++")
+	set(BUILD_SHARED_LIBS OFF)
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC")
+	set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+    elseif(${OPEN_NAO})
+	set(BUILD_SHARED_LIBS OFF)
+	set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC -m32 -march=atom -mtune=atom")
     else()
-        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC")
+	set(BUILD_SHARED_LIBS ON)
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC")
     endif()
+
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    # TODO: can somebody with a NAO test this?
-    if (${OPEN_NAO})
-        set(CMAKE_EXE_LINKER_FLAGS "-lc++ -lcxxrt")
-        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++ -m32")
-    endif()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
-    set(BUILD_SHARED_LIBS OFF)
+
     message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
     message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
 
@@ -191,18 +218,32 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     elseif ()
         message(FATAL_ERROR "Clang version >= 3.0 is required")
     endif()
-		set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall")
-        message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
-        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
-        set(BUILD_SHARED_LIBS OFF)
-        message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
+
+    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall")
+    message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3-mtune=native -march=native")
+    set(BUILD_SHARED_LIBS OFF)
+    message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
 
 # Intel Compiler May run on Linux - Maybe we should support it
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     message (FATAL_ERROR "unsupported compiler")
-
 # We cannot support Microsoft Visual Studio - We cannot support Win32 platforms
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message (FATAL_ERROR "unsupported compiler")
 endif()
+
+
+# Prepare the CMake config files
+configure_file(cmake/RappConfig.cmake.in "${PROJECT_BINARY_DIR}/RappConfig.cmake" @ONLY)
+configure_file(cmake/RappConfigVersion.cmake.in "${PROJECT_BINARY_DIR}/RappConfigVersion.cmake" @ONLY)
+ 
+# Install the CMake config files
+install(FILES
+  "${PROJECT_BINARY_DIR}/RappConfig.cmake"
+  "${PROJECT_BINARY_DIR}/RappConfigVersion.cmake"
+  "cmake/RappMacros.cmake"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/share/Rapp"
+)
+

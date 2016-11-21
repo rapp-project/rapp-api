@@ -9,7 +9,7 @@ namespace cloud {
  * \version 0.6.0
  * \date May 2016
  */
-class news_explore : public asio_service_http
+class news_explore : public asio_http
 {
 public:
     /**
@@ -19,7 +19,6 @@ public:
      * \param region: language/region
      * \param topic: main news topic
      * \param num_news: number of news stories limit
-     * \param token: rapp auth token
      * \param callback: receives a JSON reply
      */
     news_explore(
@@ -29,32 +28,45 @@ public:
                   const std::string region,
                   const std::string topic,
                   const unsigned int num_news,
-                  const std::string token,
                   std::function<void(std::string)> callback
                 )
-    : asio_service_http(token), delegate_(callback)
+    : asio_http(), delegate_(callback)
     {
         boost::property_tree::ptree tree;
         tree.put("news_engine", email);
         tree.put("passwd", pwd);
+
         boost::property_tree::ptree keyword_array;
         for (const auto key : keywords) {
             keyword_array.push_back(std::make_pair("", key));
         }
         tree.add_child("keywords", keyword_array);
+
         boost::property_tree::ptree exclude_title_array;
         for (const auto key : exclude_titles) {
             exclude_title_array.push_back(std::make_pair("", key));
         }
         tree.add_child("exclude_titles", exclude_title_array);
+
         tree.put("region", region);
         tree.put("topic", topic);
         tree.put("num_news", boost::lexical_cast<std::string>(num_news));
         std::stringstream ss;
+
+        std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
-        header_ = "POST /hop/email_fetch HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote
+		post_ += rapp::misc::json_unquote_pdt_value<unsigned int>()(ss.str(), num_news);
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/email_fetch HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&email_fetch::handle_reply, this, std::placeholders::_1);
     }
 

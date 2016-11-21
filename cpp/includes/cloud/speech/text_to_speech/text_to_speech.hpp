@@ -7,10 +7,10 @@ namespace cloud {
  * \class text_to_speech
  * \brief request speech audio from text
  * \version 0.6.0
- * \date April 2016
+ * \date July 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class text_to_speech : public asio_service_http
+class text_to_speech : public asio_http
 {
 public:
     typedef rapp::object::microphone_wav wav_file;
@@ -23,18 +23,26 @@ public:
 	text_to_speech(
 					 const std::string text,
 					 const std::string language,
-                     const std::string token,
-					 std::function<void(std::unique_ptr<wav_file>)> callback
+					 std::function<void(std::unique_ptr<rapp::object::microphone_wav>)> callback
 				  )
-	: asio_service_http(token), delegate_(callback)
+	: asio_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("text", text);
         tree.put("language", language);
+
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
-        header_ = "POST /hop/text_to_speech HTTP/1.1\r\n";
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
+			   + ss.str();
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/text_to_speech HTTP/1.1\r\n";
+		head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&text_to_speech::handle_reply, this, std::placeholders::_1);
 	}
 
@@ -54,9 +62,11 @@ private:
             for (auto child : tree.get_child("payload")) {
                 // base64-encoded audio
                 std::string result = child.second.get_value<std::string>();
-                std::string decoded = decode64(result);
+                std::string decoded = rapp::misc::decode64(result);
                 std::copy(decoded.begin(), decoded.end(), std::back_inserter(bytearray));
             }
+
+			// get platform errors
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
                 if (!value.empty()) {
@@ -70,8 +80,7 @@ private:
             std::cerr << je.message() << std::endl;
         }
         // create wav file and move it to the delegate
-        auto wav = std::unique_ptr<rapp::object::microphone_wav>(
-                                            new rapp::object::microphone_wav(bytearray));
+        auto wav = std::make_unique<rapp::object::microphone_wav>(bytearray);
         delegate_(std::move(wav));
     }
 

@@ -9,7 +9,7 @@ namespace cloud {
  * \version 0.6.0
  * \date May 2016
  */
-class email_fetch : public asio_service_http
+class email_fetch : public asio_http
 {
 public:
     /** 
@@ -22,7 +22,6 @@ public:
      * \param from_date: fetch emails since date (unix timestamp)
      * \param to_date: fetch emails to date (unix timestamp)
      * \param num_emails: number of emails requested
-     * \param token: rapp platform auth token
      * \param callback will receive a JSON string with acquired email(s)
      */
      email_fetch(
@@ -34,10 +33,9 @@ public:
                  const unsigned int from_date,
                  const unsigned int to_date,
                  const unsigned int num_emails,
-                 const std::string token,
                  std::function<void(std::string)> callback
                 )
-	: asio_service_http(token), delegate_(callback)
+	: asio_http(), delegate_(callback)
 	{
         boost::property_tree::ptree tree;
         tree.put("email", email);
@@ -45,17 +43,30 @@ public:
         tree.put("server", server);
         tree.put("port", port);
         tree.put("email_status", email_status);
-        tree.put("from_date", boost::lexical_cast<std::string>(from_date));
-        tree.put("to_date", boost::lexical_cast<std::string>(to_date));
-        tree.put("num_emails", boost::lexical_cast<std::string>(num_emails));
-        std::stringstream ss;
+        tree.put("from_date", from_date);
+        tree.put("to_date", to_date);
+        tree.put("num_emails", num_emails);
+        
+		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_ = ss.str();
-        header_ = "POST /hop/email_fetch HTTP/1.1\r\n"
-                + "Content-Type: application/x-www-form-urlencoded\r\n";
+
+		std::string boundary = rapp::misc::random_boundary();
+        post_  = "--" + boundary + "\r\n"
+               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n";
+
+		// JSON PDT value unquote `from_date`
+		auto str = misc::json_unquote_pdt_value<unsigned int>()(ss.str(), from_date);
+		// JSON PDT value unquote `to_date`
+		str = misc::json_unquote_pdt_value<unsigned int>()(str, to_date);
+		// JSON PDT value unquote `num_emails`
+		post += misc::json_unquote_pdt_value<unsigned int>()(str, num_emails);
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/email_fetch HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&email_fetch::handle_reply, this, std::placeholders::_1);
 	}
-
 private:
     /**
      * \brief handle platform's JSON reply
@@ -65,7 +76,6 @@ private:
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
-
     /// 
     std::function<void(std::string)> delegate_;
 };
@@ -76,7 +86,7 @@ private:
  * \version 0.6.0
  * \date May 2016
  */
-class email_send : public asio_service_http
+class email_send : public asio_http
 {
 public:
     /** 
@@ -89,7 +99,6 @@ public:
      * \param body: email body
      * \param subject: email subject
      * \param data: data attached to the email
-     * \param token: rapp platform auth token
      * \param callback may receive a JSON reply of error(s)
      */
      email_send(
@@ -101,13 +110,13 @@ public:
                  const std::string body,
                  const std::string subject,
                  const std::vector<rapp::types::byte> data,
-                 const std::string token,
                  std::function<void(std::string)> callback
                )
-	: asio_service_http(token), delegate_(callback)
+	: asio_http(), delegate_(callback)
 	{
-        std::string boundary = random_boundary();
-        std::string fname = random_boundary();
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname = rapp::misc::random_boundary();
+
         boost::property_tree::ptree tree;
         tree.put("email", email);
         tree.put("passwd", pwd);
@@ -115,29 +124,36 @@ public:
         tree.put("port", port);
         tree.put("body", body);
         tree.put("subject", subject);
+
         boost::property_tree::ptree array;
         for (const auto rec : recipients) {
             array.push_back(std::make_pair("", rec));
         }
         tree.add_child("recipients", array);
         tree.put("file", fname);
-        std::stringstream ss;
+
+		std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
-        post_  = "--" + boundary + "\r\n"
+
+		std::string boundary = rapp::misc::random_boundary();
+		post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str() + "\r\n";
+               + ss.str();
+
         // new multipart - append binary data 
         post_ += "--" + boundary + "\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\"; filename\"" + fname + "\"\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename\"" + fname + "\"\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
+
         post_.insert(post_.end(), data.begin(), data.end());
         post_ += "\r\n--" + boundary + "--";
-        // form the Header
-        header_ = "POST /hop/email_send HTTP/1.1\r\n";
-                + "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n\r\n";
+
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/email_send HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
+
         callback_ = std::bind(&email_send::handle_reply, this, std::placeholders::_1);
     }
-
 private:
     /**
      * \brief handle platform's JSON reply
@@ -147,7 +163,6 @@ private:
         std::stringstream ss(json);
         delegate_(std::move(json));
     }
-
     /// 
     std::function<void(std::string)> delegate_;
 };

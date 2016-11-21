@@ -10,7 +10,7 @@ namespace cloud {
  * \date April 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
  */
-class qr_detection : public asio_service_http
+class qr_detection : public asio_http
 {
 public:
     /**
@@ -20,36 +20,33 @@ public:
     * \param image_format must be defined, e.g.: jpeg, png, gif, etc.
     */
     qr_detection(
-                  const std::shared_ptr<rapp::object::picture> image,
-				  const std::string token,
+                  const rapp::object::picture & image,
                   std::function<void(std::vector<rapp::object::qr_code>)> callback
                 )
-    : asio_service_http(token), delegate__(callback)
+    : asio_http(), delegate__(callback)
     {
-        assert(image);
-        std::string boundary = random_boundary();
-        std::string fname = random_boundary()+"."+image->type();
-        boost::property_tree::ptree tree;
-        tree.put("file", fname);
-        std::stringstream ss;
-        boost::property_tree::write_json(ss, tree, false);
-        post_  = "--" + boundary + "\r\n"
-               + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str() + "\r\n";
-        post_ += "--"+boundary+"\r\n"
-              + "Content-Disposition: form-data; name=\"file_uri\"; filename=\""+fname+"\"\r\n"
-              + "Content-Type: image/"+image->type()+"\r\n"
+        std::string boundary = rapp::misc::random_boundary();
+        std::string fname = rapp::misc::random_boundary() + "." + image.type();
+
+		post_ = "--" + boundary + "\r\n"
+              + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
+              + "Content-Type: image/" + image.type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
+
         // Append binary data
-        auto imagebytes = image->bytearray();
+        auto imagebytes = image.bytearray();
         post_.insert(post_.end(), imagebytes.begin(), imagebytes.end());
+		// close the multipart
         post_ += "\r\n";
-        post_ += "--"+boundary+"--";
-        header_ =  "POST /hop/qr_detection HTTP/1.1\r\n";
-        header_ += "Content-Type: multipart/form-data; boundary="+boundary+"\r\n\r\n";
+        post_ += "--" + boundary + "--";
+		
+		// set the HTTP header URI pramble and the Content-Type
+        head_preamble_.uri = "POST /hop/qr_detection HTTP/1.1\r\n";
+        head_preamble_.content_type = "Content-Type: multipart/form-data; boundary="+boundary;
+
+		// bind the base class callback to our virtual handle_reply
         callback_ = std::bind(&qr_detection::handle_reply, this, std::placeholders::_1);   
     }
-
 private:
 	/**
 	 * \brief handle the rapp-platform JSON reply

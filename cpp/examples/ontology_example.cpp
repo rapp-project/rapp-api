@@ -6,38 +6,25 @@
 ///
 int main(int argc, char* argv[])
 {
-    if (argc > 1)
-    {
+    if (argc > 1) {
         std::cout << "query sub/super classes of: " << argv[1] << std::endl;
         std::string query = argv[1];
-		std::string token = "my_token";
 
-        // Service Controller 
-        rapp::cloud::service_controller ctrl;
+        // service controler
+        rapp::cloud::platform_info info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
+		rapp::cloud::service_controller ctrl(info);
 
-        // Subclass Ontologies callback
+        // sub-class callback - print each sub-class
         auto sb_cb = [](std::vector<std::string> classes)
                      { 
-                        for (const auto & str : classes)
-                            std::cout << str << std::endl;
+                         for (const auto & str : classes) {
+							std::cout << str << std::endl;
+						 }
                      };
 
-        // the caller object
-        auto sub_call = std::make_shared<rapp::cloud::ontology_subclasses_of>(query, false, sb_cb, token);
+		ctrl.make_call<rapp::cloud::ontology_subclasses_of>(query, true, sb_cb);
+		ctrl.make_call<rapp::cloud::ontology_superclasses_of>(query, false, sb_cb);
 
-        // Superclass Ontologies
-        auto sp_cb = [](std::vector<std::string> classes)
-                     {
-                        for (const auto & str : classes)
-                            std::cout << str << std::endl;
-                     };
-        
-		// the caller
-        auto super_call = std::make_shared<rapp::cloud::ontology_superclasses_of>(query, false, sp_cb, token);
-
-        // Request from service controller to run this job
-        ctrl.run_job(sub_call);
-        ctrl.run_job(super_call);
         return 0;
     }
 }
