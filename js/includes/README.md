@@ -32,6 +32,10 @@
     - [Light Detection](#vision-light-detect)
     - [QR Code Detection](#vision-qrcode-detect)
     - [Object Recognition](#vision-object-recognition)
+    - [Object Detection Learn Object](#vision-object-detection-learn-object)
+    - [Object Detection Clear Models](#vision-object-detection-clear-models)
+    - [Object Detection Load Models](#vision-object-detection-load-models)
+    - [Object Detection Find Objects](#vision-object-detection-find-objects)
   - [Weather](#weather)
     - [Current Report](#weather-report-current)
 - JS API object classes
@@ -485,6 +489,65 @@ More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Caff
 - `object_class`: the topmost object classification class
 
 See example: `rapp-api/js/examples/object_recognition.js`
+
+##vision-object-detection-learn-object
+Method `RAPPCloud.prototype.object_detection_learn_object` in `/includes/cloud/object_detection_learn_object.js`
+Learn objects give by the user.
+
+**Input arguments**
+- `image`: (string) is the input image
+- `image_format`: (string) is the image format
+- `name`: (string) the name of the object
+- `callback`: (function) is the functor that will receive the return values
+
+**Return values**
+- `result`: (int) the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+
+See example: `rapp-api/js/examples/object_detection_my_own_models.js`
+
+##vision-object-detection-clear-models
+Method `RAPPCloud.prototype.object_detection_clear_models` in `/includes/cloud/object_detection_clear_models.js`
+Clears operational memory for selected user.
+
+**Input arguments**
+- `callback`: (function) is the functor that will receive the return values
+
+**Return values**
+- `result`: (int) the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+
+See example: `rapp-api/js/examples/object_detection_my_own_models.js`
+
+##vision-object-detection-load-models
+Method `RAPPCloud.prototype.object_detection_load_models` in `/includes/cloud/object_detection_load_models.js`
+Load one or more models to operational memory. This operation should be done at least once before first recognition request.
+
+**Input arguments**
+- `names`: (vector) The object names that are going to be loaded 
+- `callback`: (function) is the functor that will receive the return values
+
+**Return values**
+- `result`: (int) the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+
+See example: `rapp-api/js/examples/object_detection_my_own_models.js`
+
+##vision-object-detection-find-objects
+Method `RAPPCloud.prototype.object_detection_find_objects` in `/includes/cloud/object_detection_find_objects.js`
+When set of models is loaded to operational memory, user can provide query image to detect objects on. 
+If any object of known type is recognized, its center point in query image, model name and recognition score (certainty) is returned.
+
+**Input arguments**
+- `image`: (string) is the input image
+- `image_format`: (string) is the image format
+- `limit`: (string) the limit search to N best matches
+- `callback`: (function) is the functor that will receive the return values
+
+**Return values**
+- `names`: (string) List of the found objects' names
+- `centers`: (array) List of centroids in the image of the objects found
+- `scores`: (array) List of scores of the found objects
+- `result`: (int) the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+
+See example: `rapp-api/js/examples/object_detection_my_own_models.js`
 
 # Weather
 The platform enables 3rd party weather reports and forecasting.
