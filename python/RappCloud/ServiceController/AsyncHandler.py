@@ -29,28 +29,25 @@
 
 from ServiceControllerBase import *
 
+# high-level interface for asynchronously executing callables.
+from concurrent.futures import as_completed
 
 
-class ServiceControllerSync(ServiceControllerBase):
+class AsyncHandler(object):
     """ Synchronous service controller class implementation. """
 
-    def __init__(self, service):
+    def __init__(self, future):
         """! Constructor
 
-        @param service Service - Service instance.
         """
-        super(ServiceControllerSync, self).__init__(service)
+        self.__future = future
 
 
-    def run_job(self, msg, url):
-        """! Run the service"""
-        # Unpack payload and file objects from cloud service object
-        payload = msg.req.make_payload()
-        files = msg.req.make_files()
+    """! Wait for response.
 
-        if self._service.persistent:
-            resp = self._post_persistent(url, payload, files)
-        else:
-            resp = self._post_session_once(url, payload, files)
+    @param timeout - Optional argument. Set timeout for waiting for a response.
+    @returns resp - Response object
+    """
+    def wait(self, timeout=None):
+        resp = self.__future.result()
         return resp
-

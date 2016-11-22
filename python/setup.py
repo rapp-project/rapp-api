@@ -19,10 +19,12 @@ cfgDestPath = path.expanduser('~/.config/rapp_platform/python_platform_api')
 
 setup(
     install_requires = [
-      'requests>=2.9.1',
-      'ndg-httpsclient',
-      'pyopenssl',
-      'pyasn1'
+        'requests==2.10.0',
+        'ndg-httpsclient',
+        'urllib3',
+        'pyopenssl',
+        'pyasn1',
+        'futures==3.0.5'
     ],
     name='RappCloud',
     version='0.6.0',
@@ -34,6 +36,7 @@ setup(
     maintainer='Konstantinos Panayiotou',
     maintainer_email='klpanagi@gmail.com',
     license='Apache 2',
+    test_suite='tests',
     include_package_data=True,
     # A list naming all the packages you want to include
     packages=find_packages(),
@@ -47,5 +50,6 @@ setup(
     ],
     # A script(s) to be installed into standard locations like /usr/bin
     scripts=[],
+    zip_safe=True,
     long_description=read('README.md') if os.path.exists('README.md') else ""
 )

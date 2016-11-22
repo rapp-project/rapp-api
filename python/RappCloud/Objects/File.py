@@ -32,18 +32,25 @@ from os import path
 class File(object):
     """ File object class """
 
-    def __init__(self, filepath="", postfield=""):
+    def __init__(self, filepath="", postfield="", boundary_size=30):
         """! Constructor
 
-        @param string path -The filepath
-        @param string httpField - The post field name.
+        @param path str -The filepath
+        @param postField str - The post field name.
+        @param boundary_size int - Size of random boundary string for the
+            filename to add on the post field.
         """
 
-        self.__boundarySize = 30
-        self.__path = path.expanduser(path.realpath(filepath))
+        self.__boundarySize = boundary_size
+        if filepath is not "":
+            self.__path = path.expanduser(path.normpath(filepath))
+        else:
+            self.__path = ""
+
         if postfield is not "":
             self.__postfield = postfield
         else:
+            # Default data post field name.
             self.__postfield = "file"
 
 
@@ -62,12 +69,13 @@ class File(object):
 
 
     @path.setter
-    def path(self, path):
+    def path(self, filepath):
         """! file path setter
 
         @param path (String) - The file path.
         """
-        self.__path = path
+        absPath = path.expanduser(path.normpath(filepath))
+        self.__path = absPath
 
 
     @property
@@ -93,14 +101,11 @@ class File(object):
 
 
     def make_tuple(self):
+        # Raise Exception if the file does not exist
+        if not path.isfile(self.__path):
+            raise Exception('File not found: {0}'.format(self.__path))
         randStr = RandStrGen.create(self.__boundarySize)
-        name, ext = path.splitext(self.basename(self.__path))
+        name, ext = path.splitext(path.basename(self.__path))
         filename = '.'.join((''.join((name, '-', randStr)), ext))
         return (self.__postfield, (filename, open(self.__path)))
-
-
-    def basename(self, filepath):
-        """! Return the basename of input filepath. """
-        return path.basename(filepath)
-
 

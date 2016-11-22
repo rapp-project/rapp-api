@@ -29,21 +29,40 @@
 
 from ServiceControllerBase import *
 
+# high-level interface for asynchronously executing callables.
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-class ServiceControllerSync(ServiceControllerBase):
+
+class ServiceControllerAsync(ServiceControllerBase):
     """ Synchronous service controller class implementation. """
 
-    def __init__(self, service):
+    def __init__(self, service, max_workers=8):
         """! Constructor
 
         @param service Service - Service instance.
+        @param max_workers - Number of maximum workers to spawn
         """
-        super(ServiceControllerSync, self).__init__(service)
+        # Create a thread pool manager
+        self.__threadPool = ThreadPoolExecutor(max_workers=max_workers)
+
+        super(ServiceControllerAsync, self).__init__(service)
 
 
-    def run_job(self, msg, url):
-        """! Run the service"""
+    def run_job(self, msg, url, clb=None):
+        """! Run the service
+
+        Submit callback function to the worker thread and return the future.
+        @param clb Function - Callback function to execute on arrival of
+            the response.
+
+        @returns _future - The future.
+        """
+        _future = self.__threadPool.submit(self._worker_exec, msg, url, clb=clb)
+        return _future
+
+
+    def _worker_exec(self, msg, url, clb=None):
         # Unpack payload and file objects from cloud service object
         payload = msg.req.make_payload()
         files = msg.req.make_files()
@@ -52,5 +71,9 @@ class ServiceControllerSync(ServiceControllerBase):
             resp = self._post_persistent(url, payload, files)
         else:
             resp = self._post_session_once(url, payload, files)
-        return resp
 
+        for key, val in resp.iteritems():
+            msg.resp.set(key, val)
+        if clb is not None:
+            clb(msg.resp)
+        return msg.resp

@@ -34,11 +34,12 @@ class ServiceTest(unittest.TestCase):
 
 
     def setUp(self):
-        self.msg = FaceDetection()
-        self.msg.req.imageFilepath = '../../testdata/Lenna.png'
-        self.msg.req.fast = True
         self.startTime = time.time()
+        self.msg = FaceDetection()
+        self.msg.req.imageFilepath = path.join(testdatadir, 'Lenna.png')
+        self.msg.req.fast = True
         self.svc = Service()
+
 
     def tearDown(self):
         t = time.time() - self.startTime
@@ -49,20 +50,16 @@ class ServiceTest(unittest.TestCase):
         self.svc = Service(msg=self.msg, persistent=False, timeout=15000)
         self.assertIsInstance(self.svc.req, FaceDetection.Request)
         self.assertIsInstance(self.svc.resp, FaceDetection.Response)
-        self.assertEqual(self.svc.svcname, 'face_detection')
 
 
     def test_constructor_arguments(self):
         self.svc = Service(msg=self.msg, persistent=False, timeout=15000,
                            address='155.207.19.229', port='9002',
                            protocol='https')
-        self.assertEqual(self.svc.svcname, 'face_detection')
         self.assertEqual(self.svc.timeout, 15000)
         self.assertEqual(self.svc.persistent, False)
         self.assertEqual(self.svc.req, self.msg.req)
         self.assertEqual(self.svc.resp, self.msg.resp)
-        self.assertEqual(self.svc.url,
-            'https://155.207.19.229:9002/hop/face_detection')
 
 
     def test_explicit_set_attributes(self):
@@ -108,5 +105,6 @@ class ServiceTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(ServiceTest)
-    unittest.TextTestRunner(verbosity=0).run(suite)
+    unittest.main(verbosity=2)
+    # suite = unittest.TestLoader().loadTestsFromTestCase(ServiceTest)
+    # unittest.TextTestRunner(verbosity=0).run(suite)
