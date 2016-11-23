@@ -4,14 +4,12 @@
 
 Containes RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.
 
-
 ## Dependencies
 
 To use this JS API you need nodejs and npm.
 You can run the global_deps_install_script.sh located in the root folder to install them along with grunt-cli and mocha which are the global dependencies the API needs for task management and testing.
 
-The rest dependencies (required npm modules), will be taken care of, from npm while you install the rapp-platform-api package.
-
+The rest dependencies (required npm modules), will be taken care of, from npm, while you install the rapp-platform-api package.
 
 ## Installation
 
@@ -63,7 +61,6 @@ var objects = new RAPPObject();
 - **examples**: Examples that showcase how you may use the RAPPCloud services for your convenience.
 - **test**: Unit tests for all the services and objects.
 
-
 ## Tests
 
 For the following to run you will also need to install the developer dependencies (check installation section).
@@ -107,7 +104,6 @@ grunt jsdoc
 ```
 
 Generated doc files are located under the **doc/** directory.
-
 
 ## Contributors
 

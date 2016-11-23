@@ -43,7 +43,6 @@ RAPPCloud.prototype.object_detection_learn_object = function ( image, image_form
 	var fs = require('fs');
 
     var cloud = this;
-    var object = new RAPPObject( );
     var _delegate = callback;
 	var form = new formData();
 	//Generate a random file name under which the image will be saved on the Server 
@@ -61,7 +60,7 @@ RAPPCloud.prototype.object_detection_learn_object = function ( image, image_form
 
 	var r = request.post(cloud.cloud_url + '/hop/object_detection_learn_object/ ', function(error, res, json){ 
 		if (res.statusCode==200 && !error){
-			handle_reply( json );
+			handle_reply(json);
 		}
 		else if (error) {
 			error_handler(error);	
@@ -74,7 +73,7 @@ RAPPCloud.prototype.object_detection_learn_object = function ( image, image_form
 	r.setHeader('Connection', 'close');
 	r.setHeader('Accept-Token', cloud.token);
 
-	function handle_reply( json )
+	function handle_reply(json)
     {
 		var json_obj;
 		try {
@@ -82,12 +81,14 @@ RAPPCloud.prototype.object_detection_learn_object = function ( image, image_form
 			if(json_obj.error)  // Check for Errors  
 				console.log('object_detection_learn_object JSON error: ' + json_obj.error);
 			// JSON reply is eg.: {result:0, error":""}
-            else
+            else {
+                
 			    _delegate(json_obj.result);
+            }
 		} catch (e) {
 			console.log('object_detection_learn_object::handle_reply Error parsing: ');
 			return console.error(e);
-		}
+	    }
 	}
 	
 	function error_handler( error ) {

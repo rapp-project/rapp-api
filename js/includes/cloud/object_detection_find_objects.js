@@ -43,14 +43,13 @@ RAPPCloud.prototype.object_detection_find_objects = function ( image, image_form
 	var fs = require('fs');
 
     var cloud = this;
-    var object = new RAPPObject( );
     var _delegate = callback;
 	var form = new formData();
 	//Generate a random file name under which the image will be saved on the Server 
 	var filename = randomstring.generate() + '.' + image_format;
 
     var body_obj = {};
-    body_obj.name = name;
+    body_obj.limit = limit;
     var body_json = JSON.stringify(body_obj);
 
 	form.append('file', fs.createReadStream(image), { 

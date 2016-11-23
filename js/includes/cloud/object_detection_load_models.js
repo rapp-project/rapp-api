@@ -35,9 +35,11 @@ else
  
 RAPPCloud.prototype.object_detection_load_models = function ( names, callback )
 {
+    var formData = require('form-data');
+
     var cloud = this;
     var _delegate = callback;
-
+	var form = new formData();
 	//Escaping all the names of the vector
     var escaped_names = [];
 	for (var i=0; i<names.length; i++) {
@@ -65,17 +67,16 @@ RAPPCloud.prototype.object_detection_load_models = function ( names, callback )
 	r.setHeader('Connection', 'close');
 	r.setHeader('Accept-Token', cloud.token);
 
-	function handle_reply( json )
+	function handle_reply(json)
     {
 		var json_obj;
-		var words_vector = [];
 		try {
 			json_obj = JSON.parse(json);
 			if(json_obj.error)  // Check for Errors  
 				console.log('object_detection_load_models JSON error: ' + json_obj.error);
 			// JSON reply is eg.: {"result":0,"error":""}
             else
-			    _delegate(result);
+			    _delegate(json_obj.result);
 		} catch (e) {
 			console.log('object_detection_load_models::handle_reply Error parsing: ');
 			return console.error(e);

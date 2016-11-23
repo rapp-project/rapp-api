@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 // Import the available_services JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.available_services = require('rapp-platform-api/includes/cloud/available_services');
+var RAPPCloud = require('rapp-platform-apincludes/cloud/RAPPCloud');
+RAPPCloud.available_services = require('rapp-platform-apincludes/cloud/available_services');
 
 var services = new RAPPCloud();
 
