@@ -6,6 +6,8 @@ namespace cloud {
 
 namespace pt = boost::property_tree;
 
+
+
 // Add a list
 template<typename T>
 pt::ptree put_vector(const std::vector<T> vec) {
@@ -15,6 +17,21 @@ pt::ptree put_vector(const std::vector<T> vec) {
 		// Create an unnamed node containing the value
 		pt::ptree tmp_node;
 		tmp_node.put("", val);
+	
+		// Add this node to the list.
+		ret_node.push_back(std::make_pair("", tmp_node));
+	}
+	return ret_node;
+}
+
+template<>
+pt::ptree put_vector<std::string>(const std::vector<std::string> vec) {
+	pt::ptree ret_node;
+	for (auto &val: vec)
+	{
+		// Create an unnamed node containing the value
+		pt::ptree tmp_node;
+		tmp_node.put("", val, s());
 	
 		// Add this node to the list.
 		ret_node.push_back(std::make_pair("", tmp_node));
@@ -49,6 +66,12 @@ public:
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
+        
+#ifdef PRINT_JSON
+        std::cout << "/-------------------------\n";
+        std::cout << ss.str() << std::endl;
+        std::cout << "\\-------------------------\n";
+#endif
 
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
@@ -69,10 +92,16 @@ private:
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
-        int result;
+        int result = 0;
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
+#ifdef PRINT_JSON
+            std::cout << "/-RESP--------------------\n";
+            std::cout << json << std::endl;
+            std::cout << "\\-------------------------\n";
+#endif
 
             result = tree.get<int>("result", 0);
 
@@ -122,6 +151,12 @@ public:
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
+#ifdef PRINT_JSON
+        std::cout << "/-------------------------\n";
+        std::cout << ss.str() << std::endl;
+        std::cout << "\\-------------------------\n";
+#endif
+        
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
                + ss.str();
@@ -141,10 +176,16 @@ private:
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
-        int result;
+        int result = 0;
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
+#ifdef PRINT_JSON
+            std::cout << "/-RESP--------------------\n";
+            std::cout << json << std::endl;
+            std::cout << "\\-------------------------\n";
+#endif
 
             result = tree.get<int>("result", 0);
 
@@ -195,16 +236,22 @@ public:
         std::string fname = rapp::misc::random_boundary() + "." + image->type();
 
         boost::property_tree::ptree tree;
-        tree.put("file", fname);
-        tree.put("name", name);
+        //tree.put("file", fname, s());
+        tree.put("name", name, s());
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
+#ifdef PRINT_JSON
+        std::cout << "/-REQ---------------------\n";
+        std::cout << ss.str() << std::endl;
+        std::cout << "\\-------------------------\n";
+#endif
+        
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str();
-        
-        post_ += "--" + boundary + "\r\n"
+               + ss.str() + "\r\n";
+
+		post_ += "--" + boundary + "\r\n"
               + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
               + "Content-Type: image/" + image->type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
@@ -216,7 +263,7 @@ public:
         post_ += "--"+boundary+"--";
 
         // set the HTTP header URI pramble and the Content-Type
-        head_preamble_.uri = "POST /hop/object_detection_find_objects HTTP/1.1\r\n";
+        head_preamble_.uri = "POST /hop/object_detection_learn_object HTTP/1.1\r\n";
         head_preamble_.content_type = "Content-Type: multipart/form-data; boundary=" + boundary;
 
         callback_ = std::bind(&object_detection_learn_object::handle_reply, this, std::placeholders::_1);   
@@ -228,10 +275,16 @@ private:
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
-        int result;
+        int result = 0;
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
+#ifdef PRINT_JSON
+            std::cout << "/-RESP--------------------\n";
+            std::cout << json << std::endl;
+            std::cout << "\\-------------------------\n";
+#endif
 
             result = tree.get<int>("result", 0);
 
@@ -284,16 +337,22 @@ public:
         std::string fname = rapp::misc::random_boundary() + "." + image->type();
 
         boost::property_tree::ptree tree;
-        tree.put("file", fname);
+        //tree.put("file", fname, s());
         tree.put("limit", limit);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
+#ifdef PRINT_JSON
+        std::cout << "/-------------------------\n";
+        std::cout << ss.str() << std::endl;
+        std::cout << "\\-------------------------\n";
+#endif
+
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str();
-        
-        post_ += "--" + boundary + "\r\n"
+               + ss.str() + "\r\n";
+
+		post_ += "--" + boundary + "\r\n"
               + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
               + "Content-Type: image/" + image->type() + "\r\n"
               + "Content-Transfer-Encoding: binary\r\n\r\n";
@@ -320,10 +379,16 @@ private:
         std::vector<std::string> names;
         std::vector<rapp::object::point> centers;
         std::vector<float> scores;
-        int result;
+        int result = 0;
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
+
+#ifdef PRINT_JSON
+            std::cout << "/-RESP--------------------\n";
+            std::cout << json << std::endl;
+            std::cout << "\\-------------------------\n";
+#endif
 
             // read found names
             for (auto child : tree.get_child("found_names")) {
