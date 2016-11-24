@@ -4,6 +4,8 @@
 namespace rapp {
 namespace cloud {
 
+//#define PRINT_JSON
+
 namespace pt = boost::property_tree;
 
 
@@ -53,7 +55,7 @@ public:
     * \brief Constructor
     * \param callback is the function
     */
-    visual_localization(
+    visual_localization_init(
                       const std::string & map,
                       std::function<void(int)> callback
                     )
@@ -62,7 +64,7 @@ public:
         std::string boundary = rapp::misc::random_boundary();
 
         boost::property_tree::ptree tree;
-        tree.add_child("map", map, s());
+        tree.put("map", map, s());
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
@@ -138,11 +140,13 @@ class visual_localization : public asio_http
 public:
     /**
     * \brief Constructor
+    * \param id is an identifier for loaded map
     * \param image is a picture object pointer
     * \param pose_delta is a change in position/orientation from last measurement
     * \param callback is the function that will receive an estimated position/orientation
     */
     visual_localization(
+                      int id,
                       const rapp::object::picture::Ptr & image,
                       const rapp::object::point & pose_delta,
                       std::function<void(rapp::object::point, float, int)> callback
@@ -154,7 +158,10 @@ public:
 
         boost::property_tree::ptree tree;
         //tree.put("file", fname, s());
-        tree.put("pose_delta", pose_delta.treefy());
+        tree.put("id", id);
+        tree.put("pose_delta.x", pose_delta.x);
+        tree.put("pose_delta.y", pose_delta.y);
+        tree.put("pose_delta.theta", pose_delta.z);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
@@ -205,20 +212,17 @@ private:
             std::cout << "\\-------------------------\n";
 #endif
 
-            // read found centers
-            for (auto child : tree.get_child("best_pose")) {
-                pose = rapp::object::point(child.second);
-            }
+            pose.x = tree.get<float>("best_pose.x");
+            pose.y = tree.get<float>("best_pose.y");
+            pose.z = tree.get<float>("best_pose.theta");
 
-            result = tree.get<int>("result", 0);
+            status = tree.get<int>("status", 0);
             belief = tree.get<float>("belief", 0);
 
             // Check for Errors returned by the platform
-            for (auto child : tree.get_child("error")) {
-                const std::string value = child.second.get_value<std::string>();
-                if (!value.empty()) {
-                    std::cerr << "object_detection JSON error: " << value << std::endl;
-                }
+            std::string value = tree.get<std::string>("error", "");
+            if (!value.empty()) {
+                std::cerr << "object_detection JSON error: " << value << std::endl;
             }
         }
         catch(boost::property_tree::json_parser::json_parser_error & je) {
