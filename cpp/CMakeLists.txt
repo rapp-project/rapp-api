@@ -32,6 +32,7 @@ set (INCLUDES ${INCLUDES} includes)
 add_subdirectory(${INCLUDES})
 set(CMAKE_MACOSX_RPATH 1)
 
+
 # include everything from "/includes"
 include_directories("includes")
 
@@ -85,7 +86,7 @@ if ((${RAPP_STATIC}) OR (${OPEN_NAO}))
     install(TARGETS rapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static  DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
     install(CODE "EXECUTE_PROCESS(COMMAND ln -sf librapp.${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}-static.a librapp.a WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)")
 # Shared Library - By default or if asked
-elseif (${RAPP_SHARED})
+elseif (${BUILD_RAPP_SHARED})
     message(STATUS "Building Shared library, you can enable static lib with \"-DRAPP_STATIC=ON\"")
     set(Boost_USE_STATIC_LIBS OFF)
     set(Boost_USE_STATIC_RUNTIME OFF)
