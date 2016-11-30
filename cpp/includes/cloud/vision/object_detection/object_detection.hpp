@@ -7,38 +7,6 @@ namespace cloud {
 namespace pt = boost::property_tree;
 
 
-
-// Add a list
-template<typename T>
-pt::ptree put_vector(const std::vector<T> vec) {
-	pt::ptree ret_node;
-	for (auto &val: vec)
-	{
-		// Create an unnamed node containing the value
-		pt::ptree tmp_node;
-		tmp_node.put("", val);
-	
-		// Add this node to the list.
-		ret_node.push_back(std::make_pair("", tmp_node));
-	}
-	return ret_node;
-}
-
-template<>
-pt::ptree put_vector<std::string>(const std::vector<std::string> vec) {
-	pt::ptree ret_node;
-	for (auto &val: vec)
-	{
-		// Create an unnamed node containing the value
-		pt::ptree tmp_node;
-		tmp_node.put("", val, s());
-	
-		// Add this node to the list.
-		ret_node.push_back(std::make_pair("", tmp_node));
-	}
-	return ret_node;
-}
-
 /**
  * \class object_detection_load_models
  * \brief load models into cache
@@ -62,7 +30,7 @@ public:
         std::string boundary = rapp::misc::random_boundary();
 
         boost::property_tree::ptree tree;
-        tree.add_child("names", put_vector(names));
+        tree.add_child("names", rapp::utils::put_vector(names));
 
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
