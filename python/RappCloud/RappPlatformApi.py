@@ -972,6 +972,12 @@ class RappPlatformAPI():
         }
 
     def userPersonalInfo(self):
+        """! Fetch User's personal info from Platform DB call
+
+        @rtype: dict
+        @return: Returns a dictionary of the service call response.
+        """
+
         msg = UserPersonalInfo()
         response = self.svc_caller.call(msg)
         return response.serialize()
