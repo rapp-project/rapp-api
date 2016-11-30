@@ -606,7 +606,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def weatherReportCurrent(self, city, weather_reporter='forecast.io',
+    def weatherReportCurrent(self, city, weather_reporter='forecastio',
                              metric=0):
         """! Weather report current API service call
 
@@ -645,7 +645,7 @@ class RappPlatformAPI():
             'error': response.error
         }
 
-    def weatherReportForecast(self, city, weather_reporter='forecast.io',
+    def weatherReportForecast(self, city, weather_reporter='forecastio',
                               metric=0):
         """! Weather report forecast API service call
 
