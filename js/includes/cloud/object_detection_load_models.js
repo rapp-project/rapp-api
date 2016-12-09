@@ -33,7 +33,7 @@ else
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.object_detection_load_models = function ( names, callback )
+RAPPCloud.prototype.object_detection_load_models = function(names, callback)
 {
     var formData = require('form-data');
 
@@ -42,7 +42,7 @@ RAPPCloud.prototype.object_detection_load_models = function ( names, callback )
 	var form = new formData();
 	//Escaping all the names of the vector
     var escaped_names = [];
-	for (var i=0; i<names.length; i++) {
+	for (var i=0; i<names.length; i++){
         escaped_names.push(cloud.escape_string(names[i]));
 	}
 	

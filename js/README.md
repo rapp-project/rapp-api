@@ -56,6 +56,7 @@ var objects = new RAPPObject();
 
 ## Directories
 
+- **includes/config**: The folder with the configurations. 
 - **includes/cloud**: The RappCloud services directory.
 - **includes/objects**: The Rapp Objects directory.
 - **examples**: Examples that showcase how you may use the RAPPCloud services for your convenience.
@@ -71,15 +72,23 @@ In the test directory unit tests for all the services and objects can be found. 
 npm test
 ```
 
+## Examples
+
+The source files for the examples are under the examples folder located in the root of the JS Rapp Platform API.
+
+You can run them individually, or use them as templates.
+
 ## Documentation
 
+For a complete list of all RAPP JS API Cloud services and Objects along with their documentation see [here](https://github.com/rapp-project/rapp-api/tree/js/js/includes/README.md)
+
+You might as well want to genetate documentation automatically from the comments of the code.
 For the following to run you will also need to install the developer dependencies (check installation section).
 
 This package's source-code is documented using the [JSDoc](https://github.com/jsdoc3/jsdoc) javascript documentation generator.
 
 Generate documentation for the RAPP API Cloud Services only:
 
-For the documentation of all RAPP Cloud services and Objects see [here](https://github.com/rapp-project/rapp-api/tree/js/js/includes/README.md)
 
 ```shell
 npm run doc-cloud
@@ -105,6 +114,8 @@ grunt jsdoc
 
 Generated doc files are located under the **doc/** directory.
 
-## Contributors
+## Help
 
-- Lazaros Penteridis, **[lp@ortelio.co.uk]**
+If you run into any bugs or issues, please report them on github. 
+Alternatively, hit us up on Gitter: [![Join the chat at https://gitter.im/rapp-project/rapp-api](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rapp-project/rapp-api?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+

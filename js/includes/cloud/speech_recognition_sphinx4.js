@@ -37,49 +37,39 @@ else
  * @param callback will be executed once the rapp cloud has responded
  */
  
-RAPPCloud.prototype.speech_recognition_sphinx4 = function ( audio, language, audio_source, grammar, words, sentences, callback )
+RAPPCloud.prototype.speech_recognition_sphinx4 = function(audio, language, audio_source, grammar, words, sentences, callback)
 {
     var formData = require('form-data');
 	var randomstring = require('randomstring');
 	var fs = require('fs');
 
     var cloud = this;
-    var _delegate=callback;
+    var _delegate = callback;
 
 	var form = new formData();
 	var ext = audio.substr(audio.lastIndexOf('.') + 1);
 	//Generate a random file name under which the audio file will be saved on the Server 
 	var filename = randomstring.generate() + '.' + ext;
 	
-	var i;
-	var grammar_str = '[';
-	for (i=0; i<grammar.length; i++) {
-		grammar_str += '"' + grammar[i] + '"';
-		if ( i != grammar.length-1 ) grammar_str += ',';
+    var escaped_grammar = [];
+	for (var i=0; i<grammar.length; i++){
+        escaped_grammar.push(cloud.escape_string(grammar[i]));
 	}
-	grammar_str += ']';
-	
-	var sentences_str = '[';
-	for (i=0; i<sentences.length; i++) {
-		sentences_str += '"' + cloud.escape_string(sentences[i]) + '"';
-		if ( i != sentences.length-1 ) sentences_str += ',';
+    var escaped_words= [];
+	for (var i=0; i<words.length; i++){
+        escaped_words.push(cloud.escape_string(words[i]));
 	}
-	sentences_str += ']';
-	
-	var words_str = '[';
-	for (i=0; i<words.length; i++) {
-		words_str += '"' + cloud.escape_string(words[i]) + '"';
-		if ( i != words.length-1 ) words_str += ',';
+    var escaped_sentences= [];
+	for (var i=0; i<sentences.length; i++){
+        escaped_sentences.push(cloud.escape_string(sentences[i]));
 	}
-	words_str += ']';
 	
-
 	var body_obj = {};
     body_obj.language = language;
     body_obj.audio_source = audio_source;
-    body_obj.grammar = grammar;
-    body_obj.words = words;
-    body_obj.sentences = sentences;
+    body_obj.grammar = escaped_grammar;
+    body_obj.words = escaped_words;
+    body_obj.sentences = escaped_sentences;
     var body_json = JSON.stringify(body_obj);
 
 	form.append('file', fs.createReadStream(audio), { filename: filename });
