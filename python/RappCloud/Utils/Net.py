@@ -26,21 +26,22 @@
 #  @author Konstantinos Panayiotou, [klpanagi@gmail.com]
 #
 
-import socket
+from urllib2 import urlopen
+import json
+
 
 class Net(object):
-  """ Provide Network related static methods """
+    """ Provide Network related static methods """
 
-  ## Hacky method to get the actual public ip.
-  #
-  @staticmethod
-  def ipaddr_connected():
-    """! Prepare a dummy socket to google.com and see what the socket name is.
+    ## Hacky method to get the actual public ip.
+    #
+    @staticmethod
+    def ipaddr_connected():
+        """! Prepare a dummy socket to google.com and see what the socket name is.
 
-    @return string - The ipv4 address of the machine.
-    """
+        @return string - The ipv4 address of the machine.
+        """
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(('google.com', 0))
-    ipaddr = s.getsockname()[0]
-    return ipaddr
+        url = "http://ip.jsontest.com/"
+        info = json.loads(urlopen(url).read().decode('utf-8'))
+        return info['ip']

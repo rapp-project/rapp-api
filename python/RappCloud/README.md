@@ -24,6 +24,7 @@
   - [Text To Speech](#text-to-speech)
   - [Weather Reporter - Current Weather](#weather-reporter---current-weather)
   - [Weather Reporter - Forecast](#weather-reporter---forecast)
+  - [User Personal Info](#user-personal-info)
 
 ## Face detection
 
@@ -1012,4 +1013,45 @@ response = ch.geolocation('155.207.33.163')
 ```python
 print response
 >> {'city': u'Thessaloniki', 'zip': u'', 'country_code': u'GR', 'timezone': u'Europe/Athens', 'latitude': 40.64030075073242, 'country': u'Greece', 'region': u'Central Macedonia', 'error': u'', 'longtitude': 22.943899154663086}
+```
+
+
+## User Personal Info
+
+**Sample call** ```userPersonalInfo()```
+
+**Input arguments**
+None
+
+**Return value**
+
+```
+# User's name
+String name
+
+# User's surname
+String surname
+
+# User's language
+String language
+
+# User's registered (to Platform db) destination email addresses
+Array emails
+
+# Error message
+String error
+```
+
+**Call example**:
+```python
+from RappCloud import RappPlatformAPI
+ch = RappPlatformAPI()
+
+response = ch.userPersonalInfo()
+```
+
+**Example output**:
+```python
+print response
+>> {'error': u'', 'surname': u'nosurname', 'emails': [{u'email_address': u'rapp.friend@gmail.com', u'user': u'rappfriend'}, {u'email_address': u'rapp.friend2@gmail.com', u'user': u'rappfriend2'}], 'language': u'el', 'name': u'noname'}
 ```
