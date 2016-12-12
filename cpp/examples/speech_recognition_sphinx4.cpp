@@ -67,11 +67,12 @@ int main()
     /*
      *  \brief JSGF speech grammar format. It's an optional input, but with
      *  it we can achieve more accuracy in the recognition. 
+     *  WARNING: not currently supported!!!
+    
+    std::string jsgf =  "#JSGF V1.0;\r\n\r\n";
+                jsgf += "grammar simpleExample; \r\n\r\n";
+                jsgf += "public <greet> = Yes | No;\r\n";
      */
-    //std::string jsgf =  "#JSGF V1.0;\r\n\r\n";
-    //            jsgf += "grammar simpleExample; \r\n\r\n";
-    std::string jsgf = "public <greet> = Yes | No;\r\n";
-
     /*
      * We make a call to speech_recognition_google to detect the words said
      * in a audio with sphinx4 tools.
@@ -80,9 +81,9 @@ int main()
     ctrl.make_call<rapp::cloud::speech_recognition_sphinx4>(audio.bytearray(), 
                                                             audio_src, 
                                                             "en",
-                                                            std::vector<std::string>({{jsgf}}),
+                                                            std::vector<std::string>({{}}),
                                                             std::vector<std::string>({"yes", "no"}),
-                                                            std::vector<std::string>({""}),
+                                                            std::vector<std::string>({"yes no"}),
                                                             callback);
     return 0;
 }
