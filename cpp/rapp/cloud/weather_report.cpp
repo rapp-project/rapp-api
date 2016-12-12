@@ -34,13 +34,11 @@ void weather_report_current::deserialise(std::string json) const
         std::cerr << e.what() << std::endl;
     }
 
-    //There is no "error" in JSON
- 
-    /*auto error = misc::get_json_value<std::string>("error", json_f);
+    auto error = misc::get_json_value<std::string>("error", json_f);
     if (!error.empty()) {
         std::cerr << "error JSON: " << error <<std::endl;
     }
-    else {*/
+    else {
         std::vector<std::string> weather ={ json_f["date"],
                                             json_f["temperature"],
                                             json_f["weather_description"],
@@ -51,7 +49,7 @@ void weather_report_current::deserialise(std::string json) const
                                             json_f["wind_temperature"],
                                             json_f["wind_direction"] };
         delegate_(weather);
-    //}
+    }
 }
 
 weather_report_forecast::weather_report_forecast(
