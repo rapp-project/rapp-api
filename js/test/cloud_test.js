@@ -60,43 +60,43 @@ describe('#ontology_is_subsuperclass_of()', function(){
 
 describe('#face_detection()', function(){
     it('should in all cases create a face_detection object given an image, the image type and a callback function', function(done){
-        services.face_detection( path.join(__dirname, '../../testdata/two_faces.jpg'), "jpg", done());
+        services.face_detection( path.join(__dirname, '../testdata/two_faces.jpg'), "jpg", done());
     });
 });
 
 describe('#qr_detection()', function(){
     it('should in all cases create a qr_detection object given an image, the image type and a callback function', function(done){
-        services.qr_detection( path.join(__dirname, '../../testdata/qrcode.png'), "png", done());
+        services.qr_detection( path.join(__dirname, '../testdata/qrcode.png'), "png", done());
     });
 });
 
 describe('#human_detection()', function(){
     it('should in all cases create a human_detection object given an image, the image type and a callback function', function(done){
-        services.human_detection( path.join(__dirname, '../../testdata/face_samples/fatsaSou_near.jpg'), "jpg", done());
+        services.human_detection( path.join(__dirname, '../testdata/face_samples/fatsaSou_near.jpg'), "jpg", done());
     });
 });
 
 describe('#hazard_detection_door()', function(){
     it('should in all cases create a hazard_detection_door object given an image, the image type and a callback function', function(done){
-        services.face_detection( path.join(__dirname, '../../testdata/door_1.png'), "jpg", done());
+        services.face_detection( path.join(__dirname, '../testdata/door_1.png'), "jpg", done());
     });
 });
 
 describe('#hazard_detection_light()', function(){
     it('should in all cases create a hazard_detection_light object given an image, the image type and a callback function', function(done){
-        services.hazard_detection_light( path.join(__dirname, '../../testdata/lamp_on.jpg'), "jpg", done());
+        services.hazard_detection_light( path.join(__dirname, '../testdata/lamp_on.jpg'), "jpg", done());
     });
 });
 
 describe('#object_recognition_caffe()', function(){
     it('should in all cases create an object_recognition_caffe object given an image, the image type and a callback function', function(done){
-        services.object_recognition_caffe( path.join(__dirname, '../../testdata/cat.jpg'), "jpg", done());
+        services.object_recognition_caffe( path.join(__dirname, '../testdata/cat.jpg'), "jpg", done());
     });
 });
 
 describe('#object_detection_learn_object()', function(){
     it('should in all cases create an object_detection_learn_object object given an image, the image type, the name of the object and a callback function', function(done){
-        services.object_detection_learn_object( path.join(__dirname, '../../testdata/cat.jpg'), "jpg", "cat", done());
+        services.object_detection_learn_object( path.join(__dirname, '../testdata/cat.jpg'), "jpg", "cat", done());
     });
 });
 
@@ -114,25 +114,25 @@ describe('#object_detection_load_models()', function(){
 
 describe('#object_detection_find_objects()', function(){
     it('should in all cases create an object_detection_find_objects object given an image, the image type, the name of the object and a callback function', function(done){
-        services.object_detection_find_objects( path.join(__dirname, '../../testdata/cat.jpg'), "jpg", 1, done());
+        services.object_detection_find_objects( path.join(__dirname, '../testdata/cat.jpg'), "jpg", 1, done());
     });
 });
 
 describe('#set_noise_profile()', function(){
     it("should in all cases create a set_noise_profile object given an audio file, username and audio type as arguments", function(){
-	services.set_noise_profile ( path.join(__dirname, '../../testdata/denoise_source.wav'), "rapp", "nao_wav_1_ch" );
+	services.set_noise_profile ( path.join(__dirname, '../testdata/denoise_source.wav'), "rapp", "nao_wav_1_ch" );
     });
 });
 
 describe('#speech_recognition_sphinx4()', function(){
     it('should in all cases create a speech_recognition_sphinx4 object given an audio file, the language, a user token, the audio source type, a grammar, a pool of words, a pool of sentences and a callback function as arguments', function(done){
-        services.speech_recognition_sphinx4( path.join(__dirname, '../../testdata/recording_sentence2.ogg'), "en", "rapp", "nao_ogg", [], ["check", "my", "emails", "robot"], ["check", "my", "emails", "robot"], done());
+        services.speech_recognition_sphinx4( path.join(__dirname, '../testdata/recording_sentence2.ogg'), "en", "rapp", "nao_ogg", [], ["check", "my", "emails", "robot"], ["check", "my", "emails", "robot"], done());
     });    
 });
 
 describe('#speech_recognition_google()', function(){
     it('should in all cases create a speech_recognition_google object given an audio file, the audio source type, a user token, a language and a callback function as arguments', function(done){
-        services.speech_recognition_google( path.join(__dirname, '../../testdata/recording_sentence2.ogg'), "nao_ogg", "rapp", "en", done());
+        services.speech_recognition_google( path.join(__dirname, '../testdata/recording_sentence2.ogg'), "nao_ogg", "rapp", "en", done());
     });    
 });
 
