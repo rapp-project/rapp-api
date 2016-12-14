@@ -4,7 +4,7 @@ var test = require('unit.js');
 var path = require('path');
 
 // Import the JS API Services & Init the RAPPCloud Object
-var __cloudDir = path.join(__dirname, '..', 'includes', 'cloud');
+var __cloudDir = path.join(__dirname, '..', 'lib', 'cloud');
 var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
 RAPPCloud.ontology_subclasses_of = require(path.join(__cloudDir, 'ontology_subclasses_of.js'));
 RAPPCloud.ontology_superclasses_of = require(path.join(__cloudDir, 'ontology_superclasses_of.js'));

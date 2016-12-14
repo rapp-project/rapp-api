@@ -37,9 +37,9 @@ The examples located in the examples directory showcase how you may use the RAPP
 Provided you have succesfully installed the API in your system, you can require the service(s) that you want to use in your application, after requiring the RAPPCloud module as shown in the examples:
 
 ```js
-var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.qr_detection = require('rapp-platform-api/includes/cloud/qr_detection');
-RAPPCloud.face_detection = require('rapp-platform-api/includes/cloud/face_detection'); 
+var RAPPCloud = require('rapp-platform-api/lib/cloud/RAPPCloud');
+RAPPCloud.qr_detection = require('rapp-platform-api/lib/cloud/qr_detection');
+RAPPCloud.face_detection = require('rapp-platform-api/lib/cloud/face_detection'); 
 var services = new RAPPCloud();
 
 services.qr_detection('../../testdata/qrcode.png', 'png', handler);
@@ -49,16 +49,16 @@ services.face_detection('../../testdata/faces.png', 'png', handler);
 For the RAPP platform API objects you would have to point as well, to the respective directory in order to require them:
 
 ```js
-var RAPPObjects = require('rapp-platform-api/includes/objects/RAPPObject');
-RAPPObject.face = require('rapp-platform-api/includes/objects/face');
+var RAPPObjects = require('rapp-platform-api/lib/objects/RAPPObject');
+RAPPObject.face = require('rapp-platform-api/lib/objects/face');
 var objects = new RAPPObject();
 ```
 
 ## Directories
 
-- **includes/config**: The folder with the configurations. 
-- **includes/cloud**: The RappCloud services directory.
-- **includes/objects**: The Rapp Objects directory.
+- **lib/config**: The folder with the configurations. 
+- **lib/cloud**: The RappCloud services directory.
+- **lib/objects**: The Rapp Objects directory.
 - **examples**: Examples that showcase how you may use the RAPPCloud services for your convenience.
 - **test**: Unit tests for all the services and objects.
 
@@ -80,7 +80,7 @@ You can run them individually, or use them as templates.
 
 ## Documentation
 
-For a complete list of all RAPP JS API Cloud services and Objects along with their documentation see [here](https://github.com/rapp-project/rapp-api/tree/js/js/includes/README.md)
+For a complete list of all RAPP JS API Cloud services and Objects along with their documentation see [here](https://github.com/rapp-project/rapp-api/tree/js/js/lib/README.md)
 
 You might as well want to genetate documentation automatically from the comments of the code.
 For the following to run you will also need to install the developer dependencies (check installation section).

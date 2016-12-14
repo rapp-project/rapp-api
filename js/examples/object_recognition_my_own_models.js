@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 // Import the ontology related JS API Services & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-apincludes/cloud/RAPPCloud');
-RAPPCloud.object_detection_learn_object = require('rapp-platform-apincludes/cloud/object_detection_learn_object');
-RAPPCloud.object_detection_clear_models = require('rapp-platform-apincludes/cloud/object_detection_clear_models');
-RAPPCloud.object_detection_load_models = require('rapp-platform-apincludes/cloud/object_detection_load_models');
-RAPPCloud.object_detection_find_objects = require('rapp-platform-apincludes/cloud/object_detection_find_objects');
+var RAPPCloud = require('../lib/cloud/RAPPCloud');
+RAPPCloud.object_detection_learn_object = require('../lib/cloud/object_detection_learn_object');
+RAPPCloud.object_detection_clear_models = require('../lib/cloud/object_detection_clear_models');
+RAPPCloud.object_detection_load_models = require('../lib/cloud/object_detection_load_models');
+RAPPCloud.object_detection_find_objects = require('../lib/cloud/object_detection_find_objects');
 
 var services = new RAPPCloud();
-var pic = "../../testdata/cat.jpg";
+var pic = "../testdata/cat.jpg";
 
 /** 
  * This is the method that will handle the reply by the following services:
@@ -17,7 +17,7 @@ var pic = "../../testdata/cat.jpg";
  */
 function callback(result)
 {
-    switch(result){
+    switch(result) {
         case 0:
             console.log("Correct");
             break;

@@ -4,7 +4,7 @@ var test = require('unit.js');
 var path = require('path');
 
 // Import the JS API Objects & Init the RAPPObject Object
-var __objectsDir = path.join(__dirname, '..', 'includes', 'objects');
+var __objectsDir = path.join(__dirname, '..', 'lib', 'objects');
 var RAPPObject = require(path.join(__objectsDir, 'RAPPObject.js'));
 RAPPObject.face = require(path.join(__objectsDir, 'face.js'));
 RAPPObject.qr_code = require(path.join(__objectsDir, 'qr_code.js'));

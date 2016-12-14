@@ -33,7 +33,7 @@
     "doc-cloud": "rm -rf doc/cloud && grunt doc-gen-cloud",
     "doc-objects": "rm -rf doc/objects && grunt doc-gen-objects",
     "doc": "npm run doc-cloud && npm run doc-objects",
-    "jshint": "node_modules/.bin/jshint includes"
+    "jshint": "node_modules/.bin/jshint lib"
   },
   "repository": {
     "type": "git",
@@ -43,12 +43,20 @@
     "robotics",
     "cloud",
     "cloud robotics",
+    "robot apps",
+    "robotic applications",
+    "path planning",
     "web services",
     "face detection",
     "qr detection",
     "human detection",
+    "object recognition",
     "text to speech",
-    "tts"
+    "computer vision",
+    "ontology",
+    "tts",
+    "speech recognition",
+    "hazard detection"
   ],
   "author": {
     "name": "leizer",
