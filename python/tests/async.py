@@ -4,8 +4,7 @@
 
 import unittest
 import time
-import inspect
-import sys, os
+import sys
 from os import path
 
 from RappCloud.CloudMsgs import FaceDetection
@@ -23,9 +22,9 @@ class NullDevice():
 
 
 class AsyncCallsTest(unittest.TestCase):
-    def blockPrint(self):
-        sys.stdout = NullDevice()
-        sys.stderr = NullDevice()
+    # def blockPrint(self):
+        # sys.stdout = NullDevice()
+        # sys.stderr = NullDevice()
 
 
     def enablePrint(self):
@@ -45,23 +44,19 @@ class AsyncCallsTest(unittest.TestCase):
         t = time.time() - self.startTime
         print "%s: %.3f" % (self.id(), t)
 
-
     def test_simple(self):
         sh = self.svc.call_async(self.msg, self.clb1)
         sh.wait()
-
 
     def test_wait(self):
         sh = self.svc.call_async(self.msg, self.clb1)
         resp = sh.wait()
         self.assertIsInstance(resp, FaceDetection.Response)
 
-
     def test_wait_no_callback(self):
         sh = self.svc.call_async(self.msg)
         resp = sh.wait()
         self.assertIsInstance(resp, FaceDetection.Response)
-
 
     def test_async_multi_calls_x2(self):
         n = 2
@@ -71,12 +66,21 @@ class AsyncCallsTest(unittest.TestCase):
         for h in asyncH:
             h.wait()
 
+    def test_async_blocking(self):
+        asyncH = []
+        self.asyncCalled = 0
+        for i in range(0, 2):
+            asyncH.append(self.svc.call_async(self.msg, self.clb_blocking))
+        time.sleep(4)
+        self.assertEqual(self.asyncCalled, 2)
 
     def clb1(self, resp):
+        self.assertIsInstance(resp, FaceDetection.Response)
+
+    def clb_blocking(self, resp):
+        self.asyncCalled += 1
         self.assertIsInstance(resp, FaceDetection.Response)
 
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
-    # suite = unittest.TestLoader().loadTestsFromTestCase(AsyncCallsTest)
-    # unittest.TextTestRunner(verbosity=0).run(suite)
