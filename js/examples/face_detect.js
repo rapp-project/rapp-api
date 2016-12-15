@@ -29,4 +29,4 @@ function handler(faces)
 		console.log('No faces detected');
 }
 
-services.face_detection('../testdata/two_faces.jpg', 'jpg', handler);
+services.face_detection('../testdata/two_faces.jpg', handler);

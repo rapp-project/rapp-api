@@ -14,5 +14,20 @@ script:
     - npm jshint
     - npm test
     - ./examples/available_services.js
+    - ./examples/cognitive_game.js
+    - ./examples/door_detect.js
+    - ./examples/email_fetch.js
+    - ./examples/email_send.js
+    - ./examples/face_detect.js
+    - ./examples/geolocation.js
+    - ./examples/human_detect.js
+    - ./examples/light_detect.js
+    - ./examples/news_explore.js
+    - ./examples/object_recognition_my_own_models.js
+    - ./examples/object_recognize.js
+    - ./examples/ontology_example.js
+    - ./examples/plan_path.js
+    - ./examples/qr_detect.js
+    - ./examples/set_noise_profile.js
 after_success:
     - npm doc

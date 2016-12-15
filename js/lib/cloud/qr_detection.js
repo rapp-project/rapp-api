@@ -36,7 +36,8 @@ RAPPCloud.prototype.qr_detection = function(
 	//Generate a random file name under which the image will be saved on the Server 
 	var filename = randomstring.generate() + '.' + image_format;
 
-	form.append('file', fs.createReadStream(image), { 
+    var img = fs.createReadStream(image);
+	form.append('file', img, { 
 		filename: filename,
 		contentType: 'image/' + image_format
 	});
