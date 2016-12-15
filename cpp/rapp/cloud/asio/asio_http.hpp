@@ -24,8 +24,8 @@ namespace cloud {
 /**
  * \class asio_http
  * \brief ASIO socket controller asynchronous http websockets used for cloud service calls
- * \version 0.7.0
- * \date 12 August 2016
+ * \version 0.7.2
+ * \date 15 December 2016
  * \author Alex Giokas  <a.gkiokas@ortelio.co.uk>
  * \see asio_handler
  * \see request
@@ -60,6 +60,8 @@ public:
 			    boost::asio::ip::tcp::resolver & resolver
               );
 
+    /// \brief shutdown connection
+    void shutdown(const boost::system::error_code);
 
 private:
 
@@ -71,12 +73,12 @@ private:
 
     /// \brief begin connection
 	void connect(
-                 const boost::system::error_code err,
-                 boost::asio::ip::tcp::resolver::iterator endpoint_iterator
+                   const boost::system::error_code err,
+                   boost::asio::ip::tcp::resolver::iterator endpoint_iterator
                 );
 
-    /// \brief shutdown connection
-    void shutdown(const boost::system::error_code);
+    /// \brief check if we have timed out
+    void time_check();
 
 private:
     /// error callback
@@ -85,6 +87,8 @@ private:
     std::shared_ptr<http_socket> socket_;
     /// request object
     boost::asio::streambuf & request_;
+    /// deadline timer for timeouts
+    std::shared_ptr<boost::asio::deadline_timer> deadline_;
 };
 }
 }

@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
      */
-	rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
+	rapp::cloud::platform info = {"10.130.7.99", "9002", "rapp_token"}; 
 	rapp::cloud::service_controller ctrl(info);
 
     /*
@@ -48,5 +48,5 @@ int main(int argc, char* argv[])
      * This method will **block** the service controller queue until its complete.
      */
     ctrl.make_call<rapp::cloud::available_services>(cb);
-        return 0;
+    return 0;
 }

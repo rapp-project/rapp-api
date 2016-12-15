@@ -38,7 +38,8 @@ namespace cloud {
  * \see asio_https
  * \see http_response
  */
-template <class T> class asio_handler : protected http_response
+template <class T> 
+class asio_handler : protected http_response
 {
 public:
 	/**
@@ -82,13 +83,10 @@ public:
 	/// \param err is propagated from boost asio
     void end(const boost::system::error_code & err);
 
-    /// \brief socket operation timed out
-    void has_timed_out();
-
 protected:
     /// our socket T pointer
     std::shared_ptr<T> socket_;
-        /// json_callback
+    /// json_callback
     std::function<void(std::string)> cloud_cb_;
     /// error handler callback
     std::function<void(const boost::system::error_code)> error_cb_;

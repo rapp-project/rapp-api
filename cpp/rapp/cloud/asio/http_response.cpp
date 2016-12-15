@@ -99,7 +99,7 @@ bool http_response::check_http_header()
 	// HTTP reply is not 200
 	else if (status_code != 200) {
 		auto err = boost::system::errc::make_error_code(boost::system::errc::protocol_error);
-        std::cerr << http_version << " " << status_code << " " << status_message <<std::endl;
+        //std::cerr << http_version << " " << status_code << " " << status_message <<std::endl;
         error_cb_(err);
 		return false;
 	}

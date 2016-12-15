@@ -24,8 +24,8 @@ namespace cloud {
 /**
  * \class asio_https
  * \brief ASIO socket controller for TLS (encrypred) cloud service calls
- * \version 0.7.0
- * \date 12 August 2016
+ * \version 0.7.2
+ * \date 15 December 2016
  * \author Alex Giokas  <a.gkiokas@ortelio.co.uk>
  * \see asio_handler
  * \see request
@@ -40,7 +40,7 @@ public:
 	 * \brief `error_function` is the handler which may receive the errors
 	 * \brief `io_service` is the ASIO service controller
 	 * \brief `request` is a stream buffer containing the request
-	 * TODO: pass a PEM filename to evaluate CA
+	 * \WARNING TODO: pass a PEM filename to evaluate CA - currently the server CE is not evaluated!!!
 	 */
     asio_https(
                 std::function<void(std::string)> cloud_function,
@@ -61,6 +61,9 @@ public:
 			    boost::asio::ip::tcp::resolver & resolver
               );
 
+    /// \brief shutdown handler
+    void shutdown(const boost::system::error_code);
+
 private:
 	/// \brief verify TLS certificate
 	bool verify_certificate(bool preverified, boost::asio::ssl::verify_context& ctx);
@@ -70,9 +73,9 @@ private:
 
 	/// \brief handle handshake
   	void handshake(const boost::system::error_code err);
-
-    /// \brief shutdown handler
-    void shutdown(const boost::system::error_code);
+    
+    /// \brief check if we have timed out
+    void time_check();
 
 private: 
     /// error callback
@@ -83,6 +86,8 @@ private:
     std::shared_ptr<tls_socket> socket_;
     /// request object
     boost::asio::streambuf & request_;
+    /// deadline timer for timeouts
+    std::shared_ptr<boost::asio::deadline_timer> deadline_;
 };
 }
 }

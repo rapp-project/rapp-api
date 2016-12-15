@@ -9,11 +9,11 @@ asio_handler<T>::asio_handler(
                                const std::function<void(boost::system::error_code)> error_function,
                                const std::function<void(boost::system::error_code)> shutdown_function
 							 )
-: http_response(error_function), 
+: 
+  http_response(error_function), 
   cloud_cb_(cloud_function), 
   error_cb_(error_function),
   close_cb_(shutdown_function)
-  //asio_timer(boost::bind(&asio_handler<T>::has_timed_out, this))
 {
     assert(cloud_cb_ && error_cb_);
 }
@@ -29,7 +29,7 @@ template <class T>
 void asio_handler<T>::write_request(const boost::system::error_code & err,
                                     const std::size_t bytes)
 {       
-    if (!err) {
+    //if (!err) {
         // read until first newline
         boost::asio::async_read_until(*socket_,
                                       buffer_,
@@ -38,11 +38,11 @@ void asio_handler<T>::write_request(const boost::system::error_code & err,
                                                   this, 
                                                   boost::asio::placeholders::error,
                                                   boost::asio::placeholders::bytes_transferred));
-    }
-    else {
+    //}
+    //else {
         // request error/wrong request, header or post
-        end(err);       
-	}
+        //end(err);       
+	//}
 }
 
 template <class T>
@@ -62,7 +62,6 @@ void asio_handler<T>::read_status_line(const boost::system::error_code & err,
         }
     }
     else {
-        //error_cb_(err);
         end(err);
 	}
 }
@@ -94,7 +93,6 @@ void asio_handler<T>::read_headers(const boost::system::error_code & err,
         }
     }
     else {
-        //error_cb_(err);
         end(err);
 	}
 }
@@ -125,15 +123,8 @@ void asio_handler<T>::read_content(
     }
     // error - normally EOF, meaning the server closed the connection
     else {
-        //error_cb_(err);
         end(err);
 	}
-}
-
-template<class T>
-void asio_handler<T>::has_timed_out() 
-{
-   end(boost::asio::error::timed_out);
 }
 
 template <class T>

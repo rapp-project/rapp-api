@@ -67,6 +67,7 @@ public:
         std::function<void(std::string)> callback = [&](auto reply) {
             obj.deserialise(reply);
         };
+
         // create an asio_socket and run the request
         auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
         assert(asio);
@@ -116,7 +117,8 @@ protected:
 	/// \brief handle asio errors
 	void default_error_handler(boost::system::error_code error) const
 	{
-        std::cerr << "asio error: " << error.message() << std::endl;
+        std::cerr << "[error-message]: " << error.message() 
+                  << " [error-value]: " << error.value() << std::endl;
 	}
 
 private:

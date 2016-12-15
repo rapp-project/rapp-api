@@ -20,6 +20,7 @@
 #include <boost/asio.hpp>
 #include <functional>
 #include <iostream>
+//#include <chrono>
 
 int main() 
 {
@@ -31,7 +32,7 @@ int main()
      * Then proceed to create a cloud controller.
      * We'll use this object to create cloud calls to the platform.
      */
-    rapp::cloud::platform info = {"rapp.ee.auth.gr", "9001", "rapp_token"}; 
+    rapp::cloud::platform info = {"10.130.7.99", "9001", "rapp_token"}; 
     rapp::cloud::service_controller ctrl(info);
 
     /*
@@ -45,7 +46,7 @@ int main()
 			std::cout << "Found " << faces.size() << " faces!" << std::endl;
 		};
 		ctrl.make_call<rapp::cloud::face_detection>(pic, false, callback);
-		timer.expires_at(timer.expires_at() + boost::posix_time::seconds(1));
+		timer.expires_at(timer.expires_at() + boost::posix_time::milliseconds(50));
 		timer.async_wait(func);
 	};
 

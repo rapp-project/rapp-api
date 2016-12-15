@@ -10,5 +10,6 @@
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/system/error_code.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <rapp/misc/misc.hpp>

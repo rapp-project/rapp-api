@@ -8,17 +8,24 @@ asio_http::asio_http(
 						boost::asio::io_service & io_service,
 						boost::asio::streambuf & request
 					)
-: asio_handler<http_socket>(cloud_function, 
+: asio_handler<http_socket>(
+                            cloud_function, 
                             error_function,
                             boost::bind(&asio_http::shutdown,
                                         this,
-                                        boost::asio::placeholders::error)),  
+                                        boost::asio::placeholders::error)
+                           ),
   error_cb_(error_function),
   request_(request)
 {
     socket_ = std::make_shared<http_socket>(io_service);
-	assert(cloud_function && error_function && socket_);
+    deadline_ = std::make_shared<boost::asio::deadline_timer>(io_service);
+	assert(cloud_function && error_function && socket_ && deadline_);
     asio_handler::set_socket(socket_);
+    // PROBLEM: the async_wait callback will be bound to *this* 
+    //          so even when the class has finished, we still have a queued
+    //          operation in the io_service waiting for time_check
+    deadline_->async_wait(boost::bind(&asio_http::time_check, this)); 
 }
 
 void asio_http::begin( 
@@ -26,8 +33,7 @@ void asio_http::begin(
 						boost::asio::ip::tcp::resolver & resolver
 					 )
 {
-     //asio_handler::start_timer(30);
-     resolver.async_resolve(query,
+    resolver.async_resolve(query,
                             boost::bind(&asio_http::resolve,
                                         this,
                                         boost::asio::placeholders::error,
@@ -40,6 +46,7 @@ void asio_http::resolve(
                         )
 {
     if (!err) {
+        deadline_->expires_from_now(boost::posix_time::seconds(1));
         auto endpoint = * endpoint_iterator;
         socket_->async_connect(endpoint,
                                boost::bind(&asio_http::connect, 
@@ -49,6 +56,7 @@ void asio_http::resolve(
     }
     else {
         error_cb_(err);
+        shutdown(err);
     }
 }
 
@@ -78,13 +86,29 @@ void asio_http::connect(
     }
     else {
         error_cb_(err); 
+        shutdown(err);
     }
 }
 
 void asio_http::shutdown(const boost::system::error_code err)
 {
-    socket_->shutdown(boost::asio::ip::tcp::socket::shutdown_send);
     socket_->close();
+    deadline_->cancel();
+    deadline_.reset(); 
+}
+
+void asio_http::time_check()
+{
+    if (!deadline_) {
+        return;
+    }
+    if (deadline_->expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
+        socket_->close();
+        deadline_->cancel();
+    }
+    else {
+        deadline_->async_wait(boost::bind(&asio_http::time_check, this));
+    }
 }
 
 }
