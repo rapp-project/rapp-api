@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - "6"
+dist: xenial
+os: 
+    -linux
+branches:
+    only:
+    - js
+
+before_install: cd js
+install: npm install
+script:
+    - npm jshint
+    - npm test
+    - ./examples/available_services.js
+after_success:
+    - npm doc

@@ -10,7 +10,7 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
  * @class Face
  * @memberof RAPPObject
  * @description class which should somehow encapsulate a face
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  */ 
 
@@ -22,7 +22,6 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
 */
 
 RAPPObject.prototype.Face = (function(){   // immediate function
-	
 	var _top_left_x;
 	var _top_left_y;
 	var _bottom_right_x;
