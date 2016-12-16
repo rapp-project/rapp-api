@@ -25,101 +25,54 @@ namespace cloud {
 /**
  * \class service_controller
  * \brief Main class that controllers RAPP Services
- * \version 0.7.0
- * \date 12 August 2016
+ * \version 0.7.2
+ * \date 16 December 2016
  * \author Alex Gkiokas <a.gkiokas@ortelio.co.uk>
- *
- * TODO: rename to `cloud_endpoint` or `cloud_control`
- * TODO (0.7.0) enable custom error handler 
- *				enable setting time-out parameter
- *				enable choice of HTTP or TLS
- *				enable choice of TLS CA.PEM file
+ * TODO (0.7.3): enable choice of HTTP or TLS
+ *				 enable choice of TLS CA.PEM file (pass to asio_https)
+ *               enable choice of ignoring CA on TLS
  */
 class service_controller
 {
 public:
 
     /// \brief construct a service controller using a rapp::cloud::platform object
-	service_controller(rapp::cloud::platform info)
-	: info_(info), query_(info.address, info.port), io_(), resol_(io_)
-	{
-		derr_cb_ = std::bind(&service_controller::default_error_handler, this, std::placeholders::_1);
-	}
+	service_controller(rapp::cloud::platform info);
 
-	/// \brief construct a service controller using
-	/// \param info the cloud platform
-	/// \param error_handler the error callback which receives boost asio errors
+	/** 
+     * \brief construct a service controller using
+	 * \param info the cloud platform
+	 * \param error_handler the error callback which receives boost asio errors
+     */
 	service_controller(
 						rapp::cloud::platform info,
 						std::function<void(boost::system::error_code error)> error_handler
-					  )
-	: info_(info), query_(info.address, info.port), io_(), resol_(io_), error_(error_handler) 
-	{}
+					  );
 
-    /// \brief make_call will instantly run an asynchronous cloud job
+    /// \brief set a time-out different than the default of 1 second
+    void set_timeout(unsigned long int timeout);
+
+    /** 
+     * \brief make_call will instantly run an asynchronous cloud job
+     * \typename T is a templated cloud class
+     * \param args is the T cloud class arguments
+     */
     template <typename T, typename... Args>
-    void make_call(Args... args)
-    {
-        // create the cloud class
-		auto obj = T(args...);
-        boost::asio::streambuf request;
-        obj.fill_buffer(boost::ref(request), info_);
-        std::function<void(std::string)> callback = [&](auto reply) {
-            obj.deserialise(reply);
-        };
+    void make_call(Args... args);
 
-        // create an asio_socket and run the request
-        auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
-        assert(asio);
-        // start
-		asio->begin(query_, resol_);
-		io_.run();
-		io_.reset();
-    }
-
-    /// \brief create an arbitrary number of cloud calls using a variadic template
-    template <typename... Args>
-    void make_calls(Args... args)
-    {
-        std::vector<std::pair<std::shared_ptr<boost::asio::streambuf>,
-                              std::shared_ptr<asio_http>>> sockets;
-
-        // iterate each argument (has already been constructed and is non-copyable)
-        misc::for_each_arg([&](auto & obj) {
-            // set the callback
-            std::function<void(std::string)> callback = [&](auto reply){
-                obj.deserialise(reply); 
-            };
-            // allocate buffer  - must live as long as socket
-            auto buffer = std::make_shared<boost::asio::streambuf>();
-            // fill buffer
-            obj.fill_buffer(boost::ref(*buffer), info_);
-            // make socket - must live as long as the io_service uses it!
-            auto socket = std::make_shared<asio_http>(callback, derr_cb_, io_, *buffer);
-            // keep the socket and buffer alive and start the connection
-            sockets.emplace_back(std::make_pair(buffer, socket));
-            sockets.back().second->begin(query_, resol_);
-        }, args...);
-
-        // run all calls, then reset asio queue
-        io_.run();
-		io_.reset();
-    }
+    /** 
+     * \brief create batch of cloud calls using a variadic template
+     * \param args is a variadic template of cloud classes
+     * \note construct inline passing each class's arguments
+     */
+    template <typename... Args> 
+    void make_calls(Args... args);
 
     /// \brief stop the service controller
-    void stop()
-	{
-		io_.stop();
-	}
+    void stop();
 
-protected:
-    
 	/// \brief handle asio errors
-	void default_error_handler(boost::system::error_code error) const
-	{
-        std::cerr << "[error-message]: " << error.message() 
-                  << " [error-value]: " << error.value() << std::endl;
-	}
+	void default_error_handler(boost::system::error_code error) const;
 
 private:
 	// cloud params
@@ -134,7 +87,11 @@ private:
 	std::function<void(boost::system::error_code)> error_;
 	// default error handler
 	std::function<void(boost::system::error_code)> derr_cb_;
+    // default timeout
+    unsigned long int timeout_;
 };
+
+#include "service_controller.impl"
 }
 }
 #endif

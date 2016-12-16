@@ -18,7 +18,7 @@
 PROJECT(rapp)
 set (RAPP_VERSION_MAJOR 0)
 set (RAPP_VERSION_MINOR 7)
-set (RAPP_VERSION_PATCH 1)
+set (RAPP_VERSION_PATCH 2)
 set (RAPP_VERSION_STRING ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
 cmake_minimum_required(VERSION 2.8)
 
@@ -54,6 +54,20 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/cloud/asio/http_post.cpp
              ${INCLUDES}/cloud/asio/http_request.cpp
              ${INCLUDES}/cloud/asio/http_response.cpp
+             ${INCLUDES}/cloud/authentication.cpp
+             ${INCLUDES}/cloud/available_services.cpp
+             ${INCLUDES}/cloud/cognitive_exercises.cpp
+             ${INCLUDES}/cloud/email.cpp
+             ${INCLUDES}/cloud/geolocation.cpp
+             ${INCLUDES}/cloud/ontology.cpp
+             ${INCLUDES}/cloud/vision_detection.cpp
+             ${INCLUDES}/cloud/vision_recognition.cpp
+             ${INCLUDES}/cloud/weather_report.cpp
+             ${INCLUDES}/cloud/path_planning.cpp
+             ${INCLUDES}/cloud/news.cpp
+             ${INCLUDES}/cloud/speech_recognition.cpp
+             ${INCLUDES}/cloud/text_to_speech.cpp
+             ${INCLUDES}/cloud/service_controller.cpp
              ${INCLUDES}/config/config.cpp
              ${INCLUDES}/objects/time.cpp
              ${INCLUDES}/objects/quaternion.cpp
@@ -67,19 +81,7 @@ set (SOURCES ${SOURCES}
              ${INCLUDES}/objects/picture.cpp
              ${INCLUDES}/objects/audio.cpp
              ${INCLUDES}/objects/qr_code.cpp
-             ${INCLUDES}/cloud/authentication.cpp
-             ${INCLUDES}/cloud/available_services.cpp
-             ${INCLUDES}/cloud/cognitive_exercises.cpp
-             ${INCLUDES}/cloud/email.cpp
-             ${INCLUDES}/cloud/geolocation.cpp
-             ${INCLUDES}/cloud/ontology.cpp
-             ${INCLUDES}/cloud/vision_detection.cpp
-             ${INCLUDES}/cloud/vision_recognition.cpp
-             ${INCLUDES}/cloud/weather_report.cpp
-             ${INCLUDES}/cloud/path_planning.cpp
-             ${INCLUDES}/cloud/news.cpp
-             ${INCLUDES}/cloud/speech_recognition.cpp
-             ${INCLUDES}/cloud/text_to_speech.cpp )
+             )
 
 # Begin searching for packgages we use in RAPP API
 # Find PThreads (needed by Boost)
@@ -207,6 +209,11 @@ if (${BUILD_TESTS})
         # symlink `/tests/data` instead of copying
         add_custom_command(TARGET ${LIBTARGET} POST_BUILD
                            COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/${TESTS}/data ${TEST_DIR}/data)
+        # symlink `shared library`
+        add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+                           COMMAND ${CMAKE_COMMAND} -E create_symlink 
+                           ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
+                           ${TEST_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
         # iterate tests
         foreach(ITEM ${TESTFILES})
             string(REPLACE ".cpp" "" TARGET ${ITEM})
@@ -259,6 +266,11 @@ if (${BUILD_EXAMPLES})
     # symlink `/tests/data` instead of copying
     add_custom_command(TARGET ${LIBTARGET} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}/tests/data ${EXAMPLE_DIR}/data)
+    # symlink `shared library`
+    add_custom_command(TARGET ${LIBTARGET} POST_BUILD
+                       COMMAND ${CMAKE_COMMAND} -E create_symlink 
+                       ${CMAKE_CURRENT_BINARY_DIR}/lib${LIBTARGET}.so 
+                       ${EXAMPLE_DIR}/lib${LIBTARGET}.so.${RAPP_VERSION_STRING})
     # iterate tests
     foreach(ITEM ${EXAMPLES})
         string(REPLACE ".cpp" "" TARGET ${ITEM})

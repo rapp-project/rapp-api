@@ -469,7 +469,7 @@ BOOST_AUTO_TEST_CASE(vision_detection_cloud_test)
 BOOST_AUTO_TEST_CASE(weather_cloud_test) 
 {
     //Class weather_report_current
-    auto report_call = [] (std::vector<std::string> weather) {
+    auto report_call = [](std::vector<std::string> weather) {
         BOOST_CHECK_EQUAL(weather.at(0), "date"); 
         BOOST_CHECK_EQUAL(weather.at(1), "temp");
         BOOST_CHECK_EQUAL(weather.at(2), "description");
@@ -491,13 +491,14 @@ BOOST_AUTO_TEST_CASE(weather_cloud_test)
                 "pressure" : "pressure",
                 "wind_speed" : "speed",
                 "wind_temperature" : "25C",
-                "wind_direction" : "direction"
+                "wind_direction" : "direction",
+                "error" : ""
               }
               )"_json;
     std::string j1_string = j1.dump(-1);
     wrc.deserialise(j1_string);
     //Class weather_report_forecast
-    auto forecast_call = [] (std::vector<std::vector<std::string>> forecasts) {
+    auto forecast_call = [](std::vector<std::vector<std::string>> forecasts) {
         BOOST_CHECK_EQUAL(forecasts.at(0).at(0), "40C"); 
         BOOST_CHECK_EQUAL(forecasts.at(0).at(1), "30C");
         BOOST_CHECK_EQUAL(forecasts.at(0).at(2), "hot");

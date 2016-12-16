@@ -1,0 +1,46 @@
+
+template <typename T, typename... Args>
+void service_controller::make_call(Args... args)
+{
+    // create the cloud class
+    auto obj = T(args...);
+    boost::asio::streambuf request;
+    obj.fill_buffer(boost::ref(request), info_);
+    std::function<void(std::string)> callback = [&](auto reply) {
+        obj.deserialise(reply);
+    };
+    // create an asio_socket and run the request
+    auto asio = std::make_unique<asio_http>(callback, derr_cb_, io_, request); 
+    assert(asio);
+    // start
+    asio->begin(query_, resol_, timeout_);
+    io_.run();
+    io_.reset();
+}
+
+template <typename... Args>
+void service_controller::make_calls(Args... args)
+{
+    std::vector<std::pair<std::shared_ptr<boost::asio::streambuf>,
+                          std::shared_ptr<asio_http>>> sockets;
+    // iterate each argument (has already been constructed and is non-copyable)
+    misc::for_each_arg([&](auto & obj) {
+        // set the callback
+        std::function<void(std::string)> callback = [&](auto reply){
+            obj.deserialise(reply); 
+        };
+        // allocate buffer  - must live as long as socket
+        auto buffer = std::make_shared<boost::asio::streambuf>();
+        // fill buffer
+        obj.fill_buffer(boost::ref(*buffer), info_);
+        // make socket - must live as long as the io_service uses it!
+        auto socket = std::make_shared<asio_http>(callback, derr_cb_, io_, *buffer);
+        // keep the socket and buffer alive and start the connection
+        sockets.emplace_back(std::make_pair(buffer, socket));
+        sockets.back().second->begin(query_, resol_, timeout_);
+    }, args...);
+    // run all calls, then reset asio queue
+    io_.run();
+    io_.reset();
+}
+

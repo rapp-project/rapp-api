@@ -57,7 +57,8 @@ public:
 	 */
 	void begin(
 			    boost::asio::ip::tcp::resolver::query & query,
-			    boost::asio::ip::tcp::resolver & resolver
+			    boost::asio::ip::tcp::resolver & resolver,
+                unsigned int timeout
               );
 
     /// \brief shutdown connection

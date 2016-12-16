@@ -30,9 +30,11 @@ asio_http::asio_http(
 
 void asio_http::begin( 
 						boost::asio::ip::tcp::resolver::query & query,
-						boost::asio::ip::tcp::resolver & resolver
+						boost::asio::ip::tcp::resolver & resolver,
+                        unsigned int timeout
 					 )
 {
+    deadline_->expires_from_now(boost::posix_time::seconds(timeout));
     resolver.async_resolve(query,
                             boost::bind(&asio_http::resolve,
                                         this,
@@ -46,7 +48,6 @@ void asio_http::resolve(
                         )
 {
     if (!err) {
-        deadline_->expires_from_now(boost::posix_time::seconds(1));
         auto endpoint = * endpoint_iterator;
         socket_->async_connect(endpoint,
                                boost::bind(&asio_http::connect, 

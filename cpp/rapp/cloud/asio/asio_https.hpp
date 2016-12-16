@@ -40,7 +40,7 @@ public:
 	 * \brief `error_function` is the handler which may receive the errors
 	 * \brief `io_service` is the ASIO service controller
 	 * \brief `request` is a stream buffer containing the request
-	 * \WARNING TODO: pass a PEM filename to evaluate CA - currently the server CE is not evaluated!!!
+	 * \TODO (0.7.3) take as param a PEM filename to evaluate CA - currently the server CE is not evaluated!!!
 	 */
     asio_https(
                 std::function<void(std::string)> cloud_function,
@@ -54,11 +54,12 @@ public:
 	 * \param query defines the URL/URI
 	 * \param resolver resolves the URL/URI address
      * \param io_service is the queue on which jobs are scheduled
-     * \warning disable ssl v2 and ssl v3 (allow only tls)
+     * \warning only TLS 1.2 and later are allowed
 	 */
 	void begin(
 			    boost::asio::ip::tcp::resolver::query & query,
-			    boost::asio::ip::tcp::resolver & resolver
+			    boost::asio::ip::tcp::resolver & resolver,
+                unsigned int timeout
               );
 
     /// \brief shutdown handler

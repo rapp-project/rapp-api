@@ -32,15 +32,17 @@ asio_https::asio_https(
 
 void asio_https::begin(
 						boost::asio::ip::tcp::resolver::query & query,
-						boost::asio::ip::tcp::resolver & resolver
+						boost::asio::ip::tcp::resolver & resolver,
+                        unsigned int timeout
 					  )
 {
 	// if using a self-signed certificate the only way to pass verification
 	// is to "install" it locally and use it for comparison
-	ctx_.load_verify_file("ca.pem");
+	ctx_.load_verify_file("ca.pem"); // WARNING/BUG: what is this hardcoded???
 	socket_->set_verify_mode(boost::asio::ssl::verify_peer | 
                              boost::asio::ssl::verify_fail_if_no_peer_cert);
-	socket_->set_verify_callback(boost::bind(&asio_https::verify_certificate, this, _1, _2));
+	socket_->set_verify_callback(boost::bind(&asio_https::verify_certificate, 
+                                             this, _1, _2));
 	// resolve and connect
 	boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
     boost::asio::ip::tcp::resolver::iterator end;
@@ -48,8 +50,7 @@ void asio_https::begin(
 
 	while (error && endpoint_iterator != end) {
         socket_->lowest_layer().close();
-        deadline_->expires_from_now(boost::posix_time::seconds(2));
-		// try connecting
+        deadline_->expires_from_now(boost::posix_time::seconds(timeout));
 		boost::asio::async_connect(socket_->lowest_layer(), 
 								   endpoint_iterator,
 								   boost::bind(&asio_https::connect, 
@@ -85,7 +86,9 @@ void asio_https::handshake(const boost::system::error_code err)
 {
 	if (err) {
         asio_handler::end(err);
+#if (!NDEBUG)
 		std::cerr << "Handshake failed: " << err.message() << "\n";
+#endif
 		return;
 	}
 	boost::asio::async_write(*socket_,
