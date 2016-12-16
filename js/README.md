@@ -4,6 +4,10 @@
 
 Containes RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.
 
+## Application development
+
+You can distribute robotic applications you make using this API through this [Robot Apps Store](https://rapp.cloud/)
+
 ## Dependencies
 
 To use this JS API you need nodejs and npm.

@@ -9,7 +9,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  *
  * @class text_to_speech
  * @description Asynchronous Service which will request the cloud to process TTS
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param text is the text to become speech
  * @param language is the language of the text
@@ -24,7 +24,6 @@ RAPPCloud.prototype.text_to_speech = function(
 	var cloud = this;
 	var _delegate = callback;
     var request = cloud.determine_protocol();
-
 	var body_obj = {};
     body_obj.text = cloud.escape_string(text);
     body_obj.language = cloud.escape_string(language);

@@ -405,8 +405,7 @@ Find if a door is open, and to what degree.
 More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Hazard-Detection)
 
 **Input arguments**
-- `image`: (string). The path of the input image
-- `image_format`: (string). The format of the input image
+- `image`: (string). The input image (valid [picture](#picture) object)
 - `callback`: (function). The functor that will receive the return values
 
 **Return values**
@@ -420,8 +419,7 @@ Detect faces in an image.
 More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Face-Detection).
 
 **Input arguments**
-- `image`: (string). The path of the input image
-- `image_format`: (string). The format of the input image
+- `image`: (string). The input image (valid [picture](#picture) object)
 - `callback`: (function). The functor that will receive the return values
 - `fast`: string. Only valid values are 'true' and 'false'. When 'true' the fast face detection service is called, which should be used for tracking applications. 
 
@@ -436,8 +434,7 @@ Detect humans in an image.
 More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Human-Detection).
 
 **Input arguments**
-- `image`: (string). The path of the input image
-- `image_format`: (string). The format of the input image
+- `image`: (string). The input image (valid [picture](#picture) object)
 - `callback`: (function). The functor that will receive the return values
 
 **Return values**
@@ -446,13 +443,13 @@ More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Huma
 See example: `rapp-api/js/examples/human_detect.js`
 
 ## vision-light-detect
-Method `RAPPCloud.prototype.hazard_detection_light` in `rapp-api/js/lib/cloud/hazard_detection_light.js`
+Method `RAPPCloud.prototype.hazard_detection_light` in 
+`rapp-api/js/lib/cloud/hazard_detection_light.js`
 Detect light level (luminoscity)
 More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Hazard-Detection)
 
 **Input arguments**
-- `image`: (string). The path of the input image
-- `image_format`: (string). The format of the input image
+- `image`: (string). The input image (valid [picture](#picture) object)
 - `callback`: (function). The functor that will receive the return values
 
 **Return values**
@@ -466,8 +463,7 @@ Detect qr codes in an image.
 More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-QR-Detection).
 
 **Input arguments**
-- `image`: (string). The path of the input image
-- `image_format`: (string). The format of the input image
+- `image`: (string). The input image (valid [picture](#picture) object)
 - `callback`: (function). The functor that will receive a vector of the detected qr code(s) coordinates
 
 **Return values**
@@ -476,13 +472,13 @@ More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-QR-D
 See example: `rapp-api/js/examples/qr_detect.js`
 
 ## vision-object-recognition
-Method `RAPPCloud.prototype.object_recognition_caffe` in `/lib/cloud/object_recognition_caffe.js`
+Method `RAPPCloud.prototype.object_recognition_caffe` in 
+`/lib/cloud/object_recognition_caffe.js`
 Recognise Objects using Berkeley's [Caffee](http://caffe.berkeleyvision.org/) framework.
 More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Caffe-Wrapper)
 
 **Input arguments**
-- `image`: (string) is the input image
-- `image_format`: (string) is the image format
+- `image`: (string). The input image (valid [picture](#picture) object)
 - `callback`: (function) is the functor that will receive the return values
 
 **Return values**
@@ -491,12 +487,12 @@ More details [here](https://github.com/rapp-project/rapp-platform/wiki/RAPP-Caff
 See example: `rapp-api/js/examples/object_recognition.js`
 
 ##vision-object-detection-learn-object
-Method `RAPPCloud.prototype.object_detection_learn_object` in `/lib/cloud/object_detection_learn_object.js`
+Method `RAPPCloud.prototype.object_detection_learn_object` in 
+`/lib/cloud/object_detection_learn_object.js`
 Learn objects give by the user.
 
 **Input arguments**
-- `image`: (string) is the input image
-- `image_format`: (string) is the image format
+- `image`: (string). The input image (valid [picture](#picture) object)
 - `name`: (string) the name of the object
 - `callback`: (function) is the functor that will receive the return values
 
@@ -506,27 +502,36 @@ Learn objects give by the user.
 See example: `rapp-api/js/examples/object_detection_my_own_models.js`
 
 ##vision-object-detection-clear-models
-Method `RAPPCloud.prototype.object_detection_clear_models` in `/lib/cloud/object_detection_clear_models.js`
+Method `RAPPCloud.prototype.object_detection_clear_models` in 
+`/lib/cloud/object_detection_clear_models.js`
 Clears operational memory for selected user.
 
 **Input arguments**
 - `callback`: (function) is the functor that will receive the return values
 
 **Return values**
-- `result`: (int) the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+- `result`: (int) the result of the learning. 
+ `0` is everything is ok, 
+ `-1` there are no models and 
+ `-2` there is no image to analyse.
 
 See example: `rapp-api/js/examples/object_detection_my_own_models.js`
 
 ##vision-object-detection-load-models
-Method `RAPPCloud.prototype.object_detection_load_models` in `/lib/cloud/object_detection_load_models.js`
-Load one or more models to operational memory. This operation should be done at least once before first recognition request.
+Method `RAPPCloud.prototype.object_detection_load_models` in 
+`/lib/cloud/object_detection_load_models.js`
+Load one or more models to operational memory. This operation should be done 
+at least once before first recognition request.
 
 **Input arguments**
 - `names`: (vector) The object names that are going to be loaded 
 - `callback`: (function) is the functor that will receive the return values
 
 **Return values**
-- `result`: (int) the result of the learning. `0` is everything is ok, `-1` there are no models and `-2` there is no image to analyse.
+- `result`: (int) the result of the learning. 
+ `0` is everything is ok, 
+ `-1` there are no models and 
+ `-2` there is no image to analyse.
 
 See example: `rapp-api/js/examples/object_detection_my_own_models.js`
 
@@ -536,8 +541,7 @@ When set of models is loaded to operational memory, user can provide query image
 If any object of known type is recognized, its center point in query image, model name and recognition score (certainty) is returned.
 
 **Input arguments**
-- `image`: (string) is the input image
-- `image_format`: (string) is the image format
+- `image`: (string). The input image (valid [picture](#picture) object)
 - `limit`: (string) the limit search to N best matches
 - `callback`: (function) is the functor that will receive the return values
 
@@ -625,7 +629,9 @@ Method `RAPPObject.prototype.Human` in `rapp-api/js/lib/objects/human.js`
 To describe the human coordinates.
 
 **Constructor arguments**
-- `Human(top_left_x, top_left_y, bottom_right_x, bottom_right_y)`: Construct using human coordinates. The coordinates will be x and y from the top left and bottom right points of the rectangle formed by the human.
+- `Human(top_left_x, top_left_y, bottom_right_x, bottom_right_y)`: Construct 
+using human coordinates. The coordinates will be x and y from the top left 
+and bottom right points of the rectangle formed by the human.
 
 **Methods of the class**
 - `Human.prototype.is_equal`: Equality operator.
@@ -637,4 +643,32 @@ To describe the human coordinates.
 - `Human.prototype.get_down_right_x`: Return the bottom right x coordinate
 - `Human.prototype.get_down_right_y`: Return the bottom left y coordinate
 
+##qr_code
+Method `RAPPObject.prototype.Qr_code` in `rapp-api/js/lib/objects/qr_code.js`
+To encapsulate a qr code.
 
+**Constructor arguments**
+- `Qr_code(centre_x, centre_y, label)`: Consruct using code coordinates 
+(a rectangle) and a label (URL, email, string, etc)
+
+**Methods of the class**
+- `Qr_code.prototype.is_equal`: Equality operator.
+    Arguments:
+    - `qr_code2`: The qr_code object to compare with
+    Returns: True or False.
+- `Qr_code.prototype.get_label`: Return the qr message
+- `Qr_code.prototype.get_centre_x`: Return qr centre x coordinate
+- `Qr_code.prototype.get_centre_y`: Return qr centre y coordinate
+
+##picture
+Method `RAPPObject.prototype.picture` in `rapp-api/js/lib/objects/picture.js`
+Overloaded class which wraps around raw bytes of a picture
+
+**Constructor arguments**
+- `picture(image)`: image can be either an image buffer (png or jpg encoded) 
+from the memory or a path of an image from the file system
+
+**Properties**
+- `this.img_type`: The type of the image extracted from the object.
+- `this.image`: The image in the form of a Stream ready to be appended in a form 
+of an http request

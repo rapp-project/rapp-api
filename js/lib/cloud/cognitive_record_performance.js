@@ -9,10 +9,12 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * 
  * @class cognitive_record_performance
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the cognitive_record_performance web service for an Input
- * @version 1
+ * @description Asynchronous Service which will request the
+ * cognitive_record_performance web service for an Input
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param test_instance (String) is the Cognitive Exercise test instance. The full cognitive test entry name as reported by the cognitive_test_chooser()
+ * @param test_instance (String) is the Cognitive Exercise test instance.
+ * The full cognitive test entry name as reported by the cognitive_test_chooser()
  * @param score (Integer) User's performance score on given test entry.
  * @param callback is the function that will receive the result
  */

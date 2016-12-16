@@ -51,7 +51,7 @@ function find_cb(names, centers, scores, result)
     console.log("Result: " + result);
 }
 
-services.object_detection_learn_object(pic, "jpg", "cat", callback);
+services.object_detection_learn_object(pic, "cat", callback);
 services.object_detection_load_models(["cat"], callback);
-services.object_detection_find_objects(pic, "jpg", 1, find_cb);
+services.object_detection_find_objects(pic, 1, find_cb);
 services.object_detection_clear_models(callback);

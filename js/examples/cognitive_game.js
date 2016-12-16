@@ -14,7 +14,8 @@ var services = new RAPPCloud();
  */
 function cb1(questions, possib_ans, correct_ans, test_instance, test_type, test_subtype)
 {
-	console.log("-------------test: " + test_instance + ", type: " + test_type + ", subtype: " + test_subtype + "-------------\n");
+	console.log("-------------test: " + test_instance + ", type: " + 
+            test_type + ", subtype: " + test_subtype + "-------------\n");
 	for (var i=0; i<questions.length; i++) {
 		console.log("question " + (i+1) + ":" +questions[i]);
 		console.log("possible answers: " + possib_ans[i]);

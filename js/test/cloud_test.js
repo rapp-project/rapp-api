@@ -37,7 +37,7 @@ RAPPCloud.path_planning_upload_map = require(path.join(__cloudDir, 'path_plannin
 RAPPCloud.weather_report_current = require(path.join(__cloudDir, 'weather_report_current.js'));
 RAPPCloud.weather_report_forecast = require(path.join(__cloudDir, 'weather_report_forecast.js'));
 
-var services = new RAPPCloud( );
+var services = new RAPPCloud();
 
 
 describe('#ontology_subclasses_of()', function(){
@@ -54,85 +54,85 @@ describe('#ontology_superclasses_of()', function(){
 
 describe('#ontology_is_subsuperclass_of()', function(){
     it('should in all cases create an ontology_is_subsuperclass_of object given a parent, a child, a boolean and a callback function as arguments', function(done){
-        services.ontology_is_subsuperclass_of( 'Box-Container', 'MicrowaveOven', true, done());
+        services.ontology_is_subsuperclass_of('Box-Container', 'MicrowaveOven', true, done());
     });    
 });
 
 describe('#face_detection()', function(){
     it('should in all cases create a face_detection object given an image, the image type and a callback function', function(done){
-        services.face_detection( path.join(__dirname, '../testdata/two_faces.jpg'), "jpg", done());
+        services.face_detection(path.join(__dirname, '../testdata/two_faces.jpg'), done());
     });
 });
 
 describe('#qr_detection()', function(){
     it('should in all cases create a qr_detection object given an image, the image type and a callback function', function(done){
-        services.qr_detection( path.join(__dirname, '../testdata/qrcode.png'), "png", done());
+        services.qr_detection(path.join(__dirname, '../testdata/qrcode.png'), done());
     });
 });
 
 describe('#human_detection()', function(){
     it('should in all cases create a human_detection object given an image, the image type and a callback function', function(done){
-        services.human_detection( path.join(__dirname, '../testdata/face_samples/fatsaSou_near.jpg'), "jpg", done());
+        services.human_detection(path.join(__dirname, '../testdata/face_samples/fatsaSou_near.jpg'), done());
     });
 });
 
 describe('#hazard_detection_door()', function(){
     it('should in all cases create a hazard_detection_door object given an image, the image type and a callback function', function(done){
-        services.face_detection( path.join(__dirname, '../testdata/door_1.png'), "jpg", done());
+        services.face_detection(path.join(__dirname, '../testdata/door_1.png'), done());
     });
 });
 
 describe('#hazard_detection_light()', function(){
     it('should in all cases create a hazard_detection_light object given an image, the image type and a callback function', function(done){
-        services.hazard_detection_light( path.join(__dirname, '../testdata/lamp_on.jpg'), "jpg", done());
+        services.hazard_detection_light(path.join(__dirname, '../testdata/lamp_on.jpg'), done());
     });
 });
 
 describe('#object_recognition_caffe()', function(){
     it('should in all cases create an object_recognition_caffe object given an image, the image type and a callback function', function(done){
-        services.object_recognition_caffe( path.join(__dirname, '../testdata/cat.jpg'), "jpg", done());
+        services.object_recognition_caffe(path.join(__dirname, '../testdata/cat.jpg'), done());
     });
 });
 
 describe('#object_detection_learn_object()', function(){
     it('should in all cases create an object_detection_learn_object object given an image, the image type, the name of the object and a callback function', function(done){
-        services.object_detection_learn_object( path.join(__dirname, '../testdata/cat.jpg'), "jpg", "cat", done());
+        services.object_detection_learn_object(path.join(__dirname, '../testdata/cat.jpg'), "cat", done());
     });
 });
 
 describe('#object_detection_clear_models()', function(){
     it('should in all cases create an object_detection_clear_models object given an image, the image type, the name of the object and a callback function', function(done){
-        services.object_detection_clear_models( done());
+        services.object_detection_clear_models(done());
     });
 });
 
 describe('#object_detection_load_models()', function(){
     it('should in all cases create an object_detection_load_models object given an image, the image type, the name of the object and a callback function', function(done){
-        services.object_detection_load_models( ["cat"], done());
+        services.object_detection_load_models(["cat"], done());
     });
 });
 
 describe('#object_detection_find_objects()', function(){
     it('should in all cases create an object_detection_find_objects object given an image, the image type, the name of the object and a callback function', function(done){
-        services.object_detection_find_objects( path.join(__dirname, '../testdata/cat.jpg'), "jpg", 1, done());
+        services.object_detection_find_objects(path.join(__dirname, '../testdata/cat.jpg'), 1, done());
     });
 });
 
 describe('#set_noise_profile()', function(){
     it("should in all cases create a set_noise_profile object given an audio file, username and audio type as arguments", function(){
-	services.set_noise_profile ( path.join(__dirname, '../testdata/denoise_source.wav'), "rapp", "nao_wav_1_ch" );
+	services.set_noise_profile (path.join(__dirname, '../testdata/denoise_source.wav'), "rapp", "nao_wav_1_ch");
     });
 });
 
 describe('#speech_recognition_sphinx4()', function(){
     it('should in all cases create a speech_recognition_sphinx4 object given an audio file, the language, a user token, the audio source type, a grammar, a pool of words, a pool of sentences and a callback function as arguments', function(done){
-        services.speech_recognition_sphinx4( path.join(__dirname, '../testdata/recording_sentence2.ogg'), "en", "rapp", "nao_ogg", [], ["check", "my", "emails", "robot"], ["check", "my", "emails", "robot"], done());
+        services.speech_recognition_sphinx4(path.join(__dirname, '../testdata/recording_sentence2.ogg'), "en", "rapp", "nao_ogg", [], ["check", "my", "emails", "robot"], ["check", "my", "emails", "robot"], done());
     });    
 });
 
 describe('#speech_recognition_google()', function(){
     it('should in all cases create a speech_recognition_google object given an audio file, the audio source type, a user token, a language and a callback function as arguments', function(done){
-        services.speech_recognition_google( path.join(__dirname, '../testdata/recording_sentence2.ogg'), "nao_ogg", "rapp", "en", done());
+        services.speech_recognition_google(path.join(__dirname, '../testdata/recording_sentence2.ogg'), "nao_ogg", "rapp", "en", done());
     });    
 });
 
@@ -150,72 +150,72 @@ describe('#available_services()', function(){
 
 describe('#cognitive_test_chooser()', function(){
     it('should in all cases create a cognitive_test_chooser object given a username, a test type and a callback function', function(done){
-        services.cognitive_test_chooser( 'ReasoningCts', done());
+        services.cognitive_test_chooser('ReasoningCts', done());
     });
 });
 
 describe('#cognitive_record_performance()', function(){
     it('should in all cases create a cognitive_record_performance object given a username, a test instance, a score and a callback function', function(done){
-        services.cognitive_record_performance( 'ReasoningCts_pQmhNKHv', 1, done());
+        services.cognitive_record_performance('ReasoningCts_pQmhNKHv', 1, done());
     });
 });
 
 describe('#cognitive_get_history()', function(){
     it('should in all cases create a cognitive_get_history object given a callback function and optionally a string describing the test type and two timestamps', function(done){
-        services.cognitive_get_history( done() );
+        services.cognitive_get_history(done());
     });
 });
 
 describe('#cognitive_get_scores()', function(){
     it('should in all cases create a cognitive_get_scores object given a callback function and optionally a timestamp and a string describing the test type', function(done){
-        services.cognitive_get_scores( done() );
+        services.cognitive_get_scores(done());
     });
 });
 
 describe('#email_fetch()', function(){
     it('should in all cases create a email_fetch object given 5 strings as arguments, 3 integers and a callback function', function(done){
-        services.email_fetch( '', '', '', '', '', 0, 0, 1, done() );
+        services.email_fetch('', '', '', '', '', 0, 0, 1, done());
     });
 });
 
 describe('#email_send()', function(){
     it('should in all cases create a email_fetch object given 4 strings as arguments, an array and 3 more strings', function(){
-        services.email_send( '', '', '', '', [], '', '', '' );
+        services.email_send('', '', '', '', [], '', '', '');
     });
 });
 
 describe('#geolocation()', function(){
     it('should in all cases create a geolocation object given an IP address, an engine(string) and a callback function', function(done){
-        services.geolocation( '', '', done() );
+        services.geolocation('', '', done());
     });
 });
 
 describe('#news_explore()', function(){
     it('should in all cases create a news_explore object given a news_engine (String), an array of keywords, an array of titles to be excluded, a region (string), a topic (string) and a callback function', function(done){
-        services.news_explore( '', [], [], '', '', 1, done() );
+        services.news_explore('', [], [], '', '', 1, done());
     });
 });
 
 describe('#path_planning_plan_path_2d()', function(){
     it('should in all cases create a path_planning_plan_path_2d object given 3 strings, 2 robot pose objects and a callback function', function(done){
-        services.geolocation( '', '', '', {}, {}, done() );
+        services.geolocation('', '', '', {}, {}, done());
     });
 });
 
 describe('#path_planning_upload_map()', function(){
     it('should in all cases create a path_planning_upload_map object given a png file, a yaml file and a map name (string) and a callback function', function(){
-        services.path_planning_upload_map( '../../testdata/maps/523_m3.png', '../../testdata/maps/523_m.yaml', '' );
+        services.path_planning_upload_map('../../testdata/maps/523_m3.png', '../../testdata/maps/523_m.yaml', '');
     });
 });
 
 describe('#weather_report_current()', function(){
     it('should in all cases create a weather_report_current object given the city and the weather reporter strings, a metric (integer) and a callback function', function(done){
-        services.weather_report_current( '', '', 0, done() );
+        services.weather_report_current('', '', 0, done());
     });
 });
 
 describe('#weather_report_forecast()', function(){
     it('should in all cases create a weather_report_forecast object given the city and the weather reporter strings, a metric (integer) and a callback function', function(done){
-        services.weather_report_forecast( '', '', 0, done() );
+        services.weather_report_forecast('', '', 0, done());
     });
 });

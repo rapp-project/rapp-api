@@ -24,4 +24,4 @@ function handler(humans)
 		console.log('No humans detected');
 }
 
-services.human_detection('../testdata/face_samples/fatsaSou_near.jpg', 'jpg', handler);
+services.human_detection('../testdata/face_samples/fatsaSou_near.jpg', handler);

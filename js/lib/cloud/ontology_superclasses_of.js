@@ -11,11 +11,12 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the Ontology Superclasses
  * of/for an Input - Constructor for this handler
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @see HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
  * @see HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html
- * @param ontology_class(String): the entity for which we will try to acquire its Super-Ordinates
+ * @param ontology_class(String): the entity for which we will try to acquire 
+ * its Super-Ordinates
  * @param callback is the function that will receive the classes discovered
  * @param recursive (Boolean): Recursive search
  */
@@ -30,7 +31,7 @@ RAPPCloud.prototype.ontology_superclasses_of = function(
     var request = cloud.determine_protocol();
     
     var body_obj = {};
-    body_obj.ontology_class = "Oven";//cloud.escape_string(ontology_class);
+    body_obj.ontology_class = cloud.escape_string(ontology_class);
     if (typeof recursive != 'undefined')
         body_obj.recursive = recursive;
     var body_json = JSON.stringify(body_obj);

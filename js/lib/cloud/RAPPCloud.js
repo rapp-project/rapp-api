@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const path = require('path');
-const fs = require('fs');
+//const fs = require('fs');
 const cloud_dir = path.join(__dirname);
 //const home_dir = require('home-dir');
 
@@ -35,23 +35,21 @@ RAPPCloud.prototype.escape_string = function(string)
 /// Determine protocol
 RAPPCloud.prototype.determine_protocol = function()
 {
-    if (this.platform.protocol === "https")
-    {
+    if (this.platform.protocol === "https") {
         var request = require('request').defaults({
             secureProtocol: 'TLSv1_2_method',
             rejectUnauthorized: false
         });
         return request;
     }
-    else if (this.platform.protocol === "http")
-    {
+    else if (this.platform.protocol === "http") {
         var request = require("request");
         return request;
     }
-    else
-    {
+    else {
         throw "please choose one of: http or https(for TLS_1.2) as protocols";
     }
-}
+};
+
 /// Export
 module.exports = RAPPCloud;

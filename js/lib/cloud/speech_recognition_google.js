@@ -12,7 +12,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  *
  * @class speech_recognition_google
  * @description Asynchronous Service which will request the cloud to process speech-to-text
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param audio is the actual binary sound file
  * @param audio_source is a string with the audio source type
@@ -27,13 +27,12 @@ RAPPCloud.prototype.speech_recognition_google = function(
                                                         )
 {
     var cloud = this;
-    var _delegate=callback;
+    var _delegate = callback;
     var request = cloud.determine_protocol();
 	var form = new formData();
 	var ext = audio.substr(audio.lastIndexOf('.') + 1);
 	//Generate a random file name under which the audio file will be saved on the Server 
 	var filename = randomstring.generate() + '.' + ext;
-	
 	var body_obj = {};
     body_obj.audio_source = audio_source;
     body_obj.language = language;
@@ -41,7 +40,6 @@ RAPPCloud.prototype.speech_recognition_google = function(
 
 	form.append('file', fs.createReadStream(audio), { filename: filename });
 	form.append('json', body_json);
-	
 	var r = request.post(
                           cloud.cloud_url + '/hop/speech_detection_google/ ', 
                           function(error, res, json)

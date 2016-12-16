@@ -9,11 +9,13 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * 
  * @class path_planning_plan_path_2d
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the path_planning_plan_path_2d RAPP platform service
- * @version 1
+ * @description Asynchronous Service which will request the 
+ * path_planning_plan_path_2d RAPP platform service
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param map_name (String): The map name to use.
- * @param robot_type (String): The robot type. It is required to determine it's parameters (footprint etc.)
+ * @param robot_type (String): The robot type. It is required to determine it's 
+ * parameters (footprint etc.)
  * @param algorithm (String): The path planning algorithm to apply.
  * @param start (Object): Start pose of the robot. (ROS-GeometryMsgs/PoseStamped)
  * @param goal (Object): Goal pose of the robot. (ROS-GeometryMsgs/PoseStamped)
@@ -32,7 +34,6 @@ RAPPCloud.prototype.path_planning_plan_path_2d = function(
     var cloud = this;
     var _delegate = callback;
     var request = cloud.determine_protocol();
-
     var body_obj = {};
     body_obj.map_name = cloud.escape_string(map_name);
     body_obj.robot_type = cloud.escape_string(robot_type);

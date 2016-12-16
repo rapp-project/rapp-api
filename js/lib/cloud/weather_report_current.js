@@ -9,8 +9,9 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * 
  * @class weather_report_current
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the weather_report_current RAPP platform service
- * @version 1
+ * @description Asynchronous Service which will request the 
+ * weather_report_current RAPP platform service
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param city (String): The desired city
  * @param weather_reporter (String): The weather API to use. Defaults to "yweather" .
@@ -27,7 +28,6 @@ RAPPCloud.prototype.weather_report_current = function(
     var cloud = this;
     var _delegate = callback;
     var request = cloud.determine_protocol();
-
     var body_obj = {};
     body_obj.city = cloud.escape_string(city);
     body_obj.weather_reporter = cloud.escape_string(weather_reporter);
@@ -67,7 +67,7 @@ RAPPCloud.prototype.weather_report_current = function(
             else {
                 var weather_current = {};
                 for (var prop in json_obj){
-                    if (prop !== error)
+                    if (prop !== 'error')
                         weather_current[prop] = json_obj.prop;
                 }
                 _delegate(weather_current);

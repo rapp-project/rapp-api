@@ -9,13 +9,18 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * 
  * @class cognitive_test_chooser
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the cognitive_test_chooser web service for an Input
- * @version 1
+ * @description Asynchronous Service which will request the 
+ * cognitive_test_chooser web service for an Input
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
- * @param test_type (String) is the Cognitive Exercise test type. Can be one of ['ArithmeticCts', 'AwarenessCts', 'ReasoningCts', '']
- * @param test_subtype (String): Use this to force select from this subtype. Defaults to empty string "".
- * @param test_diff (String): Use this to force select from this difficulty. Defaults to empty string "".
- * @param test_index (String): Use this to force select from this id. Defaults to empty string "".
+ * @param test_type (String) is the Cognitive Exercise test type. 
+ * Can be one of ['ArithmeticCts', 'AwarenessCts', 'ReasoningCts', '']
+ * @param test_subtype (String): Use this to force select from this subtype. 
+ * Defaults to empty string "".
+ * @param test_diff (String): Use this to force select from this difficulty.
+ * Defaults to empty string "".
+ * @param test_index (String): Use this to force select from this id. 
+ * Defaults to empty string "".
  * @param callback is the function that will receive the result
  */
 RAPPCloud.prototype.cognitive_test_chooser = function(

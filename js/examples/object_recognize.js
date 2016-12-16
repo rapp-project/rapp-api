@@ -16,4 +16,4 @@ function handler(object_class)
 		console.log('No objects recognized');
 }
 
-services.object_recognition_caffe('../testdata/cat.jpg', 'jpg', handler);
+services.object_recognition_caffe('../testdata/cat.jpg', handler);

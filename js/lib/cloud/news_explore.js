@@ -10,11 +10,12 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @class news_explore
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the news_explore RAPP platform service
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param news_engine (String): The news search engine to use.
  * @param keywords (Array): Desired keywords.
- * @param exclude_titles (Array): Reject list of previously read articles, in order to avoid duplicates.
+ * @param exclude_titles (Array): Reject list of previously read articles, in 
+ * order to avoid duplicates.
  * @param region (String): Language/Region.
  * @param topic (String): Main topics, i.e. sports, politics, etc.
  * @param num_news (Integer): Number of news stories.
@@ -33,7 +34,6 @@ RAPPCloud.prototype.news_explore = function(
     var cloud = this;
     var _delegate = callback;
     var request = cloud.determine_protocol();
-
     var body_obj = {};
     body_obj.news_engine = cloud.escape_string(news_engine);
     body_obj.keywords = [];

@@ -11,12 +11,11 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @class object_detection_load_models
  * @description Asynchronous Service which will request the cloud to 
  * load one or more models to operational memory
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param names a vector with the object names to load 
  * @param callback will be executed once the rapp cloud has responded
  */
- 
 RAPPCloud.prototype.object_detection_load_models = function(
                                                              names,
                                                              callback

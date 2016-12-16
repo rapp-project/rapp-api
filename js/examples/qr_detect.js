@@ -8,7 +8,7 @@ var services = new RAPPCloud();
 /** 
  * This is the method that will handle the reply by the services.qr_detection
  */
-function handler (codes)
+function handler(codes)
 {
     if (codes.length) {
 		console.log ('Found ' + codes.length + ' qr codes!');
@@ -22,4 +22,4 @@ function handler (codes)
 		console.log ('No qr codes detected');
 }
 
-services.qr_detection('../testdata/qrcode.png', 'png', handler);
+services.qr_detection('../testdata/qrcode.png', handler);

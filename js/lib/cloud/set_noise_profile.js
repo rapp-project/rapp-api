@@ -13,7 +13,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @class set_noise_profile
  * @memberof RAPPCloud
  * @description Setting the denoising audio profile for speech recognition
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param file is the input audio file
  * @param audio_source is a string with the audio source type
@@ -29,7 +29,6 @@ RAPPCloud.prototype.set_noise_profile = function(
 	var ext = file.substr(file.lastIndexOf('.') + 1);
 	//Generate a random file name under which the audio file will be saved on the Server 
 	var filename = randomstring.generate() + '.' + ext;
-	
 	var body_obj = {};
     body_obj.audio_source = audio_source;
     var body_json = JSON.stringify(body_obj);

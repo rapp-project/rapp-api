@@ -10,7 +10,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @class email_send
  * @memberof RAPPCloud
  * @description Asynchronous Service which will send an email to a list of recipients
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param email (String): The user's email username
  * @param passwd (String): The user's email password
@@ -38,7 +38,6 @@ RAPPCloud.prototype.email_send = function(
     var cloud = this;
     var form = new formData();
     var request = cloud.determine_protocol();
-
     var body_obj = {};
     body_obj.email = cloud.escape_string(email);
     body_obj.passwd = cloud.escape_string(passwd);

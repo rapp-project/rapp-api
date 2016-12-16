@@ -17,5 +17,4 @@ function handler(light_level)
 		console.log ('Error processing image');
 }
 
-console.log('lamp_on.jpg: ');
-services.hazard_detection_light('../testdata/lamp_on.jpg', 'jpg', handler);
+services.hazard_detection_light('../testdata/lamp_on.jpg', handler);

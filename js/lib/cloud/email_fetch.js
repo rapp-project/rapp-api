@@ -10,13 +10,14 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @class email_fetch
  * @memberof RAPPCloud
  * @description Asynchronous Service which will fetch the user's emails
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param email (String): The user's email username
  * @param passwd (String): The user's email password
  * @param server (String): The email server's imap address, i.e. 'imap.gmail.com'
  * @param port (String): The email server imap port
- * @param email_status (String): Define which mails the users requests. Values: ALL, UNSEEN(DEFAULT)
+ * @param email_status (String): Define which mails the users requests. 
+ * Values: ALL, UNSEEN(DEFAULT)
  * @param from_date (Integer): Emails since date. Unix timestamp.
  * @param to_date (Integer): Emails until date. Unix timestamp.
  * @param num_emails (Integer): Number of requested emails
@@ -37,7 +38,6 @@ RAPPCloud.prototype.email_fetch = function(
     var cloud = this;
     var _delegate = callback;
     var request = cloud.determine_protocol();   
-   
     var body_obj = {};
     body_obj.email = cloud.escape_string(email);
     body_obj.passwd = cloud.escape_string(passwd);

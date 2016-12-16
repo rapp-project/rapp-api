@@ -9,12 +9,14 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * 
  * @class ontology_is_subsuperclass_of
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the Ontology SubSuperclass of/for an Input
- * @version 1
+ * @description Asynchronous Service which will request the Ontology 
+ * SubSuperclass of/for an Input
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param parent is the parent class in question
  * @param child is the child of the parent class in question
- * @param recursive is a boolean argument, when true the function checks for indirect parent-child relationship as well
+ * @param recursive is a boolean argument, when true the function checks for 
+ * indirect parent-child relationship as well
  * @param callback is the function that will receive the result
  */
 RAPPCloud.prototype.ontology_is_subsuperclass_of = function(
@@ -27,7 +29,6 @@ RAPPCloud.prototype.ontology_is_subsuperclass_of = function(
     var cloud = this;
     var _delegate = callback;
     var request = cloud.determine_protocol();
-
     var body_obj = {};
     body_obj.parent_class = cloud.escape_string(parent);
     body_obj.child_class = cloud.escape_string(child);

@@ -10,7 +10,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @class geolocation
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the geolocation RAPP platform service
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param ipaddr: The machine's ipaddr
  * @param engine: Engine to use. Defaults to 'ip-api' (Currently the only supported).
@@ -25,7 +25,6 @@ RAPPCloud.prototype.geolocation = function(
     var cloud = this;
     var _delegate = callback;
     var request = cloud.determine_protocol();
-
     var body_obj = {};
     body_obj.ipaddr = cloud.escape_string(ipaddr);
     body_obj.engine = cloud.escape_string(engine);

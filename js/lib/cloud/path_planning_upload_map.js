@@ -11,8 +11,9 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * 
  * @class path_planning_upload_map
  * @memberof RAPPCloud
- * @description Asynchronous Service which will try to upload a map to be used for path planning on the cloud
- * @version 1
+ * @description Asynchronous Service which will try to upload a map to be used
+ * for path planning on the cloud
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param png_file: The map image png file.
  * @param yaml_file: The map description yaml file.
@@ -27,11 +28,10 @@ RAPPCloud.prototype.path_planning_upload_map = function(
     var cloud = this;
     var request = cloud.determine_protocol();
 	var form = new formData();
-
 	var body_obj = {};
     body_obj.map_name = map_name;
     var body_json = JSON.stringify(body_obj);
-	
+
 	if (!!png_file) {
 		form.append('png_file', fs.createReadStream(png_file));
 	}

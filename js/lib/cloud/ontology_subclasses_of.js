@@ -9,8 +9,9 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * 
  * @class ontology_subclasses_of
  * @memberof RAPPCloud
- * @description Asynchronous Service which will request the Ontology Subclasses of/for an Input - Constructor for this handler
- * @version 1
+ * @description Asynchronous Service which will request the Ontology Subclasses 
+ * of/for an Input - Constructor for this handler
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @see HTTP POST RFC: http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
  * @see HTTP Transfer requirements: http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html

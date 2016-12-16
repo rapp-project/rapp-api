@@ -10,7 +10,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @class cognitive_get_history
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the cognitive_get_history web service for an Input
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param callback is the function that will receive the result
  * @param test_type (String): Cognitive Exercise test type. Can be one of 

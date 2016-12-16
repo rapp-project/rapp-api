@@ -12,7 +12,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  *
  * @class speech_recognition_sphinx4
  * @description Asynchronous Service which will request the cloud to process speech-to-text
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param audio is the actual binary sound file
  * @param language is the language used for speech to text
@@ -39,20 +39,18 @@ RAPPCloud.prototype.speech_recognition_sphinx4 = function(
 	var ext = audio.substr(audio.lastIndexOf('.') + 1);
 	//Generate a random file name under which the audio file will be saved on the Server 
 	var filename = randomstring.generate() + '.' + ext;
-	
     var escaped_grammar = [];
 	for (var i=0; i<grammar.length; i++){
         escaped_grammar.push(cloud.escape_string(grammar[i]));
 	}
     var escaped_words= [];
-	for (var i=0; i<words.length; i++){
+	for (i=0; i<words.length; i++){
         escaped_words.push(cloud.escape_string(words[i]));
 	}
     var escaped_sentences= [];
-	for (var i=0; i<sentences.length; i++){
+	for (i=0; i<sentences.length; i++){
         escaped_sentences.push(cloud.escape_string(sentences[i]));
 	}
-	
 	var body_obj = {};
     body_obj.language = language;
     body_obj.audio_source = audio_source;
@@ -63,7 +61,6 @@ RAPPCloud.prototype.speech_recognition_sphinx4 = function(
 
 	form.append('file', fs.createReadStream(audio), { filename: filename });
 	form.append('json', body_json);
-	
 	var r = request.post(
                           cloud.cloud_url + '/hop/speech_detection_sphinx4/ ', 
                           function(error, res, json)

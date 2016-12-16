@@ -10,24 +10,21 @@ var RAPPObject = require(path.join(__objectsDir, 'RAPPObject'));
  * @class Human
  * @memberof RAPPObject
  * @description class which should somehow encapsulate a human
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  */ 
-
 /*** 
 * Define Human "class" inside an immediate function.
 * A bit unconventional way but it's the only way I have found to have the same information flow with C++
 * in the way that instances of this Human and only those can have access to private variables of 
 * other instances of the same "class" so that member functions like is_equal can work.
 */
-
-RAPPObject.prototype.Human = (function(){   // immediate function
-	
+RAPPObject.prototype.Human = (function() // immediate function
+{   
 	var _top_left_x;
 	var _top_left_y;
 	var _bottom_right_x;
 	var _bottom_right_y;
-	
 	var instance = 0; // counts the number of instances
 	var humans = []; // an array of private objects
 	
@@ -39,7 +36,6 @@ RAPPObject.prototype.Human = (function(){   // immediate function
      	* @param bottom_right_x is the bottom right x coordinate
      	* @param bottom_right_y is the bottom right y coordinate
      	*/
-	
 	function Human( top_left_x, top_left_y, bottom_right_x, bottom_right_y )
 	{
 		// Increment the instance count and save it to the instance. 
@@ -48,15 +44,12 @@ RAPPObject.prototype.Human = (function(){   // immediate function
 		
 		// Create a new object in the private space.
 		humans[this.i] = {};
-		
 		humans[this.i]._top_left_x = top_left_x;
 		humans[this.i]._top_left_y = top_left_y;
 		humans[this.i]._bottom_right_x = bottom_right_x;
 		humans[this.i]._bottom_right_y = bottom_right_y;
 	}
 
-	//TODO: A function that can be used as a Copy Constructor
-	
 	/**
 	 * @function is_equal
      * @description Check Equality
@@ -78,7 +71,7 @@ RAPPObject.prototype.Human = (function(){   // immediate function
     Human.prototype.get_up_left_x = function()
     {
         return humans[this.i]._top_left_x;
-    } 
+    }; 
 
     /**
      * @function get_up_left_y
@@ -87,7 +80,7 @@ RAPPObject.prototype.Human = (function(){   // immediate function
     Human.prototype.get_up_left_y = function()
     {
         return humans[this.i]._top_left_y;
-    }
+    };
 
     /**
      * @function get_down_right_x
@@ -96,7 +89,7 @@ RAPPObject.prototype.Human = (function(){   // immediate function
     Human.prototype.get_down_right_x = function()
     {
         return humans[this.i]._bottom_right_x;
-    } 
+    }; 
 
     /**
      * @function get_down_right_y
@@ -105,13 +98,10 @@ RAPPObject.prototype.Human = (function(){   // immediate function
     Human.prototype.get_down_right_y = function()
     {
         return humans[this.i]._bottom_right_y;
-    }
-
-
+    };
 	
 	return Human;	
 })();
-
 
 /// Export
 module.exports = RAPPObject.Human;

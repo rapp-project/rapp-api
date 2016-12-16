@@ -11,7 +11,7 @@ var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the
  * Cloud to delete the operational memory 
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param callback is the function that will receive the result
  */

@@ -16,10 +16,9 @@ RAPPObject.picture = require(path.join(__objectsDir, 'picture.js'));
  * @class face_detection
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the cloud to detect faces
- * @version 1
+ * @version 0.7.5
  * @author Lazaros Penteridis <lp@ortelio.co.uk>
  * @param image is the input image 
- * @param image_format is the image format
  * @param callback is the function that will receive a vector of the detected 
  * face(s) coordinates
  * @param fast is a string. Only valid values 'true' and 'false'. When 'true'
@@ -40,11 +39,11 @@ RAPPCloud.prototype.face_detection = function(
     var pic = new object.picture(image);
 	//Generate a random file name under which the image will be saved on the Server 
 	var filename = randomstring.generate() + '.' + pic.img_type;
-
 	var body_obj = {};
 	if (typeof fast != 'undefined')
     	body_obj.fast = fast;
     var body_json = JSON.stringify(body_obj);
+
 	form.append('file', pic.image, { 
 		filename: filename,
 		contentType: 'image/' + pic.img_type
