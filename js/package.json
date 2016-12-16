@@ -61,7 +61,7 @@
     "name": "leizer",
     "email": "lp@ortelio.co.uk"
   },
-  "license": "Apache-2",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/rapp-project/rapp-api/issues"
   },

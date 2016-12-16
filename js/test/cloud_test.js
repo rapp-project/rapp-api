@@ -39,7 +39,6 @@ RAPPCloud.weather_report_forecast = require(path.join(__cloudDir, 'weather_repor
 
 var services = new RAPPCloud();
 
-
 describe('#ontology_subclasses_of()', function(){
     it('should in all cases create an ontology_subclasses_of object given an argument class and a callback function', function(done){
         services.ontology_subclasses_of('Oven', done());
