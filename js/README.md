@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Containes RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.
+Contains RAPPCloud API modules used for interfering wth RAPP Platform as well as the RAPP Objects.
 
 ## Application development
 
