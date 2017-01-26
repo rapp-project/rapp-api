@@ -1,4 +1,4 @@
-onfig file for the RAPP package
+# Config file for the RAPP package
 # It defines the following variables
 #  RAPP_INCLUDE_DIRS - include directories for RAPP
 #  RAPP_LIBRARIES    - libraries to link against
