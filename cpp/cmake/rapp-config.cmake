@@ -6,19 +6,19 @@ onfig file for the RAPP package
 
 if(EXISTS ${CMAKE_INSTALL_PREFIX}/lib/librapp.a) 
   set(RAPP_STATIC_LIBRARIES
-      ${CMAKE_INSTALL_PREFIX}/lib/librapp.a
+      @CMAKE_INSTALL_PREFIX@/lib/librapp.a
       CACHE INTERNAL "" FORCE
   )
 endif()
 
 if(EXISTS ${CMAKE_INSTALL_PREFIX}/lib/librapp.so)
   set(RAPP_LIBRARIES
-      ${CMAKE_INSTALL_PREFIX}/lib/librapp.so
+      @CMAKE_INSTALL_PREFIX@/lib/librapp.so
       CACHE INTERNAL "" FORCE
   )
 endif()
 
 set(RAPP_INCLUDE_DIRS
-    ${CMAKE_INSTALL_PREFIX}/include
+    @CMAKE_INSTALL_PREFIX@/include
     CACHE INTERNAL "" FORCE
 )
