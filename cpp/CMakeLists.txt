@@ -226,3 +226,12 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message (FATAL_ERROR "unsupported compiler")
 endif()
+#
+# Install rapp-config.cmake
+#
+configure_file(cmake/rapp-config.cmake
+               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake"
+               COPYONLY
+              )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME}/cmake")
