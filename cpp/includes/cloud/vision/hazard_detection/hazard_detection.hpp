@@ -29,13 +29,13 @@ public:
         std::string fname = rapp::misc::random_boundary() + "." + image.type();
 
         boost::property_tree::ptree tree;
-        tree.put("file", fname);
+        //tree.put("file", fname);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str();
+               + ss.str() + "\r\n";
 
 		post_ += "--" + boundary + "\r\n"
               + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
@@ -61,15 +61,21 @@ private:
     void handle_reply(std::string json)
     {
         std::stringstream ss(json);
+
+	std::cout<<"json: "<<json<<std::endl;
+
         double door_angle;
         try {
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
 
+            door_angle = tree.get<double>("door_angle", -1);
+
             // get door angle
-            for (auto child : tree.get_child("door_angle")) {
-                door_angle = child.second.get_value<double>();
-            }
+/*            for (auto child : tree.get_child("door_angle")) {
+                door_angle = child.second.get_value<int>();
+		std::cout << "Got child!\n";
+            }*/
 
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
@@ -117,13 +123,13 @@ public:
         std::string fname = rapp::misc::random_boundary() + "." + image.type();
 
         boost::property_tree::ptree tree;
-        tree.put("file", fname);
+        //tree.put("file", fname);
         std::stringstream ss;
         boost::property_tree::write_json(ss, tree, false);
 
         post_  = "--" + boundary + "\r\n"
                + "Content-Disposition: form-data; name=\"json\"\r\n\r\n"
-               + ss.str();
+               + ss.str() + "\r\n";
 
 		post_ += "--" + boundary + "\r\n"
               + "Content-Disposition: form-data; name=\"file\"; filename=\"" + fname + "\"\r\n"
@@ -155,11 +161,13 @@ private:
             boost::property_tree::ptree tree;
             boost::property_tree::read_json(ss, tree);
 
-            // get door angle
+            // get light level
+            light_level = tree.get<double>("light_level", -1);
+/*
             for (auto child : tree.get_child("light_level")) {
                 light_level = child.second.get_value<double>();
             }
-
+*/
             // Check for Errors returned by the platform
             for (auto child : tree.get_child("error")) {
                 const std::string value = child.second.get_value<std::string>();
