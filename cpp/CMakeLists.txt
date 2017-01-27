@@ -17,7 +17,9 @@
 # 
 PROJECT(rapp)
 set (RAPP_VERSION_MAJOR 0)
-set (RAPP_VERSION_MINOR 2)
+set (RAPP_VERSION_MINOR 6)
+set (RAPP_VERSION_PATCH 3)
+set (RAPP_VERSION ${RAPP_VERSION_MAJOR}.${RAPP_VERSION_MINOR}.${RAPP_VERSION_PATCH})
 cmake_minimum_required(VERSION 2.8)
 set(LIBRARY_PATH ${LIBRARY_PATH}
 		      /lib
@@ -226,12 +228,15 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     message (FATAL_ERROR "unsupported compiler")
 endif()
-#
-# Install rapp-config.cmake
-#
-configure_file(cmake/rapp-config.cmake
-               "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake"
-               @ONLY
-              )
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/rapp-config.cmake
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${PROJECT_NAME}/cmake")
+
+# Prepare the CMake config files
+configure_file(cmake/RappConfig.cmake.in "${PROJECT_BINARY_DIR}/RappConfig.cmake" @ONLY)
+configure_file(cmake/RappConfigVersion.cmake.in "${PROJECT_BINARY_DIR}/RappConfigVersion.cmake" @ONLY)
+ 
+# Install the CMake config files
+install(FILES
+  "${PROJECT_BINARY_DIR}/RappConfig.cmake"
+  "${PROJECT_BINARY_DIR}/RappConfigVersion.cmake"
+  "cmake/RappMacros.cmake"
+  DESTINATION "${CMAKE_INSTALL_PREFIX}/share/Rapp"
+)
