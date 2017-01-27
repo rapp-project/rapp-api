@@ -47,6 +47,13 @@ struct quaternion
 			}
 		}
 	}
+
+    quaternion(const boost::property_tree::ptree & pt) {
+        x = pt.get<float>("x");
+        y = pt.get<float>("y");
+        z = pt.get<float>("z");
+        w = pt.get<float>("w");
+    }
     
     /// \brief equalit-> operator
     bool operator==(const rapp::object::quaternion & rhs) const
