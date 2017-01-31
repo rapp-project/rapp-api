@@ -1,5 +1,5 @@
-#ifndef RAPP_OBJECT_HEADER
-#define RAPP_OBJECT_HEADER
+#ifndef RAPP_OBJECT_MSG_METADATA
+#define RAPP_OBJECT_MSG_METADATA
 #include "includes.ihh"
 namespace rapp {
 namespace object {
