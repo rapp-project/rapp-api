@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+var path = require('path');
+var __cloudDir = path.join(__dirname);
+var RAPPCloud = require(path.join(__cloudDir, 'RAPPCloud.js'));
+
+/**
+ * @fileOverview Prototype the RAPPCloud Service Method.
+ * 
+ * @class cognitive_record_performance
+ * @memberof RAPPCloud
+ * @description Asynchronous Service which will request the
+ * cognitive_record_performance web service for an Input
+ * @version 0.7.5
+ * @author Lazaros Penteridis <lp@ortelio.co.uk>
+ * @param test_instance (String) is the Cognitive Exercise test instance.
+ * The full cognitive test entry name as reported by the cognitive_test_chooser()
+ * @param score (Integer) User's performance score on given test entry.
+ * @param callback is the function that will receive the result
+ */
+RAPPCloud.prototype.cognitive_record_performance = function(
+                                                               test_instance,
+                                                               score,
+                                                               callback
+                                                           )
+{
+    var cloud = this;
+    var _delegate = callback;
+    var request = cloud.determine_protocol();
+
+    var body_obj = {};
+    body_obj.test_instance = cloud.escape_string(test_instance);
+    body_obj.score = score;
+    var body_json = JSON.stringify(body_obj);
+
+    request.post({
+        headers: {
+			'Accept-Token' : cloud.token,
+			'Connection' : 'close'
+			},
+        url: cloud.cloud_url + '/hop/cognitive_record_performance/ ',
+        body: "json=" + body_json
+    },
+    function(error, response, json) 
+    {
+        if (!error && response.statusCode == 200)
+            handle_reply(json);
+        else if (error)
+            error_handler(error);
+        else if (response.statusCode != 200)
+            console.log('Error: ' + response.statusCode);
+    });
+    
+    function handle_reply(json)
+    {
+		var json_obj;
+		try {
+			json_obj = JSON.parse(json);
+			// JSON reply is: { performance_entry: '', error: '' }
+		
+			if(json_obj.error){  // Check for Errors  
+				console.log('cognitive_record_performance JSON error: ' + json_obj.error);
+			}
+			_delegate(json_obj.performance_entry);
+		} catch (e) {
+			console.log('cognitive_record_performance::handle_reply Error parsing: ');
+            return console.error(e);
+		}
+	}
+	
+	function error_handler(error) {
+		return console.error(error);
+	}   
+};
+
+/// Export
+module.exports = RAPPCloud.cognitive_record_performance;

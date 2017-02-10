@@ -1,25 +1,20 @@
 #!/usr/bin/env node
 
-// Import the hazard_detection_light_check JS API Service & Init the RAPPCloud Object
-var RAPPCloud = require('rapp-platform-api/includes/cloud/RAPPCloud');
-RAPPCloud.hazard_detection_light_check = require('rapp-platform-api/includes/cloud/hazard_detection_light_check');
+// Import the hazard_detection_light JS API Service & Init the RAPPCloud Object
+var RAPPCloud = require('../lib/cloud/RAPPCloud');
+RAPPCloud.hazard_detection_light = require('../lib/cloud/hazard_detection_light');
 
-var services = new RAPPCloud( );
-
+var services = new RAPPCloud();
 
 /** 
- * This is the method that will handle the reply by the service.hazard_detection_light_check
- * Do what you want with it - REMEMBER: The service is Asynchronous!!!
+ * This is the method that will handle the reply by the service.hazard_detection_light
  */
-function handler ( light_level )
+function handler(light_level)
 {
     if (light_level >= 0) 
-		console.log ( 'Estimated light level: ' + light_level );
+		console.log ('Estimated light level: ' + light_level);
 	else
-		console.log ( 'Error processing image' );
+		console.log ('Error processing image');
 }
 
-console.log('lamp_on.jpg: ');
-services.hazard_detection_light_check('../../testdata/lamp_on.jpg', 'jpg', handler );
-console.log('lamp_off.jpg: ');
-services.hazard_detection_light_check('../../testdata/lamp_off.jpg', 'jpg', handler );
+services.hazard_detection_light('../testdata/lamp_on.jpg', handler);
