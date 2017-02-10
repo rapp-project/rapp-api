@@ -16,7 +16,7 @@ RAPPObject.picture = require(path.join(__objectsDir, 'picture.js'));
  * @memberof RAPPCloud
  * @description Asynchronous Service which will request the cloud to estimate door angle
  * @version 0.7.5
- * @authors Maciej Stefańczyk <M.Stefanczyk@elka.pw.edu.p,
+ * @author Maciej Stefańczyk <M.Stefanczyk@elka.pw.edu.p,
  * Lazaros Penteridis ,lp@ortelio.co.uk>
  * @param image is the input image 
  * @param callback is the function that will receive an estimated door level [0..100]

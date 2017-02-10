@@ -29,9 +29,7 @@
   },
   "scripts": {
     "test": "node_modules/.bin/mocha test",
-    "doc-cloud": "rm -rf doc/cloud && grunt doc-gen-cloud",
-    "doc-objects": "rm -rf doc/objects && grunt doc-gen-objects",
-    "doc": "npm run doc-cloud && npm run doc-objects",
+    "doc": "rm -rf doc && grunt doc-gen",
     "jshint": "node_modules/.bin/jshint lib"
   },
   "repository": {
