@@ -3,11 +3,10 @@
 # 
 # Command line arguments you can use:
 #       -DBUILD_RAPP_SHARED=ON		                    (Default: compile a shared librapp)
-#       -DBUILD_RAPP_STATIC=ON		                    (Optional: compile a static librapp)
+#       -DBUILD_STATIC=ON		                        (Optional: compile a static librapp)
 #       -DBUILD_TESTS=ON                                (Optional: compile various tests - run with `make test`)
 #       -DBUILD_EXAMPLES=ON                             (Optional: compile various examples)
 #       -DCMAKE_BUILD_TYPE=Debug                        (Optional: enable debug symbols)
-#       -DSTATIC_LIBSTD=ON                              (Optional: compile statically against libstdc++)
 #       -DOPEN_NAO=ON                                   (Optional: compiling on OpenNAO requires additional CXX flags)
 #		-DCMAKE_INSTALL_PREFIX=/usr	                    (Optional: specify the library install directory
 #       -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl       (Optional: specify OpenSSL root directory)
@@ -196,20 +195,18 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     elseif ()
         message (FATAL_ERROR "g++ version >= 4.7 is required")
     endif()
-    if (${STATIC_LIBSTD})
+    if (${STATIC})
         set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11 -Wall -fPIC -static-libstdc++")
-    elseif (${RAPP_STATIC})
-        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC -static-libstdc++")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
     elseif (${OPEN_NAO})
-        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC -march=atom -mtune=atom -static-libstdc++")
+        set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++1y -Wall -fPIC -march=atom -mtune=atom -static-libstdc++")
     else()
         set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -Wall -fPIC")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
     endif()
 
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 
-
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -mtune=native -march=native")
     set(BUILD_SHARED_LIBS OFF)
     message(STATUS "CXX Flags: " ${CMAKE_CXX_FLAGS})
     message(STATUS "CXX Linker: " ${CMAKE_EXE_LINKER_FLAGS})
